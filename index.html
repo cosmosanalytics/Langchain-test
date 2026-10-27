@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LangChain Test Studio Suite 🦜✨ — 4 Standalone Web Apps</title>
+  <meta name="description" content="A suite of 4 standalone, client-side HTML web apps powered by Groq LPU and WebGPU WebLLM for LangChain, LangGraph, LangSmith tracing, and UX story mining.">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-hover: #1e293b;
+      --border: #334155;
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --accent: #10b981;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 32px 20px 80px 20px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      background: linear-gradient(135deg, #6366f1, #10b981);
+      width: 64px;
+      height: 64px;
+      border-radius: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -0.6px;
+      background: linear-gradient(to right, #ffffff, #c7d2fe, #a7f3d0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: var(--text-muted);
+      max-width: 680px;
+      margin: 0 auto 16px auto;
+    }
+
+    .meta-pills {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+    }
+    .pill.green { background: #064e3b; border-color: #059669; color: #a7f3d0; }
+    .pill.purple { background: #1e1b4b; border-color: #3730a3; color: #c7d2fe; }
+
+    /* APPS GRID */
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(540px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+
+    @media (max-width: 640px) {
+      .apps-grid { grid-template-columns: 1fr; }
+    }
+
+    .app-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .app-card:hover {
+      transform: translateY(-4px);
+      border-color: #818cf8;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+    }
+
+    .app-img-wrap {
+      width: 100%;
+      height: 240px;
+      overflow: hidden;
+      background: #030712;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+    }
+
+    .app-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      transition: transform 0.3s ease;
+    }
+
+    .app-card:hover .app-img-wrap img {
+      transform: scale(1.03);
+    }
+
+    .app-body {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      flex: 1;
+    }
+
+    .app-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .app-num {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+
+    .app-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .app-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    .feature-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 4px 0;
+    }
+
+    .feature-tag {
+      font-size: 11px;
+      font-weight: 700;
+      background: #0b1120;
+      border: 1px solid var(--border);
+      padding: 3px 8px;
+      border-radius: 6px;
+      color: #cbd5e1;
+    }
+
+    .app-footer {
+      padding: 16px 20px;
+      background: #0b1120;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+    }
+    .btn-outline:hover { background: var(--card-bg); color: #fff; }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <div class="logo-badge">🦜✨</div>
+    <h1>LangChain Test Suite Hub</h1>
+    <p class="subtitle">
+      Four client-side, zero-backend web apps demonstrating the power of Groq LPU and WebGPU WebLLM for LangChain, LangGraph state machines, LangSmith tracing, and continuous agent evolution.
+    </p>
+    <div class="meta-pills">
+      <span class="pill green">⚡ Dual Engine: Groq LPU (500 T/s) + WebGPU (100% Private)</span>
+      <span class="pill purple">🕸️ LangGraph + Claude 3.5 Sonnet</span>
+      <span class="pill">📁 GitHub: cosmosanalytics/langchain-test</span>
+    </div>
+  </header>
+
+  <!-- 4 APPS GRID -->
+  <div class="apps-grid">
+
+    <!-- APP 1: STORYMINE -->
+    <div class="app-card">
+      <div class="app-img-wrap">
+        <img src="ux_story_miner_preview.png" alt="StoryMine Preview">
+      </div>
+      <div class="app-body">
+        <div class="app-top">
+          <div>
+            <div class="app-num">App 01</div>
+            <div class="app-title">StoryMine 🕵️✨ — Web UX Story Miner</div>
+          </div>
+        </div>
+        <p class="app-desc">
+          Scrapes any live website or review forum (via CORS-friendly Jina Reader) and extracts colorful persona journeys, friction points, "Aha!" breakthrough moments, sentiment meters, and product takeaways.
+        </p>
+        <div class="feature-list">
+          <span class="feature-tag">Jina Reader Scraper</span>
+          <span class="feature-tag">Bento Story Cards</span>
+          <span class="feature-tag">Sentiment Heatmap</span>
+          <span class="feature-tag">JSON / Markdown Export</span>
+        </div>
+      </div>
+      <div class="app-footer">
+        <a href="ux_story_miner.html" class="btn"><span>🚀</span> Launch App 1</a>
+        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">ux_story_miner.html</span>
+      </div>
+    </div>
+
+    <!-- APP 2: GRAPHSMITH -->
+    <div class="app-card">
+      <div class="app-img-wrap">
+        <img src="langgraph_agent_studio_preview.png" alt="GraphSmith Preview">
+      </div>
+      <div class="app-body">
+        <div class="app-top">
+          <div>
+            <div class="app-num">App 02</div>
+            <div class="app-title">GraphSmith 🛠️🦜 — LangGraph &amp; Claude Studio</div>
+          </div>
+        </div>
+        <p class="app-desc">
+          Synthesizes production-grade LangGraph state machine architectures using Anthropic Claude 3.5 Sonnet directly from natural language prompts. Features an interactive Mermaid diagram and in-browser execution simulator.
+        </p>
+        <div class="feature-list">
+          <span class="feature-tag">Mermaid StateGraph Canvas</span>
+          <span class="feature-tag">TypedDict Schema</span>
+          <span class="feature-tag">Claude 3.5 Bindings</span>
+          <span class="feature-tag">Step-by-Step Simulator</span>
+        </div>
+      </div>
+      <div class="app-footer">
+        <a href="langgraph_agent_studio.html" class="btn"><span>🚀</span> Launch App 2</a>
+        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">langgraph_agent_studio.html</span>
+      </div>
+    </div>
+
+    <!-- APP 3: LANGSMITH STUDIO -->
+    <div class="app-card">
+      <div class="app-img-wrap">
+        <img src="langsmith_studio_preview.png" alt="LangSmith Studio Preview">
+      </div>
+      <div class="app-body">
+        <div class="app-top">
+          <div>
+            <div class="app-num">App 03</div>
+            <div class="app-title">LangSmith Studio 🔍 — LLM Observability</div>
+          </div>
+        </div>
+        <p class="app-desc">
+          Reproduces the iconic LangSmith developer experience: hierarchical execution trace trees, Gantt waterfall latency charts, LLM-as-a-judge dataset evaluations, and prompt playground with auto-tracing.
+        </p>
+        <div class="feature-list">
+          <span class="feature-tag">Gantt Waterfall Spans</span>
+          <span class="feature-tag">Trace Tree Inspection</span>
+          <span class="feature-tag">LLM-as-a-Judge Evals</span>
+          <span class="feature-tag">Prompt Playground</span>
+        </div>
+      </div>
+      <div class="app-footer">
+        <a href="langsmith_studio.html" class="btn"><span>🚀</span> Launch App 3</a>
+        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">langsmith_studio.html</span>
+      </div>
+    </div>
+
+    <!-- APP 4: LANGFLYWHEEL -->
+    <div class="app-card">
+      <div class="app-img-wrap">
+        <img src="continuous_agent_optimizer_preview.png" alt="LangFlywheel Preview">
+      </div>
+      <div class="app-body">
+        <div class="app-top">
+          <div>
+            <div class="app-num">App 04</div>
+            <div class="app-title">LangFlywheel 🔄 — Continuous Trace Optimizer</div>
+          </div>
+        </div>
+        <p class="app-desc">
+          Demonstrates the flywheel of continuous agent improvement: executing an agent, parsing trace failure modes, auto-synthesizing upgraded LangGraph architectures (v1 ➔ v2 ➔ v3), and quantifying performance lifts.
+        </p>
+        <div class="feature-list">
+          <span class="feature-tag">Trace Failure Diagnostic</span>
+          <span class="feature-tag">Auto-Evolve Generator</span>
+          <span class="feature-tag">Pass@1 Lift Tracking</span>
+          <span class="feature-tag">Zero-Silent-Failure Hardening</span>
+        </div>
+      </div>
+      <div class="app-footer">
+        <a href="continuous_agent_optimizer.html" class="btn"><span>🚀</span> Launch App 4</a>
+        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">continuous_agent_optimizer.html</span>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>
+      Published to <a href="https://github.com/cosmosanalytics/langchain-test" style="color: var(--primary); font-weight: 700;">cosmosanalytics/langchain-test</a> • 100% Client-Side Architecture
+    </p>
+  </footer>
+
+</div>
+
+</body>
+</html>

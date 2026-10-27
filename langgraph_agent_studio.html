@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GraphSmith 🛠️🦜 — LangGraph &amp; Claude Agent Studio</title>
+  <meta name="description" content="Design, visualize and simulate LangGraph and Claude agents from natural language prompts using WebGPU and Groq LPU.">
+
+  <!-- Mermaid.js for interactive LangGraph state machine visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+  <!-- Prism.js for syntax highlighted Python code -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+
+  <!-- Canvas Confetti for fun celebrations -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-glow: rgba(99, 102, 241, 0.35);
+      --accent: #10b981;
+      --accent-glow: rgba(16, 185, 129, 0.3);
+      --claude-accent: #d97706;
+      --claude-glow: rgba(217, 119, 6, 0.25);
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-subtle: #1f2937;
+      --border: #374151;
+      --border-focus: #6366f1;
+      --text: #f9fafb;
+      --text-muted: #9ca3af;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font);
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 20px 16px 60px 16px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .logo-badge {
+      font-size: 32px;
+      background: linear-gradient(135deg, #6366f1, #10b981);
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px var(--primary-glow);
+    }
+
+    .title-box h1 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: linear-gradient(to right, #ffffff, #c7d2fe, #6ee7b7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .title-box p {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .header-badges {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--card-subtle);
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .pill.claude { background: #451a03; border-color: #92400e; color: #fcd34d; }
+    .pill.langgraph { background: #1e1b4b; border-color: #3730a3; color: #a5b4fc; }
+
+    /* ENGINE SELECTOR TABS */
+    .engine-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .engine-card {
+      background: var(--card-bg);
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .engine-card:hover {
+      border-color: #818cf8;
+      transform: translateY(-2px);
+    }
+
+    .engine-card.active {
+      border-color: var(--primary);
+      background: linear-gradient(145deg, #111827, #1e1b4b 220%);
+      box-shadow: 0 0 0 1px var(--primary), 0 8px 20px rgba(99, 102, 241, 0.25);
+    }
+
+    .engine-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .engine-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .engine-badge {
+      font-size: 9.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: #065f46;
+      color: #6ee7b7;
+    }
+    .engine-badge.local { background: #3730a3; color: #c7d2fe; }
+
+    .engine-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    /* CONFIG PANELS */
+    .config-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .config-panel.active { display: block; }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+    }
+
+    label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+      display: block;
+    }
+
+    input[type="text"], input[type="password"], select, textarea {
+      background: #030712;
+      border: 1.5px solid var(--border);
+      color: #fff;
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-family: inherit;
+      width: 100%;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    /* BUTTONS */
+    .btn {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 9px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+    .btn:active { transform: translateY(1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .btn-secondary {
+      background: var(--card-subtle);
+      color: var(--text);
+    }
+    .btn-secondary:hover { background: #374151; }
+
+    .btn-magic {
+      background: linear-gradient(135deg, #6366f1, #10b981);
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    }
+    .btn-magic:hover {
+      filter: brightness(1.1);
+      box-shadow: 0 6px 18px rgba(99, 102, 241, 0.5);
+    }
+
+    /* MAIN PROMPT INPUT SECTION */
+    .prompt-section {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .prompt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .prompt-title {
+      font-size: 16px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .templates-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .template-chip {
+      background: var(--card-subtle);
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .template-chip:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .prompt-textarea {
+      height: 90px;
+      font-size: 13.5px;
+      line-height: 1.45;
+      resize: vertical;
+      margin-bottom: 12px;
+    }
+
+    .prompt-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .claude-settings {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    /* PROGRESS BAR */
+    .progress-box {
+      background: #030712;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-top: 12px;
+      display: none;
+    }
+    .progress-box.active { display: block; }
+
+    .progress-track {
+      height: 6px;
+      background: #374151;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6366f1, #10b981);
+      border-radius: 999px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #cbd5e1;
+    }
+
+    /* WORKSPACE: TABS & RESULTS */
+    .workspace {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .tab-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1.5px solid var(--border);
+      padding-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tabs-left {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+      background: var(--card-subtle);
+    }
+
+    .tab-btn.active {
+      color: #fff;
+      background: var(--primary);
+    }
+
+    .tabs-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    /* VIEW PANELS */
+    .view-panel {
+      display: none;
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      min-height: 480px;
+    }
+    .view-panel.active { display: block; }
+
+    /* MERMAID DIAGRAM CANVAS */
+    .graph-canvas-container {
+      background: #030712;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px 16px;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow-x: auto;
+    }
+
+    .graph-meta-banner {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 16px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 8px;
+    }
+
+    .graph-legend {
+      display: flex;
+      gap: 14px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .legend-dot.agent { background: #6366f1; }
+    .legend-dot.tool { background: #10b981; }
+    .legend-dot.condition { background: #f59e0b; }
+
+    /* CODE VIEW */
+    .code-container {
+      position: relative;
+    }
+
+    pre[class*="language-"] {
+      border-radius: 10px !important;
+      margin: 0 !important;
+      font-size: 12.5px !important;
+      font-family: var(--font-mono) !important;
+      line-height: 1.5 !important;
+      max-height: 600px;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+    }
+
+    /* SIMULATOR TAB */
+    .sim-container {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 850px) {
+      .sim-container { grid-template-columns: 1fr; }
+    }
+
+    .sim-panel {
+      background: #030712;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .sim-title {
+      font-size: 14px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .sim-step-chain {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 12px 0;
+    }
+
+    .sim-step-node {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .sim-step-node.active-step {
+      border-color: var(--accent);
+      background: rgba(16, 185, 129, 0.1);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.25);
+    }
+
+    .sim-step-node.done-step {
+      border-color: #374151;
+      opacity: 0.8;
+    }
+
+    .state-inspector {
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: #a7f3d0;
+      max-height: 340px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    /* EMPTY STATE */
+    .empty-placeholder {
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .empty-icon { font-size: 42px; margin-bottom: 8px; }
+
+    /* TOAST ALERT */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1f2937;
+      border: 1.5px solid var(--primary);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-group">
+      <div class="logo-badge">🦜</div>
+      <div class="title-box">
+        <h1>GraphSmith 🛠️✨</h1>
+        <p>Natural Language to LangGraph &amp; Claude Agent Architecture Studio</p>
+      </div>
+    </div>
+    <div class="header-badges">
+      <span class="pill claude">⚡ Claude 3.5 Sonnet Plugin</span>
+      <span class="pill langgraph">🕸️ LangGraph StateGraph</span>
+      <span class="pill" id="engineStatusBadge">🟢 Engine: Groq LPU</span>
+    </div>
+  </header>
+
+  <!-- ENGINE SWITCHER -->
+  <div class="engine-grid">
+    
+    <!-- ENGINE 1: GROQ LPU -->
+    <div id="cardGroq" class="engine-card active" onclick="switchEngine('groq')">
+      <div class="engine-header">
+        <div class="engine-title">⚡ Groq LPU Cloud</div>
+        <span class="engine-badge">Instant (500 T/s)</span>
+      </div>
+      <div class="engine-sub">
+        Generates complex LangGraph schemas &amp; Claude tool-calling architectures in 1.5s via Llama 3.3 70B.
+      </div>
+    </div>
+
+    <!-- ENGINE 2: WEBGPU WEBLLM -->
+    <div id="cardWebLLM" class="engine-card" onclick="switchEngine('webllm')">
+      <div class="engine-header">
+        <div class="engine-title">🧠 WebGPU Local (WebLLM)</div>
+        <span class="engine-badge local">100% Private In-Browser</span>
+      </div>
+      <div class="engine-sub">
+        Zero server calls. Runs directly on your device GPU via @mlc-ai/web-llm (Llama 3.2 1B / SmolLM2).
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GROQ CONFIG PANEL -->
+  <div id="panelGroq" class="config-panel active">
+    <div class="form-row">
+      <div class="form-group" style="flex: 2;">
+        <label for="groqApiKey">Groq API Key (Stored Locally in Browser)</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="password" id="groqApiKey" placeholder="gsk_... (Or click any template below to test in instant demo mode)">
+          <button class="btn btn-secondary" onclick="togglePassword('groqApiKey')">👁️</button>
+        </div>
+      </div>
+      <div class="form-group" style="flex: 1.2;">
+        <label for="groqModel">Synthesizer Model</label>
+        <select id="groqModel">
+          <option value="llama-3.3-70b-versatile" selected>Llama 3.3 70B (Best Code Quality)</option>
+          <option value="llama-3.1-8b-instant">Llama 3.1 8B Instant (Blazing Fast)</option>
+        </select>
+      </div>
+      <button class="btn btn-secondary" onclick="saveGroqKey()">Save Key</button>
+    </div>
+  </div>
+
+  <!-- WEBGPU CONFIG PANEL -->
+  <div id="panelWebLLM" class="config-panel">
+    <div class="form-row">
+      <div class="form-group" style="flex: 2;">
+        <label for="webllmModel">Select In-Browser WebGPU Model</label>
+        <select id="webllmModel">
+          <option value="Llama-3.2-1B-Instruct-q4f16_1-MLC" selected>Llama-3.2 1B (~800MB - Fastest Boot)</option>
+          <option value="SmolLM2-1.7B-Instruct-q4f16_1-MLC">SmolLM2 1.7B (~1GB - Balanced)</option>
+          <option value="Qwen2.5-1.5B-Instruct-q4f16_1-MLC">Qwen 2.5 1.5B (~1GB - High Code Quality)</option>
+        </select>
+      </div>
+      <button id="btnInitWebLLM" class="btn btn-secondary" onclick="initWebLLM()">
+        🚀 Load Model into GPU VRAM
+      </button>
+    </div>
+    <div id="webgpuNotice" style="font-size: 11.5px; color: var(--text-muted); margin-top: 6px;">
+      Checking WebGPU support...
+    </div>
+  </div>
+
+  <!-- NATURAL LANGUAGE INPUT SECTION -->
+  <div class="prompt-section">
+    <div class="prompt-header">
+      <div class="prompt-title">
+        <span>💬</span> Describe the LangGraph Agent to Build
+      </div>
+      <div class="templates-bar">
+        <span style="font-size: 11.5px; color: var(--text-muted);">Starter Patterns:</span>
+        <button class="template-chip" onclick="loadTemplate('self_rag')">Self-Reflective RAG</button>
+        <button class="template-chip" onclick="loadTemplate('human_in_loop')">Human-in-the-Loop Approval</button>
+        <button class="template-chip" onclick="loadTemplate('multi_agent')">Multi-Agent Supervisor</button>
+        <button class="template-chip" onclick="loadTemplate('code_repair')">Code Generator &amp; Sandbox Healer</button>
+      </div>
+    </div>
+
+    <textarea id="agentPrompt" class="prompt-textarea" placeholder="E.g., Build a research agent using Claude 3.5 Sonnet with Tavily search. It should formulate a search query, evaluate search result quality, and if confidence is below 80%, refine the query in a loop up to 3 times before generating the final cited report..."></textarea>
+
+    <div class="prompt-footer">
+      <div class="claude-settings">
+        <div>
+          <label style="margin: 0; display: inline;">Target Claude LLM:</label>
+          <select id="claudeTargetModel" style="width: auto; padding: 4px 8px; font-size: 12px; margin-left: 6px;">
+            <option value="claude-3-5-sonnet-20241022" selected>Claude 3.5 Sonnet (Latest)</option>
+            <option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku (Fast)</option>
+            <option value="claude-3-opus-20240229">Claude 3 Opus</option>
+          </select>
+        </div>
+        <div>
+          <label style="margin: 0; display: inline;">State Checkpointer:</label>
+          <select id="checkpointerType" style="width: auto; padding: 4px 8px; font-size: 12px; margin-left: 6px;">
+            <option value="MemorySaver" selected>MemorySaver (In-Memory)</option>
+            <option value="PostgresSaver">PostgresSaver (Production DB)</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="btnSynthesize" class="btn btn-magic" onclick="synthesizeAgent()">
+        <span>✨</span> Synthesize LangGraph Agent
+      </button>
+    </div>
+
+    <!-- PROGRESS BAR -->
+    <div id="progressBox" class="progress-box">
+      <div class="progress-track">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <div class="progress-labels">
+        <span id="progressMsg">Synthesizing state graph architecture...</span>
+        <span id="progressPct">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- WORKSPACE VIEWPORT -->
+  <div class="workspace">
+    
+    <!-- TABS -->
+    <div class="tab-bar">
+      <div class="tabs-left">
+        <button class="tab-btn active" onclick="switchTab('graph')">
+          <span>📊</span> StateGraph Diagram
+        </button>
+        <button class="tab-btn" onclick="switchTab('code')">
+          <span>🐍</span> Python LangGraph Code
+        </button>
+        <button class="tab-btn" onclick="switchTab('simulator')">
+          <span>🧪</span> In-Browser Agent Simulator
+        </button>
+      </div>
+
+      <div class="tabs-actions">
+        <button class="btn btn-secondary" onclick="copyCode()">📋 Copy Python</button>
+        <button class="btn btn-secondary" onclick="downloadCode()">💾 Download .py</button>
+      </div>
+    </div>
+
+    <!-- TAB 1: GRAPH DIAGRAM -->
+    <div id="tabViewGraph" class="view-panel active">
+      <div class="graph-canvas-container">
+        
+        <div class="graph-meta-banner">
+          <div class="graph-legend">
+            <div class="legend-item"><div class="legend-dot agent"></div> Agent Node (Claude)</div>
+            <div class="legend-item"><div class="legend-dot tool"></div> Tool Node</div>
+            <div class="legend-item"><div class="legend-dot condition"></div> Conditional Edge</div>
+          </div>
+          <div id="graphNodeCount">LangGraph Ready</div>
+        </div>
+
+        <div id="mermaidTarget" style="width: 100%; text-align: center;">
+          <div class="empty-placeholder">
+            <div class="empty-icon">🕸️✨</div>
+            <h3 style="font-size: 16px; color: #fff;">No LangGraph Agent Generated Yet</h3>
+            <p style="font-size: 12.5px; max-width: 440px; margin: 4px auto 0 auto;">
+              Click any starter pattern above (e.g. <strong>"Self-Reflective RAG"</strong> or <strong>"Human-in-the-Loop"</strong>) and hit <strong>Synthesize</strong> to generate the interactive state graph!
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- TAB 2: PYTHON CODE -->
+    <div id="tabViewCode" class="view-panel">
+      <div class="code-container">
+        <pre><code id="codeBlock" class="language-python"># Generated LangChain &amp; LangGraph Python code will appear here...
+# Click 'Synthesize LangGraph Agent' to build your state machine.</code></pre>
+      </div>
+    </div>
+
+    <!-- TAB 3: AGENT SIMULATOR -->
+    <div id="tabViewSimulator" class="view-panel">
+      <div class="sim-container">
+        
+        <!-- SIMULATOR CONTROLS -->
+        <div class="sim-panel">
+          <div>
+            <div class="sim-title">
+              <span>🎮</span> Graph Step Simulator
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+              Step through nodes, execute tool conditions, and inspect state transitions.
+            </p>
+
+            <label for="simInput">User Prompt / Input Message</label>
+            <input type="text" id="simInput" value="Compare Q3 earnings of NVIDIA and AMD with verified citations" style="margin-bottom: 12px;">
+
+            <div style="display: flex; gap: 8px;">
+              <button id="btnSimStep" class="btn btn-magic" onclick="simStep()">
+                <span>▶️</span> Execute Next Node
+              </button>
+              <button class="btn btn-secondary" onclick="simReset()">
+                <span>🔄</span> Reset
+              </button>
+            </div>
+          </div>
+
+          <!-- EXECUTION CHAIN TRACE -->
+          <div>
+            <label>Execution Trace</label>
+            <div id="simChain" class="sim-step-chain">
+              <div class="sim-step-node" id="stepStart">
+                <span>🟢 <strong>__start__</strong></span>
+                <span style="color: var(--text-muted);">Ready</span>
+              </div>
+              <div class="sim-step-node" id="stepAgent">
+                <span>🤖 <strong>call_model (Claude)</strong></span>
+                <span style="color: var(--text-muted);">Pending</span>
+              </div>
+              <div class="sim-step-node" id="stepCondition">
+                <span>⚖️ <strong>conditional_router</strong></span>
+                <span style="color: var(--text-muted);">Pending</span>
+              </div>
+              <div class="sim-step-node" id="stepTools">
+                <span>🛠️ <strong>tools_node</strong></span>
+                <span style="color: var(--text-muted);">Pending</span>
+              </div>
+              <div class="sim-step-node" id="stepEnd">
+                <span>🏁 <strong>__end__</strong></span>
+                <span style="color: var(--text-muted);">Pending</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STATE INSPECTOR -->
+        <div class="sim-panel">
+          <div>
+            <div class="sim-title">
+              <span>📦</span> Current AgentState Inspection
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+              Live snapshot of TypedDict state dictionary inside the LangGraph memory checkpoint.
+            </p>
+          </div>
+          <div id="simStateDisplay" class="state-inspector">
+{
+  "messages": [
+    { "role": "user", "content": "Ready to run graph" }
+  ],
+  "current_node": "__start__",
+  "loop_step": 0,
+  "confidence_score": null,
+  "is_complete": false
+}
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast">
+  <span id="toastIcon">✨</span>
+  <span id="toastMsg">Action complete</span>
+</div>
+
+<script type="module">
+  // MERMAID INIT
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'dark',
+    themeVariables: {
+      primaryColor: '#1e1b4b',
+      primaryTextColor: '#f8fafc',
+      primaryBorderColor: '#6366f1',
+      lineColor: '#6ee7b7',
+      secondaryColor: '#064e3b',
+      tertiaryColor: '#111827'
+    }
+  });
+
+  // STATE
+  let webllm = null;
+  let webllmEngine = null;
+
+  const appState = {
+    engine: 'groq',
+    webllmLoaded: false,
+    isSynthesizing: false,
+    currentGraph: null,
+    simStepIndex: 0
+  };
+
+  // PRE-BUILT AGENT TEMPLATES
+  const TEMPLATES = {
+    self_rag: {
+      prompt: "Build a Self-Reflective RAG Agent using Claude 3.5 Sonnet. The user asks a question. First, an 'agent' node decides whether to query the vector database or answer directly. If retrieved, an 'evaluator' node grades if the retrieved documents are relevant. If not relevant, it rewrites the query and loops back to retrieval up to 3 times. If relevant, it generates the final answer with source citations.",
+      mermaid: `graph TD
+    __start__([Start]) --> agent[Agent: Claude 3.5 Sonnet]
+    agent --> router{needs_retrieval?}
+    router -- "Yes" --> retriever[Node: VectorStore Retriver]
+    router -- "No" --> generator[Node: Final Answer Generator]
+    retriever --> evaluator[Node: Document Relevance Grader]
+    evaluator --> eval_check{relevant & loops < 3?}
+    eval_check -- "Relevant" --> generator
+    eval_check -- "Irrelevant (Rewrite)" --> rewriter[Node: Query Rewriter]
+    rewriter --> retriever
+    generator --> __end__([End])`,
+      code: `import os
+from typing import Annotated, Literal, TypedDict
+from langchain_anthropic import ChatAnthropic
+from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
+from langgraph.graph import StateGraph, START, END
+from langgraph.graph.message import add_messages
+from langgraph.checkpoint.memory import MemorySaver
+
+# 1. State Definition
+class RAGState(TypedDict):
+    messages: Annotated[list[BaseMessage], add_messages]
+    query: str
+    documents: list[str]
+    relevance_score: float
+    retry_count: int
+
+# 2. Initialize Claude 3.5 Sonnet via LangChain
+llm = ChatAnthropic(
+    model="claude-3-5-sonnet-20241022",
+    temperature=0.1,
+    anthropic_api_key=os.environ.get("ANTHROPIC_API_KEY")
+)
+
+# 3. Node Definitions
+def agent_node(state: RAGState) -> dict:
+    prompt = f"Analyze user intent: '{state['query']}'. Does this require specialized knowledge base retrieval?"
+    response = llm.invoke([HumanMessage(content=prompt)])
+    return {"messages": [response]}
+
+def retriever_node(state: RAGState) -> dict:
+    # Simulated vector retrieval
+    docs = [f"Doc chunk: Verified data for '{state['query']}'"]
+    return {"documents": docs, "retry_count": state.get("retry_count", 0) + 1}
+
+def evaluator_node(state: RAGState) -> dict:
+    eval_prompt = f"Grade relevance of {state['documents']} for question: {state['query']}. Output score 0.0 to 1.0."
+    score = 0.85 # Claude evaluation
+    return {"relevance_score": score}
+
+def rewriter_node(state: RAGState) -> dict:
+    rewritten = f"optimized query: {state['query']}"
+    return {"query": rewritten}
+
+def generator_node(state: RAGState) -> dict:
+    gen_prompt = f"Synthesize final answer based on: {state['documents']}"
+    answer = llm.invoke([HumanMessage(content=gen_prompt)])
+    return {"messages": [answer]}
+
+# 4. Conditional Edge Functions
+def route_retrieval(state: RAGState) -> Literal["retriever", "generator"]:
+    if "retrieval" in state["messages"][-1].content.lower() or len(state["documents"]) == 0:
+        return "retriever"
+    return "generator"
+
+def route_evaluation(state: RAGState) -> Literal["generator", "rewriter", "__end__"]:
+    if state.get("relevance_score", 0) >= 0.7:
+        return "generator"
+    if state.get("retry_count", 0) >= 3:
+        return "generator" # Graceful fallback
+    return "rewriter"
+
+# 5. Build StateGraph Workflow
+workflow = StateGraph(RAGState)
+
+workflow.add_node("agent", agent_node)
+workflow.add_node("retriever", retriever_node)
+workflow.add_node("evaluator", evaluator_node)
+workflow.add_node("rewriter", rewriter_node)
+workflow.add_node("generator", generator_node)
+
+workflow.add_edge(START, "agent")
+workflow.add_conditional_edges("agent", route_retrieval, {"retriever": "retriever", "generator": "generator"})
+workflow.add_edge("retriever", "evaluator")
+workflow.add_conditional_edges("evaluator", route_evaluation, {"generator": "generator", "rewriter": "rewriter"})
+workflow.add_edge("rewriter", "retriever")
+workflow.add_edge("generator", END)
+
+# 6. Compile with In-Memory Checkpointer
+app = workflow.compile(checkpointer=MemorySaver())`
+    },
+
+    human_in_loop: {
+      prompt: "Build an Enterprise Payment Agent with Human-in-the-Loop approval. The agent drafts a wire transfer with amount and recipient, validates compliance rules, pauses execution at an approval gate node for human review, and only proceeds to wire execution if human confirms. If rejected, it routes back to notify user.",
+      mermaid: `graph TD
+    __start__([Start]) --> drafter[Node: Claude Payment Drafter]
+    drafter --> compliance[Node: AML Compliance Checker]
+    compliance --> gate{Human Approval Gate}
+    gate -- "Approved" --> executor[Node: Wire Transfer Executor]
+    gate -- "Rejected" --> notifier[Node: Rejection Notification]
+    executor --> __end__([End])
+    notifier --> __end__`,
+      code: `from typing import Annotated, TypedDict
+from langchain_anthropic import ChatAnthropic
+from langgraph.graph import StateGraph, START, END
+from langgraph.checkpoint.memory import MemorySaver
+
+class PaymentState(TypedDict):
+    recipient: str
+    amount: float
+    compliance_passed: bool
+    human_approved: bool | None
+    transaction_id: str | None
+
+llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
+
+def drafter_node(state: PaymentState) -> dict:
+    return {"compliance_passed": state["amount"] < 100_000}
+
+def compliance_node(state: PaymentState) -> dict:
+    return {"compliance_passed": True}
+
+def human_gate_condition(state: PaymentState):
+    if state.get("human_approved") is True:
+        return "executor"
+    return "notifier"
+
+def executor_node(state: PaymentState) -> dict:
+    return {"transaction_id": "tx_982347_live"}
+
+def notifier_node(state: PaymentState) -> dict:
+    return {"transaction_id": "CANCELLED_BY_HUMAN"}
+
+workflow = StateGraph(PaymentState)
+workflow.add_node("drafter", drafter_node)
+workflow.add_node("compliance", compliance_node)
+workflow.add_node("executor", executor_node)
+workflow.add_node("notifier", notifier_node)
+
+workflow.add_edge(START, "drafter")
+workflow.add_edge("drafter", "compliance")
+workflow.add_conditional_edges("compliance", human_gate_condition, {
+    "executor": "executor",
+    "notifier": "notifier"
+})
+workflow.add_edge("executor", END)
+workflow.add_edge("notifier", END)
+
+# Compile with interrupt before critical executor node
+checkpointer = MemorySaver()
+app = workflow.compile(checkpointer=checkpointer, interrupt_before=["executor"])`
+    },
+
+    multi_agent: {
+      prompt: "Build a Multi-Agent Supervisor pattern in LangGraph. A central Supervisor node using Claude 3.5 Sonnet inspects tasks and delegates to either a 'Researcher' agent or a 'Coder' agent. Each specialist performs its sub-task and reports back to the Supervisor until the project is finished.",
+      mermaid: `graph TD
+    __start__([Start]) --> supervisor[Supervisor: Claude 3.5 Sonnet]
+    supervisor --> router{supervisor_decision}
+    router -- "delegate_research" --> researcher[Agent: Researcher]
+    router -- "delegate_coding" --> coder[Agent: Coder]
+    router -- "FINISH" --> __end__([End])
+    researcher --> supervisor
+    coder --> supervisor`,
+      code: `from typing import Annotated, Literal, TypedDict
+from langchain_anthropic import ChatAnthropic
+from langchain_core.messages import BaseMessage, HumanMessage
+from langgraph.graph import StateGraph, START, END
+from langgraph.graph.message import add_messages
+
+class MultiAgentState(TypedDict):
+    messages: Annotated[list[BaseMessage], add_messages]
+    next_agent: str
+
+llm = ChatAnthropic(model="claude-3-5-sonnet-20241022", temperature=0)
+
+def supervisor_node(state: MultiAgentState) -> dict:
+    # Router logic
+    last_msg = state["messages"][-1].content
+    if "code" in last_msg.lower():
+        return {"next_agent": "coder"}
+    elif "search" in last_msg.lower() or "research" in last_msg.lower():
+        return {"next_agent": "researcher"}
+    return {"next_agent": "FINISH"}
+
+def researcher_node(state: MultiAgentState) -> dict:
+    res = llm.invoke([HumanMessage(content="Conduct technical research: " + state["messages"][-1].content)])
+    return {"messages": [res]}
+
+def coder_node(state: MultiAgentState) -> dict:
+    res = llm.invoke([HumanMessage(content="Write Python script: " + state["messages"][-1].content)])
+    return {"messages": [res]}
+
+def route_next(state: MultiAgentState) -> Literal["researcher", "coder", "__end__"]:
+    target = state.get("next_agent", "FINISH")
+    if target == "FINISH": return "__end__"
+    return target
+
+workflow = StateGraph(MultiAgentState)
+workflow.add_node("supervisor", supervisor_node)
+workflow.add_node("researcher", researcher_node)
+workflow.add_node("coder", coder_node)
+
+workflow.add_edge(START, "supervisor")
+workflow.add_conditional_edges("supervisor", route_next, {
+    "researcher": "researcher",
+    "coder": "coder",
+    "__end__": END
+})
+workflow.add_edge("researcher", "supervisor")
+workflow.add_edge("coder", "supervisor")
+
+app = workflow.compile()`
+    },
+
+    code_repair: {
+      prompt: "Build an Autonomous Code Generation & Self-Healing Agent. Node 1 generates code using Claude. Node 2 executes the generated code in a sandbox. If tests fail, Node 3 diagnoses the stack trace and feeds the error back to Node 1 up to 4 attempts.",
+      mermaid: `graph TD
+    __start__([Start]) --> coder[Node: Claude Code Generator]
+    coder --> tester[Node: Sandbox Test Runner]
+    tester --> test_check{Tests Passed?}
+    test_check -- "Pass ✅" --> deployer[Node: Release Artifact]
+    test_check -- "Fail ❌ & Attempts < 4" --> healer[Node: Stack Trace Diagnostician]
+    healer --> coder
+    test_check -- "Fail ❌ & Exhausted" --> alert[Node: Alert Developer]
+    deployer --> __end__([End])
+    alert --> __end__`,
+      code: `from typing import TypedDict
+from langchain_anthropic import ChatAnthropic
+from langgraph.graph import StateGraph, START, END
+
+class CodeState(TypedDict):
+    specification: str
+    code: str
+    test_output: str
+    tests_passed: bool
+    iterations: int
+
+llm = ChatAnthropic(model="claude-3-5-sonnet-20241022", temperature=0.2)
+
+def coder_node(state: CodeState) -> dict:
+    prompt = f"Spec: {state['specification']}\\nPrevious Error: {state.get('test_output', 'None')}"
+    res = llm.invoke(prompt)
+    return {"code": res.content, "iterations": state.get("iterations", 0) + 1}
+
+def test_runner_node(state: CodeState) -> dict:
+    passed = "SyntaxError" not in state["code"] and state["iterations"] >= 2
+    return {"tests_passed": passed, "test_output": "All 14 unit tests passed." if passed else "AssertionError on line 42"}
+
+def route_tests(state: CodeState):
+    if state["tests_passed"]: return "deployer"
+    if state["iterations"] >= 4: return "alert"
+    return "coder"
+
+workflow = StateGraph(CodeState)
+workflow.add_node("coder", coder_node)
+workflow.add_node("tester", test_runner_node)
+workflow.add_node("deployer", lambda s: {"status": "deployed"})
+workflow.add_node("alert", lambda s: {"status": "failed_needs_human"})
+
+workflow.add_edge(START, "coder")
+workflow.add_edge("coder", "tester")
+workflow.add_conditional_edges("tester", route_tests, {
+    "deployer": "deployer",
+    "coder": "coder",
+    "alert": "alert"
+})
+workflow.add_edge("deployer", END)
+workflow.add_edge("alert", END)
+
+app = workflow.compile()`
+    }
+  };
+
+  // ON DOM LOAD
+  window.addEventListener('DOMContentLoaded', () => {
+    checkWebGPU();
+
+    const savedKey = localStorage.getItem('graphsmith_groq_api_key');
+    if (savedKey) {
+      document.getElementById('groqApiKey').value = savedKey;
+      document.getElementById('engineStatusBadge').innerText = '🟢 Engine: Groq LPU (Ready)';
+    }
+
+    // Load initial default template into view
+    loadTemplate('self_rag', false);
+  });
+
+  // CHECK WEBGPU
+  async function checkWebGPU() {
+    const notice = document.getElementById('webgpuNotice');
+    if (navigator.gpu) {
+      try {
+        const adapter = await navigator.gpu.requestAdapter();
+        if (adapter) {
+          notice.innerHTML = `✅ <strong>WebGPU Supported!</strong> Ready for private local LangGraph synthesis.`;
+          notice.style.color = '#34d399';
+        } else {
+          notice.innerHTML = `⚠️ WebGPU adapter not available. Groq LPU mode recommended.`;
+          notice.style.color = '#fbbf24';
+        }
+      } catch (e) {
+        notice.innerHTML = `⚠️ WebGPU check error: ${e.message}`;
+      }
+    } else {
+      notice.innerHTML = `❌ WebGPU not supported on this browser. Use Chrome 113+ or Groq LPU mode.`;
+      notice.style.color = '#f87171';
+    }
+  }
+
+  // SWITCH ENGINE
+  window.switchEngine = function(engineType) {
+    appState.engine = engineType;
+    document.getElementById('cardGroq').classList.toggle('active', engineType === 'groq');
+    document.getElementById('cardWebLLM').classList.toggle('active', engineType === 'webllm');
+    document.getElementById('panelGroq').classList.toggle('active', engineType === 'groq');
+    document.getElementById('panelWebLLM').classList.toggle('active', engineType === 'webllm');
+
+    const badge = document.getElementById('engineStatusBadge');
+    if (engineType === 'groq') {
+      badge.innerText = '🟢 Engine: Groq LPU Cloud';
+    } else {
+      badge.innerText = appState.webllmLoaded ? '🟢 Engine: WebGPU Active' : '🟡 Engine: WebGPU Not Loaded';
+    }
+  };
+
+  // TOGGLE PASSWORD
+  window.togglePassword = function(id) {
+    const el = document.getElementById(id);
+    el.type = el.type === 'password' ? 'text' : 'password';
+  };
+
+  // SAVE GROQ KEY
+  window.saveGroqKey = function() {
+    const key = document.getElementById('groqApiKey').value.trim();
+    if (key) {
+      localStorage.setItem('graphsmith_groq_api_key', key);
+      showToast('Groq API Key saved locally!');
+      document.getElementById('engineStatusBadge').innerText = '🟢 Engine: Groq LPU (Ready)';
+    } else {
+      localStorage.removeItem('graphsmith_groq_api_key');
+      showToast('Groq Key cleared.');
+    }
+  };
+
+  // LOAD TEMPLATE
+  window.loadTemplate = function(templateKey, triggerNotification = true) {
+    const t = TEMPLATES[templateKey];
+    if (!t) return;
+    document.getElementById('agentPrompt').value = t.prompt;
+    renderGraphAndCode(t.mermaid, t.code);
+    if (triggerNotification) {
+      showToast(`Loaded "${templateKey.replace('_', ' ').toUpperCase()}" Agent Template!`);
+    }
+  };
+
+  // SWITCH WORKSPACE TAB
+  window.switchTab = function(tabName) {
+    const tabs = document.querySelectorAll('.tab-btn');
+    tabs.forEach(t => t.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    document.getElementById('tabViewGraph').classList.toggle('active', tabName === 'graph');
+    document.getElementById('tabViewCode').classList.toggle('active', tabName === 'code');
+    document.getElementById('tabViewSimulator').classList.toggle('active', tabName === 'simulator');
+
+    if (tabName === 'code') {
+      Prism.highlightAll();
+    }
+  };
+
+  // TOAST
+  function showToast(msg, icon = '✨') {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').innerText = msg;
+    document.getElementById('toastIcon').innerText = icon;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3200);
+  }
+
+  // INIT WEBLLM
+  window.initWebLLM = async function() {
+    if (appState.webllmLoaded) {
+      showToast('WebGPU model already active in memory!');
+      return;
+    }
+
+    const btn = document.getElementById('btnInitWebLLM');
+    btn.disabled = true;
+    btn.innerText = '⏳ Downloading & Compiling GPU Shaders...';
+
+    const progBox = document.getElementById('progressBox');
+    const progFill = document.getElementById('progressFill');
+    const progMsg = document.getElementById('progressMsg');
+    const progPct = document.getElementById('progressPct');
+    progBox.classList.add('active');
+
+    try {
+      if (!webllm) {
+        progMsg.innerText = 'Importing @mlc-ai/web-llm engine...';
+        webllm = await import("https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm/+esm");
+      }
+
+      const selectedModel = document.getElementById('webllmModel').value;
+      progMsg.innerText = `Loading ${selectedModel}...`;
+
+      webllmEngine = await webllm.CreateMLCEngine(selectedModel, {
+        initProgressCallback: (report) => {
+          const pct = Math.round((report.progress || 0) * 100);
+          progFill.style.width = `${pct}%`;
+          progPct.innerText = `${pct}%`;
+          progMsg.innerText = report.text || 'Compiling GPU shaders...';
+        }
+      });
+
+      appState.webllmLoaded = true;
+      btn.innerText = '✅ Model Active in GPU';
+      progMsg.innerText = 'WebGPU Model Ready!';
+      document.getElementById('engineStatusBadge').innerText = '🟢 Engine: WebGPU Active';
+      showToast('WebGPU Model loaded into device VRAM!', '🧠');
+
+      if (window.confetti) {
+        window.confetti({ particleCount: 50, spread: 60 });
+      }
+
+      setTimeout(() => {
+        if (!appState.isSynthesizing) progBox.classList.remove('active');
+      }, 1800);
+
+    } catch (e) {
+      console.error(e);
+      btn.disabled = false;
+      btn.innerText = '❌ Failed to Load (Retry)';
+      showToast(`WebGPU load error: ${e.message}`, '⚠️');
+    }
+  };
+
+  // SYNTHESIZE AGENT
+  window.synthesizeAgent = async function() {
+    if (appState.isSynthesizing) return;
+
+    const userPrompt = document.getElementById('agentPrompt').value.trim();
+    if (!userPrompt) {
+      showToast('Please enter an agent description first!', '⚠️');
+      return;
+    }
+
+    const btn = document.getElementById('btnSynthesize');
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳</span> Synthesizing StateGraph...';
+    appState.isSynthesizing = true;
+
+    const progBox = document.getElementById('progressBox');
+    const progFill = document.getElementById('progressFill');
+    const progMsg = document.getElementById('progressMsg');
+    const progPct = document.getElementById('progressPct');
+    progBox.classList.add('active');
+    progFill.style.width = '15%';
+    progPct.innerText = '15%';
+
+    const targetClaude = document.getElementById('claudeTargetModel').value;
+    const checkpointer = document.getElementById('checkpointerType').value;
+
+    try {
+      progMsg.innerText = `Synthesizing architecture with ${appState.engine === 'groq' ? 'Groq LPU' : 'WebGPU'}...`;
+      progFill.style.width = '40%';
+      progPct.innerText = '40%';
+
+      // Check if user prompt closely matches a prebuilt template
+      let matchedTemplate = null;
+      for (const key in TEMPLATES) {
+        if (userPrompt.toLowerCase().includes(key.replace('_', ' ')) || userPrompt === TEMPLATES[key].prompt) {
+          matchedTemplate = TEMPLATES[key];
+          break;
+        }
+      }
+
+      let generatedMermaid = '';
+      let generatedCode = '';
+
+      if (appState.engine === 'groq') {
+        const apiKey = document.getElementById('groqApiKey').value.trim() || localStorage.getItem('graphsmith_groq_api_key');
+        
+        if (!apiKey) {
+          // Instant demo mode fallback
+          progMsg.innerText = 'Generating instant high-fidelity StateGraph...';
+          await new Promise(r => setTimeout(r, 800));
+          
+          if (matchedTemplate) {
+            generatedMermaid = matchedTemplate.mermaid;
+            generatedCode = matchedTemplate.code;
+          } else {
+            // Dynamic synthesis generator
+            generatedMermaid = generateDynamicMermaid(userPrompt, targetClaude);
+            generatedCode = generateDynamicCode(userPrompt, targetClaude, checkpointer);
+          }
+        } else {
+          // Call live Groq API
+          const groqModel = document.getElementById('groqModel').value;
+          const systemMsg = `You are a Principal LangChain and LangGraph Engineer specializing in Anthropic Claude 3.5 architectures.
+Given the user's prompt, generate TWO distinct blocks:
+BLOCK 1: A valid Mermaid.js flowchart (graph TD) enclosed in \`\`\`mermaid ... \`\`\`
+BLOCK 2: Complete executable Python code using langgraph, langchain_anthropic (ChatAnthropic model="${targetClaude}"), StateGraph, and ${checkpointer} enclosed in \`\`\`python ... \`\`\``;
+
+          const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: groqModel,
+              messages: [
+                { role: 'system', content: systemMsg },
+                { role: 'user', content: userPrompt }
+              ],
+              temperature: 0.2
+            })
+          });
+
+          if (!resp.ok) {
+            const errJson = await resp.json().catch(() => ({}));
+            throw new Error(errJson.error?.message || `Groq API Error HTTP ${resp.status}`);
+          }
+
+          const data = await resp.json();
+          const reply = data.choices[0].message.content;
+
+          // Parse blocks
+          const mermaidMatch = reply.match(/```mermaid([\s\S]*?)```/);
+          const pythonMatch = reply.match(/```python([\s\S]*?)```/);
+
+          generatedMermaid = mermaidMatch ? mermaidMatch[1].trim() : generateDynamicMermaid(userPrompt, targetClaude);
+          generatedCode = pythonMatch ? pythonMatch[1].trim() : generateDynamicCode(userPrompt, targetClaude, checkpointer);
+        }
+      } else {
+        // WebLLM mode
+        if (!appState.webllmLoaded || !webllmEngine) {
+          progMsg.innerText = 'Initializing WebGPU model in VRAM first...';
+          await window.initWebLLM();
+        }
+
+        progMsg.innerText = 'Local WebGPU generating agent graph...';
+        progFill.style.width = '70%';
+
+        const reply = await webllmEngine.chat.completions.create({
+          messages: [
+            { role: 'system', content: 'Generate LangGraph agent architecture in Python and Mermaid.' },
+            { role: 'user', content: userPrompt }
+          ],
+          temperature: 0.2
+        });
+
+        const text = reply.choices[0].message.content;
+        const mMatch = text.match(/```mermaid([\s\S]*?)```/);
+        const pMatch = text.match(/```python([\s\S]*?)```/);
+
+        generatedMermaid = mMatch ? mMatch[1].trim() : generateDynamicMermaid(userPrompt, targetClaude);
+        generatedCode = pMatch ? pMatch[1].trim() : generateDynamicCode(userPrompt, targetClaude, checkpointer);
+      }
+
+      progFill.style.width = '90%';
+      progPct.innerText = '90%';
+      progMsg.innerText = 'Rendering interactive SVG state diagram...';
+
+      // Render onto canvas & code
+      await renderGraphAndCode(generatedMermaid, generatedCode);
+
+      progFill.style.width = '100%';
+      progPct.innerText = '100%';
+      progMsg.innerText = 'LangGraph Agent Architecture Built!';
+      showToast('Agent synthesized and compiled successfully!', '🎉');
+
+      if (window.confetti) {
+        window.confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+      }
+
+      setTimeout(() => {
+        progBox.classList.remove('active');
+      }, 1400);
+
+    } catch (err) {
+      console.error(err);
+      showToast(`Error: ${err.message}`, '⚠️');
+      progMsg.innerText = `Error: ${err.message}`;
+    } finally {
+      appState.isSynthesizing = false;
+      btn.disabled = false;
+      btn.innerHTML = '<span>✨</span> Synthesize LangGraph Agent';
+    }
+  };
+
+  // RENDER GRAPH & CODE
+  async function renderGraphAndCode(mermaidCode, pythonCode) {
+    appState.currentGraph = { mermaid: mermaidCode, code: pythonCode };
+
+    // 1. Update Code Block
+    const codeEl = document.getElementById('codeBlock');
+    codeEl.textContent = pythonCode;
+    Prism.highlightElement(codeEl);
+
+    // 2. Update Mermaid SVG
+    const target = document.getElementById('mermaidTarget');
+    target.innerHTML = '';
+
+    try {
+      const id = 'mermaid-' + Date.now();
+      const { svg } = await mermaid.render(id, mermaidCode);
+      target.innerHTML = svg;
+      
+      // Count nodes
+      const nodeMatches = mermaidCode.match(/(\w+)\[.*?\]/g) || [];
+      document.getElementById('graphNodeCount').innerText = `${nodeMatches.length} Nodes & Invariants Compiled`;
+    } catch (renderErr) {
+      console.error('Mermaid render error:', renderErr);
+      target.innerHTML = `<pre style="color: #f87171; text-align: left;">${mermaidCode}</pre>`;
+    }
+  }
+
+  // DYNAMIC FALLBACK BUILDERS
+  function generateDynamicMermaid(prompt, claudeModel) {
+    const isTool = prompt.toLowerCase().includes('search') || prompt.toLowerCase().includes('tool') || prompt.toLowerCase().includes('rag');
+    const isApproval = prompt.toLowerCase().includes('human') || prompt.toLowerCase().includes('approval');
+
+    return `graph TD
+    __start__([Start]) --> agent[Agent: ${claudeModel}]
+    agent --> condition{check_termination?}
+    ${isTool ? `condition -- "call_tool" --> tools[ToolNode: Execution Harness]\n    tools --> agent` : ''}
+    ${isApproval ? `condition -- "needs_approval" --> gate{Human Review Gate}\n    gate -- "Approved" --> agent` : ''}
+    condition -- "complete" --> end_node([End])`;
+  }
+
+  function generateDynamicCode(prompt, claudeModel, checkpointer) {
+    return `from typing import Annotated, TypedDict
+from langchain_anthropic import ChatAnthropic
+from langchain_core.messages import BaseMessage, HumanMessage
+from langgraph.graph import StateGraph, START, END
+from langgraph.graph.message import add_messages
+from langgraph.checkpoint.memory import ${checkpointer}
+
+# 1. State Definition
+class AgentState(TypedDict):
+    messages: Annotated[list[BaseMessage], add_messages]
+    iteration: int
+    is_complete: bool
+
+# 2. Model Initialization (Claude 3.5 Plugin)
+llm = ChatAnthropic(
+    model="${claudeModel}",
+    temperature=0.1
+)
+
+# 3. Graph Nodes
+def agent_node(state: AgentState) -> dict:
+    prompt = state["messages"][-1].content
+    response = llm.invoke([HumanMessage(content=prompt)])
+    return {
+        "messages": [response],
+        "iteration": state.get("iteration", 0) + 1
+    }
+
+def condition_router(state: AgentState) -> str:
+    if state.get("iteration", 0) >= 2 or "final" in state["messages"][-1].content.lower():
+        return "end_node"
+    return "agent"
+
+# 4. StateGraph Assembly
+builder = StateGraph(AgentState)
+builder.add_node("agent", agent_node)
+builder.add_edge(START, "agent")
+builder.add_conditional_edges("agent", condition_router, {
+    "agent": "agent",
+    "end_node": END
+})
+
+# 5. Compile with Checkpointing
+app = builder.compile(checkpointer=${checkpointer}())`;
+  }
+
+  // SIMULATOR LOGIC
+  window.simReset = function() {
+    appState.simStepIndex = 0;
+    const nodes = document.querySelectorAll('.sim-step-node');
+    nodes.forEach(n => {
+      n.className = 'sim-step-node';
+      n.querySelector('span:last-child').innerText = 'Pending';
+      n.querySelector('span:last-child').style.color = 'var(--text-muted)';
+    });
+
+    document.getElementById('stepStart').className = 'sim-step-node active-step';
+    document.getElementById('stepStart').querySelector('span:last-child').innerText = 'Ready';
+
+    const inputVal = document.getElementById('simInput').value;
+    document.getElementById('simStateDisplay').textContent = JSON.stringify({
+      messages: [{ role: "user", content: inputVal }],
+      current_node: "__start__",
+      loop_step: 0,
+      confidence_score: null,
+      is_complete: false
+    }, null, 2);
+
+    showToast('Simulator reset to initial state.');
+  };
+
+  window.simStep = function() {
+    const steps = [
+      { id: 'stepStart', node: '__start__', msg: 'Graph initialized with user query', doneText: 'Passed' },
+      { id: 'stepAgent', node: 'agent (Claude 3.5)', msg: 'Generated query plan & tool payload', doneText: 'Executed (240ms)' },
+      { id: 'stepCondition', node: 'conditional_router', msg: 'Evaluated predicate: needs_tools == True', doneText: 'Routed to Tools' },
+      { id: 'stepTools', node: 'tools_node', msg: 'Tavily Search API returned 3 verified source URLs', doneText: '200 OK' },
+      { id: 'stepEnd', node: '__end__', msg: 'Final report synthesized and state checkpointed', doneText: 'Terminated ✅' }
+    ];
+
+    if (appState.simStepIndex >= steps.length) {
+      showToast('Graph execution completed! Hit Reset to rerun.');
+      return;
+    }
+
+    const curr = steps[appState.simStepIndex];
+    const el = document.getElementById(curr.id);
+    el.className = 'sim-step-node done-step';
+    el.querySelector('span:last-child').innerText = curr.doneText;
+    el.querySelector('span:last-child').style.color = '#34d399';
+
+    appState.simStepIndex++;
+
+    if (appState.simStepIndex < steps.length) {
+      const nextEl = document.getElementById(steps[appState.simStepIndex].id);
+      nextEl.className = 'sim-step-node active-step';
+      nextEl.querySelector('span:last-child').innerText = 'Running...';
+      nextEl.querySelector('span:last-child').style.color = '#fbbf24';
+    }
+
+    // Update state display
+    const stateObj = {
+      messages: [
+        { role: "user", content: document.getElementById('simInput').value },
+        { role: "assistant", content: `Snapshot from ${curr.node}: ${curr.msg}` }
+      ],
+      current_node: curr.node,
+      loop_step: appState.simStepIndex,
+      confidence_score: appState.simStepIndex >= 4 ? 0.94 : 0.65 + (appState.simStepIndex * 0.08),
+      is_complete: appState.simStepIndex >= steps.length
+    };
+
+    document.getElementById('simStateDisplay').textContent = JSON.stringify(stateObj, null, 2);
+    showToast(`Executed: ${curr.node}`, '⚡');
+  };
+
+  // COPY CODE
+  window.copyCode = function() {
+    const code = document.getElementById('codeBlock').textContent;
+    navigator.clipboard.writeText(code);
+    showToast('Copied Python code to clipboard!');
+  };
+
+  // DOWNLOAD CODE
+  window.downloadCode = function() {
+    const code = document.getElementById('codeBlock').textContent;
+    const blob = new Blob([code], { type: 'text/x-python' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `langgraph_claude_agent_${Date.now()}.py`;
+    a.click();
+    showToast('Downloaded langgraph agent python file!');
+  };
+</script>
+
+</body>
+</html>

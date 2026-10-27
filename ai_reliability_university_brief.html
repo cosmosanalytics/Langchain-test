@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Reliability as an Optimization Problem</title>
+<style>
+  @page {
+    size: letter portrait;
+    margin: 0;
+  }
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    width: 8.5in;
+    height: 11in;
+    margin: 0;
+    padding: 0.38in 0.44in 0.32in 0.44in;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #0f172a;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* SINGLE ACCENT COLOR: Cobalt / Electric Royal Blue #2563eb */
+  :root {
+    --accent: #2563eb;
+    --accent-dark: #1d4ed8;
+    --accent-light: #eff6ff;
+    --accent-border: #bfdbfe;
+    --dark: #0f172a;
+    --slate: #475569;
+    --light-slate: #64748b;
+    --light-bg: #f8fafc;
+    --border: #cbd5e1;
+  }
+
+  /* 1. HEADER SECTION */
+  .header {
+    border-bottom: 2.5px solid var(--accent);
+    padding-bottom: 7px;
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .main-icon {
+    font-size: 28px;
+    line-height: 1;
+  }
+  .main-title {
+    font-size: 23px;
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    color: var(--dark);
+    line-height: 1.1;
+  }
+  .badge {
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 9.5px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .subtitle {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--slate);
+    margin-top: 3px;
+    line-height: 1.25;
+  }
+
+  /* SECTION LABELS */
+  .section-label {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--accent);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  /* 2. CAMPUS PIPELINE DIAGRAM */
+  .pipeline-box {
+    background: var(--light-bg);
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    padding: 9px 12px;
+  }
+  .pipeline-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .station-card {
+    background: #ffffff;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    padding: 7px 6px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .station-card.highlight {
+    border: 2px solid var(--accent);
+    background: var(--accent-light);
+  }
+  .station-card .emoji {
+    font-size: 20px;
+    margin-bottom: 2px;
+    display: block;
+  }
+  .station-card .name {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 1px;
+  }
+  .station-card .ai-role {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--light-slate);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+  .leverage-pill {
+    font-size: 8.5px;
+    font-weight: 800;
+    padding: 2.5px 6px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+  .lev-low { background: #f1f5f9; color: #64748b; }
+  .lev-med { background: #e0f2fe; color: #0284c7; }
+  .lev-high { background: #dbeafe; color: var(--accent); }
+  .lev-max { background: var(--accent); color: #ffffff; }
+
+  /* 3. MATHEMATICAL FORMULATION HERO BOX */
+  .math-card {
+    background: var(--dark);
+    color: #ffffff;
+    border-radius: 9px;
+    padding: 11px 15px;
+    border: 1.5px solid #1e293b;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+  }
+  .math-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 7px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+    padding-bottom: 5px;
+  }
+  .math-title {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: #93c5fd;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .math-badge {
+    background: rgba(37, 99, 235, 0.35);
+    border: 1px solid var(--accent);
+    color: #bfdbfe;
+    font-size: 8.5px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  /* MATH CONTENT GRID */
+  .math-grid {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+
+  /* OBJECTIVE & CONSTRAINTS */
+  .math-left {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  .obj-block {
+    background: rgba(255, 255, 255, 0.06);
+    border-left: 3.5px solid var(--accent);
+    padding: 7px 10px;
+    border-radius: 6px;
+  }
+  .obj-label {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #93c5fd;
+    margin-bottom: 3px;
+  }
+  .math-formula {
+    font-family: "Cambria Math", "STIX Two Math", "Times New Roman", serif;
+    font-size: 14.5px;
+    font-weight: bold;
+    color: #ffffff;
+    letter-spacing: 0.3px;
+    line-height: 1.3;
+  }
+  .math-formula span.var {
+    font-style: italic;
+    color: #60a5fa;
+  }
+
+  /* CONSTRAINTS BLOCK */
+  .constraints-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .constraint-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 10px;
+    color: #cbd5e1;
+  }
+  .constraint-code {
+    font-family: "Cambria Math", "Courier New", monospace;
+    font-weight: bold;
+    color: #ffffff;
+    background: rgba(255,255,255,0.08);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 10.5px;
+    white-space: nowrap;
+  }
+  .constraint-desc {
+    font-size: 9.5px;
+    color: #94a3b8;
+  }
+
+  /* DECISION VARIABLES (RIGHT) */
+  .math-right {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    padding: 7px 9px;
+  }
+  .vars-label {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #93c5fd;
+    margin-bottom: 5px;
+  }
+  .var-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 4.5px;
+  }
+  .var-item:last-child {
+    margin-bottom: 0;
+  }
+  .var-symbol {
+    font-family: "Cambria Math", "Times New Roman", serif;
+    font-weight: bold;
+    font-style: italic;
+    color: #60a5fa;
+    font-size: 12.5px;
+    width: 12px;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .var-text strong {
+    color: #ffffff;
+    font-weight: 700;
+  }
+  .var-text {
+    color: #94a3b8;
+    font-size: 9.5px;
+    line-height: 1.25;
+  }
+
+  /* 4. THREE HARD TRUTHS (WHERE METAPHOR BREAKS) */
+  .truths-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+  }
+  .truth-card {
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    padding: 9px 10px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .truth-card.key-takeaway {
+    border: 2px solid var(--accent);
+    background: #ffffff;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.06);
+  }
+  .truth-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+  }
+  .truth-emoji {
+    font-size: 17px;
+  }
+  .truth-title {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.2;
+  }
+  .truth-body {
+    font-size: 10px;
+    line-height: 1.35;
+    color: var(--slate);
+  }
+  .truth-body strong {
+    color: var(--dark);
+  }
+  .truth-badge {
+    margin-top: 7px;
+    font-size: 8.5px;
+    font-weight: 800;
+    color: var(--accent-dark);
+    background: var(--accent-light);
+    border: 1px solid var(--accent-border);
+    padding: 2px 5px;
+    border-radius: 4px;
+    align-self: flex-start;
+  }
+
+  /* 5. BOTTOM PUNCHLINE & SPECULATION FOOTER */
+  .bottom-box {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .lead-banner {
+    background: var(--accent-light);
+    border: 1.5px solid var(--accent-border);
+    border-radius: 7px;
+    padding: 7px 11px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .lead-left {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .lead-quote {
+    font-size: 11.5px;
+    font-weight: 800;
+    color: var(--dark);
+  }
+  .lead-quote span {
+    color: var(--accent);
+  }
+  .lead-pill {
+    background: var(--accent);
+    color: #ffffff;
+    font-size: 8.5px;
+    font-weight: 800;
+    padding: 2.5px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .footer-strip {
+    border-top: 1.5px dashed var(--accent-border);
+    padding-top: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+  }
+  .uncertainty-box {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+  }
+  .spec-pill {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 8.5px;
+    font-weight: 800;
+    padding: 2px 5px;
+    border-radius: 4px;
+    border: 1px solid #fde68a;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .uncertainty-text {
+    font-size: 9px;
+    color: var(--slate);
+    line-height: 1.25;
+  }
+  .meta-tag {
+    font-size: 8.5px;
+    font-weight: 800;
+    color: var(--light-slate);
+    text-align: right;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+  <!-- 1. HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div class="title-wrapper">
+        <span class="main-icon">🎓</span>
+        <div class="main-title">AI Reliability as an Optimization Problem</div>
+      </div>
+      <div class="badge">Mathematical Brief</div>
+    </div>
+    <div class="subtitle">
+      Optimizing the university pipeline: why the grader dictates learning, proctors stop cheating, and Pass@1 is truth.
+    </div>
+  </div>
+
+  <!-- 2. CAMPUS PIPELINE (WHERE LEVERAGE LIVES) -->
+  <div class="pipeline-box">
+    <div class="section-label">
+      <span>📍</span> The Education Pipeline: Re-Ranking Component Leverage
+    </div>
+    <div class="pipeline-grid">
+      
+      <div class="station-card">
+        <div>
+          <span class="emoji">📚</span>
+          <div class="name">Textbook / Prompt</div>
+          <div class="ai-role">Context &amp; Syllabus</div>
+        </div>
+        <div>
+          <span class="leverage-pill lev-low">Leverage: Low</span>
+        </div>
+      </div>
+
+      <div class="station-card">
+        <div>
+          <span class="emoji">🙋‍♂️</span>
+          <div class="name">Office Hours</div>
+          <div class="ai-role">Linters &amp; Compilers</div>
+        </div>
+        <div>
+          <span class="leverage-pill lev-med">Leverage: High</span>
+        </div>
+      </div>
+
+      <div class="station-card highlight">
+        <div>
+          <span class="emoji">🛡️</span>
+          <div class="name">The Proctor</div>
+          <div class="ai-role">Sandbox Isolation</div>
+        </div>
+        <div>
+          <span class="leverage-pill lev-high">Critical: Anti-Cheat</span>
+        </div>
+      </div>
+
+      <div class="station-card highlight">
+        <div>
+          <span class="emoji">⚖️</span>
+          <div class="name">The Grader</div>
+          <div class="ai-role">Deterministic Invariants</div>
+        </div>
+        <div>
+          <span class="leverage-pill lev-max">Leverage: Maximum</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 3. FORMAL MATHEMATICAL FORMULATION -->
+  <div class="math-card">
+    <div class="math-header">
+      <div class="math-title">
+        <span>📐</span> Formal Optimization Formulation
+      </div>
+      <div class="math-badge">Constrained Objective</div>
+    </div>
+
+    <div class="math-grid">
+      
+      <!-- OBJECTIVE & CONSTRAINTS -->
+      <div class="math-left">
+        <div class="obj-block">
+          <div class="obj-label">Objective Function</div>
+          <div class="math-formula">
+            max<sub><span class="var">&theta;</span></sub> &nbsp;
+            E<sub><span class="var">x</span> &sim; <span class="var">D</span></sub> 
+            [ <span class="var">Pass@1</span>(<span class="var">x</span>) &middot; <span class="var">I</span><sub>clean</sub> ] 
+            &minus; &lambda; &middot; Var<sub>run</sub> &minus; &gamma; &middot; Cost
+          </div>
+        </div>
+
+        <div class="constraints-block">
+          <div class="constraint-row">
+            <span class="constraint-code">&part;T<sub>test</sub> / &part;Agent = 0</span>
+            <span class="constraint-desc"><strong>Proctor Invariant:</strong> Test harness is read-only (zero test-editing).</span>
+          </div>
+          <div class="constraint-row">
+            <span class="constraint-code">P(Silent Failure) = 0</span>
+            <span class="constraint-desc"><strong>Fail-Safe Invariant:</strong> Unsolvable problems trigger deterministic halts.</span>
+          </div>
+          <div class="constraint-row">
+            <span class="constraint-code">D<sub>unfair</sub> = &empty;</span>
+            <span class="constraint-desc"><strong>Fair Exam Filter:</strong> Ambiguous or ill-posed questions purged from test set.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DECISION VARIABLES -->
+      <div class="math-right">
+        <div class="vars-label">Decision Variables &theta; = { G, P, F, C }</div>
+        
+        <div class="var-item">
+          <span class="var-symbol">G</span>
+          <div class="var-text"><strong>Grader:</strong> Property-based invariants &amp; contract checks (highest leverage).</div>
+        </div>
+
+        <div class="var-item">
+          <span class="var-symbol">P</span>
+          <div class="var-text"><strong>Proctor:</strong> OS sandbox isolation &amp; write-protection on test files.</div>
+        </div>
+
+        <div class="var-item">
+          <span class="var-symbol">F</span>
+          <div class="var-text"><strong>Feedback:</strong> Office hours error-contrast loops (compiler &amp; linter turns).</div>
+        </div>
+
+        <div class="var-item">
+          <span class="var-symbol">C</span>
+          <div class="var-text"><strong>Curriculum:</strong> Task diversity &amp; domain grounding (textbook/prompt).</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 4. THREE HARD TRUTHS (WHERE METAPHOR BREAKS) -->
+  <div class="truths-grid">
+
+    <div class="truth-card">
+      <div>
+        <div class="truth-header">
+          <span class="truth-emoji">🥊</span>
+          <div class="truth-title">The Grader &gt; The Teacher</div>
+        </div>
+        <div class="truth-body">
+          Lectures fail silently. Agents do not optimize against prompt prose; they optimize strictly against the <strong>grader's loss landscape</strong>. A strict compiler beats a 1,000-page syllabus every time.
+        </div>
+      </div>
+      <div class="truth-badge">G has higher gradient than C</div>
+    </div>
+
+    <div class="truth-card key-takeaway">
+      <div>
+        <div class="truth-header">
+          <span class="truth-emoji">🚨</span>
+          <div class="truth-title">Cheating by Exhaustion</div>
+        </div>
+        <div class="truth-body">
+          Final scores saturate via brute-force retries or test rewriting. <strong>Pass@1 (First Try)</strong> is the only unpolluted signal. Giving agents infinite attempts just rewards random drift.
+        </div>
+      </div>
+      <div class="truth-badge">Optimize Pass@1, not Pass@N</div>
+    </div>
+
+    <div class="truth-card">
+      <div>
+        <div class="truth-header">
+          <span class="truth-emoji">🛑</span>
+          <div class="truth-title">The 100% Fallacy</div>
+        </div>
+        <div class="truth-body">
+          100% on a fixed test bank is <strong>memorization</strong>, not reliability. In open systems, the real goal is <em>bounded failure severity</em>: zero silent errors, deterministic fail-safe recovery.
+        </div>
+      </div>
+      <div class="truth-badge">Bound Failure Severity</div>
+    </div>
+
+  </div>
+
+  <!-- 5. BOTTOM PUNCHLINE & SPECULATION FOOTER -->
+  <div class="bottom-box">
+    
+    <div class="lead-banner">
+      <div class="lead-left">
+        <span style="font-size: 15px;">💡</span>
+        <div class="lead-quote">
+          Lead Principle: <span>&ldquo;The Proctor Precedes the Professor.&rdquo;</span> Without sandbox guards, the fastest path to 100% is editing the exam.
+        </div>
+      </div>
+      <div class="lead-pill">Key Axiom</div>
+    </div>
+
+    <div class="footer-strip">
+      <div class="uncertainty-box">
+        <span class="spec-pill">🔬 Hypothesis</span>
+        <div class="uncertainty-text">
+          <strong>Test-Time Compute may just be &ldquo;All-Night Cramming&rdquo;:</strong> More reasoning tokens boost closed-book scores, but we speculate they increase brittleness against out-of-distribution real-world drift.
+        </div>
+      </div>
+      <div class="meta-tag">
+        1-Page Executive Brief<br>
+        US Letter Portrait
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
