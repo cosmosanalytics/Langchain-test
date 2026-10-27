@@ -3,33 +3,32 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LangFlywheel 🔄🦜 — Continuous Agent Improvement via Tracing</title>
-  <meta name="description" content="A client-side interactive system demonstrating how LangChain tracing continuously diagnoses failure modes and auto-evolves agent architecture using Groq LPU and WebGPU.">
+  <title>LangFlywheel 🔄🦜 — Continuous Agent Improvement via Tracing (Light Mode)</title>
+  <meta name="description" content="A client-side interactive system demonstrating how LangChain tracing continuously diagnoses failure modes and auto-evolves agent architecture in Light Mode.">
 
   <!-- Prism for code and diff highlighting -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
 
   <!-- Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <style>
     :root {
-      --bg-dark: #090d16;
-      --bg-card: #111827;
-      --bg-card-subtle: #1e293b;
-      --border: #334155;
-      --border-accent: #6366f1;
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --accent: #10b981;
-      --accent-hover: #059669;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-subtle: #f1f5f9;
+      --border: #e2e8f0;
+      --border-dark: #cbd5e1;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --accent: #059669;
+      --accent-hover: #047857;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --text: #0f172a;
+      --text-muted: #64748b;
       --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
@@ -38,10 +37,10 @@
 
     body {
       font-family: var(--font-sans);
-      background-color: var(--bg-dark);
+      background-color: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 20px 18px 60px 18px;
+      padding: 24px 18px 60px 18px;
       line-height: 1.5;
     }
 
@@ -57,7 +56,7 @@
       align-items: center;
       margin-bottom: 24px;
       padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1.5px solid var(--border);
       flex-wrap: wrap;
       gap: 14px;
     }
@@ -70,28 +69,26 @@
 
     .logo-icon {
       font-size: 30px;
-      background: linear-gradient(135deg, #6366f1, #10b981);
+      background: linear-gradient(135deg, #4f46e5, #059669);
       width: 50px;
       height: 50px;
       border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
     }
 
     .title-box h1 {
       font-size: 24px;
       font-weight: 800;
       letter-spacing: -0.5px;
-      background: linear-gradient(to right, #ffffff, #c7d2fe, #a7f3d0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--text);
     }
 
     .title-box p {
       color: var(--text-muted);
-      font-size: 13px;
+      font-size: 13.5px;
     }
 
     .header-badges {
@@ -106,22 +103,21 @@
       font-weight: 700;
       padding: 4px 10px;
       border-radius: 999px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: #cbd5e1;
+      background: #ffffff;
+      border: 1px solid var(--border-dark);
+      color: #334155;
       display: inline-flex;
       align-items: center;
       gap: 6px;
     }
-    .pill.active { background: #064e3b; border-color: #059669; color: #a7f3d0; }
+    .pill.active { background: #ecfdf5; border-color: #a7f3d0; color: #047857; }
 
-    /* FLYWHEEL LOOP BAR (THE 4-STAGE PIPELINE) */
+    /* 4-STAGE PIPELINE */
     .flywheel-bar {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 12px;
       margin-bottom: 24px;
-      position: relative;
     }
 
     @media (max-width: 800px) {
@@ -129,18 +125,19 @@
     }
 
     .flywheel-stage {
-      background: var(--bg-card);
+      background: var(--card-bg);
       border: 2px solid var(--border);
       border-radius: 12px;
       padding: 14px 16px;
       position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
       transition: all 0.2s;
     }
 
     .flywheel-stage.active {
       border-color: var(--primary);
-      background: linear-gradient(145deg, #111827, #1e1b4b 220%);
-      box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
+      background: #ffffff;
+      box-shadow: 0 0 0 1px var(--primary), 0 8px 20px rgba(79, 70, 229, 0.12);
     }
 
     .stage-num {
@@ -155,7 +152,7 @@
     .stage-title {
       font-size: 14px;
       font-weight: 800;
-      color: #fff;
+      color: var(--text);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -168,9 +165,9 @@
       line-height: 1.35;
     }
 
-    /* ITERATION CONTROLS */
+    /* CONTROLS CARD */
     .controls-card {
-      background: var(--bg-card);
+      background: var(--card-bg);
       border: 1.5px solid var(--border);
       border-radius: 14px;
       padding: 16px 20px;
@@ -180,6 +177,7 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
 
     .iteration-selector {
@@ -210,16 +208,16 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      box-shadow: 0 2px 6px rgba(79, 70, 229, 0.2);
       transition: all 0.2s;
     }
-    .btn:hover { background: var(--primary-hover); transform: translateY(-1px); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+    .btn:hover { background: var(--primary-hover); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
     .btn-success { background: var(--accent); }
-    .btn-success:hover { background: var(--accent-hover); }
-    .btn-secondary { background: var(--border); color: #fff; }
-    .btn-secondary:hover { background: #475569; }
+    .btn-secondary { background: #f1f5f9; color: var(--text); border: 1px solid var(--border-dark); box-shadow: none; }
+    .btn-secondary:hover { background: #e2e8f0; }
 
-    /* WORKSPACE GRID: TRACE VS EVOLUTION */
+    /* WORKSPACE */
     .workspace-grid {
       display: grid;
       grid-template-columns: 1fr 1.15fr;
@@ -232,13 +230,14 @@
     }
 
     .panel-card {
-      background: var(--bg-card);
+      background: var(--card-bg);
       border: 1.5px solid var(--border);
       border-radius: 14px;
       padding: 18px;
       display: flex;
       flex-direction: column;
       gap: 14px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
     }
 
     .panel-header {
@@ -255,9 +254,9 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      color: var(--text);
     }
 
-    /* TRACE SPAN WATERFALL */
     .trace-tree {
       display: flex;
       flex-direction: column;
@@ -265,7 +264,7 @@
     }
 
     .trace-node {
-      background: #090d16;
+      background: #f8fafc;
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 10px 14px;
@@ -276,13 +275,13 @@
     }
 
     .trace-node.failed {
-      border-color: #ef4444;
-      background: rgba(239, 68, 68, 0.05);
+      border-color: #fca5a5;
+      background: #fef2f2;
     }
 
     .trace-node.healed {
-      border-color: #10b981;
-      background: rgba(16, 185, 129, 0.05);
+      border-color: #a7f3d0;
+      background: #ecfdf5;
     }
 
     .trace-node-top {
@@ -299,31 +298,30 @@
       border-radius: 4px;
       text-transform: uppercase;
     }
-    .badge-chain { background: #3730a3; color: #c7d2fe; }
-    .badge-llm { background: #065f46; color: #a7f3d0; }
-    .badge-tool { background: #854d0e; color: #fde68a; }
+    .badge-chain { background: #e0e7ff; color: #4338ca; }
+    .badge-llm { background: #d1fae5; color: #047857; }
+    .badge-tool { background: #fef3c7; color: #92400e; }
 
     .trace-error-box {
-      background: rgba(239, 68, 68, 0.12);
-      border: 1px solid #ef4444;
+      background: #fee2e2;
+      border: 1px solid #f87171;
       border-radius: 6px;
       padding: 8px 10px;
       font-size: 11.5px;
-      color: #fca5a5;
+      color: #991b1b;
       font-family: var(--font-mono);
     }
 
     .trace-fix-box {
-      background: rgba(16, 185, 129, 0.12);
-      border: 1px solid #10b981;
+      background: #d1fae5;
+      border: 1px solid #34d399;
       border-radius: 6px;
       padding: 8px 10px;
       font-size: 11.5px;
-      color: #a7f3d0;
+      color: #065f46;
       font-family: var(--font-mono);
     }
 
-    /* CODE & DIFF CONTAINER */
     pre[class*="language-"] {
       border-radius: 8px !important;
       margin: 0 !important;
@@ -331,17 +329,18 @@
       font-family: var(--font-mono) !important;
       max-height: 440px;
       overflow-y: auto;
-      background: #030712 !important;
+      background: #f8fafc !important;
       border: 1px solid var(--border);
     }
 
-    /* COMPARATIVE METRICS BENCHMARK */
+    /* BENCHMARK CARD */
     .benchmark-card {
-      background: var(--bg-card);
+      background: var(--card-bg);
       border: 1.5px solid var(--border);
       border-radius: 14px;
       padding: 18px 22px;
       margin-bottom: 24px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
     }
 
     .benchmark-header {
@@ -362,7 +361,7 @@
     }
 
     .metric-box {
-      background: #090d16;
+      background: #f8fafc;
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 14px;
@@ -372,7 +371,7 @@
     .metric-value {
       font-size: 24px;
       font-weight: 800;
-      color: #fff;
+      color: var(--text);
       font-family: var(--font-mono);
       display: flex;
       align-items: center;
@@ -386,8 +385,8 @@
       padding: 2px 6px;
       border-radius: 4px;
     }
-    .delta-good { background: #064e3b; color: #6ee7b7; }
-    .delta-bad { background: #7f1d1d; color: #fca5a5; }
+    .delta-good { background: #d1fae5; color: #047857; }
+    .delta-bad { background: #fee2e2; color: #991b1b; }
 
     .metric-label {
       font-size: 11px;
@@ -397,18 +396,17 @@
       font-weight: 700;
     }
 
-    /* TOAST */
     .toast {
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background: var(--bg-card);
+      background: #ffffff;
       border: 1.5px solid var(--primary);
-      color: #fff;
+      color: var(--text);
       padding: 10px 16px;
       border-radius: 8px;
       font-size: 13px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -441,7 +439,7 @@
     </div>
   </header>
 
-  <!-- 4-STAGE CONTINUOUS FLYWHEEL PIPELINE -->
+  <!-- 4-STAGE PIPELINE -->
   <div class="flywheel-bar">
     <div class="flywheel-stage active" id="stage1">
       <div class="stage-num">Stage 1</div>
@@ -486,26 +484,21 @@
     </div>
   </div>
 
-  <!-- WORKSPACE: TRACE LOG VS AGENT EVOLUTION -->
+  <!-- WORKSPACE -->
   <div class="workspace-grid">
-    
-    <!-- LEFT: LANGCHAIN TRACE INSPECTOR -->
     <div class="panel-card">
       <div class="panel-header">
         <div class="panel-title">
           <span>📉</span> LangChain Trace Log (Run ID: <span id="traceIdLabel">run_01_init</span>)
         </div>
-        <span id="traceStatusBadge" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: #7f1d1d; color: #fca5a5;">
+        <span id="traceStatusBadge" style="font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; background: #fee2e2; color: #991b1b;">
           FAILED (2 ERRORS)
         </span>
       </div>
 
-      <div class="trace-tree" id="traceTreeContainer">
-        <!-- TRACE NODES INJECTED BY JS -->
-      </div>
+      <div class="trace-tree" id="traceTreeContainer"></div>
     </div>
 
-    <!-- RIGHT: AGENT ARCHITECTURE & PROMPT EVOLUTION -->
     <div class="panel-card">
       <div class="panel-header">
         <div class="panel-title">
@@ -518,10 +511,9 @@
 
       <pre><code id="codeBlock" class="language-python"># Agent architecture code will render here...</code></pre>
     </div>
-
   </div>
 
-  <!-- BENCHMARK / LIFT METRICS CARD -->
+  <!-- BENCHMARK DELTA -->
   <div class="benchmark-card">
     <div class="benchmark-header">
       <div style="font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
@@ -567,22 +559,20 @@
 
 </div>
 
-<!-- TOAST -->
 <div id="toast" class="toast">
   <span id="toastIcon">✨</span>
   <span id="toastMsg">Evolution in progress</span>
 </div>
 
 <script type="module">
-  // EVOLUTION TIMELINE DATA
   const ITERATIONS = [
     {
       version: "v1.0 (Baseline Naive Prompt)",
       traceId: "run_01_naive",
       status: "FAILED",
       statusBadge: "FAILED (2 ERRORS)",
-      statusBadgeBg: "#7f1d1d",
-      statusBadgeColor: "#fca5a5",
+      statusBadgeBg: "#fee2e2",
+      statusBadgeColor: "#991b1b",
       passRate: "42%",
       passDelta: "Baseline",
       passDeltaClass: "delta-bad",
@@ -596,27 +586,9 @@
       failDelta: "Violations",
       failDeltaClass: "delta-bad",
       spans: [
-        {
-          name: "agent_executor (LangChain Agent)",
-          type: "chain",
-          duration: "1,240 ms",
-          status: "failed",
-          note: "Loop timed out trying to format JSON response"
-        },
-        {
-          name: "ChatAnthropic (Claude 3.5 Sonnet)",
-          type: "llm",
-          duration: "410 ms",
-          status: "ok",
-          note: "Returned free-form conversational text instead of structured tool payload"
-        },
-        {
-          name: "database_query (ToolNode)",
-          type: "tool",
-          duration: "830 ms",
-          status: "failed",
-          error: "SQLSyntaxError: Unescaped quotes in WHERE condition caused crash."
-        }
+        { name: "agent_executor (LangChain Agent)", type: "chain", duration: "1,240 ms", status: "failed", note: "Loop timed out trying to format JSON" },
+        { name: "ChatAnthropic (Claude 3.5 Sonnet)", type: "llm", duration: "410 ms", status: "ok", note: "Returned unstructured markdown instead of tool payload" },
+        { name: "database_query (ToolNode)", type: "tool", duration: "830 ms", status: "failed", error: "SQLSyntaxError: Unescaped quotes in WHERE condition caused crash." }
       ],
       code: `# v1.0: Naive Agent (Fails on unescaped quotes & unstructured output)
 from langchain_anthropic import ChatAnthropic
@@ -629,14 +601,13 @@ def run_agent(query: str):
     prompt = f"Answer query and query database: {query}"
     return llm.invoke([HumanMessage(content=prompt)])`
     },
-
     {
       version: "v2.0 (Trace-Informed Structured Schema)",
       traceId: "run_02_structured",
       status: "PARTIAL",
       statusBadge: "IMPROVED (1 RETRY)",
-      statusBadgeBg: "#854d0e",
-      statusBadgeColor: "#fde68a",
+      statusBadgeBg: "#fef3c7",
+      statusBadgeColor: "#92400e",
       passRate: "81%",
       passDelta: "+39% 🚀",
       passDeltaClass: "delta-good",
@@ -650,27 +621,9 @@ def run_agent(query: str):
       failDelta: "-66%",
       failDeltaClass: "delta-good",
       spans: [
-        {
-          name: "StateGraph_Workflow (LangGraph)",
-          type: "chain",
-          duration: "620 ms",
-          status: "healed",
-          note: "Structured schema binding eliminated JSON parsing crashes"
-        },
-        {
-          name: "sql_sanitizer (ToolGuard)",
-          type: "tool",
-          duration: "120 ms",
-          status: "healed",
-          fix: "Trace auto-synthesizer added regex sanitization filter to prevent SQL errors"
-        },
-        {
-          name: "query_database (ToolNode)",
-          type: "tool",
-          duration: "190 ms",
-          status: "ok",
-          note: "Executed sanitized parameterized query successfully"
-        }
+        { name: "StateGraph_Workflow (LangGraph)", type: "chain", duration: "620 ms", status: "healed", note: "Structured schema binding eliminated crashes" },
+        { name: "sql_sanitizer (ToolGuard)", type: "tool", duration: "120 ms", status: "healed", fix: "Trace auto-synthesizer added regex sanitization filter" },
+        { name: "query_database (ToolNode)", type: "tool", duration: "190 ms", status: "ok", note: "Executed sanitized parameterized query successfully" }
       ],
       code: `# v2.0: Trace-Healed Agent (Structured Tool Binding & Sanitizer)
 from typing import TypedDict
@@ -690,7 +643,7 @@ def sanitize_node(state: AgentState):
     return {"sanitized_sql": clean}
 
 def execute_node(state: AgentState):
-    return {"result": "Query executed cleanly without injection"}
+    return {"result": "Query executed cleanly"}
 
 workflow = StateGraph(AgentState)
 workflow.add_node("sanitize", sanitize_node)
@@ -699,14 +652,13 @@ workflow.add_edge(START, "sanitize")
 workflow.add_edge("sanitize", "execute")
 workflow.add_edge("execute", END)`
     },
-
     {
       version: "v3.0 (Zero-Silent-Failure Hardened Invariants)",
       traceId: "run_03_optimal",
       status: "OPTIMAL",
       statusBadge: "100% RELIABLE ✅",
-      statusBadgeBg: "#064e3b",
-      statusBadgeColor: "#a7f3d0",
+      statusBadgeBg: "#d1fae5",
+      statusBadgeColor: "#065f46",
       passRate: "100%",
       passDelta: "+58% 🎯",
       passDeltaClass: "delta-good",
@@ -720,27 +672,9 @@ workflow.add_edge("execute", END)`
       failDelta: "Zero Halts",
       failDeltaClass: "delta-good",
       spans: [
-        {
-          name: "StateGraph_Hardened (Production)",
-          type: "chain",
-          duration: "310 ms",
-          status: "healed",
-          note: "Full property-based invariants and memory checkpointer active"
-        },
-        {
-          name: "proctor_sandbox_gate (Invariant)",
-          type: "chain",
-          duration: "40 ms",
-          status: "healed",
-          fix: "Read-only test harness armor stops test-editing cheating"
-        },
-        {
-          name: "evaluator_verifier (Deterministic Check)",
-          type: "llm",
-          duration: "110 ms",
-          status: "ok",
-          note: "Pass@1 verified with deterministic zero silent hallucination guarantee"
-        }
+        { name: "StateGraph_Hardened (Production)", type: "chain", duration: "310 ms", status: "healed", note: "Full property-based invariants and checkpointer active" },
+        { name: "proctor_sandbox_gate (Invariant)", type: "chain", duration: "40 ms", status: "healed", fix: "Read-only test harness armor stops test-editing" },
+        { name: "evaluator_verifier (Deterministic Check)", type: "llm", duration: "110 ms", status: "ok", note: "Pass@1 verified with deterministic zero silent hallucination guarantee" }
       ],
       code: `# v3.0: Production Hardened Architecture (Zero Silent Failures)
 from typing import Annotated, TypedDict
@@ -756,7 +690,6 @@ class ProductionState(TypedDict):
 llm = ChatAnthropic(model="claude-3-5-sonnet-20241022", temperature=0)
 
 def reasoning_node(state: ProductionState):
-    # Deterministic fallback prevents silent hallucination
     ans = llm.invoke(state["input_text"])
     return {"verified_answer": ans.content, "pass_at_1": True}
 
@@ -765,7 +698,6 @@ builder.add_node("reasoning", reasoning_node)
 builder.add_edge(START, "reasoning")
 builder.add_edge("reasoning", END)
 
-# Memory Checkpointer guarantees thread auditability
 app = builder.compile(checkpointer=MemorySaver())`
     }
   ];
@@ -779,13 +711,11 @@ app = builder.compile(checkpointer=MemorySaver())`
   function renderCurrentIteration() {
     const data = ITERATIONS[currentIdx];
 
-    // Update Stage Indicators
     for (let i = 1; i <= 4; i++) {
       const el = document.getElementById(`stage${i}`);
       el.classList.toggle('active', i <= currentIdx + 2);
     }
 
-    // Header labels
     document.getElementById('currentVersionLabel').innerText = data.version;
     document.getElementById('versionStatusLabel').innerText = data.status === 'OPTIMAL' ? 'All traces passing 100%' : 'Diagnostic active';
     document.getElementById('traceIdLabel').innerText = data.traceId;
@@ -795,7 +725,6 @@ app = builder.compile(checkpointer=MemorySaver())`
     badge.style.background = data.statusBadgeBg;
     badge.style.color = data.statusBadgeColor;
 
-    // Benchmark stats
     document.getElementById('metricPassRate').innerText = data.passRate;
     document.getElementById('metricPassDelta').innerText = data.passDelta;
     document.getElementById('metricPassDelta').className = `metric-delta ${data.passDeltaClass}`;
@@ -812,7 +741,6 @@ app = builder.compile(checkpointer=MemorySaver())`
     document.getElementById('metricFailDelta').innerText = data.failDelta;
     document.getElementById('metricFailDelta').className = `metric-delta ${data.failDeltaClass}`;
 
-    // Render Trace Tree
     const treeEl = document.getElementById('traceTreeContainer');
     treeEl.innerHTML = data.spans.map(s => `
       <div class="trace-node ${s.status === 'failed' ? 'failed' : (s.status === 'healed' ? 'healed' : '')}">
@@ -825,16 +753,14 @@ app = builder.compile(checkpointer=MemorySaver())`
         </div>
         ${s.error ? `<div class="trace-error-box">🚨 ${s.error}</div>` : ''}
         ${s.fix ? `<div class="trace-fix-box">🛡️ Auto-Healed: ${s.fix}</div>` : ''}
-        ${s.note ? `<div style="font-size: 11px; color: #94a3b8;">ℹ️ ${s.note}</div>` : ''}
+        ${s.note ? `<div style="font-size: 11px; color: var(--text-muted);">ℹ️ ${s.note}</div>` : ''}
       </div>
     `).join('');
 
-    // Render Code
     const codeEl = document.getElementById('codeBlock');
     codeEl.textContent = data.code;
     Prism.highlightElement(codeEl);
 
-    // Button state
     const btn = document.getElementById('btnEvolve');
     if (currentIdx >= ITERATIONS.length - 1) {
       btn.disabled = true;
@@ -845,37 +771,30 @@ app = builder.compile(checkpointer=MemorySaver())`
     }
   }
 
-  // TRIGGER NEXT EVOLUTION
   window.triggerNextEvolution = function() {
     if (currentIdx >= ITERATIONS.length - 1) return;
-
     showToast(`Diagnosing traces from ${ITERATIONS[currentIdx].version}...`, '🔍');
-    
     setTimeout(() => {
       currentIdx++;
       renderCurrentIteration();
       showToast(`Agent upgraded to ${ITERATIONS[currentIdx].version}!`, '🧬');
-
       if (currentIdx === ITERATIONS.length - 1 && window.confetti) {
-        window.confetti({ particleCount: 90, spread: 75, origin: { y: 0.6 } });
+        window.confetti({ particleCount: 90, spread: 75 });
       }
-    }, 900);
+    }, 800);
   };
 
-  // RESET
   window.resetToBaseline = function() {
     currentIdx = 0;
     renderCurrentIteration();
     showToast('Reset to Baseline v1.0.');
   };
 
-  // COPY CODE
   window.copyCode = function() {
     navigator.clipboard.writeText(ITERATIONS[currentIdx].code);
-    showToast('Copied Python code to clipboard!');
+    showToast('Copied code to clipboard!');
   };
 
-  // TOAST
   function showToast(msg, icon = '✨') {
     const toast = document.getElementById('toast');
     document.getElementById('toastMsg').innerText = msg;

@@ -3,19 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LangChain Test Studio Suite 🦜✨ — 4 Standalone Web Apps</title>
-  <meta name="description" content="A suite of 4 standalone, client-side HTML web apps powered by Groq LPU and WebGPU WebLLM for LangChain, LangGraph, LangSmith tracing, and UX story mining.">
+  <title>LangChain Test Suite Hub 🦜✨ (Light Mode)</title>
+  <meta name="description" content="A suite of 4 standalone, client-side HTML web apps in crisp Light Mode powered by Groq LPU and WebGPU WebLLM.">
   <style>
     :root {
-      --bg: #090d16;
-      --card-bg: #111827;
-      --card-hover: #1e293b;
-      --border: #334155;
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --accent: #10b981;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-hover: #f1f5f9;
+      --border: #e2e8f0;
+      --border-dark: #cbd5e1;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --accent: #059669;
+      --text: #0f172a;
+      --text-muted: #64748b;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
@@ -27,7 +28,7 @@
       background-color: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      padding: 32px 20px 80px 20px;
+      padding: 36px 20px 80px 20px;
       line-height: 1.5;
     }
 
@@ -40,7 +41,7 @@
       text-align: center;
       margin-bottom: 40px;
       padding-bottom: 24px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1.5px solid var(--border);
     }
 
     .logo-badge {
@@ -48,21 +49,19 @@
       align-items: center;
       justify-content: center;
       font-size: 38px;
-      background: linear-gradient(135deg, #6366f1, #10b981);
+      background: linear-gradient(135deg, #4f46e5, #059669);
       width: 64px;
       height: 64px;
       border-radius: 18px;
       margin-bottom: 14px;
-      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.35);
+      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.25);
     }
 
     h1 {
       font-size: 32px;
       font-weight: 900;
       letter-spacing: -0.6px;
-      background: linear-gradient(to right, #ffffff, #c7d2fe, #a7f3d0);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--text);
       margin-bottom: 8px;
     }
 
@@ -85,17 +84,18 @@
       font-weight: 700;
       padding: 4px 12px;
       border-radius: 999px;
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      color: #cbd5e1;
+      background: #ffffff;
+      border: 1px solid var(--border-dark);
+      color: var(--text);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
-    .pill.green { background: #064e3b; border-color: #059669; color: #a7f3d0; }
-    .pill.purple { background: #1e1b4b; border-color: #3730a3; color: #c7d2fe; }
+    .pill.green { background: #ecfdf5; border-color: #a7f3d0; color: #047857; }
+    .pill.purple { background: #eef2ff; border-color: #c7d2fe; color: #4338ca; }
 
     /* APPS GRID */
     .apps-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(540px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
       gap: 24px;
       margin-bottom: 40px;
     }
@@ -112,20 +112,21 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .app-card:hover {
       transform: translateY(-4px);
       border-color: #818cf8;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45);
+      box-shadow: 0 16px 36px rgba(79, 70, 229, 0.12);
     }
 
     .app-img-wrap {
       width: 100%;
       height: 240px;
       overflow: hidden;
-      background: #030712;
+      background: #f1f5f9;
       border-bottom: 1px solid var(--border);
       position: relative;
     }
@@ -139,11 +140,11 @@
     }
 
     .app-card:hover .app-img-wrap img {
-      transform: scale(1.03);
+      transform: scale(1.02);
     }
 
     .app-body {
-      padding: 20px;
+      padding: 22px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -168,11 +169,11 @@
     .app-title {
       font-size: 18px;
       font-weight: 800;
-      color: #fff;
+      color: var(--text);
     }
 
     .app-desc {
-      font-size: 13px;
+      font-size: 13.5px;
       color: var(--text-muted);
       line-height: 1.45;
     }
@@ -187,16 +188,16 @@
     .feature-tag {
       font-size: 11px;
       font-weight: 700;
-      background: #0b1120;
+      background: #f1f5f9;
       border: 1px solid var(--border);
       padding: 3px 8px;
       border-radius: 6px;
-      color: #cbd5e1;
+      color: #334155;
     }
 
     .app-footer {
-      padding: 16px 20px;
-      background: #0b1120;
+      padding: 16px 22px;
+      background: #f8fafc;
       border-top: 1px solid var(--border);
       display: flex;
       justify-content: space-between;
@@ -205,34 +206,28 @@
 
     .btn {
       background: var(--primary);
-      color: #fff;
+      color: #ffffff;
       text-decoration: none;
-      padding: 8px 18px;
+      padding: 9px 20px;
       border-radius: 8px;
       font-size: 13px;
       font-weight: 700;
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
       transition: all 0.2s;
     }
 
     .btn:hover {
       background: var(--primary-hover);
       transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
     }
 
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: #cbd5e1;
-    }
-    .btn-outline:hover { background: var(--card-bg); color: #fff; }
-
-    /* FOOTER */
     footer {
       text-align: center;
-      font-size: 12.5px;
+      font-size: 13px;
       color: var(--text-muted);
       border-top: 1px solid var(--border);
       padding-top: 24px;
@@ -247,12 +242,12 @@
     <div class="logo-badge">🦜✨</div>
     <h1>LangChain Test Suite Hub</h1>
     <p class="subtitle">
-      Four client-side, zero-backend web apps demonstrating the power of Groq LPU and WebGPU WebLLM for LangChain, LangGraph state machines, LangSmith tracing, and continuous agent evolution.
+      Four standalone, client-side web apps designed for building, tracing, and continuously optimizing autonomous AI agents with Groq LPU and WebGPU.
     </p>
     <div class="meta-pills">
       <span class="pill green">⚡ Dual Engine: Groq LPU (500 T/s) + WebGPU (100% Private)</span>
       <span class="pill purple">🕸️ LangGraph + Claude 3.5 Sonnet</span>
-      <span class="pill">📁 GitHub: cosmosanalytics/langchain-test</span>
+      <span class="pill">☀️ Crisp Light Mode</span>
     </div>
   </header>
 
@@ -272,7 +267,7 @@
           </div>
         </div>
         <p class="app-desc">
-          Scrapes any live website or review forum (via CORS-friendly Jina Reader) and extracts colorful persona journeys, friction points, "Aha!" breakthrough moments, sentiment meters, and product takeaways.
+          Scrapes any live website or review thread (via CORS-friendly Jina Reader) and extracts colorful persona journeys, friction points, "Aha!" breakthrough moments, sentiment meters, and product takeaways.
         </p>
         <div class="feature-list">
           <span class="feature-tag">Jina Reader Scraper</span>
@@ -375,7 +370,7 @@
 
   <footer>
     <p>
-      Published to <a href="https://github.com/cosmosanalytics/langchain-test" style="color: var(--primary); font-weight: 700;">cosmosanalytics/langchain-test</a> • 100% Client-Side Architecture
+      100% Client-Side Architecture • Runs directly in any modern browser
     </p>
   </footer>
 

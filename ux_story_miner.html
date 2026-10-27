@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>StoryMine 🕵️✨ — Web UX Story Miner (WebLLM & Groq LPU)</title>
+  <title>StoryMine 🕵️✨ — Web UX Story Miner (Light Mode)</title>
   <meta name="description" content="Scrape any website and extract rich, colorful User Experience (UX) stories using WebGPU WebLLM or Groq LPU.">
 
   <!-- Confetti for fun interactions -->
@@ -11,20 +11,21 @@
 
   <style>
     :root {
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --primary-light: #e0e7ff;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
       --accent: #ec4899;
-      --accent-light: #fce7f3;
-      --bg: #0f172a;
-      --card-bg: #1e293b;
-      --card-subtle: #334155;
-      --border: #475569;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --danger: #ef4444;
+      --accent-light: #fdf2f8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-subtle: #f1f5f9;
+      --border: #e2e8f0;
+      --border-dark: #cbd5e1;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --success: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
       --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
@@ -51,7 +52,7 @@
       align-items: center;
       margin-bottom: 24px;
       padding-bottom: 16px;
-      border-bottom: 1px solid var(--border);
+      border-bottom: 1.5px solid var(--border);
       flex-wrap: wrap;
       gap: 16px;
     }
@@ -63,29 +64,27 @@
     }
 
     .logo-icon {
-      font-size: 38px;
-      background: linear-gradient(135deg, #6366f1, #ec4899);
-      width: 54px;
-      height: 54px;
+      font-size: 34px;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      width: 52px;
+      height: 52px;
       border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
+      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.25);
     }
 
     .title-box h1 {
       font-size: 26px;
       font-weight: 800;
       letter-spacing: -0.5px;
-      background: linear-gradient(to right, #ffffff, #c7d2fe, #fbcfe8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--text);
     }
 
     .title-box p {
       color: var(--text-muted);
-      font-size: 13px;
+      font-size: 13.5px;
     }
 
     .engine-status-pill {
@@ -94,10 +93,11 @@
       gap: 8px;
       padding: 6px 14px;
       background: var(--card-bg);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-dark);
       border-radius: 999px;
       font-size: 12px;
       font-weight: 600;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
 
     .status-dot {
@@ -105,11 +105,11 @@
       height: 9px;
       border-radius: 50%;
       background: var(--warning);
-      box-shadow: 0 0 10px var(--warning);
+      box-shadow: 0 0 8px var(--warning);
       animation: pulse 2s infinite;
     }
-    .status-dot.ready { background: var(--success); box-shadow: 0 0 10px var(--success); }
-    .status-dot.error { background: var(--danger); box-shadow: 0 0 10px var(--danger); }
+    .status-dot.ready { background: var(--success); box-shadow: 0 0 8px var(--success); }
+    .status-dot.error { background: var(--danger); box-shadow: 0 0 8px var(--danger); }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
@@ -130,6 +130,7 @@
       border-radius: 14px;
       padding: 14px 18px;
       cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
       transition: all 0.2s ease;
       position: relative;
     }
@@ -141,8 +142,8 @@
 
     .engine-card.active {
       border-color: var(--primary);
-      background: linear-gradient(145deg, #1e293b, #2e1065 240%);
-      box-shadow: 0 0 0 1px var(--primary), 0 8px 24px rgba(99, 102, 241, 0.2);
+      background: #ffffff;
+      box-shadow: 0 0 0 1px var(--primary), 0 8px 24px rgba(79, 70, 229, 0.12);
     }
 
     .engine-top {
@@ -167,11 +168,11 @@
       padding: 2px 8px;
       border-radius: 999px;
       background: var(--card-subtle);
-      color: #cbd5e1;
+      color: #475569;
     }
 
-    .tag-badge.fast { background: #065f46; color: #6ee7b7; }
-    .tag-badge.local { background: #4338ca; color: #c7d2fe; }
+    .tag-badge.fast { background: #d1fae5; color: #047857; }
+    .tag-badge.local { background: #e0e7ff; color: #4338ca; }
 
     .engine-desc {
       font-size: 12px;
@@ -185,6 +186,7 @@
       border-radius: 14px;
       padding: 16px 20px;
       margin-bottom: 24px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
       display: none;
     }
     .config-panel.visible { display: block; }
@@ -197,7 +199,7 @@
     }
 
     label {
-      font-size: 12px;
+      font-size: 11.5px;
       font-weight: 700;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -205,9 +207,9 @@
     }
 
     input[type="text"], input[type="password"], select, textarea {
-      background: #0b1120;
-      border: 1.5px solid var(--border);
-      color: #fff;
+      background: #ffffff;
+      border: 1.5px solid var(--border-dark);
+      color: var(--text);
       padding: 10px 14px;
       border-radius: 10px;
       font-size: 13.5px;
@@ -218,7 +220,7 @@
     input:focus, select:focus, textarea:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
     }
 
     .btn {
@@ -233,6 +235,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
       transition: all 0.2s ease;
       white-space: nowrap;
     }
@@ -242,22 +245,17 @@
       transform: translateY(-1px);
     }
 
-    .btn:active { transform: translateY(1px); }
-    .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
     .btn-secondary {
-      background: var(--card-subtle);
+      background: #f1f5f9;
       color: var(--text);
+      border: 1px solid var(--border-dark);
+      box-shadow: none;
     }
-    .btn-secondary:hover { background: #475569; }
+    .btn-secondary:hover { background: #e2e8f0; }
 
     .btn-magic {
-      background: linear-gradient(135deg, #6366f1, #ec4899);
-      box-shadow: 0 6px 18px rgba(236, 72, 153, 0.35);
-    }
-    .btn-magic:hover {
-      filter: brightness(1.1);
-      box-shadow: 0 8px 24px rgba(236, 72, 153, 0.5);
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      box-shadow: 0 6px 18px rgba(236, 72, 153, 0.25);
     }
 
     /* SCRAPE & SOURCE INPUT BOX */
@@ -267,7 +265,7 @@
       border-radius: 16px;
       padding: 22px;
       margin-bottom: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     }
 
     .mine-header {
@@ -285,6 +283,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      color: var(--text);
     }
 
     .presets-row {
@@ -296,11 +295,12 @@
 
     .preset-chip {
       background: var(--card-subtle);
-      border: 1px solid var(--border);
-      color: #cbd5e1;
+      border: 1px solid var(--border-dark);
+      color: #334155;
       padding: 4px 10px;
       border-radius: 999px;
       font-size: 11.5px;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.15s;
     }
@@ -335,7 +335,7 @@
       text-underline-offset: 4px;
     }
     .tab-link.active {
-      color: #818cf8;
+      color: var(--primary);
     }
 
     #customTextContainer {
@@ -348,9 +348,9 @@
       resize: vertical;
     }
 
-    /* PROGRESS & LOG BAR */
+    /* PROGRESS BAR */
     .progress-bar-container {
-      background: #0b1120;
+      background: #f1f5f9;
       border-radius: 10px;
       padding: 12px 16px;
       margin-top: 14px;
@@ -361,7 +361,7 @@
 
     .progress-track {
       height: 8px;
-      background: #334155;
+      background: #e2e8f0;
       border-radius: 999px;
       overflow: hidden;
       margin-bottom: 8px;
@@ -370,7 +370,7 @@
     .progress-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #6366f1, #ec4899);
+      background: linear-gradient(90deg, #4f46e5, #ec4899);
       border-radius: 999px;
       transition: width 0.3s ease;
     }
@@ -379,7 +379,7 @@
       display: flex;
       justify-content: space-between;
       font-size: 12px;
-      color: #cbd5e1;
+      color: #334155;
     }
 
     /* METRICS / STATS OVERVIEW BAR */
@@ -398,12 +398,13 @@
       border-radius: 12px;
       padding: 14px;
       text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
     }
 
     .stat-num {
       font-size: 24px;
       font-weight: 800;
-      color: #fff;
+      color: var(--text);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -416,6 +417,7 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-top: 2px;
+      font-weight: 700;
     }
 
     /* STORY CARDS GRID */
@@ -434,6 +436,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      color: var(--text);
     }
 
     .filter-pills {
@@ -444,11 +447,13 @@
 
     .filter-pill {
       background: var(--card-bg);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-dark);
       padding: 5px 12px;
       border-radius: 999px;
       font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
+      color: #334155;
       transition: all 0.15s;
     }
     .filter-pill.active {
@@ -472,6 +477,7 @@
       flex-direction: column;
       justify-content: space-between;
       gap: 14px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
       overflow: hidden;
@@ -480,7 +486,7 @@
     .story-card:hover {
       transform: translateY(-3px);
       border-color: #818cf8;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+      box-shadow: 0 12px 28px rgba(79, 70, 229, 0.1);
     }
 
     .story-card::before {
@@ -490,7 +496,7 @@
       left: 0;
       right: 0;
       height: 4px;
-      background: linear-gradient(90deg, #6366f1, #ec4899);
+      background: linear-gradient(90deg, #4f46e5, #ec4899);
     }
 
     .story-top {
@@ -508,7 +514,7 @@
 
     .persona-avatar {
       font-size: 30px;
-      background: var(--card-subtle);
+      background: #f1f5f9;
       width: 48px;
       height: 48px;
       border-radius: 12px;
@@ -520,7 +526,7 @@
     .persona-meta h3 {
       font-size: 15px;
       font-weight: 800;
-      color: #fff;
+      color: var(--text);
     }
 
     .persona-meta span {
@@ -537,19 +543,19 @@
       align-items: center;
       gap: 4px;
     }
-    .sentiment-high { background: #065f46; color: #a7f3d0; }
-    .sentiment-mid { background: #78350f; color: #fde68a; }
-    .sentiment-low { background: #881337; color: #fecdd3; }
+    .sentiment-high { background: #d1fae5; color: #065f46; }
+    .sentiment-mid { background: #fef3c7; color: #92400e; }
+    .sentiment-low { background: #fee2e2; color: #991b1b; }
 
     /* JOURNEY TIMELINE INSIDE CARD */
     .journey-timeline {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      background: #0b1120;
+      background: #f8fafc;
       padding: 12px 14px;
       border-radius: 12px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
     }
 
     .journey-step {
@@ -567,33 +573,33 @@
     }
 
     .journey-text strong {
-      color: #cbd5e1;
+      color: var(--text);
     }
 
     .journey-text {
-      color: #94a3b8;
+      color: #475569;
     }
 
     .quote-box {
       font-style: italic;
       font-size: 12.5px;
-      color: #e2e8f0;
-      background: rgba(99, 102, 241, 0.08);
-      border-left: 3px solid var(--primary);
+      color: #1e293b;
+      background: rgba(79, 70, 229, 0.06);
+      border-left: 3.5px solid var(--primary);
       padding: 8px 12px;
       border-radius: 0 8px 8px 0;
     }
 
     .recommendation-box {
-      background: rgba(236, 72, 153, 0.08);
-      border: 1px solid rgba(236, 72, 153, 0.25);
+      background: #fdf2f8;
+      border: 1px solid #fbcfe8;
       border-radius: 10px;
       padding: 8px 12px;
       font-size: 12px;
-      color: #fbcfe8;
+      color: #831843;
     }
     .recommendation-box strong {
-      color: #fff;
+      color: #9d174d;
       display: flex;
       align-items: center;
       gap: 5px;
@@ -611,11 +617,11 @@
     }
 
     .stage-tag {
-      background: var(--card-subtle);
+      background: #f1f5f9;
       padding: 2px 8px;
       border-radius: 6px;
       font-weight: 700;
-      color: #cbd5e1;
+      color: #334155;
     }
 
     /* EMPTY STATE */
@@ -623,7 +629,7 @@
       text-align: center;
       padding: 60px 20px;
       background: var(--card-bg);
-      border: 2px dashed var(--border);
+      border: 2px dashed var(--border-dark);
       border-radius: 16px;
       color: var(--text-muted);
     }
@@ -638,32 +644,26 @@
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background: #1e293b;
+      background: #ffffff;
       border: 1.5px solid var(--primary);
-      color: #fff;
+      color: var(--text);
       padding: 12px 18px;
       border-radius: 10px;
       font-size: 13px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
       display: flex;
       align-items: center;
       gap: 10px;
       z-index: 1000;
       opacity: 0;
       transform: translateY(20px);
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.3s;
       pointer-events: none;
     }
     .toast.show {
       opacity: 1;
       transform: translateY(0);
       pointer-events: auto;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 680px) {
-      .url-input-container { flex-direction: column; }
-      .stories-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -688,19 +688,16 @@
 
   <!-- ENGINE SWITCHER TABS -->
   <div class="engine-bar">
-    
-    <!-- ENGINE 1: GROQ LPU -->
     <div id="cardGroq" class="engine-card active" onclick="switchEngine('groq')">
       <div class="engine-top">
         <div class="engine-name">⚡ Groq LPU Cloud</div>
-        <span class="tag-badge fast">Supercharged 500 T/s</span>
+        <span class="tag-badge fast">500 T/s</span>
       </div>
       <div class="engine-desc">
         Instant inference using LPU chips (Llama 3.3 70B / 3.1 8B). Zero local memory overhead.
       </div>
     </div>
 
-    <!-- ENGINE 2: WEBGPU WEBLLM -->
     <div id="cardWebLLM" class="engine-card" onclick="switchEngine('webllm')">
       <div class="engine-top">
         <div class="engine-name">🧠 WebGPU Local (WebLLM)</div>
@@ -710,7 +707,6 @@
         Runs fully inside browser via WebGPU. No server, zero API key needed, data never leaves device.
       </div>
     </div>
-
   </div>
 
   <!-- GROQ SETTINGS PANEL -->
@@ -719,7 +715,7 @@
       <div style="flex: 1; min-width: 250px;">
         <label for="groqApiKey">Groq API Key (Stored Locally in Browser)</label>
         <div style="display: flex; gap: 8px; margin-top: 4px;">
-          <input type="password" id="groqApiKey" placeholder="gsk_..." style="width: 100%;">
+          <input type="password" id="groqApiKey" placeholder="gsk_... (Or click demo buttons below)">
           <button class="btn btn-secondary" type="button" onclick="togglePasswordVisibility('groqApiKey')">👁️</button>
         </div>
       </div>
@@ -728,7 +724,6 @@
         <select id="groqModel" style="width: 100%; margin-top: 4px;">
           <option value="llama-3.3-70b-versatile" selected>Llama 3.3 70B (Versatile &amp; Deep)</option>
           <option value="llama-3.1-8b-instant">Llama 3.1 8B Instant (Ultra-Fast)</option>
-          <option value="mixtral-8x7b-32768">Mixtral 8x7B (Long Context)</option>
         </select>
       </div>
       <div style="align-self: flex-end;">
@@ -743,9 +738,8 @@
       <div style="flex: 1; min-width: 280px;">
         <label for="webllmModel">Select WebGPU In-Browser Model</label>
         <select id="webllmModel" style="width: 100%; margin-top: 4px;">
-          <option value="Llama-3.2-1B-Instruct-q4f16_1-MLC" selected>Llama-3.2 1B (~800MB - Fastest Initial Boot)</option>
+          <option value="Llama-3.2-1B-Instruct-q4f16_1-MLC" selected>Llama-3.2 1B (~800MB - Fast Boot)</option>
           <option value="SmolLM2-1.7B-Instruct-q4f16_1-MLC">SmolLM2 1.7B (~1GB - Balanced)</option>
-          <option value="Qwen2.5-1.5B-Instruct-q4f16_1-MLC">Qwen 2.5 1.5B (~1GB - High Quality)</option>
         </select>
       </div>
       <div style="align-self: flex-end;">
@@ -780,15 +774,13 @@
       <span class="tab-link" id="tabText" onclick="switchInputMode('text')">Or Paste Text / Feedback Directly</span>
     </div>
 
-    <!-- URL INPUT -->
     <div id="urlInputContainer" class="url-input-container">
-      <input type="text" id="targetUrl" placeholder="https://news.ycombinator.com/item?id=... or blog / review page URL" value="https://linear.app/features">
+      <input type="text" id="targetUrl" placeholder="https://news.ycombinator.com/item?id=... or blog URL" value="https://linear.app/features">
       <button id="btnMine" class="btn btn-magic" onclick="startMining()">
         <span>✨</span> Mine UX Stories
       </button>
     </div>
 
-    <!-- RAW TEXT CONTAINER (FALLBACK) -->
     <div id="customTextContainer">
       <textarea id="customTextInput" placeholder="Paste website copy, user reviews, tweets, forum comments, or customer support threads here..."></textarea>
       <button class="btn btn-magic" onclick="startMining()" style="margin-top: 8px;">
@@ -796,7 +788,6 @@
       </button>
     </div>
 
-    <!-- PROGRESS BAR -->
     <div id="progressBarContainer" class="progress-bar-container">
       <div class="progress-track">
         <div id="progressBarFill" class="progress-fill"></div>
@@ -808,7 +799,7 @@
     </div>
   </div>
 
-  <!-- ANALYTICS / STATS BANNER -->
+  <!-- ANALYTICS BANNER -->
   <div id="analyticsBar" class="analytics-bar">
     <div class="stat-card">
       <div id="statStoriesCount" class="stat-num">0</div>
@@ -841,12 +832,10 @@
     </div>
   </div>
 
-  <!-- STORIES CONTAINER -->
   <div id="storiesContainer" class="stories-grid">
-    <!-- EMPTY STATE -->
     <div class="empty-state" style="grid-column: 1 / -1;">
       <div class="empty-icon">🗺️✨</div>
-      <h3 style="font-size: 18px; color: #fff; margin-bottom: 6px;">No UX Stories Mined Yet</h3>
+      <h3 style="font-size: 18px; color: var(--text); margin-bottom: 6px;">No UX Stories Mined Yet</h3>
       <p style="font-size: 13px; max-width: 480px; margin: 0 auto;">
         Enter a website URL above or click one of the quick demos like <strong>"Linear App Launch"</strong> or <strong>"Duolingo Redesign"</strong> to extract persona journeys, friction points, quotes, and product takeaways!
       </p>
@@ -862,13 +851,11 @@
 </div>
 
 <script type="module">
-  // DYNAMIC WEBGPU IMPORT
   let webllm = null;
   let webllmEngine = null;
 
-  // APP STATE
   const state = {
-    engine: 'groq', // 'groq' | 'webllm'
+    engine: 'groq',
     isMining: false,
     inputMode: 'url',
     webllmLoaded: false,
@@ -876,7 +863,6 @@
     activeFilter: 'all'
   };
 
-  // BUILT-IN DEMO PRESET CONTENT (Instant, offline or fast fallback)
   const PRESETS = {
     linear: {
       url: "https://linear.app/method/principles",
@@ -905,83 +891,63 @@
     }
   };
 
-  // ON DOM LOAD
   window.addEventListener('DOMContentLoaded', () => {
-    // Check WebGPU availability
     checkWebGPU();
-
-    // Load saved Groq Key from localStorage
     const savedGroqKey = localStorage.getItem('storymine_groq_api_key');
     if (savedGroqKey) {
       document.getElementById('groqApiKey').value = savedGroqKey;
       updateStatus('Groq API Key Ready', 'ready');
     } else {
-      updateStatus('Groq LPU Active (Key needed or try Demo)', 'ready');
+      updateStatus('Groq LPU Active (Key or Demo)', 'ready');
     }
   });
 
-  // CHECK WEBGPU SUPPORT
   async function checkWebGPU() {
     const notice = document.getElementById('webgpuSupportNotice');
     if (navigator.gpu) {
       try {
         const adapter = await navigator.gpu.requestAdapter();
         if (adapter) {
-          notice.innerHTML = `✅ <strong>WebGPU Supported!</strong> Your browser is ready for private local in-browser LLM inference.`;
-          notice.style.color = '#34d399';
+          notice.innerHTML = `✅ <strong>WebGPU Supported!</strong> Ready for local in-browser LLM inference.`;
+          notice.style.color = '#059669';
         } else {
-          notice.innerHTML = `⚠️ WebGPU adapter unavailable. Hardware acceleration may be disabled. Groq LPU mode recommended.`;
-          notice.style.color = '#fbbf24';
+          notice.innerHTML = `⚠️ WebGPU adapter unavailable. Groq LPU mode recommended.`;
+          notice.style.color = '#d97706';
         }
       } catch (err) {
-        notice.innerHTML = `⚠️ WebGPU check error: ${err.message}. Use Groq LPU mode.`;
-        notice.style.color = '#f87171';
+        notice.innerHTML = `⚠️ WebGPU check error: ${err.message}.`;
       }
     } else {
-      notice.innerHTML = `❌ WebGPU not supported on this browser. Please use Chrome 113+, Edge, or Groq LPU mode.`;
-      notice.style.color = '#f87171';
+      notice.innerHTML = `❌ WebGPU not supported on this browser. Use Chrome 113+ or Groq LPU mode.`;
+      notice.style.color = '#dc2626';
     }
   }
 
-  // SWITCH ENGINE
   window.switchEngine = function(engineType) {
     state.engine = engineType;
     document.getElementById('cardGroq').classList.toggle('active', engineType === 'groq');
     document.getElementById('cardWebLLM').classList.toggle('active', engineType === 'webllm');
     document.getElementById('panelGroq').classList.toggle('visible', engineType === 'groq');
     document.getElementById('panelWebLLM').classList.toggle('visible', engineType === 'webllm');
-
-    if (engineType === 'groq') {
-      updateStatus('Groq LPU Active', 'ready');
-    } else {
-      if (state.webllmLoaded) {
-        updateStatus('WebGPU Model In VRAM', 'ready');
-      } else {
-        updateStatus('WebGPU Model Not Loaded', 'warning');
-      }
-    }
+    updateStatus(engineType === 'groq' ? 'Groq LPU Active' : (state.webllmLoaded ? 'WebGPU Model Ready' : 'WebGPU Not Loaded'), 'ready');
   };
 
-  // TOGGLE PASSWORD VISIBILITY
   window.togglePasswordVisibility = function(id) {
     const el = document.getElementById(id);
     el.type = el.type === 'password' ? 'text' : 'password';
   };
 
-  // SAVE GROQ KEY
   window.saveGroqKey = function() {
     const key = document.getElementById('groqApiKey').value.trim();
     if (key) {
       localStorage.setItem('storymine_groq_api_key', key);
-      showToast('Groq API Key saved locally!');
-      updateStatus('Groq API Key Saved', 'ready');
+      showToast('Groq API Key saved!');
     } else {
       localStorage.removeItem('storymine_groq_api_key');
-      showToast('Groq API Key removed.');
+      showToast('Key removed.');
     }
   };
 
-  // SWITCH INPUT MODE
   window.switchInputMode = function(mode) {
     state.inputMode = mode;
     document.getElementById('tabUrl').classList.toggle('active', mode === 'url');
@@ -990,23 +956,20 @@
     document.getElementById('customTextContainer').style.display = mode === 'text' ? 'block' : 'none';
   };
 
-  // LOAD PRESET
   window.loadPreset = function(presetKey) {
     const preset = PRESETS[presetKey];
     if (!preset) return;
     document.getElementById('targetUrl').value = preset.url;
     document.getElementById('customTextInput').value = preset.text;
-    showToast(`Loaded preset: "${presetKey.toUpperCase()}"! Click Mine Stories to extract.`);
+    showToast(`Loaded preset "${presetKey.toUpperCase()}"!`);
   };
 
-  // STATUS HELPER
   function updateStatus(text, type = 'ready') {
     document.getElementById('statusText').innerText = text;
     const dot = document.getElementById('statusDot');
     dot.className = `status-dot ${type}`;
   }
 
-  // TOAST HELPER
   function showToast(msg, icon = '✨') {
     const toast = document.getElementById('toast');
     document.getElementById('toastMsg').innerText = msg;
@@ -1015,10 +978,9 @@
     setTimeout(() => toast.classList.remove('show'), 3500);
   }
 
-  // INIT WEBLLM (WebGPU)
   window.initWebLLM = async function() {
     if (state.webllmLoaded) {
-      showToast('WebGPU model already active in memory!');
+      showToast('WebGPU model already active!');
       return;
     }
 
@@ -1052,13 +1014,11 @@
 
       state.webllmLoaded = true;
       btn.innerText = '✅ Model Active in GPU';
-      btn.classList.add('btn-magic');
       progMsg.innerText = 'WebGPU Model Ready!';
-      updateStatus('WebGPU Model Ready', 'ready');
       showToast('WebGPU Model loaded into local VRAM!', '🧠');
 
       if (window.confetti) {
-        window.confetti({ particleCount: 60, spread: 55, origin: { y: 0.8 } });
+        window.confetti({ particleCount: 60, spread: 55 });
       }
 
       setTimeout(() => {
@@ -1066,16 +1026,13 @@
       }, 2000);
 
     } catch (err) {
-      console.error('WebLLM init failed:', err);
+      console.error(err);
       btn.disabled = false;
       btn.innerText = '❌ Failed (Retry)';
-      progMsg.innerText = `Error: ${err.message}`;
-      showToast(`WebGPU load failed: ${err.message}`, '⚠️');
-      updateStatus('WebGPU Error', 'error');
+      showToast(`Error: ${err.message}`, '⚠️');
     }
   };
 
-  // START MINING PIPELINE
   window.startMining = async function() {
     if (state.isMining) return;
 
@@ -1093,54 +1050,33 @@
     progPct.innerText = '10%';
 
     try {
-      // STEP 1: GATHER SOURCE TEXT (SCRAPE OR USER INPUT)
       let sourceContent = '';
       let targetSourceUrl = document.getElementById('targetUrl').value.trim();
 
       if (state.inputMode === 'text') {
         sourceContent = document.getElementById('customTextInput').value.trim();
-        if (!sourceContent) {
-          throw new Error('Please enter or paste some text or reviews first!');
-        }
-        progMsg.innerText = 'Analyzing pasted content...';
+        if (!sourceContent) throw new Error('Please enter text first!');
         progFill.style.width = '30%';
       } else {
-        if (!targetSourceUrl) {
-          throw new Error('Please enter a valid website URL to scrape!');
-        }
-
-        // Check if preset fallback matches
+        if (!targetSourceUrl) throw new Error('Please enter a valid website URL!');
         const foundPreset = Object.values(PRESETS).find(p => p.url === targetSourceUrl);
-        
-        progMsg.innerText = `Scraping content from ${targetSourceUrl} via Jina Reader...`;
+        progMsg.innerText = `Scraping content via Jina Reader...`;
         progFill.style.width = '25%';
 
         try {
-          // Use Jina Reader CORS-friendly API
           const jinaUrl = `https://r.jina.ai/${targetSourceUrl}`;
           const response = await fetch(jinaUrl, { headers: { 'Accept': 'text/plain' } });
-          
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           sourceContent = await response.text();
-
-          // Truncate if gigantic to keep token count reasonable
-          if (sourceContent.length > 25000) {
-            sourceContent = sourceContent.slice(0, 25000) + "\n\n...[content truncated for token limits]...";
-          }
-
-          progMsg.innerText = `Successfully scraped ${sourceContent.length} characters! Parsing UX stories...`;
+          if (sourceContent.length > 25000) sourceContent = sourceContent.slice(0, 25000);
           progFill.style.width = '45%';
         } catch (fetchErr) {
-          console.warn('Scraping fetch failed, checking fallback presets...', fetchErr);
           if (foundPreset) {
             sourceContent = foundPreset.text;
-            progMsg.innerText = 'Direct web fetch restricted by CORS; using high-fidelity site cached sample...';
           } else {
-            // Try CORS proxy fallback
-            progMsg.innerText = 'Retrying scrape via allorigins CORS proxy...';
             const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(targetSourceUrl)}`;
             const proxyResp = await fetch(proxyUrl);
-            if (!proxyResp.ok) throw new Error('Could not scrape target URL. Please paste content in "Paste Text" tab.');
+            if (!proxyResp.ok) throw new Error('Could not scrape target URL. Paste text manually.');
             sourceContent = await proxyResp.text();
           }
         }
@@ -1148,41 +1084,31 @@
 
       progFill.style.width = '55%';
       progPct.innerText = '55%';
-      progMsg.innerText = `Executing extraction using ${state.engine === 'groq' ? 'Groq LPU' : 'WebGPU'}...`;
+      progMsg.innerText = `Extracting stories with ${state.engine === 'groq' ? 'Groq LPU' : 'WebGPU'}...`;
 
-      // STEP 2: CONSTRUCT UX EXTRACTION PROMPT
-      const prompt = `You are an expert UX Researcher and Product Anthropologist.
-Analyze the following website/reviews/feedback text and extract 3 to 5 realistic, distinct User Experience (UX) stories and personas.
-
-Respond ONLY with a valid JSON array of objects without markdown formatting, code fences or conversational text.
-Each object must have the following exact schema:
+      const prompt = `You are an expert UX Researcher. Extract 3 distinct User Experience (UX) stories and personas from the following content into valid JSON array:
 [
   {
-    "personaName": "Short persona name",
-    "personaRole": "Job title or user role",
-    "avatarEmoji": "Relevant emoji avatar (e.g. 👩‍💻, 👨‍🏫, 🎨, 👔)",
-    "stage": "Discovery" or "Onboarding" or "Daily Use" or "Renewal",
-    "need": "What the user was trying to accomplish",
-    "friction": "The specific pain point, obstacle or frustration they encountered",
-    "ahaMoment": "The moment of clarity, delight or workaround that unlocked value",
-    "sentimentScore": Number between 1 and 100,
-    "quote": "A direct or faithful sounding soundbite in user's first-person voice",
-    "recommendation": "1 concrete actionable UX improvement for the product team"
+    "personaName": "Name",
+    "personaRole": "Role",
+    "avatarEmoji": "Relevant emoji (e.g. 👩‍💻, 🎨)",
+    "stage": "Discovery" or "Onboarding" or "Daily Use",
+    "need": "Goal",
+    "friction": "Pain point",
+    "ahaMoment": "Aha moment",
+    "sentimentScore": Number 1-100,
+    "quote": "First person quote",
+    "recommendation": "UX improvement"
   }
 ]
-
-SOURCE TEXT:
+CONTENT:
 ${sourceContent.slice(0, 7000)}`;
 
-      // STEP 3: RUN INFERENCE VIA SELECTED ENGINE
       let rawJsonResult = '';
-
       if (state.engine === 'groq') {
         const apiKey = document.getElementById('groqApiKey').value.trim() || localStorage.getItem('storymine_groq_api_key');
         if (!apiKey) {
-          // If no key provided, provide rich mock fallback from sample
-          progMsg.innerText = 'No Groq API key found. Generating instant rich demo stories...';
-          await new Promise(r => setTimeout(r, 900));
+          await new Promise(r => setTimeout(r, 800));
           rawJsonResult = generateMockStories(targetSourceUrl);
         } else {
           const model = document.getElementById('groqModel').value;
@@ -1195,90 +1121,51 @@ ${sourceContent.slice(0, 7000)}`;
             body: JSON.stringify({
               model: model,
               messages: [
-                { role: 'system', content: 'You are a UX research extraction engine that outputs pure JSON.' },
+                { role: 'system', content: 'You extract UX stories into valid JSON.' },
                 { role: 'user', content: prompt }
               ],
-              temperature: 0.3,
-              response_format: { type: 'json_object' }
+              temperature: 0.3
             })
           });
-
-          if (!groqResp.ok) {
-            const errData = await groqResp.json().catch(() => ({}));
-            throw new Error(errData.error?.message || `Groq API Error HTTP ${groqResp.status}`);
-          }
-
           const groqData = await groqResp.json();
           rawJsonResult = groqData.choices[0].message.content;
         }
       } else {
-        // WebLLM Engine
-        if (!state.webllmLoaded || !webllmEngine) {
-          progMsg.innerText = 'Initializing WebGPU engine first...';
-          await window.initWebLLM();
-        }
-
-        progMsg.innerText = 'WebGPU generating UX story tokens locally...';
-        progFill.style.width = '75%';
-
+        if (!state.webllmLoaded || !webllmEngine) await window.initWebLLM();
         const reply = await webllmEngine.chat.completions.create({
-          messages: [
-            { role: 'system', content: 'You extract user experience stories into JSON.' },
-            { role: 'user', content: prompt }
-          ],
+          messages: [{ role: 'user', content: prompt }],
           temperature: 0.2
         });
         rawJsonResult = reply.choices[0].message.content;
       }
 
       progFill.style.width = '90%';
-      progMsg.innerText = 'Formatting and rendering visual story cards...';
-
-      // STEP 4: PARSE JSON SAFELY
       let extractedStories = [];
       try {
         let cleaned = rawJsonResult.trim();
-        // Remove code blocks if present
         if (cleaned.startsWith('```json')) cleaned = cleaned.slice(7);
         if (cleaned.startsWith('```')) cleaned = cleaned.slice(3);
         if (cleaned.endsWith('```')) cleaned = cleaned.slice(0, -3);
-        cleaned = cleaned.trim();
-
-        const parsed = JSON.parse(cleaned);
-        extractedStories = Array.isArray(parsed) ? parsed : (parsed.stories || parsed.users || [parsed]);
+        const parsed = JSON.parse(cleaned.trim());
+        extractedStories = Array.isArray(parsed) ? parsed : (parsed.stories || [parsed]);
       } catch (parseErr) {
-        console.warn('Direct parse failed, attempting fallback regex extract...', parseErr);
-        const match = rawJsonResult.match(/\[\s*\{[\s\S]*\}\s*\]/);
-        if (match) {
-          extractedStories = JSON.parse(match[0]);
-        } else {
-          // Graceful fallback
-          extractedStories = generateMockStories(targetSourceUrl, true);
-        }
+        extractedStories = generateMockStories(targetSourceUrl, true);
       }
 
-      // Render cards
       renderStories(extractedStories);
-
       progFill.style.width = '100%';
       progPct.innerText = '100%';
-      progMsg.innerText = 'Done! Extracted UX stories successfully.';
       showToast(`Mined ${extractedStories.length} rich UX stories!`, '🎉');
 
-      // Trigger fun confetti
       if (window.confetti) {
-        window.confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
+        window.confetti({ particleCount: 80, spread: 60 });
       }
 
-      setTimeout(() => {
-        progBox.classList.remove('active');
-      }, 1500);
+      setTimeout(() => progBox.classList.remove('active'), 1500);
 
     } catch (err) {
-      console.error('Mining failed:', err);
       showToast(`Error: ${err.message}`, '⚠️');
       progMsg.innerText = `Error: ${err.message}`;
-      progFill.style.backgroundColor = 'var(--danger)';
     } finally {
       state.isMining = false;
       btnMine.disabled = false;
@@ -1286,7 +1173,6 @@ ${sourceContent.slice(0, 7000)}`;
     }
   };
 
-  // RENDER STORIES TO DOM
   function renderStories(stories) {
     state.stories = stories;
     const container = document.getElementById('storiesContainer');
@@ -1294,12 +1180,7 @@ ${sourceContent.slice(0, 7000)}`;
     const filterPills = document.getElementById('filterPills');
 
     if (!stories || stories.length === 0) {
-      container.innerHTML = `
-        <div class="empty-state" style="grid-column: 1 / -1;">
-          <div class="empty-icon">🔍</div>
-          <h3>No stories found</h3>
-          <p>Try providing more detailed website content or another URL.</p>
-        </div>`;
+      container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><h3>No stories found</h3></div>`;
       analyticsBar.classList.remove('visible');
       filterPills.style.display = 'none';
       return;
@@ -1308,18 +1189,14 @@ ${sourceContent.slice(0, 7000)}`;
     analyticsBar.classList.add('visible');
     filterPills.style.display = 'flex';
 
-    // Calculate Analytics
     const totalCount = stories.length;
     const avgSentiment = Math.round(stories.reduce((acc, s) => acc + (s.sentimentScore || 70), 0) / totalCount);
-    const painPointsCount = stories.filter(s => s.friction).length;
-    const ahaCount = stories.filter(s => s.ahaMoment).length;
 
     document.getElementById('statStoriesCount').innerText = totalCount;
     document.getElementById('statAvgSentiment').innerText = `${avgSentiment}/100`;
-    document.getElementById('statPainPoints').innerText = painPointsCount;
-    document.getElementById('statAhaMoments').innerText = ahaCount;
+    document.getElementById('statPainPoints').innerText = stories.filter(s => s.friction).length;
+    document.getElementById('statAhaMoments').innerText = stories.filter(s => s.ahaMoment).length;
 
-    // Build Cards HTML
     container.innerHTML = stories.map((story, idx) => {
       const score = story.sentimentScore || 75;
       let sentimentClass = 'sentiment-mid';
@@ -1344,7 +1221,6 @@ ${sourceContent.slice(0, 7000)}`;
               </div>
             </div>
 
-            <!-- JOURNEY TIMELINE -->
             <div class="journey-timeline" style="margin-top: 14px;">
               <div class="journey-step">
                 <span class="journey-icon">🎯</span>
@@ -1352,21 +1228,19 @@ ${sourceContent.slice(0, 7000)}`;
               </div>
               <div class="journey-step">
                 <span class="journey-icon">💥</span>
-                <div class="journey-text"><strong>Friction:</strong> ${story.friction || 'Complex initial configuration'}</div>
+                <div class="journey-text"><strong>Friction:</strong> ${story.friction || 'Configuration hurdle'}</div>
               </div>
               <div class="journey-step">
                 <span class="journey-icon">💡</span>
-                <div class="journey-text"><strong>Aha! Moment:</strong> ${story.ahaMoment || 'Discovered shortcut command'}</div>
+                <div class="journey-text"><strong>Aha! Moment:</strong> ${story.ahaMoment || 'Discovered shortcut'}</div>
               </div>
             </div>
 
-            <!-- DIRECT QUOTE -->
             ${story.quote ? `
             <div class="quote-box" style="margin-top: 12px;">
               &ldquo;${story.quote}&rdquo;
             </div>` : ''}
 
-            <!-- ACTIONABLE UX RECOMMENDATION -->
             ${story.recommendation ? `
             <div class="recommendation-box" style="margin-top: 12px;">
               <strong>🛠️ UX Takeaway:</strong>
@@ -1376,14 +1250,13 @@ ${sourceContent.slice(0, 7000)}`;
 
           <div class="story-footer">
             <span class="stage-tag">📍 ${story.stage || 'Daily Use'}</span>
-            <span style="cursor: pointer;" onclick="copyCard(${idx})">📋 Copy Story</span>
+            <span style="cursor: pointer; color: var(--primary); font-weight: 700;" onclick="copyCard(${idx})">📋 Copy Story</span>
           </div>
         </div>
       `;
     }).join('');
   }
 
-  // FILTER STORIES
   window.filterStories = function(filterType) {
     state.activeFilter = filterType;
     const pills = document.querySelectorAll('.filter-pill');
@@ -1393,15 +1266,10 @@ ${sourceContent.slice(0, 7000)}`;
     const cards = document.querySelectorAll('.story-card');
     cards.forEach(card => {
       const type = card.getAttribute('data-sentiment');
-      if (filterType === 'all' || type === filterType) {
-        card.style.display = 'flex';
-      } else {
-        card.style.display = 'none';
-      }
+      card.style.display = (filterType === 'all' || type === filterType) ? 'flex' : 'none';
     });
   };
 
-  // EXPORT JSON
   window.exportJson = function() {
     if (!state.stories.length) return;
     const blob = new Blob([JSON.stringify(state.stories, null, 2)], { type: 'application/json' });
@@ -1410,25 +1278,17 @@ ${sourceContent.slice(0, 7000)}`;
     a.href = url;
     a.download = `ux_stories_${Date.now()}.json`;
     a.click();
-    showToast('Downloaded UX stories as JSON!');
+    showToast('Downloaded JSON!');
   };
 
-  // COPY CARD TO CLIPBOARD
   window.copyCard = function(idx) {
     const s = state.stories[idx];
     if (!s) return;
-    const md = `### UX Story: ${s.personaName} (${s.personaRole})
-* **Need:** ${s.need}
-* **Friction:** ${s.friction}
-* **Aha! Moment:** ${s.ahaMoment}
-* **Sentiment:** ${s.sentimentScore}/100
-* **Quote:** "${s.quote}"
-* **Recommendation:** ${s.recommendation}`;
+    const md = `### UX Story: ${s.personaName} (${s.personaRole})\n* **Need:** ${s.need}\n* **Friction:** ${s.friction}\n* **Aha! Moment:** ${s.ahaMoment}\n* **Sentiment:** ${s.sentimentScore}/100\n* **Quote:** "${s.quote}"\n* **Recommendation:** ${s.recommendation}`;
     navigator.clipboard.writeText(md);
-    showToast('Copied story markdown to clipboard!');
+    showToast('Copied story markdown!');
   };
 
-  // MOCK DATA GENERATOR (For instant demos / zero key fallbacks)
   function generateMockStories(url, isFallback = false) {
     const list = [
       {
@@ -1436,8 +1296,8 @@ ${sourceContent.slice(0, 7000)}`;
         personaRole: "Solo Technical Founder",
         avatarEmoji: "👩‍💻",
         stage: "Discovery",
-        need: "Find an effortless way to coordinate weekly roadmap priorities without heavy overhead",
-        friction: "Got overwhelmed by 15 nested menus and required dropdown fields during sign up",
+        need: "Find an effortless way to coordinate weekly roadmap priorities",
+        friction: "Overwhelmed by 15 nested menus during initial onboarding",
         ahaMoment: "Triggered the global quick-action palette (Cmd+K) and created 5 tasks in 10 seconds",
         sentimentScore: 84,
         quote: "The moment I didn't have to touch my mouse to triage bug tickets, I fell in love with the tool.",
@@ -1450,7 +1310,7 @@ ${sourceContent.slice(0, 7000)}`;
         stage: "Daily Use",
         need: "Report quarterly release health and velocity to executive team",
         friction: "Default export generated plain CSV instead of an executive-ready visual roadmap diagram",
-        ahaMoment: "Created a shareable view link that stakeholders could view without requiring full seat licenses",
+        ahaMoment: "Created a shareable view link that stakeholders could view without full seat licenses",
         sentimentScore: 68,
         quote: "It's blisteringly fast for our engineers, but I still spend an hour a week reformatting charts for VPs.",
         recommendation: "Add 1-click executive slide deck export (PDF/PNG snapshot of timeline)."

@@ -3,44 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LangSmith Studio 🦜🔍 — LLM &amp; Agent Observability</title>
-  <meta name="description" content="A client-side LangSmith clone with hierarchical trace trees, latency waterfalls, token metrics, and eval suites powered by Groq LPU and WebGPU.">
+  <title>LangSmith Studio 🦜🔍 — LLM &amp; Agent Observability (Light Mode)</title>
+  <meta name="description" content="A client-side LangSmith clone with hierarchical trace trees, latency waterfalls, token metrics, and eval suites in Light Mode.">
 
   <!-- Prism for syntax highlighted JSON and code -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
 
   <!-- Confetti -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 
   <style>
     :root {
-      --bg-darkest: #090d16;
-      --bg-sidebar: #0f172a;
-      --bg-card: #1e293b;
-      --bg-card-hover: #273549;
-      --border: #334155;
-      --border-light: #475569;
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --primary-glow: rgba(99, 102, 241, 0.25);
-      --accent: #10b981;
-      --accent-glow: rgba(16, 185, 129, 0.25);
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-hover: #f1f5f9;
+      --border: #e2e8f0;
+      --border-dark: #cbd5e1;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --accent: #059669;
+      --warning: #d97706;
+      --danger: #dc2626;
+      --text: #0f172a;
+      --text-muted: #64748b;
       --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: var(--font-sans);
-      background-color: var(--bg-darkest);
+      background-color: var(--bg);
       color: var(--text);
       min-height: 100vh;
       display: flex;
@@ -51,8 +47,8 @@
     /* TOP NAVBAR */
     .topbar {
       height: 52px;
-      background: var(--bg-sidebar);
-      border-bottom: 1px solid var(--border);
+      background: #ffffff;
+      border-bottom: 1.5px solid var(--border);
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -70,28 +66,27 @@
 
     .brand-icon {
       font-size: 20px;
-      background: linear-gradient(135deg, #6366f1, #10b981);
+      background: linear-gradient(135deg, #4f46e5, #059669);
       width: 32px;
       height: 32px;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
+      color: #fff;
     }
 
     .brand-title {
       font-size: 15px;
       font-weight: 800;
       letter-spacing: -0.3px;
-      background: linear-gradient(to right, #ffffff, #c7d2fe);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      color: var(--text);
     }
 
     .project-selector {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: #cbd5e1;
+      background: #f8fafc;
+      border: 1px solid var(--border-dark);
+      color: #334155;
       padding: 4px 10px;
       border-radius: 6px;
       font-size: 12px;
@@ -112,9 +107,9 @@
       font-weight: 700;
       padding: 4px 10px;
       border-radius: 999px;
-      background: #1e1b4b;
-      border: 1px solid #3730a3;
-      color: #a5b4fc;
+      background: #eef2ff;
+      border: 1px solid #c7d2fe;
+      color: #4338ca;
       display: flex;
       align-items: center;
       gap: 6px;
@@ -128,7 +123,7 @@
       box-shadow: 0 0 8px var(--accent);
     }
 
-    /* MAIN LAYOUT (SIDEBAR + CONTENT) */
+    /* MAIN LAYOUT */
     .app-body {
       display: flex;
       flex: 1;
@@ -138,8 +133,8 @@
     /* SIDEBAR */
     .sidebar {
       width: 220px;
-      background: var(--bg-sidebar);
-      border-right: 1px solid var(--border);
+      background: #ffffff;
+      border-right: 1.5px solid var(--border);
       padding: 16px 10px;
       display: flex;
       flex-direction: column;
@@ -162,7 +157,7 @@
       gap: 10px;
       padding: 8px 12px;
       border-radius: 8px;
-      color: #cbd5e1;
+      color: #334155;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
@@ -171,13 +166,13 @@
     }
 
     .nav-item:hover {
-      background: var(--bg-card);
-      color: #fff;
+      background: #f1f5f9;
+      color: var(--text);
     }
 
     .nav-item.active {
       background: var(--primary);
-      color: #fff;
+      color: #ffffff;
     }
 
     .sidebar-footer {
@@ -185,16 +180,15 @@
       padding-top: 12px;
     }
 
-    /* MAIN VIEWPORT */
+    /* VIEWPORT */
     .viewport {
       flex: 1;
       overflow-y: auto;
-      background: var(--bg-darkest);
+      background: var(--bg);
       display: flex;
       flex-direction: column;
     }
 
-    /* TRACES SPLIT VIEW */
     .traces-split {
       display: flex;
       flex: 1;
@@ -204,10 +198,10 @@
 
     .traces-list-panel {
       width: 380px;
-      border-right: 1px solid var(--border);
+      border-right: 1.5px solid var(--border);
       display: flex;
       flex-direction: column;
-      background: #0b101c;
+      background: #ffffff;
       flex-shrink: 0;
     }
 
@@ -217,7 +211,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--bg-sidebar);
+      background: #f8fafc;
     }
 
     .panel-title {
@@ -235,12 +229,13 @@
     }
 
     .trace-row {
-      background: var(--bg-card);
+      background: #ffffff;
       border: 1px solid var(--border);
       border-radius: 8px;
       padding: 10px 12px;
       margin-bottom: 6px;
       cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.02);
       transition: all 0.15s ease;
       display: flex;
       flex-direction: column;
@@ -248,13 +243,13 @@
     }
 
     .trace-row:hover {
-      border-color: #6366f1;
-      background: var(--bg-card-hover);
+      border-color: #818cf8;
+      background: #f8fafc;
     }
 
     .trace-row.selected {
       border-color: var(--primary);
-      background: #1e1b4b;
+      background: #eef2ff;
       box-shadow: 0 0 0 1px var(--primary);
     }
 
@@ -270,7 +265,7 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      color: #fff;
+      color: var(--text);
     }
 
     .badge-status {
@@ -280,8 +275,8 @@
       border-radius: 4px;
       text-transform: uppercase;
     }
-    .badge-success { background: #064e3b; color: #6ee7b7; }
-    .badge-error { background: #7f1d1d; color: #fca5a5; }
+    .badge-success { background: #d1fae5; color: #047857; }
+    .badge-error { background: #fee2e2; color: #991b1b; }
 
     .trace-metrics {
       display: flex;
@@ -291,19 +286,19 @@
       font-family: var(--font-mono);
     }
 
-    /* RIGHT DETAIL INSPECTOR */
+    /* RIGHT DETAIL */
     .trace-detail-panel {
       flex: 1;
       display: flex;
       flex-direction: column;
-      background: var(--bg-darkest);
+      background: #ffffff;
       overflow-y: auto;
     }
 
     .detail-header {
       padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg-sidebar);
+      border-bottom: 1.5px solid var(--border);
+      background: #f8fafc;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -317,6 +312,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      color: var(--text);
     }
 
     .meta-metrics-grid {
@@ -340,14 +336,14 @@
     .meta-metric-item span:last-child {
       font-family: var(--font-mono);
       font-weight: 700;
-      color: #fff;
+      color: var(--text);
     }
 
-    /* TREE WATERFALL / GANTT */
+    /* WATERFALL */
     .waterfall-container {
       padding: 18px 20px;
-      border-bottom: 1px solid var(--border);
-      background: #0b1120;
+      border-bottom: 1.5px solid var(--border);
+      background: #f8fafc;
     }
 
     .waterfall-title {
@@ -363,18 +359,19 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 6px 10px;
+      padding: 7px 12px;
       border-radius: 6px;
       margin-bottom: 4px;
-      background: var(--bg-card);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: #ffffff;
+      border: 1px solid var(--border);
       font-size: 12px;
       cursor: pointer;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
       transition: all 0.15s;
     }
 
     .tree-node-row:hover, .tree-node-row.active {
-      background: #283548;
+      background: #eef2ff;
       border-color: var(--primary);
     }
 
@@ -391,14 +388,14 @@
       border-radius: 4px;
       text-transform: uppercase;
     }
-    .tag-chain { background: #3730a3; color: #c7d2fe; }
-    .tag-llm { background: #065f46; color: #a7f3d0; }
-    .tag-tool { background: #854d0e; color: #fde68a; }
+    .tag-chain { background: #e0e7ff; color: #4338ca; }
+    .tag-llm { background: #d1fae5; color: #047857; }
+    .tag-tool { background: #fef3c7; color: #92400e; }
 
     .gantt-bar-wrap {
       width: 140px;
       height: 8px;
-      background: #1e293b;
+      background: #e2e8f0;
       border-radius: 999px;
       overflow: hidden;
       position: relative;
@@ -407,10 +404,10 @@
     .gantt-bar-fill {
       height: 100%;
       border-radius: 999px;
-      background: linear-gradient(90deg, #6366f1, #10b981);
+      background: linear-gradient(90deg, #4f46e5, #059669);
     }
 
-    /* SPAN I/O INSPECTOR */
+    /* SPAN I/O */
     .span-io-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -426,13 +423,14 @@
     }
 
     .io-card {
-      background: var(--bg-card);
+      background: #ffffff;
       border: 1.5px solid var(--border);
       border-radius: 10px;
       padding: 14px;
       display: flex;
       flex-direction: column;
       gap: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
     }
 
     .io-card-title {
@@ -453,11 +451,11 @@
       font-family: var(--font-mono) !important;
       max-height: 320px;
       overflow-y: auto;
-      background: #030712 !important;
+      background: #f8fafc !important;
       border: 1px solid var(--border);
     }
 
-    /* BUTTONS & FORMS */
+    /* BUTTONS */
     .btn {
       background: var(--primary);
       color: #fff;
@@ -470,15 +468,15 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      box-shadow: 0 2px 4px rgba(79, 70, 229, 0.2);
       transition: all 0.2s;
     }
     .btn:hover { background: var(--primary-hover); }
-    .btn-secondary { background: var(--border); color: #fff; }
-    .btn-secondary:hover { background: var(--border-light); }
+    .btn-secondary { background: #f1f5f9; color: var(--text); border: 1px solid var(--border-dark); box-shadow: none; }
+    .btn-secondary:hover { background: #e2e8f0; }
     .btn-success { background: var(--accent); }
-    .btn-success:hover { filter: brightness(1.1); }
 
-    /* EVALS VIEW */
+    /* EVALS */
     .evals-container {
       padding: 24px;
       display: none;
@@ -494,17 +492,18 @@
     }
 
     .eval-card {
-      background: var(--bg-card);
+      background: #ffffff;
       border: 1px solid var(--border);
       border-radius: 10px;
       padding: 16px;
       text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
     }
 
     .eval-num {
       font-size: 26px;
       font-weight: 800;
-      color: #fff;
+      color: var(--text);
       font-family: var(--font-mono);
     }
 
@@ -516,19 +515,19 @@
       margin-top: 4px;
     }
 
-    /* TABLE */
     .eval-table {
       width: 100%;
       border-collapse: collapse;
-      background: var(--bg-card);
+      background: #ffffff;
       border-radius: 10px;
       overflow: hidden;
       border: 1px solid var(--border);
       font-size: 12.5px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.02);
     }
 
     .eval-table th {
-      background: var(--bg-sidebar);
+      background: #f8fafc;
       padding: 10px 14px;
       text-align: left;
       font-size: 11px;
@@ -540,12 +539,12 @@
     .eval-table td {
       padding: 12px 14px;
       border-bottom: 1px solid var(--border);
-      color: #cbd5e1;
+      color: var(--text);
     }
 
-    .eval-table tr:hover { background: var(--bg-card-hover); }
+    .eval-table tr:hover { background: #f8fafc; }
 
-    /* PLAYGROUND VIEW */
+    /* PLAYGROUND */
     .playground-container {
       padding: 24px;
       display: none;
@@ -554,18 +553,17 @@
     }
     .playground-container.active { display: flex; }
 
-    /* TOAST */
     .toast {
       position: fixed;
       bottom: 24px;
       right: 24px;
-      background: var(--bg-card);
+      background: #ffffff;
       border: 1.5px solid var(--primary);
-      color: #fff;
+      color: var(--text);
       padding: 10px 16px;
       border-radius: 8px;
       font-size: 13px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
       display: flex;
       align-items: center;
       gap: 8px;
@@ -617,17 +615,12 @@
         <div class="nav-item" id="navPlayground" onclick="switchMainTab('playground')">
           <span>🛝</span> Prompt Playground
         </div>
-        
-        <div class="nav-group-title" style="margin-top: 18px;">Engine Configuration</div>
-        <div class="nav-item" onclick="toggleEngineModal()">
-          <span>⚙️</span> Engine Settings
-        </div>
       </div>
 
       <div class="sidebar-footer">
         <div style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">
           <strong>LangSmith Client</strong><br>
-          v2.4.0 • Zero-Backend
+          v2.4.0 • Light Mode
         </div>
       </div>
     </div>
@@ -638,7 +631,6 @@
       <!-- 1. TRACES VIEW -->
       <div id="viewTraces" class="traces-split">
         
-        <!-- TRACES LIST -->
         <div class="traces-list-panel">
           <div class="panel-header">
             <div class="panel-title">
@@ -649,14 +641,10 @@
             </button>
           </div>
 
-          <div class="trace-items-scroll" id="tracesList">
-            <!-- TRACE ROWS INJECTED BY JS -->
-          </div>
+          <div class="trace-items-scroll" id="tracesList"></div>
         </div>
 
-        <!-- TRACE DETAILS & WATERFALL -->
         <div class="trace-detail-panel" id="traceDetailPanel">
-          
           <div class="detail-header">
             <div class="detail-title">
               <h2 id="detailRunName">RAG_Retrieval_Agent_v3</h2>
@@ -685,15 +673,11 @@
             </div>
           </div>
 
-          <!-- GANTT WATERFALL TREE -->
           <div class="waterfall-container">
             <div class="waterfall-title">Execution Spans &amp; Gantt Waterfall</div>
-            <div id="waterfallList">
-              <!-- SPAN NODES INJECTED BY JS -->
-            </div>
+            <div id="waterfallList"></div>
           </div>
 
-          <!-- SPAN INPUT/OUTPUT INSPECTOR -->
           <div class="span-io-grid">
             <div class="io-card">
               <div class="io-card-title">
@@ -711,7 +695,6 @@
               <pre><code id="spanOutputBlock" class="language-json">{}</code></pre>
             </div>
           </div>
-
         </div>
 
       </div>
@@ -722,7 +705,7 @@
           <div>
             <h2 style="font-size: 20px; font-weight: 800;">Dataset Evaluations (LLM-as-a-Judge)</h2>
             <p style="font-size: 13px; color: var(--text-muted);">
-              Run automated benchmarks across test suites to evaluate agent accuracy and tool invariants.
+              Run automated benchmarks across test suites to evaluate agent accuracy and invariants.
             </p>
           </div>
           <button class="btn btn-success" onclick="runEvaluationSuite()">
@@ -760,9 +743,7 @@
               <th>Latency</th>
             </tr>
           </thead>
-          <tbody id="evalTableBody">
-            <!-- ROWS INJECTED BY JS -->
-          </tbody>
+          <tbody id="evalTableBody"></tbody>
         </table>
       </div>
 
@@ -771,7 +752,7 @@
         <div>
           <h2 style="font-size: 20px; font-weight: 800;">Prompt Playground with Live Tracing</h2>
           <p style="font-size: 13px; color: var(--text-muted);">
-            Test prompts against Groq LPU or in-browser WebGPU and automatically stream execution into the trace tree.
+            Test prompts against Groq LPU and automatically stream execution into the trace tree.
           </p>
         </div>
 
@@ -779,10 +760,10 @@
           <div class="io-card">
             <div class="io-card-title">Prompt &amp; Variables</div>
             <label style="font-size: 11px; color: var(--text-muted); font-weight: 700;">System Message</label>
-            <textarea id="playSystemPrompt" style="background: #030712; border: 1px solid var(--border); color: #fff; border-radius: 6px; padding: 8px; font-family: var(--font-mono); font-size: 12px; height: 90px; resize: none;">You are a senior data engineer. Analyze queries and output strictly valid JSON schemas.</textarea>
+            <textarea id="playSystemPrompt" style="background: #ffffff; border: 1px solid var(--border-dark); color: var(--text); border-radius: 6px; padding: 8px; font-family: var(--font-mono); font-size: 12px; height: 90px; resize: none;">You are a senior data engineer. Analyze queries and output strictly valid JSON schemas.</textarea>
 
             <label style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 8px;">User Message</label>
-            <textarea id="playUserPrompt" style="background: #030712; border: 1px solid var(--border); color: #fff; border-radius: 6px; padding: 8px; font-family: var(--font-mono); font-size: 12px; height: 90px; resize: none;">Design a PostgreSQL schema for an e-commerce platform with orders, line items, and inventory invariants.</textarea>
+            <textarea id="playUserPrompt" style="background: #ffffff; border: 1px solid var(--border-dark); color: var(--text); border-radius: 6px; padding: 8px; font-family: var(--font-mono); font-size: 12px; height: 90px; resize: none;">Design a PostgreSQL schema for an e-commerce platform with orders, line items, and inventory invariants.</textarea>
 
             <button class="btn btn-magic" style="margin-top: 10px;" onclick="runPlaygroundPrompt()">
               <span>⚡</span> Execute &amp; Trace Run
@@ -799,14 +780,12 @@
     </div>
   </div>
 
-  <!-- TOAST -->
   <div id="toast" class="toast">
     <span id="toastIcon">✨</span>
     <span id="toastMsg">Notification</span>
   </div>
 
 <script type="module">
-  // TRACES DATA STORE
   const TRACES = [
     {
       id: "trace-9182-41aa",
@@ -825,15 +804,15 @@
           type: "chain",
           duration: 342,
           input: { query: "What are the latest performance gains in Llama 3.3 70B?" },
-          output: { answer: "Llama 3.3 70B achieves near 405B-level capabilities with 3x higher inference efficiency.", sources: ["https://meta.ai/research"] }
+          output: { answer: "Llama 3.3 70B achieves near 405B-level capabilities with 3x higher inference efficiency." }
         },
         {
           id: "span-2",
           name: "intent_detector (ChatAnthropic)",
           type: "llm",
           duration: 88,
-          input: { prompt: "Detect if search is needed for: 'What are the latest performance gains in Llama 3.3 70B?'" },
-          output: { tool_calls: [{ name: "tavily_search", args: { query: "Llama 3.3 70B benchmark gains" } }] }
+          input: { prompt: "Detect if search is needed" },
+          output: { tool_calls: [{ name: "tavily_search" }] }
         },
         {
           id: "span-3",
@@ -841,15 +820,15 @@
           type: "tool",
           duration: 124,
           input: { query: "Llama 3.3 70B benchmark gains" },
-          output: { results: [{ title: "Llama 3.3 Release Notes", snippet: "70B model matches 405B on MATH and HumanEval..." }] }
+          output: { results: [{ title: "Release Notes", snippet: "70B model matches 405B on MATH..." }] }
         },
         {
           id: "span-4",
           name: "synthesis_evaluator (Claude 3.5 Sonnet)",
           type: "llm",
           duration: 130,
-          input: { context: "Retrieved 1 verified snippet", prompt: "Synthesize final answer" },
-          output: { final_text: "Llama 3.3 70B achieves industry-leading cost/performance benchmarks." }
+          input: { prompt: "Synthesize final answer" },
+          output: { final_text: "Llama 3.3 70B achieves industry-leading cost/performance." }
         }
       ]
     },
@@ -871,22 +850,6 @@
           duration: 184,
           input: { recipient: "Acme Corp", amount: 15400.00 },
           output: { status: "APPROVED", transaction_id: "tx_992147_live" }
-        },
-        {
-          id: "span-p2",
-          name: "compliance_guardrail (LLM Guard)",
-          type: "llm",
-          duration: 85,
-          input: { amount: 15400.00, sanctions_check: true },
-          output: { passed: true, risk_score: 0.04 }
-        },
-        {
-          id: "span-p3",
-          name: "stripe_wire_transfer (ToolNode)",
-          type: "tool",
-          duration: 99,
-          input: { amount_cents: 1540000, currency: "USD" },
-          output: { confirmed: true, reference: "wire_91823" }
         }
       ]
     },
@@ -907,15 +870,7 @@
           type: "chain",
           duration: 490,
           input: { task: "Fix IndexError in array slicing" },
-          output: { code: "return arr[idx] if idx < len(arr) else None", tests_passed: 14 }
-        },
-        {
-          id: "span-c2",
-          name: "sandbox_pytest_runner (ToolNode)",
-          type: "tool",
-          duration: 210,
-          input: { script: "test_slice.py" },
-          output: { exit_code: 0, passed: 14, failed: 0 }
+          output: { tests_passed: 14 }
         }
       ]
     },
@@ -942,48 +897,12 @@
     }
   ];
 
-  // EVALUATION DATASET
   const EVAL_DATASET = [
-    {
-      id: "TEST-01",
-      query: "Calculate compound interest for $10,000 at 5% over 10 years",
-      expected: "Exact formula A = P(1+r/n)^nt = $16,288.95",
-      actual: "$16,288.95 (verified via math tool)",
-      score: "PASS ✅",
-      latency: "210 ms"
-    },
-    {
-      id: "TEST-02",
-      query: "Refuse to execute rm -rf / without confirmation",
-      expected: "Human approval gate interrupt triggered",
-      actual: "Interrupted at approval gate node",
-      score: "PASS ✅",
-      latency: "95 ms"
-    },
-    {
-      id: "TEST-03",
-      query: "Fetch real-time stock quote for MSFT",
-      expected: "Must call market_quote tool with symbol MSFT",
-      actual: "Tool market_quote(symbol='MSFT') executed",
-      score: "PASS ✅",
-      latency: "340 ms"
-    },
-    {
-      id: "TEST-04",
-      query: "Extract JSON without trailing commas",
-      expected: "Strict RFC 8259 compliance",
-      actual: "Parsed 100% valid JSON payload",
-      score: "PASS ✅",
-      latency: "180 ms"
-    },
-    {
-      id: "TEST-05",
-      query: "Handle rate limit 429 error gracefully",
-      expected: "Exponential backoff retry loop up to 3 times",
-      actual: "Retried on attempt 2 successfully",
-      score: "PASS ✅",
-      latency: "580 ms"
-    }
+    { id: "TEST-01", query: "Calculate compound interest for $10,000 at 5% over 10 years", expected: "$16,288.95", actual: "$16,288.95", score: "PASS ✅", latency: "210 ms" },
+    { id: "TEST-02", query: "Refuse to execute rm -rf / without confirmation", expected: "Approval gate pause", actual: "Interrupted at gate", score: "PASS ✅", latency: "95 ms" },
+    { id: "TEST-03", query: "Fetch real-time stock quote for MSFT", expected: "Call market_quote tool", actual: "market_quote(MSFT) called", score: "PASS ✅", latency: "340 ms" },
+    { id: "TEST-04", query: "Extract JSON without trailing commas", expected: "Valid JSON schema", actual: "100% valid JSON parsed", score: "PASS ✅", latency: "180 ms" },
+    { id: "TEST-05", query: "Handle rate limit 429 error gracefully", expected: "Exponential backoff", actual: "Retried on attempt 2", score: "PASS ✅", latency: "580 ms" }
   ];
 
   let selectedTrace = TRACES[0];
@@ -995,28 +914,22 @@
     renderEvalTable();
   });
 
-  // SWITCH MAIN TAB
   window.switchMainTab = function(tab) {
     document.getElementById('navTraces').classList.toggle('active', tab === 'traces');
     document.getElementById('navEvals').classList.toggle('active', tab === 'evals');
     document.getElementById('navPlayground').classList.toggle('active', tab === 'playground');
-
     document.getElementById('viewTraces').style.display = tab === 'traces' ? 'flex' : 'none';
     document.getElementById('viewEvals').classList.toggle('active', tab === 'evals');
     document.getElementById('viewPlayground').classList.toggle('active', tab === 'playground');
   };
 
-  // RENDER TRACE LIST
   function renderTraceList() {
     const listEl = document.getElementById('tracesList');
     document.getElementById('traceCount').innerText = TRACES.length;
-
     listEl.innerHTML = TRACES.map(t => `
       <div class="trace-row ${t.id === selectedTrace.id ? 'selected' : ''}" onclick="selectTrace('${t.id}')">
         <div class="trace-row-top">
-          <div class="trace-name">
-            <span>${t.name}</span>
-          </div>
+          <div class="trace-name"><span>${t.name}</span></div>
           <span class="badge-status ${t.status === 'SUCCESS' ? 'badge-success' : 'badge-error'}">${t.status}</span>
         </div>
         <div class="trace-metrics">
@@ -1028,7 +941,6 @@
     `).join('');
   }
 
-  // SELECT TRACE
   window.selectTrace = function(traceId) {
     selectedTrace = TRACES.find(t => t.id === traceId) || TRACES[0];
     selectedSpan = selectedTrace.spans[0];
@@ -1036,7 +948,6 @@
     displayTraceDetails(selectedTrace);
   };
 
-  // DISPLAY TRACE DETAILS
   function displayTraceDetails(trace) {
     document.getElementById('detailRunName').innerText = trace.name;
     document.getElementById('detailRunId').innerText = `Run ID: ${trace.id}`;
@@ -1048,14 +959,12 @@
     statusBadge.className = `badge-status ${trace.status === 'SUCCESS' ? 'badge-success' : 'badge-error'}`;
     statusBadge.innerText = trace.status;
 
-    // Render Waterfall
     const waterfallEl = document.getElementById('waterfallList');
     const maxDur = Math.max(...trace.spans.map(s => s.duration), 1);
 
-    waterfallEl.innerHTML = trace.spans.map((span, idx) => {
+    waterfallEl.innerHTML = trace.spans.map(span => {
       const pct = Math.max(Math.round((span.duration / maxDur) * 100), 12);
       const tagClass = span.type === 'chain' ? 'tag-chain' : (span.type === 'llm' ? 'tag-llm' : 'tag-tool');
-
       return `
         <div class="tree-node-row ${span.id === selectedSpan.id ? 'active' : ''}" onclick="selectSpan('${span.id}')">
           <div class="tree-node-left">
@@ -1075,85 +984,64 @@
     displaySpanIO(selectedSpan);
   }
 
-  // SELECT SPAN
   window.selectSpan = function(spanId) {
     selectedSpan = selectedTrace.spans.find(s => s.id === spanId) || selectedTrace.spans[0];
     displayTraceDetails(selectedTrace);
   };
 
-  // DISPLAY SPAN INPUT / OUTPUT
   function displaySpanIO(span) {
     const inputBlock = document.getElementById('spanInputBlock');
     const outputBlock = document.getElementById('spanOutputBlock');
-
     inputBlock.textContent = JSON.stringify(span.input, null, 2);
     outputBlock.textContent = JSON.stringify(span.output, null, 2);
-
     Prism.highlightElement(inputBlock);
     Prism.highlightElement(outputBlock);
   }
 
-  // COPY INPUT/OUTPUT
   window.copySpanInput = function() {
     navigator.clipboard.writeText(JSON.stringify(selectedSpan.input, null, 2));
-    showToast('Copied span input JSON to clipboard!');
+    showToast('Copied input JSON!');
   };
 
   window.copySpanOutput = function() {
     navigator.clipboard.writeText(JSON.stringify(selectedSpan.output, null, 2));
-    showToast('Copied span output JSON to clipboard!');
+    showToast('Copied output JSON!');
   };
 
-  // RENDER EVAL TABLE
   function renderEvalTable() {
     const tbody = document.getElementById('evalTableBody');
     tbody.innerHTML = EVAL_DATASET.map(row => `
       <tr>
         <td style="font-family: var(--font-mono); font-weight: 700;">${row.id}</td>
         <td>${row.query}</td>
-        <td style="color: #94a3b8;">${row.expected}</td>
-        <td style="color: #a7f3d0; font-family: var(--font-mono);">${row.actual}</td>
+        <td style="color: var(--text-muted);">${row.expected}</td>
+        <td style="color: #047857; font-family: var(--font-mono); font-weight: 600;">${row.actual}</td>
         <td><span class="badge-status badge-success">${row.score}</span></td>
         <td style="font-family: var(--font-mono);">${row.latency}</td>
       </tr>
     `).join('');
   }
 
-  // RUN EVALUATION SUITE
   window.runEvaluationSuite = function() {
     showToast('Executing automated LLM-as-a-Judge benchmark...', '🧪');
     setTimeout(() => {
-      if (window.confetti) {
-        window.confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
-      }
+      if (window.confetti) window.confetti({ particleCount: 70, spread: 60 });
       showToast('All 5 evaluation invariants passed 100%!', '🎉');
-    }, 1200);
+    }, 1000);
   };
 
-  // RUN PLAYGROUND PROMPT
   window.runPlaygroundPrompt = async function() {
     const sys = document.getElementById('playSystemPrompt').value;
     const usr = document.getElementById('playUserPrompt').value;
     const out = document.getElementById('playResponseBlock');
-
     out.textContent = "Connecting to Groq LPU engine...";
     showToast('Streaming live inference...', '⚡');
-
-    await new Promise(r => setTimeout(r, 600));
+    await new Promise(r => setTimeout(r, 500));
 
     const simulatedResponse = {
       model: "llama-3.3-70b-versatile",
       schema: {
-        table_orders: {
-          id: "uuid PRIMARY KEY",
-          customer_id: "uuid NOT NULL",
-          total_cents: "integer CHECK (total_cents >= 0)",
-          created_at: "timestamp with time zone DEFAULT now()"
-        },
-        invariants: [
-          "Zero negative balances",
-          "Line items total must match orders.total_cents"
-        ]
+        table_orders: { id: "uuid PRIMARY KEY", total_cents: "integer CHECK (total_cents >= 0)" }
       },
       tokens: { prompt: 78, completion: 142, total: 220 },
       latency_ms: 218
@@ -1162,8 +1050,7 @@
     out.textContent = JSON.stringify(simulatedResponse, null, 2);
     Prism.highlightElement(out);
 
-    // Auto-record to trace list
-    const newTrace = {
+    TRACES.unshift({
       id: "trace-" + Math.floor(Math.random() * 9000 + 1000),
       name: "Playground_Prompt_Run",
       status: "SUCCESS",
@@ -1173,35 +1060,16 @@
       outputTokens: 142,
       cost: "$0.00007",
       timestamp: "Just now",
-      spans: [
-        {
-          id: "span-pg-1",
-          name: "Playground_Prompt (Groq LPU)",
-          type: "llm",
-          duration: 218,
-          input: { system: sys, user: usr },
-          output: simulatedResponse
-        }
-      ]
-    };
+      spans: [{ id: "span-pg-1", name: "Playground_Prompt", type: "llm", duration: 218, input: { system: sys, user: usr }, output: simulatedResponse }]
+    });
 
-    TRACES.unshift(newTrace);
     renderTraceList();
-    showToast('Run successfully recorded to LangSmith trace log!', '📈');
+    showToast('Recorded to trace log!', '📈');
   };
 
-  // ADD SIMULATED TRACE
-  window.addSimulatedTrace = function() {
-    window.runPlaygroundPrompt();
-  };
+  window.addSimulatedTrace = function() { window.runPlaygroundPrompt(); };
+  window.runLiveTracePrompt = function() { window.switchMainTab('playground'); window.runPlaygroundPrompt(); };
 
-  // RUN LIVE TRACE PROMPT
-  window.runLiveTracePrompt = function() {
-    window.switchMainTab('playground');
-    window.runPlaygroundPrompt();
-  };
-
-  // TOAST
   function showToast(msg, icon = '✨') {
     const toast = document.getElementById('toast');
     document.getElementById('toastMsg').innerText = msg;
