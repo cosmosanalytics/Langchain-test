@@ -559,7 +559,7 @@
       </div>
     </div>
     <div class="header-badges">
-      <span class="pill claude">⚡ Claude 3.5 Sonnet</span>
+      <span class="pill claude">🔌 Claude LangChain Plugin</span>
       <span class="pill langgraph">🕸️ LangGraph StateGraph</span>
       <span class="pill" id="engineStatusBadge">🟢 Engine: Groq LPU</span>
     </div>
@@ -648,10 +648,10 @@
     <div class="prompt-footer">
       <div class="claude-settings">
         <div>
-          <label style="margin: 0; display: inline;">Target Claude LLM:</label>
+          <label style="margin: 0; display: inline;">Claude Plugin Target:</label>
           <select id="claudeTargetModel" style="width: auto; padding: 4px 8px; font-size: 12px; margin-left: 6px;">
-            <option value="claude-3-5-sonnet-20241022" selected>Claude 3.5 Sonnet (Latest)</option>
-            <option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku (Fast)</option>
+            <option value="claude-3-5-sonnet" selected>Claude 3.5 Sonnet (Plugin)</option>
+            <option value="claude-3-5-haiku">Claude 3.5 Haiku (Plugin)</option>
           </select>
         </div>
         <div>
@@ -692,6 +692,9 @@
         <button class="tab-btn" onclick="switchTab('simulator')">
           <span>🧪</span> In-Browser Agent Simulator
         </button>
+        <button class="tab-btn" onclick="switchTab('plugin')">
+          <span>🔌</span> Claude Plugin Setup
+        </button>
       </div>
 
       <div class="tabs-actions">
@@ -718,6 +721,13 @@
 
     <!-- TAB 2: CODE -->
     <div id="tabViewCode" class="view-panel">
+      <div style="background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-weight: 700; color: #166534;">🔌 Claude LangChain Plugin:</span>
+          <code style="background: #ffffff; padding: 3px 8px; border-radius: 4px; border: 1px solid #86efac; color: #15803d; font-family: var(--font-mono); font-weight: 600;">/plugin install langgraph-skills@langchain-plugins</code>
+        </div>
+        <span style="color: #15803d; font-weight: 600; font-size: 11.5px;">✓ init_chat_model plugin integration (Zero raw provider imports)</span>
+      </div>
       <pre><code id="codeBlock" class="language-python"># Generated LangChain &amp; LangGraph Python code will appear here...</code></pre>
     </div>
 
@@ -740,7 +750,7 @@
             <label>Execution Trace</label>
             <div id="simChain" class="sim-step-chain">
               <div class="sim-step-node" id="stepStart"><span>🟢 <strong>__start__</strong></span><span style="color: var(--text-muted);">Ready</span></div>
-              <div class="sim-step-node" id="stepAgent"><span>🤖 <strong>call_model (Claude)</strong></span><span style="color: var(--text-muted);">Pending</span></div>
+              <div class="sim-step-node" id="stepAgent"><span>🤖 <strong>call_model (Claude Plugin)</strong></span><span style="color: var(--text-muted);">Pending</span></div>
               <div class="sim-step-node" id="stepCondition"><span>⚖️ <strong>conditional_router</strong></span><span style="color: var(--text-muted);">Pending</span></div>
               <div class="sim-step-node" id="stepTools"><span>🛠️ <strong>tools_node</strong></span><span style="color: var(--text-muted);">Pending</span></div>
               <div class="sim-step-node" id="stepEnd"><span>🏁 <strong>__end__</strong></span><span style="color: var(--text-muted);">Pending</span></div>
@@ -761,6 +771,45 @@
   "confidence_score": null,
   "is_complete": false
 }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: CLAUDE PLUGIN SETUP -->
+    <div id="tabViewPlugin" class="view-panel">
+      <div style="background: var(--card-bg); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 24px;">
+        <h3 style="margin-top: 0; display: flex; align-items: center; gap: 8px; color: #166534; font-size: 17px;">
+          <span>🔌</span> Official Claude LangChain Plugin Setup
+        </h3>
+        <p style="color: var(--text-muted); font-size: 13.5px; margin-bottom: 16px;">
+          To allow Claude (in Claude Code CLI or Claude agent environments) to autonomously develop LangGraph workflows from natural language inputs, enable the official LangChain plugin marketplace:
+        </p>
+
+        <div style="background: #0f172a; color: #f8fafc; padding: 18px 22px; border-radius: 8px; font-family: var(--font-mono); font-size: 13px; line-height: 1.8; margin-bottom: 20px;">
+          <span style="color: #64748b;"># 1. Add official LangChain Plugin marketplace to Claude Code</span><br>
+          <span style="color: #38bdf8;">/plugin</span> marketplace add langchain-ai/langchain-plugins<br><br>
+          <span style="color: #64748b;"># 2. Install LangGraph &amp; LangChain Skills for Claude</span><br>
+          <span style="color: #38bdf8;">/plugin</span> install langgraph-skills@langchain-plugins<br>
+          <span style="color: #38bdf8;">/plugin</span> install langchain-mcp@langchain-plugins<br><br>
+          <span style="color: #64748b;"># 3. Reload plugins</span><br>
+          <span style="color: #38bdf8;">/reload-plugins</span><br><br>
+          <span style="color: #64748b;"># 4. Now speak in natural language to Claude:</span><br>
+          <span style="color: #4ade80;">claude&gt;</span> "Build a Self-Reflective RAG Agent using LangGraph with evaluation loops"
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 16px;">
+            <div style="font-weight: 700; color: #0f172a; margin-bottom: 6px;">🧠 Dynamic Skill Activation</div>
+            <div style="font-size: 12.5px; color: var(--text-muted);">
+              Claude dynamically triggers <code>langgraph-skills</code>, automatically architecting TypedDict states, cyclic branches, and checkpointers.
+            </div>
+          </div>
+          <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 16px;">
+            <div style="font-weight: 700; color: #0f172a; margin-bottom: 6px;">⚡ Clean Plugin Abstraction</div>
+            <div style="font-size: 12.5px; color: var(--text-muted);">
+              Generated code utilizes modern <code>init_chat_model("claude-3-5-sonnet")</code> with zero vendor-specific raw package coupling.
+            </div>
           </div>
         </div>
       </div>
@@ -813,9 +862,13 @@
     eval_check -- "Irrelevant (Rewrite)" --> rewriter[Node: Query Rewriter]
     rewriter --> retriever
     generator --> __end__([End])`,
-      code: `import os
+      code: `# Generated via Claude LangChain Plugin (langchain-skills@langchain-plugins)
+# Marketplace: /plugin marketplace add langchain-ai/langchain-plugins
+# Skill: /plugin install langgraph-skills@langchain-plugins
+
+import os
 from typing import Annotated, Literal, TypedDict
-from langchain_anthropic import ChatAnthropic
+from langchain.chat_models import init_chat_model
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
@@ -828,10 +881,8 @@ class RAGState(TypedDict):
     relevance_score: float
     retry_count: int
 
-llm = ChatAnthropic(
-    model="claude-3-5-sonnet-20241022",
-    temperature=0.1
-)
+# Initialize Claude via LangChain Plugin
+llm = init_chat_model("claude-3-5-sonnet", temperature=0.1)
 
 def agent_node(state: RAGState) -> dict:
     prompt = f"Analyze user intent: '{state['query']}'"
@@ -878,8 +929,11 @@ app = workflow.compile(checkpointer=MemorySaver())`
     gate -- "Rejected" --> notifier[Node: Rejection Notification]
     executor --> __end__([End])
     notifier --> __end__`,
-      code: `from typing import TypedDict
-from langchain_anthropic import ChatAnthropic
+      code: `# Generated via Claude LangChain Plugin (langchain-skills@langchain-plugins)
+# Skill: /plugin install langgraph-skills@langchain-plugins
+
+from typing import TypedDict
+from langchain.chat_models import init_chat_model
 from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import MemorySaver
 
@@ -888,7 +942,9 @@ class PaymentState(TypedDict):
     amount: float
     human_approved: bool | None
 
-llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
+# Initialize Claude via LangChain Plugin
+llm = init_chat_model("claude-3-5-sonnet")
+
 workflow = StateGraph(PaymentState)
 workflow.add_node("drafter", lambda s: {"compliance_passed": True})
 workflow.add_node("executor", lambda s: {"tx_id": "tx_99182"})
@@ -907,14 +963,20 @@ app = workflow.compile(checkpointer=MemorySaver(), interrupt_before=["executor"]
     router -- "FINISH" --> __end__([End])
     researcher --> supervisor
     coder --> supervisor`,
-      code: `from typing import Annotated, TypedDict
-from langchain_anthropic import ChatAnthropic
+      code: `# Generated via Claude LangChain Plugin (langchain-skills@langchain-plugins)
+# Skill: /plugin install langgraph-skills@langchain-plugins
+
+from typing import Annotated, TypedDict
+from langchain.chat_models import init_chat_model
 from langgraph.graph import StateGraph, START, END
 from langgraph.graph.message import add_messages
 
 class MultiState(TypedDict):
     messages: Annotated[list, add_messages]
     next_node: str
+
+# Initialize Claude Supervisor via LangChain Plugin
+llm = init_chat_model("claude-3-5-sonnet")
 
 workflow = StateGraph(MultiState)
 workflow.add_node("supervisor", lambda s: {"next_node": "FINISH"})
@@ -932,13 +994,19 @@ app = workflow.compile()`
     test_check -- "Fail ❌" --> healer[Node: Stack Trace Diagnostician]
     healer --> coder
     deployer --> __end__([End])`,
-      code: `from typing import TypedDict
-from langchain_anthropic import ChatAnthropic
+      code: `# Generated via Claude LangChain Plugin (langchain-skills@langchain-plugins)
+# Skill: /plugin install langgraph-skills@langchain-plugins
+
+from typing import TypedDict
+from langchain.chat_models import init_chat_model
 from langgraph.graph import StateGraph, START, END
 
 class CodeState(TypedDict):
     code: str
     tests_passed: bool
+
+# Initialize Claude Coder via LangChain Plugin
+llm = init_chat_model("claude-3-5-sonnet")
 
 workflow = StateGraph(CodeState)
 workflow.add_node("coder", lambda s: {"code": "def solution(): return 42"})
@@ -1022,6 +1090,7 @@ app = workflow.compile()`
     document.getElementById('tabViewGraph').classList.toggle('active', tabName === 'graph');
     document.getElementById('tabViewCode').classList.toggle('active', tabName === 'code');
     document.getElementById('tabViewSimulator').classList.toggle('active', tabName === 'simulator');
+    document.getElementById('tabViewPlugin').classList.toggle('active', tabName === 'plugin');
 
     if (tabName === 'code') Prism.highlightAll();
   };

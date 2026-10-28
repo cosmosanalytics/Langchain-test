@@ -587,14 +587,15 @@
       failDeltaClass: "delta-bad",
       spans: [
         { name: "agent_executor (LangChain Agent)", type: "chain", duration: "1,240 ms", status: "failed", note: "Loop timed out trying to format JSON" },
-        { name: "ChatAnthropic (Claude 3.5 Sonnet)", type: "llm", duration: "410 ms", status: "ok", note: "Returned unstructured markdown instead of tool payload" },
+        { name: "Claude Plugin (Claude 3.5 Sonnet)", type: "llm", duration: "410 ms", status: "ok", note: "Returned unstructured markdown instead of tool payload" },
         { name: "database_query (ToolNode)", type: "tool", duration: "830 ms", status: "failed", error: "SQLSyntaxError: Unescaped quotes in WHERE condition caused crash." }
       ],
       code: `# v1.0: Naive Agent (Fails on unescaped quotes & unstructured output)
-from langchain_anthropic import ChatAnthropic
+from langchain.chat_models import init_chat_model
 from langchain_core.messages import HumanMessage
 
-llm = ChatAnthropic(model="claude-3-5-sonnet-20241022")
+# Initialize Claude via LangChain Plugin
+llm = init_chat_model("claude-3-5-sonnet")
 
 def run_agent(query: str):
     # Problem: No JSON schema binding or input validation
@@ -627,7 +628,7 @@ def run_agent(query: str):
       ],
       code: `# v2.0: Trace-Healed Agent (Structured Tool Binding & Sanitizer)
 from typing import TypedDict
-from langchain_anthropic import ChatAnthropic
+from langchain.chat_models import init_chat_model
 from langgraph.graph import StateGraph, START, END
 
 class AgentState(TypedDict):
@@ -635,7 +636,8 @@ class AgentState(TypedDict):
     sanitized_sql: str
     result: str
 
-llm = ChatAnthropic(model="claude-3-5-sonnet-20241022", temperature=0)
+# Initialized via Claude LangChain Plugin
+llm = init_chat_model("claude-3-5-sonnet", temperature=0)
 
 def sanitize_node(state: AgentState):
     # Healed from v1 trace: Escapes illegal quote characters
@@ -678,7 +680,7 @@ workflow.add_edge("execute", END)`
       ],
       code: `# v3.0: Production Hardened Architecture (Zero Silent Failures)
 from typing import Annotated, TypedDict
-from langchain_anthropic import ChatAnthropic
+from langchain.chat_models import init_chat_model
 from langgraph.graph import StateGraph, START, END
 from langgraph.checkpoint.memory import MemorySaver
 
@@ -687,7 +689,8 @@ class ProductionState(TypedDict):
     verified_answer: str
     pass_at_1: bool
 
-llm = ChatAnthropic(model="claude-3-5-sonnet-20241022", temperature=0)
+# Initialized via Claude LangChain Plugin
+llm = init_chat_model("claude-3-5-sonnet", temperature=0)
 
 def reasoning_node(state: ProductionState):
     ans = llm.invoke(state["input_text"])
