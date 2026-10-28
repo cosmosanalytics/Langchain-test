@@ -643,15 +643,15 @@
       </div>
     </div>
 
-    <textarea id="agentPrompt" class="prompt-textarea" placeholder="E.g., Build a research agent using Claude 3.5 Sonnet with Tavily search. It should formulate a search query, evaluate search result quality, and if confidence is below 80%, refine the query in a loop up to 3 times..."></textarea>
+    <textarea id="agentPrompt" class="prompt-textarea" placeholder="E.g., Build a research agent using the Claude LangChain Plugin with Tavily search. It should formulate a search query, evaluate search result quality, and if confidence is below 80%, refine the query in a loop up to 3 times..."></textarea>
 
     <div class="prompt-footer">
       <div class="claude-settings">
         <div>
           <label style="margin: 0; display: inline;">Claude Plugin Target:</label>
           <select id="claudeTargetModel" style="width: auto; padding: 4px 8px; font-size: 12px; margin-left: 6px;">
-            <option value="claude-3-5-sonnet" selected>Claude 3.5 Sonnet (Plugin)</option>
-            <option value="claude-3-5-haiku">Claude 3.5 Haiku (Plugin)</option>
+            <option value="claude-plugin" selected>Claude LangChain Plugin (Default)</option>
+            <option value="claude-mcp">Claude MCP &amp; Skills Plugin</option>
           </select>
         </div>
         <div>
@@ -850,9 +850,9 @@
 
   const TEMPLATES = {
     self_rag: {
-      prompt: "Build a Self-Reflective RAG Agent using Claude 3.5 Sonnet. The user asks a question. First, an 'agent' node decides whether to query the vector database or answer directly. If retrieved, an 'evaluator' node grades if the retrieved documents are relevant. If not relevant, it rewrites the query and loops back to retrieval up to 3 times. If relevant, it generates the final answer with source citations.",
+      prompt: "Build a Self-Reflective RAG Agent using Claude LangChain Plugin. The user asks a question. First, an 'agent' node decides whether to query the vector database or answer directly. If retrieved, an 'evaluator' node grades if the retrieved documents are relevant. If not relevant, it rewrites the query and loops back to retrieval up to 3 times. If relevant, it generates the final answer with source citations.",
       mermaid: `graph TD
-    __start__([Start]) --> agent[Agent: Claude 3.5 Sonnet]
+    __start__([Start]) --> agent[Agent: Claude LangChain Plugin]
     agent --> router{needs_retrieval?}
     router -- "Yes" --> retriever[Node: VectorStore Retriver]
     router -- "No" --> generator[Node: Final Answer Generator]
@@ -954,9 +954,9 @@ workflow.add_edge("executor", END)
 app = workflow.compile(checkpointer=MemorySaver(), interrupt_before=["executor"])`
     },
     multi_agent: {
-      prompt: "Build a Multi-Agent Supervisor pattern in LangGraph.",
+      prompt: "Build a Multi-Agent Supervisor pattern in LangGraph using Claude LangChain Plugin.",
       mermaid: `graph TD
-    __start__([Start]) --> supervisor[Supervisor: Claude 3.5 Sonnet]
+    __start__([Start]) --> supervisor[Supervisor: Claude LangChain Plugin]
     supervisor --> router{supervisor_decision}
     router -- "research" --> researcher[Agent: Researcher]
     router -- "coding" --> coder[Agent: Coder]
@@ -1194,7 +1194,7 @@ app = workflow.compile()`
   window.simStep = function() {
     const steps = [
       { id: 'stepStart', node: '__start__', doneText: 'Passed' },
-      { id: 'stepAgent', node: 'agent (Claude 3.5)', doneText: 'Executed (210ms)' },
+      { id: 'stepAgent', node: 'agent (Claude Plugin)', doneText: 'Executed (210ms)' },
       { id: 'stepCondition', node: 'conditional_router', doneText: 'Routed to Tools' },
       { id: 'stepTools', node: 'tools_node', doneText: '200 OK' },
       { id: 'stepEnd', node: '__end__', doneText: 'Terminated ✅' }

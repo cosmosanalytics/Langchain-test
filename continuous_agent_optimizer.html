@@ -587,7 +587,7 @@
       failDeltaClass: "delta-bad",
       spans: [
         { name: "agent_executor (LangChain Agent)", type: "chain", duration: "1,240 ms", status: "failed", note: "Loop timed out trying to format JSON" },
-        { name: "Claude Plugin (Claude 3.5 Sonnet)", type: "llm", duration: "410 ms", status: "ok", note: "Returned unstructured markdown instead of tool payload" },
+        { name: "Claude LangChain Plugin", type: "llm", duration: "410 ms", status: "ok", note: "Returned unstructured markdown instead of tool payload" },
         { name: "database_query (ToolNode)", type: "tool", duration: "830 ms", status: "failed", error: "SQLSyntaxError: Unescaped quotes in WHERE condition caused crash." }
       ],
       code: `# v1.0: Naive Agent (Fails on unescaped quotes & unstructured output)
