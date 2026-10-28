@@ -565,6 +565,28 @@
     </div>
   </header>
 
+  <!-- ARCHITECTURE CALLOUT -->
+  <div style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span style="font-size: 16px;">💡</span>
+        <span style="font-weight: 800; font-size: 13.5px; color: #0f172a;">Architecture: In-Browser Compiler (WebLLM / Groq) ➔ Claude Plugin Execution</span>
+      </div>
+      <span style="font-size: 11px; font-weight: 700; color: #0369a1; background: #e0f2fe; padding: 3px 8px; border-radius: 999px;">Client-Side Design Pattern</span>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; margin-top: 10px; font-size: 12px; color: #475569;">
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px;">
+        <strong style="color: #0f172a; display: block; margin-bottom: 2px;">⚡ In the Browser (Client-Side)</strong>
+        <span><strong>WebLLM (WebGPU)</strong> or <strong>Groq LPU</strong> acts as the in-browser architect — synthesizing state schemas, Mermaid graphs, and step simulations with zero backend, zero CORS blocks, and no paid API keys required.</span>
+      </div>
+      <div style="text-align: center; font-weight: 800; color: #94a3b8; font-size: 18px;">➔</div>
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 12px;">
+        <strong style="color: #0f172a; display: block; margin-bottom: 2px;">🤖 In Production (Claude Code CLI)</strong>
+        <span>Load into <strong>Claude Code</strong> with the official <strong>LangChain Plugin</strong> (<code>langgraph-skills@langchain-plugins</code>) to execute real tool calling, memory checkpoints, and production workflows.</span>
+      </div>
+    </div>
+  </div>
+
   <!-- ENGINE SWITCHER -->
   <div class="engine-grid">
     <div id="cardGroq" class="engine-card active" onclick="switchEngine('groq')">
@@ -798,7 +820,7 @@
           <span style="color: #4ade80;">claude&gt;</span> "Build a Self-Reflective RAG Agent using LangGraph with evaluation loops"
         </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 20px;">
           <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 16px;">
             <div style="font-weight: 700; color: #0f172a; margin-bottom: 6px;">🧠 Dynamic Skill Activation</div>
             <div style="font-size: 12.5px; color: var(--text-muted);">
@@ -811,6 +833,16 @@
               Generated code utilizes modern <code>init_chat_model("claude-3-5-sonnet")</code> with zero vendor-specific raw package coupling.
             </div>
           </div>
+        </div>
+
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 16px;">
+          <div style="font-weight: 700; color: #1e40af; margin-bottom: 6px;">💡 Why use WebLLM / Groq in this frontend app instead of Claude?</div>
+          <p style="font-size: 12.5px; color: #1e3a8a; margin: 0 0 8px 0; line-height: 1.6;">
+            <strong>Browser Security &amp; Accessibility:</strong> Anthropic's Claude API blocks direct client-side browser calls by default (CORS) to prevent leaking private API keys in frontend code. 
+          </p>
+          <p style="font-size: 12.5px; color: #1e3a8a; margin: 0; line-height: 1.6;">
+            By utilizing <strong>WebLLM (WebGPU)</strong> and <strong>Groq LPU</strong> as the in-browser compiler, GraphSmith can design, visualize, and simulate the exact Claude LangGraph architecture 100% client-side with zero hosting cost, zero key leakage, and instant rendering on GitHub Pages.
+          </p>
         </div>
       </div>
     </div>
