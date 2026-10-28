@@ -786,6 +786,96 @@
       align-items: center;
       margin-bottom: 12px;
     }
+
+    /* NINJA HERO CARD */
+    .ninja-hero-card {
+      background: #ffffff;
+      border: 2px solid #0284c7;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 14px -2px rgba(2, 132, 199, 0.12);
+    }
+    .ninja-hero-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .ninja-hero-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .ninja-icon {
+      font-size: 26px;
+      width: 42px;
+      height: 42px;
+      background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .ninja-format-toggle {
+      display: flex;
+      background: #f1f5f9;
+      padding: 2px;
+      border-radius: 6px;
+      border: 1px solid #e2e8f0;
+    }
+    .ninja-toggle-btn {
+      border: none;
+      background: transparent;
+      padding: 4px 10px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #64748b;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .ninja-toggle-btn.active {
+      background: #ffffff;
+      color: #0284c7;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+    .ninja-steps-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      font-size: 11.5px;
+      color: #475569;
+      flex-wrap: wrap;
+    }
+    .ninja-step {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 600;
+    }
+    .step-num {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #0284c7;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+    .ninja-step-arrow {
+      color: #cbd5e1;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -830,43 +920,52 @@
     </div>
   </div>
 
-  <!-- OMNISCOPE CLOUD CONNECTION CARD -->
+  <!-- STEP 1: AUTHENTICATED OMNISCOPE LINK CARD -->
   <div class="cloud-conn-card">
     <div class="cloud-conn-header">
       <div class="cloud-conn-title">
-        <span>🌐</span>
-        <span>Visokio Omniscope Cloud Instance</span>
+        <span>🔗</span>
+        <span>Step 1: Paste Your Authenticated Omniscope Link</span>
         <span class="pill cloud" id="cloudConnBadge">🟢 Connected Target: /u/94dqo/</span>
       </div>
       <div style="display: flex; align-items: center; gap: 8px;">
-        <a href="https://omniscope.visokio.com/u/94dqo/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="text-decoration: none; padding: 4px 10px; font-size: 11.5px; display: inline-flex; align-items: center; gap: 4px;" title="Open Omniscope Cloud in a new browser tab">
+        <a id="topOpenOmniLink" href="https://omniscope.visokio.com/u/94dqo/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="text-decoration: none; padding: 4px 10px; font-size: 11.5px; display: inline-flex; align-items: center; gap: 4px;" title="Open Omniscope Cloud in a new browser tab">
           <span>↗</span> Open Omniscope Web
         </a>
         <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11.5px;" onclick="toggleCloudConfig()">
-          <span id="toggleCloudConfigIcon">⚙️</span> Settings &amp; Auth
+          <span id="toggleCloudConfigIcon">⚙️</span> Token / Auth Settings
         </button>
       </div>
     </div>
 
-    <div id="cloudConfigBody" class="cloud-conn-body">
+    <div class="cloud-conn-body" style="display: block; margin-top: 10px; padding-top: 10px;">
+      <div class="form-row" style="margin-bottom: 6px;">
+        <div class="form-group" style="flex: 3;">
+          <label for="omniscopeServerUrl">Paste Your Omniscope Web Link (after logging in)</label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="omniscopeServerUrl" value="https://omniscope.visokio.com/u/94dqo/" placeholder="E.g., https://omniscope.visokio.com/u/94dqo/" oninput="handleOmniscopeUrlInput()" style="font-family: var(--font-mono); font-size: 13px;">
+            <button class="btn btn-secondary" onclick="saveOmniscopeSettings()">Save Link</button>
+          </div>
+        </div>
+      </div>
+      <div id="urlHelperText" style="font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
+        <span>💡</span> OmniSmith formats the Workflow Ninja output specifically for this workspace.
+      </div>
+      <div id="cloudFeedbackBox" class="cloud-feedback-box"></div>
+    </div>
+
+    <!-- Collapsible Advanced Token Settings -->
+    <div id="cloudConfigBody" style="display: none; margin-top: 10px; padding-top: 10px; border-top: 1px dashed #e2e8f0;">
       <div class="form-row" style="margin-bottom: 6px;">
         <div class="form-group" style="flex: 2;">
-          <label for="omniscopeServerUrl">Omniscope Web Workspace URL</label>
-          <input type="text" id="omniscopeServerUrl" value="https://omniscope.visokio.com/u/94dqo/" placeholder="https://omniscope.visokio.com/u/94dqo/">
-        </div>
-        <div class="form-group" style="flex: 1.5;">
-          <label for="omniscopeApiKey">API Key / Bearer Token / Session Cookie</label>
+          <label for="omniscopeApiKey">Optional API Key / Bearer Token / Session Cookie (for REST Probe)</label>
           <div style="display: flex; gap: 6px;">
             <input type="password" id="omniscopeApiKey" placeholder="Paste Omniscope API Token or Bearer key">
             <button class="btn btn-secondary" onclick="togglePassword('omniscopeApiKey')">👁️</button>
+            <button class="btn btn-primary" onclick="testOmniscopeCloudConnection()">🔗 Ping Workspace</button>
           </div>
         </div>
-        <div style="display: flex; gap: 6px; align-items: flex-end;">
-          <button class="btn btn-secondary" onclick="saveOmniscopeSettings()">Save Config</button>
-          <button class="btn btn-primary" onclick="testOmniscopeCloudConnection()">🔗 Test Connection</button>
-        </div>
       </div>
-      <div id="cloudFeedbackBox" class="cloud-feedback-box"></div>
     </div>
   </div>
 
@@ -970,6 +1069,63 @@
       <button id="btnSynthesize" class="btn btn-magic" onclick="synthesizeOmniscopeApp()">
         <span>✨</span> Synthesize Workflow &amp; Report via MCP
       </button>
+    </div>
+  </div>
+
+  <!-- WORKFLOW NINJA OUTPUT (HERO SECTION) -->
+  <div class="ninja-hero-card" id="ninjaHeroCard">
+    <div class="ninja-hero-header">
+      <div class="ninja-hero-title">
+        <span class="ninja-icon">🥷</span>
+        <div>
+          <h2 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 2px;">
+            Workflow Ninja Output Text (Ready to Copy)
+          </h2>
+          <p style="font-size: 12px; color: var(--text-muted); margin: 0;">
+            Target: <span id="ninjaTargetDisplay" style="color: #0284c7; font-weight: 700; font-family: var(--font-mono);">https://omniscope.visokio.com/u/94dqo/</span> • Copy this text and paste directly into Workflow Ninja.
+          </p>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <div class="ninja-format-toggle">
+          <button id="heroBtnNinjaJson" class="ninja-toggle-btn active" onclick="setHeroNinjaFormat('json')">{ } JSON Format</button>
+          <button id="heroBtnNinjaPrompt" class="ninja-toggle-btn" onclick="setHeroNinjaFormat('prompt')">📝 Prompt Format</button>
+        </div>
+        <button id="btnHeroCopyNinja" class="btn btn-magic" style="padding: 6px 16px; font-size: 13px; font-weight: 800; background: linear-gradient(135deg, #0284c7, #2563eb); color: white;" onclick="copyHeroNinjaPayload()">
+          <span id="heroCopyIcon">📋</span> Copy for Workflow Ninja
+        </button>
+        <a id="heroOpenOmniLink" href="https://omniscope.visokio.com/u/94dqo/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Open your authenticated Omniscope Cloud workspace">
+          <span>↗</span> Open Omniscope (/u/94dqo/)
+        </a>
+      </div>
+    </div>
+
+    <!-- 4 STEP FLOW -->
+    <div class="ninja-steps-bar">
+      <div class="ninja-step">
+        <span class="step-num">1</span>
+        <span>Paste Authenticated Link</span>
+      </div>
+      <div class="ninja-step-arrow">➔</div>
+      <div class="ninja-step">
+        <span class="step-num">2</span>
+        <span>Describe Workflow</span>
+      </div>
+      <div class="ninja-step-arrow">➔</div>
+      <div class="ninja-step active">
+        <span class="step-num" style="background:#059669;">3</span>
+        <span style="color: #059669; font-weight: 700;">Click "Copy for Workflow Ninja"</span>
+      </div>
+      <div class="ninja-step-arrow">➔</div>
+      <div class="ninja-step">
+        <span class="step-num">4</span>
+        <span>Paste into Workflow Ninja in Omniscope</span>
+      </div>
+    </div>
+
+    <!-- CODE PREVIEW -->
+    <div class="ninja-output-box">
+      <pre style="margin: 0; background: #0f172a; color: #f8fafc; padding: 14px 16px; border-radius: 8px; font-family: var(--font-mono); font-size: 12px; line-height: 1.5; max-height: 240px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;"><code id="heroNinjaOutputCode"></code></pre>
     </div>
   </div>
 
@@ -1697,6 +1853,9 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
         <span>${m.text}</span>
       </div>
     `).join('');
+
+    // 7. Update Hero Ninja Output text
+    updateHeroNinjaOutput();
   }
 
   // EXPORT & TOOLS
@@ -1735,6 +1894,12 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
         badge.innerText = '⚠️ Invalid URL';
       }
     }
+    const targetDisp = document.getElementById('ninjaTargetDisplay');
+    if (targetDisp) targetDisp.textContent = url;
+    const heroOpenLink = document.getElementById('heroOpenOmniLink');
+    if (heroOpenLink) heroOpenLink.href = url;
+    const topOpenLink = document.getElementById('topOpenOmniLink');
+    if (topOpenLink) topOpenLink.href = url;
   }
 
   window.testOmniscopeCloudConnection = async function() {
@@ -1859,6 +2024,58 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
 
   // WORKFLOW NINJA MODAL & EXPORT
   window.ninjaFormat = 'json';
+  window.heroNinjaFormat = 'json';
+
+  window.handleOmniscopeUrlInput = function() {
+    const rawUrl = document.getElementById('omniscopeServerUrl').value.trim();
+    if (rawUrl) {
+      localStorage.setItem('omniscope_server_url', rawUrl);
+    }
+    updateCloudStatusBadge();
+    updateHeroNinjaOutput();
+  };
+
+  window.updateHeroNinjaOutput = function() {
+    const codeEl = document.getElementById('heroNinjaOutputCode');
+    if (!codeEl) return;
+    const payload = getNinjaPayload(window.heroNinjaFormat);
+    codeEl.textContent = payload;
+    
+    const url = document.getElementById('omniscopeServerUrl').value.trim() || 'https://omniscope.visokio.com/u/94dqo/';
+    const targetDisp = document.getElementById('ninjaTargetDisplay');
+    if (targetDisp) targetDisp.textContent = url;
+
+    const heroOpenLink = document.getElementById('heroOpenOmniLink');
+    if (heroOpenLink) heroOpenLink.href = url;
+    const topOpenLink = document.getElementById('topOpenOmniLink');
+    if (topOpenLink) topOpenLink.href = url;
+  };
+
+  window.setHeroNinjaFormat = function(fmt) {
+    window.heroNinjaFormat = fmt;
+    document.getElementById('heroBtnNinjaJson').classList.toggle('active', fmt === 'json');
+    document.getElementById('heroBtnNinjaPrompt').classList.toggle('active', fmt === 'prompt');
+    updateHeroNinjaOutput();
+  };
+
+  window.copyHeroNinjaPayload = function() {
+    const codeEl = document.getElementById('heroNinjaOutputCode');
+    if (!codeEl) return;
+    navigator.clipboard.writeText(codeEl.textContent);
+    
+    const btn = document.getElementById('btnHeroCopyNinja');
+    const prevHtml = btn.innerHTML;
+    btn.innerHTML = '<span>✅</span> Copied for Workflow Ninja!';
+    btn.style.background = '#059669';
+    
+    if (window.confetti) window.confetti({ particleCount: 50, spread: 60 });
+    showToast('Copied text! Ready to paste into Workflow Ninja in your Omniscope tab.', '🥷');
+
+    setTimeout(() => {
+      btn.innerHTML = prevHtml;
+      btn.style.background = 'linear-gradient(135deg, #0284c7, #2563eb)';
+    }, 2200);
+  };
 
   function getNinjaPayload(fmt) {
     const s = SPECS[state.currentSpec];
