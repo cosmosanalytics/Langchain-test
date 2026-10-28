@@ -631,16 +631,25 @@
     <!-- VIEWPORT -->
     <div class="viewport">
       
-      <!-- CLAUDE TRACING PLUGIN INGESTION BANNER -->
-      <div style="background: #ffffff; border-bottom: 1.5px solid var(--border); padding: 10px 18px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 15px;">🔌</span>
-          <span style="font-size: 12px; font-weight: 700; color: #0f172a;">Ingestion Source: Claude Code Tracing Plugin</span>
-          <span style="font-size: 11px; color: var(--text-muted);">(Streams real-time agent loops &amp; tool spans into LangSmith)</span>
+      <!-- ARCHITECTURE CALLOUT -->
+      <div style="background: #ffffff; border-bottom: 1.5px solid var(--border); padding: 12px 20px; box-shadow: 0 1px 2px rgba(0,0,0,0.03);">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 16px;">💡</span>
+            <span style="font-weight: 800; font-size: 13px; color: #0f172a;">Architecture: In-Browser Compiler (WebLLM / Groq) ➔ Claude Plugin Ingestion</span>
+          </div>
+          <span style="font-size: 11px; font-weight: 700; color: #0369a1; background: #e0f2fe; padding: 2px 8px; border-radius: 999px;">Zero-Server Client-Side Observability</span>
         </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <code style="background: #f1f5f9; color: #0369a1; padding: 3px 8px; border-radius: 4px; font-family: var(--font-mono); font-size: 11px; border: 1px solid #bae6fd;">/plugin install langsmith-tracing@langsmith-claude-code-plugins</code>
-          <button class="btn btn-secondary" style="padding: 3px 8px; font-size: 11px;" onclick="navigator.clipboard.writeText('/plugin marketplace add langchain-ai/langsmith-claude-code-plugins\n/plugin install langsmith-tracing@langsmith-claude-code-plugins'); showToast('Copied Claude Tracing Plugin command!')">📋 Copy</button>
+        <div style="display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px; margin-top: 8px; font-size: 12px; color: #475569;">
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px;">
+            <strong style="color: #0f172a; display: block; margin-bottom: 2px;">⚡ In the Browser (WebLLM / Groq)</strong>
+            <span>WebLLM (local WebGPU) or Groq LPU acts as the in-browser compiler &amp; evaluation judge — parsing trace trees, calculating latency spans, and executing evaluations without CORS blocks or API leaks.</span>
+          </div>
+          <div style="text-align: center; font-weight: 800; color: #94a3b8; font-size: 18px;">➔</div>
+          <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px;">
+            <strong style="color: #0f172a; display: block; margin-bottom: 2px;">🤖 In Production (Claude Code CLI)</strong>
+            <span>Real-time execution telemetry is captured via the official plugin: <code style="background: #f1f5f9; color: #0369a1; padding: 1px 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 11px;">/plugin install langsmith-tracing@langsmith-claude-code-plugins</code></span>
+          </div>
         </div>
       </div>
       
