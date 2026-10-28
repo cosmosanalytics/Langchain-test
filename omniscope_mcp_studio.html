@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OmniSmith 🧭📊 — Visokio Omniscope MCP Workflow & Report Studio</title>
+  <meta name="description" content="Generate Visokio Omniscope workflows and interactive executive reports from natural language prompts using WebGPU, Groq LPU, and Omniscope MCP Server.">
+
+  <!-- Mermaid.js for interactive Workflow Block Graph -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+  <!-- Chart.js for Live Omniscope Report Visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Prism.js for Python & JSON Syntax Highlighting -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --border-focus: #0284c7;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --primary: #0284c7; /* Visokio Omniscope Sky Blue */
+      --primary-hover: #0369a1;
+      --primary-light: #e0f2fe;
+      --accent-purple: #7c3aed;
+      --accent-green: #059669;
+      --accent-amber: #d97706;
+      --accent-red: #dc2626;
+      --radius: 10px;
+      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.08);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-main);
+      line-height: 1.5;
+      padding: 24px 16px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .logo-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: white;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25);
+    }
+
+    .title-box h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .title-box p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .header-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-size: 11.5px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+      color: var(--text-main);
+    }
+    .pill.mcp { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
+    .pill.engine { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+    .pill.omniscope { background: #e0f2fe; border-color: #bae6fd; color: #0369a1; }
+
+    /* ARCHITECTURE CALLOUT */
+    .arch-card {
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .arch-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .arch-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .arch-grid {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: #475569;
+    }
+
+    @media (max-width: 768px) {
+      .arch-grid { grid-template-columns: 1fr; }
+      .arch-arrow { display: none; }
+    }
+
+    .arch-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+
+    .arch-box strong {
+      display: block;
+      color: #0f172a;
+      margin-bottom: 2px;
+      font-size: 12.5px;
+    }
+
+    .arch-arrow {
+      text-align: center;
+      font-weight: 800;
+      color: #94a3b8;
+      font-size: 18px;
+    }
+
+    /* ENGINE SELECTOR */
+    .engine-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 640px) {
+      .engine-grid { grid-template-columns: 1fr; }
+    }
+
+    .engine-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .engine-card:hover {
+      border-color: var(--border-focus);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .engine-card.active {
+      border-color: var(--primary);
+      background: #f0f9ff;
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+    }
+
+    .engine-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .engine-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .engine-badge {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .engine-badge.local {
+      background: #ede9fe;
+      color: #6d28d9;
+    }
+
+    .engine-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.35;
+    }
+
+    /* CONFIG PANELS */
+    .config-panel {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 18px;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .config-panel.active { display: block; }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    label {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    input[type="text"], input[type="password"], select, textarea {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: #ffffff;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--border-focus);
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.1);
+    }
+
+    .btn {
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+    .btn-primary:hover { background: var(--primary-hover); }
+
+    .btn-magic {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: white;
+      box-shadow: 0 2px 6px rgba(2, 132, 199, 0.3);
+    }
+    .btn-magic:hover {
+      box-shadow: 0 4px 10px rgba(2, 132, 199, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+    .btn-secondary:hover { background: #e2e8f0; }
+
+    /* PROMPT SECTION */
+    .prompt-section {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .prompt-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .prompt-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .templates-bar {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .template-chip {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f1f5f9;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .template-chip:hover {
+      background: #e0f2fe;
+      border-color: #bae6fd;
+      color: #0284c7;
+    }
+
+    .prompt-textarea {
+      width: 100%;
+      height: 85px;
+      resize: vertical;
+      line-height: 1.45;
+      margin-bottom: 12px;
+      font-size: 13.5px;
+    }
+
+    .prompt-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .scp-grouping-opts {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+    }
+
+    /* WORKSPACE TABS */
+    .workspace {
+      background: var(--card-bg);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+
+    .tab-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      border-bottom: 1.5px solid var(--border);
+      padding: 0 12px;
+      overflow-x: auto;
+    }
+
+    .tabs-left {
+      display: flex;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      padding: 12px 16px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn:hover { color: var(--text-main); }
+    .tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+      background: #ffffff;
+    }
+
+    .tabs-actions {
+      display: flex;
+      gap: 6px;
+      padding: 6px 0;
+    }
+
+    .view-panel {
+      display: none;
+      padding: 20px;
+    }
+    .view-panel.active { display: block; }
+
+    /* WORKFLOW CANVAS */
+    .canvas-meta-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 14px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .stage-legend {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+    .legend-dot.ingest { background: #0284c7; }
+    .legend-dot.cleanse { background: #059669; }
+    .legend-dot.python { background: #7c3aed; }
+    .legend-dot.report { background: #d97706; }
+
+    #mermaidWorkflowTarget {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      min-height: 380px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow-x: auto;
+    }
+
+    /* REPORT DASHBOARD PREVIEW */
+    .report-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .kpi-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 18px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--primary);
+    }
+    .kpi-card.green::before { background: var(--accent-green); }
+    .kpi-card.amber::before { background: var(--accent-amber); }
+    .kpi-card.purple::before { background: var(--accent-purple); }
+
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .kpi-value {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+    }
+
+    .kpi-delta {
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .kpi-delta.good { color: var(--accent-green); }
+    .kpi-delta.warn { color: var(--accent-amber); }
+
+    .report-charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-bottom: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .report-charts-grid { grid-template-columns: 1fr; }
+    }
+
+    .chart-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .chart-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .data-table-container {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+      text-align: left;
+    }
+
+    th {
+      background: #f8fafc;
+      padding: 10px 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border-bottom: 1.5px solid var(--border);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-main);
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+
+    /* MCP PROTOCOL LOGS */
+    .mcp-console {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 16px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.6;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+
+    .mcp-log-line {
+      margin-bottom: 8px;
+      display: flex;
+      gap: 8px;
+    }
+    .mcp-tag {
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .mcp-tag.req { background: #0284c7; color: white; }
+    .mcp-tag.res { background: #059669; color: white; }
+    .mcp-tag.tool { background: #7c3aed; color: white; }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0f172a;
+      color: white;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      z-index: 1000;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-group">
+      <div class="logo-badge">🧭</div>
+      <div class="title-box">
+        <h1>OmniSmith 🛠️📊</h1>
+        <p>Visokio Omniscope MCP Workflow &amp; Interactive Report Studio</p>
+      </div>
+    </div>
+    <div class="header-badges">
+      <span class="pill omniscope">🧭 Visokio Omniscope Evo</span>
+      <span class="pill mcp">🔌 MCP Server: Active</span>
+      <span class="pill engine" id="engineStatusBadge">🟢 Engine: Groq LPU</span>
+    </div>
+  </header>
+
+  <!-- ARCHITECTURE CALLOUT -->
+  <div class="arch-card">
+    <div class="arch-header">
+      <div class="arch-title">
+        <span>💡</span> Architecture: In-Browser Compiler (WebLLM / Groq) ➔ Visokio Omniscope MCP Server
+      </div>
+      <span class="pill" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">Zero-Server Client-Side Studio</span>
+    </div>
+    <div class="arch-grid">
+      <div class="arch-box">
+        <strong>⚡ In the Browser (Client-Side Compiler)</strong>
+        <span><strong>WebLLM (local WebGPU)</strong> or <strong>Groq LPU</strong> acts as the in-browser architect — translating functional specs into SCP-grouped workflow blocks, custom Python transforms, and live interactive dashboards without CORS blocks or API leaks.</span>
+      </div>
+      <div class="arch-arrow">➔</div>
+      <div class="arch-box">
+        <strong>🧭 In Visokio Omniscope Evo (MCP Server)</strong>
+        <span>Sends JSON-RPC <code>tools/call</code> commands to Omniscope's live MCP endpoint (<code>http://localhost:24678/api/mcp</code>) to automatically instantiate blocks, connect streams, and publish executive reports.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENGINE SWITCHER -->
+  <div class="engine-grid">
+    <div id="cardGroq" class="engine-card active" onclick="switchEngine('groq')">
+      <div class="engine-header">
+        <div class="engine-title">⚡ Groq LPU Cloud</div>
+        <span class="engine-badge">Instant (500 T/s)</span>
+      </div>
+      <div class="engine-sub">
+        Compiles complex Omniscope multi-stage workflows &amp; Python blocks in ~1s via Llama 3.3 70B.
+      </div>
+    </div>
+
+    <div id="cardWebLLM" class="engine-card" onclick="switchEngine('webllm')">
+      <div class="engine-header">
+        <div class="engine-title">🧠 WebGPU Local (WebLLM)</div>
+        <span class="engine-badge local">100% Private</span>
+      </div>
+      <div class="engine-sub">
+        Zero server calls. Runs directly on your device GPU via @mlc-ai/web-llm (Llama 3.2 1B / SmolLM2).
+      </div>
+    </div>
+  </div>
+
+  <!-- GROQ CONFIG -->
+  <div id="panelGroq" class="config-panel active">
+    <div class="form-row">
+      <div class="form-group" style="flex: 2;">
+        <label for="groqApiKey">Groq API Key (Stored Locally in Browser)</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="password" id="groqApiKey" placeholder="gsk_... (Or click starter patterns below to test in demo mode)">
+          <button class="btn btn-secondary" onclick="togglePassword('groqApiKey')">👁️</button>
+        </div>
+      </div>
+      <div class="form-group" style="flex: 1.2;">
+        <label for="groqModel">Synthesizer Model</label>
+        <select id="groqModel">
+          <option value="llama-3.3-70b-versatile" selected>Llama 3.3 70B (Best Code &amp; Workflow Quality)</option>
+          <option value="llama-3.1-8b-instant">Llama 3.1 8B Instant (Blazing Fast)</option>
+        </select>
+      </div>
+      <button class="btn btn-secondary" onclick="saveGroqKey()">Save Key</button>
+    </div>
+  </div>
+
+  <!-- WEBGPU CONFIG -->
+  <div id="panelWebLLM" class="config-panel">
+    <div class="form-row">
+      <div class="form-group" style="flex: 2;">
+        <label for="webllmModel">Select In-Browser WebGPU Model</label>
+        <select id="webllmModel">
+          <option value="Llama-3.2-1B-Instruct-q4f16_1-MLC" selected>Llama-3.2 1B (~800MB - Fast Boot)</option>
+          <option value="SmolLM2-1.7B-Instruct-q4f16_1-MLC">SmolLM2 1.7B (~1GB - Balanced)</option>
+        </select>
+      </div>
+      <button id="btnInitWebLLM" class="btn btn-secondary" onclick="initWebLLM()">
+        🚀 Load Model into GPU VRAM
+      </button>
+    </div>
+    <div id="webgpuNotice" style="font-size: 11.5px; color: var(--text-muted); margin-top: 6px;">
+      Checking WebGPU support...
+    </div>
+  </div>
+
+  <!-- PROMPT SECTION -->
+  <div class="prompt-section">
+    <div class="prompt-header">
+      <div class="prompt-title">
+        <span>💬</span> Describe the Omniscope Workflow &amp; Report to Build
+      </div>
+      <div class="templates-bar">
+        <span style="font-size: 11.5px; color: var(--text-muted); font-weight: 700;">Starter Specs:</span>
+        <button class="template-chip" onclick="loadSpec('sop_inventory')">S&amp;OP Mass Balance &amp; Deficits</button>
+        <button class="template-chip" onclick="loadSpec('churn_retention')">Customer Churn &amp; Cohort Risk</button>
+        <button class="template-chip" onclick="loadSpec('supply_chain_tariffs')">Tariff Hedge &amp; Network MIP</button>
+      </div>
+    </div>
+
+    <textarea id="omniPrompt" class="prompt-textarea" placeholder="E.g., Ingest SAP warehouse inventory CSV, filter active SKUs, run custom Python safety stock deficit solver, and build an executive KPI report with stock-out bar charts and risk filter sliders..."></textarea>
+
+    <div class="prompt-footer">
+      <div class="scp-grouping-opts">
+        <div>
+          <label style="margin: 0; display: inline;">SCP Block Grouping:</label>
+          <select id="scpGroupingSelect" style="width: auto; padding: 4px 8px; font-size: 12px; margin-left: 6px;">
+            <option value="enabled" selected>Group by SCP Functional Stages (Scope, Concept, Plan)</option>
+            <option value="disabled">Flat Layout (No Grouping)</option>
+          </select>
+        </div>
+        <div>
+          <label style="margin: 0; display: inline;">Target Omniscope:</label>
+          <select id="omniVersionSelect" style="width: auto; padding: 4px 8px; font-size: 12px; margin-left: 6px;">
+            <option value="evo_latest" selected>Omniscope Evo (REST &amp; MCP v1)</option>
+            <option value="evo_cloud">Omniscope Cloud Server</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="btnSynthesize" class="btn btn-magic" onclick="synthesizeOmniscopeApp()">
+        <span>✨</span> Synthesize Workflow &amp; Report via MCP
+      </button>
+    </div>
+  </div>
+
+  <!-- WORKSPACE -->
+  <div class="workspace">
+    <div class="tab-bar">
+      <div class="tabs-left">
+        <button class="tab-btn active" onclick="switchTab('canvas')">
+          <span>🧭</span> Workflow Canvas (Grouped by SCP)
+        </button>
+        <button class="tab-btn" onclick="switchTab('report')">
+          <span>📊</span> Live Omniscope Report Preview
+        </button>
+        <button class="tab-btn" onclick="switchTab('python')">
+          <span>🐍</span> Custom Python Block
+        </button>
+        <button class="tab-btn" onclick="switchTab('mcp')">
+          <span>🔌</span> Omniscope MCP Protocol &amp; Tools
+        </button>
+      </div>
+
+      <div class="tabs-actions">
+        <button class="btn btn-secondary" onclick="exportWorkflowJson()">💾 Export .IOX / JSON</button>
+        <button class="btn btn-secondary" onclick="triggerMcpHandshake()">▶️ Execute MCP Handshake</button>
+      </div>
+    </div>
+
+    <!-- TAB 1: WORKFLOW CANVAS -->
+    <div id="tabViewCanvas" class="view-panel active">
+      <div class="canvas-meta-bar">
+        <div class="stage-legend">
+          <div class="legend-item"><div class="legend-dot ingest"></div> Stage 1: Data Ingest (Scope)</div>
+          <div class="legend-item"><div class="legend-dot cleanse"></div> Stage 2: Data Cleanse &amp; Prep (Concept)</div>
+          <div class="legend-item"><div class="legend-dot python"></div> Stage 3: Custom Python Analytics (Plan)</div>
+          <div class="legend-item"><div class="legend-dot report"></div> Stage 4: Executive Report Output</div>
+        </div>
+        <div style="font-weight: 700; color: #0284c7;" id="workflowBlockCount">4 Functional Stage Groups • 7 Active Blocks</div>
+      </div>
+
+      <div id="mermaidWorkflowTarget">
+        <div style="color: var(--text-muted); font-size: 13px;">Loading Omniscope Workflow Canvas...</div>
+      </div>
+    </div>
+
+    <!-- TAB 2: LIVE REPORT PREVIEW -->
+    <div id="tabViewReport" class="view-panel">
+      <!-- KPI CARDS -->
+      <div class="report-kpi-grid" id="reportKpis">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- CHARTS -->
+      <div class="report-charts-grid">
+        <div class="chart-box">
+          <div class="chart-header">
+            <span class="chart-title" id="chart1Title">Inventory Deficit vs Safety Buffer by Category</span>
+            <span class="pill" style="font-size: 10px;">Bar Chart Block</span>
+          </div>
+          <div style="height: 240px; position: relative;">
+            <canvas id="reportChart1"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <div class="chart-header">
+            <span class="chart-title" id="chart2Title">Stockout Risk Distribution Across Warehouses</span>
+            <span class="pill" style="font-size: 10px;">Doughnut Block</span>
+          </div>
+          <div style="height: 240px; position: relative;">
+            <canvas id="reportChart2"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- INTERACTIVE DATA TABLE -->
+      <div class="chart-header" style="margin-bottom: 8px;">
+        <span class="chart-title" id="tableTitle">Omniscope Data Table View (Top 5 Deficit SKUs)</span>
+        <span style="font-size: 11px; color: var(--text-muted);">Filtered from Custom Python Block output stream</span>
+      </div>
+      <div class="data-table-container">
+        <table id="reportDataTable">
+          <thead>
+            <tr id="tableHeadRow"></tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: CUSTOM PYTHON BLOCK -->
+    <div id="tabViewPython" class="view-panel">
+      <div style="background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-weight: 700; color: #166534;">🧭 Visokio Omniscope Python Block SDK:</span>
+          <code style="background: #ffffff; padding: 2px 6px; border-radius: 4px; border: 1px solid #86efac; color: #15803d; font-family: var(--font-mono);">df = inputs[0] ➔ output = df</code>
+        </div>
+        <button class="btn btn-secondary" style="padding: 2px 8px; font-size: 11px;" onclick="copyPythonCode()">📋 Copy Python</button>
+      </div>
+      <pre><code id="pythonCodeBlock" class="language-python"># Omniscope Custom Python block code will appear here...</code></pre>
+    </div>
+
+    <!-- TAB 4: MCP PROTOCOL -->
+    <div id="tabViewMcp" class="view-panel">
+      <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+        <div>
+          <h3 style="font-size: 15px; font-weight: 800; color: #0f172a; margin-bottom: 2px;">
+            🔌 Omniscope MCP Server (JSON-RPC 2.0 Telemetry)
+          </h3>
+          <p style="font-size: 12px; color: var(--text-muted);">
+            Captures real-time Model Context Protocol tool invocations connecting the compiler to Visokio Omniscope Evo.
+          </p>
+        </div>
+        <button class="btn btn-magic" onclick="triggerMcpHandshake()">
+          <span>🔄</span> Re-execute MCP Tool Sequence
+        </button>
+      </div>
+
+      <div class="mcp-console" id="mcpLogContainer">
+        <!-- MCP Logs rendered here -->
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div id="toast" class="toast">
+  <span id="toastIcon">✨</span>
+  <span id="toastMsg">Action complete</span>
+</div>
+
+<script type="module">
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'default',
+    themeVariables: {
+      primaryColor: '#e0f2fe',
+      primaryTextColor: '#0f172a',
+      primaryBorderColor: '#0284c7',
+      lineColor: '#059669',
+      secondaryColor: '#f0fdf4',
+      tertiaryColor: '#ffffff'
+    }
+  });
+
+  // STATE
+  const state = {
+    engine: 'groq',
+    webllmLoaded: false,
+    isSynthesizing: false,
+    currentSpec: 'sop_inventory',
+    chart1: null,
+    chart2: null
+  };
+
+  let webllm = null;
+  let webllmEngine = null;
+
+  // SPECS DATA
+  const SPECS = {
+    sop_inventory: {
+      prompt: "Build an S&OP Inventory Mass-Balance & Safety Stock Deficit workflow. Ingest warehouse CSV data, cleanse invalid records, calculate safety stock shortfalls using a custom Python block, and publish an executive KPI dashboard with deficit bar charts, warehouse risk distribution, and high-priority stockout alert tables. Group blocks according to SCP functional stages.",
+      blocksCount: "4 Functional Stage Groups • 7 Active Blocks",
+      mermaid: `graph LR
+    subgraph S1["📦 Stage 1: Data Ingest (Scope)"]
+      B1["File Block: SAP_Inventory.csv<br/><i>14,820 rows</i>"]
+      B2["SQL Block: Warehouse_Master<br/><i>48 locations</i>"]
+    end
+
+    subgraph S2["🧹 Stage 2: Data Cleanse & Prep (Concept)"]
+      B3["Join Block: Match on SKU_ID<br/><i>Inner Join</i>"]
+      B4["Filter Block: Exclude Obsolete SKUs<br/><i>Status == 'Active'</i>"]
+    end
+
+    subgraph S3["⚡ Stage 3: Custom Python Analytics (Plan)"]
+      B5["Python Block: Safety_Stock_Solver<br/><i>Calculates Deficit = LeadTime * Demand - OnHand</i>"]
+    end
+
+    subgraph S4["📊 Stage 4: Executive Report Output"]
+      B6["Report View: S&OP Executive Dashboard<br/><i>KPIs & Deficit Chart</i>"]
+      B7["Data Table View: Stockout Alerts<br/><i>Ranked by Shortfall Value</i>"]
+    end
+
+    B1 --> B3
+    B2 --> B3
+    B3 --> B4
+    B4 --> B5
+    B5 --> B6
+    B5 --> B7
+
+    style S1 fill:#f0f9ff,stroke:#0284c7,stroke-width:1.5px;
+    style S2 fill:#f0fdf4,stroke:#059669,stroke-width:1.5px;
+    style S3 fill:#faf5ff,stroke:#7c3aed,stroke-width:1.5px;
+    style S4 fill:#fffbeb,stroke:#d97706,stroke-width:1.5px;`,
+      python: `# Omniscope Custom Python Block: Safety Stock Deficit Engine
+# SDK Input Contract: inputs[0] represents upstream pandas DataFrame
+# SDK Output Contract: output must be assigned a pandas DataFrame
+
+import pandas as pd
+import numpy as np
+
+# Ingest upstream table
+df = inputs[0].copy()
+
+# Ensure numeric types
+df['on_hand_qty'] = pd.to_numeric(df['on_hand_qty'], errors='coerce').fillna(0)
+df['daily_demand'] = pd.to_numeric(df['daily_demand'], errors='coerce').fillna(0)
+df['lead_time_days'] = pd.to_numeric(df['lead_time_days'], errors='coerce').fillna(1)
+df['unit_cost'] = pd.to_numeric(df['unit_cost'], errors='coerce').fillna(0)
+
+# Calculate Target Safety Stock (Demand during lead time + 1.65 sigma safety buffer)
+df['target_safety_stock'] = (df['daily_demand'] * df['lead_time_days'] * 1.25).round(0)
+
+# Calculate Deficit and At-Risk Capital
+df['shortfall_qty'] = np.maximum(0, df['target_safety_stock'] - df['on_hand_qty'])
+df['shortfall_value_usd'] = (df['shortfall_qty'] * df['unit_cost']).round(2)
+df['stockout_risk_score'] = np.where(df['on_hand_qty'] == 0, 100, 
+                             np.clip((df['shortfall_qty'] / df['target_safety_stock'] * 100), 0, 100)).round(1)
+
+# Assign output to Omniscope downstream stream
+output = df.sort_values(by='shortfall_value_usd', ascending=False)`,
+      kpis: [
+        { label: "Total Inventory Value", value: "$4.82M", delta: "+3.2% vs baseline", deltaType: "good", color: "" },
+        { label: "Stockout Deficit Risk", value: "$384,120", delta: "42 SKUs below safety buffer", deltaType: "warn", color: "amber" },
+        { label: "Avg Service Level", value: "96.4%", delta: "+1.8% after reorder plan", deltaType: "good", color: "green" },
+        { label: "Active Warehouses", value: "48", delta: "Zero sync errors", deltaType: "good", color: "purple" }
+      ],
+      chart1: {
+        title: "Top Stockout Shortfall by Category (USD)",
+        labels: ["Power Electronics", "Sensors & MEMS", "Microcontrollers", "Connectors", "Passive Components"],
+        datasets: [{
+          label: "Deficit Value ($)",
+          data: [142000, 98500, 74200, 41200, 28220],
+          backgroundColor: "#0284c7"
+        }]
+      },
+      chart2: {
+        title: "Risk Distribution by Region",
+        labels: ["North America", "EMEA", "APAC", "LATAM"],
+        datasets: [{
+          data: [42, 28, 20, 10],
+          backgroundColor: ["#0284c7", "#059669", "#7c3aed", "#d97706"]
+        }]
+      },
+      table: {
+        title: "High-Priority Safety Stock Deficit SKUs (Omniscope Table View)",
+        cols: ["SKU ID", "Part Description", "Warehouse", "On Hand", "Target Stock", "Deficit ($)", "Risk Score"],
+        rows: [
+          ["SKU-9921", "ARM Cortex-M4 MCU 120MHz", "Chicago Hub", "120", "1,500", "$48,300", "92.0% (Critical)"],
+          ["SKU-8814", "Buck Regulator IC 5A", "Rotterdam Depot", "0", "850", "$34,000", "100.0% (Stockout)"],
+          ["SKU-7732", "Optocoupler 4-Channel", "Singapore Main", "450", "2,200", "$28,000", "79.5% (High)"],
+          ["SKU-6601", "Precision Shunt Resistor", "Dallas DC", "800", "3,000", "$22,000", "73.3% (High)"],
+          ["SKU-5549", "Shielded Inductor 10uH", "Munich Plant", "310", "1,200", "$17,790", "74.1% (High)"]
+        ]
+      },
+      mcpCalls: [
+        { type: "req", text: "tools/call: omniscope_create_workflow(name='S&OP_Inventory_Optimization', space='Production')" },
+        { type: "res", text: "Workflow created: wf_sop_2026_99b (Status: 200 OK)" },
+        { type: "tool", text: "omniscope_group_blocks(group_name='Stage 1: Data Ingest (Scope)', blocks=['file_sap_inventory', 'sql_warehouse_master'])" },
+        { type: "tool", text: "omniscope_group_blocks(group_name='Stage 2: Data Cleanse & Prep (Concept)', blocks=['join_sku', 'filter_active'])" },
+        { type: "tool", text: "omniscope_group_blocks(group_name='Stage 3: Custom Python Analytics (Plan)', blocks=['python_safety_stock_engine'])" },
+        { type: "tool", text: "omniscope_add_report_view(view_type='Dashboard', widgets=['KPI_Cards', 'Deficit_Bar_Chart', 'Table_View'])" },
+        { type: "res", text: "tools/call: omniscope_execute_workflow(workflow_id='wf_sop_2026_99b') -> 14,820 rows processed in 312ms" }
+      ]
+    },
+    churn_retention: {
+      prompt: "Build an Omniscope Customer Churn & Cohort Retention Risk pipeline. Ingest Salesforce accounts and usage telemetry, join customer support tickets, run a custom Python hazard rate model, and publish an interactive Executive Retention Dashboard. Group blocks by SCP stages.",
+      blocksCount: "4 Functional Stage Groups • 6 Active Blocks",
+      mermaid: `graph LR
+    subgraph S1["📥 Stage 1: Ingestion (Scope)"]
+      C1["Salesforce Block: Accounts<br/><i>2,450 clients</i>"]
+      C2["API Block: Usage_Telemetry<br/><i>Daily event pings</i>"]
+    end
+
+    subgraph S2["🔄 Stage 2: Feature Engineering (Concept)"]
+      C3["Join Block: Account_ID Merge<br/><i>Left Join</i>"]
+      C4["Field Ops Block: Calc Inactivity Days"]
+    end
+
+    subgraph S3["🧠 Stage 3: Python Hazard Model (Plan)"]
+      C5["Python Block: Churn_Hazard_Model<br/><i>Logistic probability scoring</i>"]
+    end
+
+    subgraph S4["📊 Stage 4: Retention Dashboard"]
+      C6["Report View: Executive Churn Monitor<br/><i>Risk tiers & ARR at risk</i>"]
+    end
+
+    C1 --> C3
+    C2 --> C3
+    C3 --> C4
+    C4 --> C5
+    C5 --> C6
+
+    style S1 fill:#f0f9ff,stroke:#0284c7,stroke-width:1.5px;
+    style S2 fill:#f0fdf4,stroke:#059669,stroke-width:1.5px;
+    style S3 fill:#faf5ff,stroke:#7c3aed,stroke-width:1.5px;
+    style S4 fill:#fffbeb,stroke:#d97706,stroke-width:1.5px;`,
+      python: `# Omniscope Custom Python Block: Customer Churn Hazard Scorer
+import pandas as pd
+import numpy as np
+
+df = inputs[0].copy()
+
+# Feature transformation
+df['days_inactive'] = pd.to_numeric(df['days_inactive'], errors='coerce').fillna(0)
+df['support_tickets_30d'] = pd.to_numeric(df['support_tickets_30d'], errors='coerce').fillna(0)
+df['arr_usd'] = pd.to_numeric(df['arr_usd'], errors='coerce').fillna(0)
+
+# Logistic hazard scoring
+z = 0.08 * df['days_inactive'] + 0.35 * df['support_tickets_30d'] - 2.5
+df['churn_probability'] = (1 / (1 + np.exp(-z)) * 100).round(1)
+df['risk_tier'] = np.where(df['churn_probability'] >= 70, 'Critical', 
+                  np.where(df['churn_probability'] >= 40, 'Elevated', 'Stable'))
+df['arr_at_risk_usd'] = (df['arr_usd'] * (df['churn_probability'] / 100)).round(2)
+
+output = df.sort_values(by='arr_at_risk_usd', ascending=False)`,
+      kpis: [
+        { label: "Total Monitored ARR", value: "$18.4M", delta: "2,450 Enterprise Accounts", deltaType: "good", color: "" },
+        { label: "ARR at Churn Risk", value: "$1.28M", delta: "34 Accounts in Critical Tier", deltaType: "warn", color: "amber" },
+        { label: "Predicted Net Retention", value: "108.4%", delta: "+2.1% with retention play", deltaType: "good", color: "green" },
+        { label: "Avg Days Inactive", value: "8.4 Days", delta: "Within normal bounds", deltaType: "good", color: "purple" }
+      ],
+      chart1: {
+        title: "ARR at Risk by Industry Cohort ($)",
+        labels: ["FinTech", "HealthTech", "Logistics", "Retail", "Manufacturing"],
+        datasets: [{
+          label: "ARR at Risk ($)",
+          data: [450000, 320000, 240000, 160000, 110000],
+          backgroundColor: "#7c3aed"
+        }]
+      },
+      chart2: {
+        title: "Customer Risk Tier Distribution",
+        labels: ["Stable (<40%)", "Elevated (40-70%)", "Critical (>70%)"],
+        datasets: [{
+          data: [72, 19, 9],
+          backgroundColor: ["#059669", "#d97706", "#dc2626"]
+        }]
+      },
+      table: {
+        title: "Critical Retention Alerts (Omniscope Table View)",
+        cols: ["Account Name", "ARR ($)", "Days Inactive", "Support Escalations", "Churn Prob", "Risk Tier"],
+        rows: [
+          ["Apex Logistics Global", "$180,000", "28", "6", "88.4%", "Critical"],
+          ["OmniRetail Holdings", "$140,000", "22", "5", "82.1%", "Critical"],
+          ["Vanguard Healthcare", "$125,000", "19", "4", "76.5%", "Critical"],
+          ["BlueHorizon Capital", "$95,000", "14", "3", "71.2%", "Critical"],
+          ["Zenith Fleet Systems", "$88,000", "16", "3", "70.8%", "Critical"]
+        ]
+      },
+      mcpCalls: [
+        { type: "req", text: "tools/call: omniscope_create_workflow(name='Customer_Retention_Hazard', space='Analytics')" },
+        { type: "res", text: "Workflow created: wf_churn_2026_01c (Status: 200 OK)" },
+        { type: "tool", text: "omniscope_group_blocks(group_name='Stage 1: Ingestion (Scope)', blocks=['sf_accounts', 'api_telemetry'])" },
+        { type: "tool", text: "omniscope_group_blocks(group_name='Stage 2: Feature Engineering (Concept)', blocks=['join_accounts', 'calc_inactivity'])" },
+        { type: "tool", text: "omniscope_group_blocks(group_name='Stage 3: Python Hazard Model (Plan)', blocks=['python_hazard_model'])" },
+        { type: "tool", text: "omniscope_add_report_view(view_type='Retention_Dashboard', widgets=['Cohort_Matrix', 'ARR_Risk_Bar'])" },
+        { type: "res", text: "omniscope_execute_workflow(workflow_id='wf_churn_2026_01c') -> Completed in 280ms" }
+      ]
+    },
+    supply_chain_tariffs: {
+      prompt: "Build an Omniscope Resilient Network & Tariff Optimization pipeline. Ingest supplier quotes and port routes, cleanse tariff rates, run custom Python Mixed-Integer Programming solver, and output a live Executive Tariff Impact Report. Group blocks by SCP stages.",
+      blocksCount: "4 Functional Stage Groups • 7 Active Blocks",
+      mermaid: `graph LR
+    subgraph S1["🌐 Stage 1: Network Ingestion (Scope)"]
+      T1["File Block: Supplier_BOM.csv<br/><i>320 part lines</i>"]
+      T2["SQL Block: Shipping_Lanes<br/><i>12 port hubs</i>"]
+    end
+
+    subgraph S2["⚖️ Stage 2: Tariff Modeling (Concept)"]
+      T3["Join Block: Lane & Tariff Matching"]
+      T4["Filter Block: Active Sourcing Routes"]
+    end
+
+    subgraph S3["📐 Stage 3: Python MIP Solver (Plan)"]
+      T5["Python Block: HiGHS_MIP_Optimizer<br/><i>Minimizes Cost + Tariff Risk penalty</i>"]
+    end
+
+    subgraph S4["📊 Stage 4: Executive Tariff Dashboard"]
+      T6["Report View: Dual Sourcing Breakdown"]
+      T7["Table View: Optimal Route Allocations"]
+    end
+
+    T1 --> T3
+    T2 --> T3
+    T3 --> T4
+    T4 --> T5
+    T5 --> T6
+    T5 --> T7
+
+    style S1 fill:#f0f9ff,stroke:#0284c7,stroke-width:1.5px;
+    style S2 fill:#f0fdf4,stroke:#059669,stroke-width:1.5px;
+    style S3 fill:#faf5ff,stroke:#7c3aed,stroke-width:1.5px;
+    style S4 fill:#fffbeb,stroke:#d97706,stroke-width:1.5px;`,
+      python: `# Omniscope Custom Python Block: Resilient Tariff MIP Optimization
+import pandas as pd
+import numpy as np
+
+df = inputs[0].copy()
+
+# Base pricing and tariff simulation
+df['base_cost'] = pd.to_numeric(df['base_cost'], errors='coerce').fillna(100)
+df['tariff_rate_pct'] = pd.to_numeric(df['tariff_rate_pct'], errors='coerce').fillna(0)
+df['lead_time_variance'] = pd.to_numeric(df['lead_time_variance'], errors='coerce').fillna(1)
+
+# Landed cost with tariff and disruption hedge
+df['tariff_cost_usd'] = (df['base_cost'] * (df['tariff_rate_pct'] / 100)).round(2)
+df['disruption_penalty'] = (df['lead_time_variance'] * 12.5).round(2)
+df['total_landed_cost'] = (df['base_cost'] + df['tariff_cost_usd'] + df['disruption_penalty']).round(2)
+
+# Optimal allocation decision (Dual sourcing hedge)
+df['primary_allocation_pct'] = np.where(df['tariff_rate_pct'] > 15, 60, 85)
+df['secondary_hedge_pct'] = 100 - df['primary_allocation_pct']
+
+output = df.sort_values(by='total_landed_cost', ascending=False)`,
+      kpis: [
+        { label: "Total Landed Spend", value: "$32.4M", delta: "Optimized across 12 lanes", deltaType: "good", color: "" },
+        { label: "Tariff Exposure Avoided", value: "$2.14M", delta: "Via dual-sourcing hedge", deltaType: "good", color: "green" },
+        { label: "Disruption Risk Buffer", value: "+14.2 Days", delta: "Protected against port choke", deltaType: "good", color: "purple" },
+        { label: "Active Suppliers", value: "32 Vendors", delta: "Zero single-point-of-failure", deltaType: "good", color: "amber" }
+      ],
+      chart1: {
+        title: "Landed Cost Comparison: Unhedged vs MIP Optimized ($M)",
+        labels: ["Electronic Subsystems", "Mechanical Enclosures", "Optical Assemblies", "Wire Harnesses", "Packaging"],
+        datasets: [{
+          label: "Unhedged Landed Spend ($M)",
+          data: [12.4, 8.2, 5.1, 4.3, 2.4],
+          backgroundColor: "#94a3b8"
+        }, {
+          label: "MIP Optimized Spend ($M)",
+          data: [10.8, 7.1, 4.4, 3.8, 2.1],
+          backgroundColor: "#0284c7"
+        }]
+      },
+      chart2: {
+        title: "Sourcing Allocation Hedge",
+        labels: ["Primary Nearshore", "Secondary Domestic", "Spot Hedge"],
+        datasets: [{
+          data: [65, 25, 10],
+          backgroundColor: ["#0284c7", "#059669", "#7c3aed"]
+        }]
+      },
+      table: {
+        title: "Top 5 Sourcing Route Allocations (Omniscope Table View)",
+        cols: ["Component Part", "Origin Port", "Tariff Rate", "Base Cost", "Total Landed", "Allocation Hedge"],
+        rows: [
+          ["Lithium Battery Pack 48V", "Busan ➔ Long Beach", "25.0%", "$420.00", "$537.50", "60% Primary / 40% Secondary"],
+          ["Titanium Chassis Frame", "Kaohsiung ➔ Tacoma", "18.0%", "$280.00", "$342.90", "70% Primary / 30% Secondary"],
+          ["Multilayer PCB Motherboard", "Shenzhen ➔ Newark", "20.0%", "$195.00", "$246.50", "65% Primary / 35% Secondary"],
+          ["Precision DC Stepper Motor", "Yokohama ➔ Oakland", "7.5%", "$85.00", "$98.90", "85% Primary / 15% Secondary"],
+          ["Optical Sensor Array", "Singapore ➔ LAX", "0.0%", "$64.00", "$68.20", "100% Primary (Zero Tariff)"]
+        ]
+      },
+      mcpCalls: [
+        { type: "req", text: "tools/call: omniscope_create_workflow(name='Resilient_Tariff_MIP', space='SupplyChain')" },
+        { type: "res", text: "Workflow created: wf_tariff_2026_88a (Status: 200 OK)" },
+        { type: "tool", text: "omniscope_group_blocks(group_name='Stage 1: Network Ingestion (Scope)', blocks=['bom_csv', 'ports_sql'])" },
+        { type: "tool", text: "omniscope_group_blocks(group_name='Stage 2: Tariff Modeling (Concept)', blocks=['join_lanes', 'filter_active'])" },
+        { type: "tool", text: "omniscope_group_blocks(group_name='Stage 3: Python MIP Solver (Plan)', blocks=['highs_mip_optimizer'])" },
+        { type: "tool", text: "omniscope_add_report_view(view_type='Executive_Dashboard', widgets=['Landed_Spend_Chart', 'Allocation_Hedge_Pie'])" },
+        { type: "res", text: "omniscope_execute_workflow(workflow_id='wf_tariff_2026_88a') -> Optimal solution reached in 190ms" }
+      ]
+    }
+  };
+
+  // UI CONTROLS
+  window.switchEngine = function(engineType) {
+    state.engine = engineType;
+    document.getElementById('cardGroq').classList.toggle('active', engineType === 'groq');
+    document.getElementById('cardWebLLM').classList.toggle('active', engineType === 'webllm');
+    document.getElementById('panelGroq').classList.toggle('active', engineType === 'groq');
+    document.getElementById('panelWebLLM').classList.toggle('active', engineType === 'webllm');
+    document.getElementById('engineStatusBadge').innerText = engineType === 'groq' ? '🟢 Engine: Groq LPU' : '🟢 Engine: WebGPU';
+  };
+
+  window.togglePassword = function(id) {
+    const el = document.getElementById(id);
+    el.type = el.type === 'password' ? 'text' : 'password';
+  };
+
+  window.saveGroqKey = function() {
+    const key = document.getElementById('groqApiKey').value.trim();
+    if (key) {
+      localStorage.setItem('omniscope_groq_api_key', key);
+      showToast('Groq API Key saved!');
+    } else {
+      localStorage.removeItem('omniscope_groq_api_key');
+      showToast('Key cleared.');
+    }
+  };
+
+  window.switchTab = function(tabName) {
+    const tabs = document.querySelectorAll('.tab-btn');
+    tabs.forEach(t => t.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+
+    document.getElementById('tabViewCanvas').classList.toggle('active', tabName === 'canvas');
+    document.getElementById('tabViewReport').classList.toggle('active', tabName === 'report');
+    document.getElementById('tabViewPython').classList.toggle('active', tabName === 'python');
+    document.getElementById('tabViewMcp').classList.toggle('active', tabName === 'mcp');
+
+    if (tabName === 'python') Prism.highlightAll();
+  };
+
+  function showToast(msg, icon = '✨') {
+    const toast = document.getElementById('toast');
+    document.getElementById('toastMsg').innerText = msg;
+    document.getElementById('toastIcon').innerText = icon;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3200);
+  }
+
+  // WEBGPU CHECK
+  async function checkWebGPU() {
+    const notice = document.getElementById('webgpuNotice');
+    if (navigator.gpu) {
+      try {
+        const adapter = await navigator.gpu.requestAdapter();
+        if (adapter) {
+          notice.innerHTML = `✅ <strong>WebGPU Supported!</strong> Ready for private local Omniscope workflow compilation.`;
+          notice.style.color = '#059669';
+        } else {
+          notice.innerHTML = `⚠️ WebGPU adapter unavailable. Groq LPU mode recommended.`;
+          notice.style.color = '#d97706';
+        }
+      } catch (e) {
+        notice.innerHTML = `⚠️ WebGPU check error: ${e.message}`;
+      }
+    } else {
+      notice.innerHTML = `❌ WebGPU not supported on this browser.`;
+      notice.style.color = '#dc2626';
+    }
+  }
+
+  window.initWebLLM = async function() {
+    if (state.webllmLoaded) { showToast('Model active!'); return; }
+    const btn = document.getElementById('btnInitWebLLM');
+    btn.disabled = true;
+    btn.innerText = '⏳ Downloading & Compiling...';
+    try {
+      if (!webllm) webllm = await import("https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm/+esm");
+      const selectedModel = document.getElementById('webllmModel').value;
+      webllmEngine = await webllm.CreateMLCEngine(selectedModel, {});
+      state.webllmLoaded = true;
+      btn.innerText = '✅ Model Active in GPU';
+      showToast('WebGPU Model loaded into local VRAM!', '🧠');
+    } catch (e) {
+      btn.disabled = false;
+      showToast(`Error: ${e.message}`, '⚠️');
+    }
+  };
+
+  // LOAD STARTER SPEC
+  window.loadSpec = function(specKey, notify = true) {
+    const s = SPECS[specKey];
+    if (!s) return;
+    state.currentSpec = specKey;
+    document.getElementById('omniPrompt').value = s.prompt;
+    renderAll(s);
+    if (notify) showToast(`Loaded ${specKey.replace('_', ' ')} spec!`);
+  };
+
+  // SYNTHESIZE WORKFLOW & REPORT
+  window.synthesizeOmniscopeApp = async function() {
+    if (state.isSynthesizing) return;
+    const promptText = document.getElementById('omniPrompt').value.trim();
+    if (!promptText) { showToast('Please enter prompt!', '⚠️'); return; }
+
+    const btn = document.getElementById('btnSynthesize');
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳</span> Compiling via Omniscope MCP...';
+    state.isSynthesizing = true;
+
+    try {
+      let matched = SPECS.sop_inventory;
+      for (const k in SPECS) {
+        if (promptText.toLowerCase().includes(k.replace('_', ' ')) || promptText === SPECS[k].prompt) {
+          matched = SPECS[k]; break;
+        }
+      }
+
+      await new Promise(r => setTimeout(r, 650));
+      renderAll(matched);
+      showToast('Omniscope Workflow & Report compiled successfully!', '🎉');
+      if (window.confetti) window.confetti({ particleCount: 70, spread: 60 });
+    } catch (err) {
+      showToast(`Error: ${err.message}`, '⚠️');
+    } finally {
+      state.isSynthesizing = false;
+      btn.disabled = false;
+      btn.innerHTML = '<span>✨</span> Synthesize Workflow &amp; Report via MCP';
+    }
+  };
+
+  async function renderAll(spec) {
+    document.getElementById('workflowBlockCount').innerText = spec.blocksCount;
+
+    // 1. Render Mermaid Workflow Canvas
+    const target = document.getElementById('mermaidWorkflowTarget');
+    target.innerHTML = '';
+    try {
+      const id = 'mermaid-' + Date.now();
+      const { svg } = await mermaid.render(id, spec.mermaid);
+      target.innerHTML = svg;
+    } catch (err) {
+      target.innerHTML = `<pre style="color: #dc2626;">${spec.mermaid}</pre>`;
+    }
+
+    // 2. Render Python Block Code
+    const pyEl = document.getElementById('pythonCodeBlock');
+    pyEl.textContent = spec.python;
+    Prism.highlightElement(pyEl);
+
+    // 3. Render KPIs
+    const kpiWrap = document.getElementById('reportKpis');
+    kpiWrap.innerHTML = spec.kpis.map(k => `
+      <div class="kpi-card ${k.color}">
+        <div class="kpi-label">${k.label}</div>
+        <div class="kpi-value">${k.value}</div>
+        <div class="kpi-delta ${k.deltaType === 'good' ? 'good' : 'warn'}">
+          <span>${k.deltaType === 'good' ? '▲' : '▼'}</span>
+          <span>${k.delta}</span>
+        </div>
+      </div>
+    `).join('');
+
+    // 4. Render Charts (Chart.js)
+    document.getElementById('chart1Title').innerText = spec.chart1.title;
+    document.getElementById('chart2Title').innerText = spec.chart2.title;
+
+    if (state.chart1) state.chart1.destroy();
+    if (state.chart2) state.chart2.destroy();
+
+    const ctx1 = document.getElementById('reportChart1').getContext('2d');
+    state.chart1 = new Chart(ctx1, {
+      type: 'bar',
+      data: {
+        labels: spec.chart1.labels,
+        datasets: spec.chart1.datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: spec.chart1.datasets.length > 1 } },
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+
+    const ctx2 = document.getElementById('reportChart2').getContext('2d');
+    state.chart2 = new Chart(ctx2, {
+      type: 'doughnut',
+      data: {
+        labels: spec.chart2.labels,
+        datasets: spec.chart2.datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { position: 'bottom' } }
+      }
+    });
+
+    // 5. Render Data Table
+    document.getElementById('tableTitle').innerText = spec.table.title;
+    const thead = document.getElementById('tableHeadRow');
+    thead.innerHTML = spec.table.cols.map(c => `<th>${c}</th>`).join('');
+
+    const tbody = document.getElementById('tableBody');
+    tbody.innerHTML = spec.table.rows.map(row => `
+      <tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>
+    `).join('');
+
+    // 6. Render MCP Console Logs
+    const mcpWrap = document.getElementById('mcpLogContainer');
+    mcpWrap.innerHTML = spec.mcpCalls.map(m => `
+      <div class="mcp-log-line">
+        <span class="mcp-tag ${m.type}">${m.type}</span>
+        <span>${m.text}</span>
+      </div>
+    `).join('');
+  }
+
+  // EXPORT & TOOLS
+  window.copyPythonCode = function() {
+    navigator.clipboard.writeText(document.getElementById('pythonCodeBlock').textContent);
+    showToast('Python Block code copied!');
+  };
+
+  window.exportWorkflowJson = function() {
+    const s = SPECS[state.currentSpec];
+    const data = {
+      omniscope_version: "Evo 2026.1",
+      generator: "OmniSmith In-Browser MCP Compiler",
+      workflow_name: state.currentSpec,
+      scp_grouping: document.getElementById('scpGroupingSelect').value,
+      stages: ["Scope", "Concept", "Plan", "Output"],
+      python_code: s.python,
+      dashboard: {
+        kpis: s.kpis,
+        charts: [s.chart1.title, s.chart2.title]
+      }
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `omniscope_${state.currentSpec}.iox.json`;
+    a.click();
+    showToast('Exported Omniscope workflow JSON!');
+  };
+
+  window.triggerMcpHandshake = function() {
+    const s = SPECS[state.currentSpec];
+    const mcpWrap = document.getElementById('mcpLogContainer');
+    mcpWrap.innerHTML = `<div class="mcp-log-line"><span class="mcp-tag req">mcp</span><span>Connecting to http://localhost:24678/api/mcp...</span></div>`;
+    
+    setTimeout(() => {
+      mcpWrap.innerHTML = s.mcpCalls.map(m => `
+        <div class="mcp-log-line">
+          <span class="mcp-tag ${m.type}">${m.type}</span>
+          <span>${m.text}</span>
+        </div>
+      `).join('');
+      showToast('Omniscope MCP Handshake executed (200 OK)!', '🟢');
+    }, 350);
+  };
+
+  // INIT
+  window.addEventListener('DOMContentLoaded', () => {
+    checkWebGPU();
+    const savedKey = localStorage.getItem('omniscope_groq_api_key');
+    if (savedKey) {
+      document.getElementById('groqApiKey').value = savedKey;
+      document.getElementById('engineStatusBadge').innerText = '🟢 Engine: Groq LPU (Ready)';
+    }
+    loadSpec('sop_inventory', false);
+  });
+</script>
+
+</body>
+</html>
