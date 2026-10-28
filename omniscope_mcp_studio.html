@@ -756,6 +756,36 @@
       pointer-events: none;
     }
     .toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+
+    /* WORKFLOW NINJA MODAL */
+    .ninja-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .ninja-modal-content {
+      background: #ffffff;
+      border-radius: 12px;
+      max-width: 820px;
+      width: 100%;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      padding: 20px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .ninja-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
   </style>
 </head>
 <body>
@@ -962,6 +992,7 @@
       </div>
 
       <div class="tabs-actions">
+        <button class="btn btn-magic" onclick="openWorkflowNinjaModal()" style="font-weight: 700; background: linear-gradient(135deg, #0284c7, #2563eb); color: white;"><span>🥷</span> Copy for Workflow Ninja</button>
         <button class="btn btn-secondary" onclick="exportWorkflowJson()">💾 Export .IOX / JSON</button>
         <button class="btn btn-secondary" onclick="pushWorkflowToOmniscope()" style="background:#e0f2fe; border-color:#bae6fd; color:#0369a1; font-weight:700;">🚀 Push to Cloud (/u/94dqo/)</button>
         <button class="btn btn-secondary" onclick="triggerMcpHandshake()">▶️ Execute MCP Handshake</button>
@@ -1079,6 +1110,42 @@
 <div id="toast" class="toast">
   <span id="toastIcon">✨</span>
   <span id="toastMsg">Action complete</span>
+</div>
+
+<!-- WORKFLOW NINJA MODAL -->
+<div id="ninjaModal" class="ninja-modal-backdrop" style="display: none;" onclick="closeNinjaModalOnBackdrop(event)">
+  <div class="ninja-modal-content" onclick="event.stopPropagation()">
+    <div class="ninja-modal-header">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="font-size: 24px;">🥷</span>
+        <div>
+          <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">Visokio Omniscope — Workflow Ninja Payload</h3>
+          <p style="font-size: 11.5px; color: var(--text-muted); margin: 0;">Paste this text directly into Workflow Ninja on <a href="https://omniscope.visokio.com/u/94dqo/" target="_blank" style="color:#0284c7; font-weight:700;">/u/94dqo/</a></p>
+        </div>
+      </div>
+      <button class="btn btn-secondary" onclick="closeNinjaModal()" style="padding: 4px 10px; font-size: 14px; font-weight: 700;">✕</button>
+    </div>
+
+    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; font-size: 12px; color: #166534; line-height: 1.5;">
+      <strong>📌 How to use in Visokio Omniscope:</strong><br>
+      1. Open your workspace at <a href="https://omniscope.visokio.com/u/94dqo/" target="_blank" style="color: #15803d; font-weight: 700; text-decoration: underline;">https://omniscope.visokio.com/u/94dqo/</a>.<br>
+      2. Click <strong>Workflow Ninja</strong> (or the AI prompt icon in Omniscope).<br>
+      3. Paste this compiled JSON or Prompt text into the box and click <strong>Generate</strong> — Omniscope will automatically instantiate all blocks, pipes, and Python scripts!
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+      <div style="display: flex; gap: 6px;">
+        <button id="btnNinjaJson" class="btn btn-secondary active" style="font-size: 11.5px; padding: 4px 10px; font-weight: 700;" onclick="setNinjaFormat('json')">{ } JSON Schema</button>
+        <button id="btnNinjaPrompt" class="btn btn-secondary" style="font-size: 11.5px; padding: 4px 10px;" onclick="setNinjaFormat('prompt')">📝 Natural Prompt</button>
+      </div>
+      <div style="display: flex; gap: 6px;">
+        <button class="btn btn-magic" style="font-size: 11.5px; padding: 4px 14px; font-weight: 700;" onclick="copyNinjaPayload()">📋 Copy to Clipboard</button>
+        <a href="https://omniscope.visokio.com/u/94dqo/" target="_blank" class="btn btn-secondary" style="font-size: 11.5px; padding: 4px 10px; text-decoration: none;">↗ Open Omniscope (/u/94dqo/)</a>
+      </div>
+    </div>
+
+    <pre style="background: #0f172a; color: #f8fafc; padding: 14px; border-radius: 8px; max-height: 380px; overflow-y: auto; font-family: var(--font-mono); font-size: 12px; white-space: pre-wrap; word-break: break-all; margin: 0;"><code id="ninjaCodePayload"></code></pre>
+  </div>
 </div>
 
 <script type="module">
@@ -1788,6 +1855,130 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
       `;
       showToast('Workflow compiled! Ready for import or CLI push.', '🧭');
     }
+  };
+
+  // WORKFLOW NINJA MODAL & EXPORT
+  window.ninjaFormat = 'json';
+
+  function getNinjaPayload(fmt) {
+    const s = SPECS[state.currentSpec];
+    const url = document.getElementById('omniscopeServerUrl').value.trim() || 'https://omniscope.visokio.com/u/94dqo/';
+    if (fmt === 'prompt') {
+      return `Target: Visokio Omniscope Evo (${url})
+Workflow: ${state.currentSpec}
+Stage Grouping: ${document.getElementById('scpGroupingSelect').value}
+
+Specification:
+${s.prompt}
+
+Stages & Blocks:
+- Stage 1 (Scope - Data Ingestion): SAP Inventory CSV and Warehouse Master Table.
+- Stage 2 (Concept - Data Prep): Inner Join on SKU_ID, filter active records.
+- Stage 3 (Plan - Custom Python Block):
+\`\`\`python
+${s.python}
+\`\`\`
+- Stage 4 (Output - Executive Report):
+  * KPI Cards: ${s.kpis.map(k => `${k.label}: ${k.value}`).join(', ')}
+  * Chart 1: ${s.chart1.title}
+  * Chart 2: ${s.chart2.title}
+  * Data Table: ${s.table.title}`;
+    } else {
+      const data = {
+        "generator": "OmniSmith Studio -> Visokio Omniscope Workflow Ninja",
+        "cloud_workspace": url,
+        "workflow_name": state.currentSpec,
+        "scp_grouping": document.getElementById('scpGroupingSelect').value,
+        "stages": [
+          {
+            "stage_id": "S1_scope",
+            "name": "Stage 1: Data Ingest (Scope)",
+            "blocks": [
+              { "id": "B1", "name": "SAP_Inventory.csv", "type": "File", "format": "csv" },
+              { "id": "B2", "name": "Warehouse_Master", "type": "SQL_Table", "table": "warehouse_master" }
+            ]
+          },
+          {
+            "stage_id": "S2_concept",
+            "name": "Stage 2: Data Cleanse & Prep (Concept)",
+            "blocks": [
+              { "id": "B3", "name": "Join on SKU_ID", "type": "Join", "join_type": "inner", "keys": ["SKU_ID"] },
+              { "id": "B4", "name": "Filter Active SKUs", "type": "Filter", "condition": "status == 'ACTIVE'" }
+            ]
+          },
+          {
+            "stage_id": "S3_plan",
+            "name": "Stage 3: Custom Python Analytics (Plan)",
+            "blocks": [
+              {
+                "id": "B5",
+                "name": "Custom Python Deficit Engine",
+                "type": "Python",
+                "sdk_contract": "df = inputs[0] -> output = df",
+                "code": s.python
+              }
+            ]
+          },
+          {
+            "stage_id": "S4_output",
+            "name": "Stage 4: Executive Report Output",
+            "blocks": [
+              {
+                "id": "B6",
+                "name": "Executive KPI Dashboard",
+                "type": "Report_Dashboard",
+                "kpis": s.kpis,
+                "charts": [s.chart1.title, s.chart2.title]
+              },
+              {
+                "id": "B7",
+                "name": s.table.title,
+                "type": "Table_View",
+                "columns": s.table.cols
+              }
+            ]
+          }
+        ],
+        "connections": [
+          { "from": "B1", "to": "B3", "port": 0 },
+          { "from": "B2", "to": "B3", "port": 1 },
+          { "from": "B3", "to": "B4", "port": 0 },
+          { "from": "B4", "to": "B5", "port": 0 },
+          { "from": "B5", "to": "B6", "port": 0 },
+          { "from": "B5", "to": "B7", "port": 0 }
+        ]
+      };
+      return JSON.stringify(data, null, 2);
+    }
+  }
+
+  window.openWorkflowNinjaModal = function() {
+    const payload = getNinjaPayload(window.ninjaFormat);
+    document.getElementById('ninjaCodePayload').textContent = payload;
+    document.getElementById('ninjaModal').style.display = 'flex';
+  };
+
+  window.closeNinjaModal = function() {
+    document.getElementById('ninjaModal').style.display = 'none';
+  };
+
+  window.closeNinjaModalOnBackdrop = function(e) {
+    if (e.target.id === 'ninjaModal') {
+      closeNinjaModal();
+    }
+  };
+
+  window.setNinjaFormat = function(fmt) {
+    window.ninjaFormat = fmt;
+    document.getElementById('btnNinjaJson').classList.toggle('active', fmt === 'json');
+    document.getElementById('btnNinjaPrompt').classList.toggle('active', fmt === 'prompt');
+    document.getElementById('ninjaCodePayload').textContent = getNinjaPayload(fmt);
+  };
+
+  window.copyNinjaPayload = function() {
+    const text = document.getElementById('ninjaCodePayload').textContent;
+    navigator.clipboard.writeText(text);
+    showToast('Copied for Visokio Workflow Ninja!', '🥷');
   };
 
   window.copyPythonBridgeCode = function() {
