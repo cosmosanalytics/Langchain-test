@@ -1067,7 +1067,7 @@
       </div>
 
       <button id="btnSynthesize" class="btn btn-magic" onclick="synthesizeOmniscopeApp()">
-        <span>✨</span> Synthesize Workflow &amp; Report via MCP
+        <span>✨</span> Synthesize for Workflow Ninja
       </button>
     </div>
   </div>
@@ -1743,7 +1743,7 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
 
     const btn = document.getElementById('btnSynthesize');
     btn.disabled = true;
-    btn.innerHTML = '<span>⏳</span> Compiling via Omniscope MCP...';
+    btn.innerHTML = '<span>⏳</span> Compiling for Workflow Ninja...';
     state.isSynthesizing = true;
 
     try {
@@ -1756,14 +1756,14 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
 
       await new Promise(r => setTimeout(r, 650));
       renderAll(matched);
-      showToast('Omniscope Workflow & Report compiled successfully!', '🎉');
+      showToast('Compiled for Workflow Ninja successfully!', '🎉');
       if (window.confetti) window.confetti({ particleCount: 70, spread: 60 });
     } catch (err) {
       showToast(`Error: ${err.message}`, '⚠️');
     } finally {
       state.isSynthesizing = false;
       btn.disabled = false;
-      btn.innerHTML = '<span>✨</span> Synthesize Workflow &amp; Report via MCP';
+      btn.innerHTML = '<span>✨</span> Synthesize for Workflow Ninja';
     }
   };
 
