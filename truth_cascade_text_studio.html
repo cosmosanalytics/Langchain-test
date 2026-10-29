@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GroundTruth 📘📑 — Heavy Cascade Text Studio (Approved Truth In, Reliable Agent Out)</title>
+  <title>GroundTruth 📘📑 — Cascading Policies, Not Flowcharts (Approved Truth In, Reliable Agent Out)</title>
   <meta name="description" content="Text Cascades replace workflow diagrams. Documents and web pages distill into hierarchical, multi-tiered cascading rulebooks that teach and grade AI agents.">
   
   <!-- CDNs -->
@@ -425,7 +425,8 @@
       grid-template-columns: 460px 1fr;
       gap: 20px;
     }
-    @media (max-width: 1024px) { .step2-cascade-layout { grid-template-columns: 1fr; } }
+    /* Step 2 always side by side */
+    .step2-cascade-layout { display: grid !important; grid-template-columns: minmax(420px, 1fr) 1fr !important; gap: 20px; }
 
     /* CASCADE TEXT CONTAINER */
     .cascade-tree-card {
@@ -614,7 +615,7 @@
       <div class="brand-title">
         <div class="brand-logo">📑</div>
         <div class="brand-text">
-          <h1>GroundTruth 📘📑 — Heavy Cascade Text Studio</h1>
+          <h1>GroundTruth 📘📑 — Cascading Policies Studio</h1>
           <p>Text Cascades Over Flowcharts • Approved Markdown ➔ Cascading Policy Tree ➔ Diagnostic Verification</p>
         </div>
       </div>
@@ -633,7 +634,7 @@
       <div class="hero-title-row">
         <div>
           <div class="hero-tag">Ground Truth × Agent Education · Cascade Text Edition</div>
-          <h2 class="hero-heading">Heavy Cascade Texts, Not Workflows</h2>
+          <h2 class="hero-heading">Cascading Policies, Not Flowcharts</h2>
           <p class="hero-sub">
             Real software policies and agent contracts are governed by <strong>hierarchical cascading text</strong> — root invariants, scoped directives, conditional overrides, parameter constraints, and fallback branches. Instead of brittle box-and-arrow flowcharts, the agent is trained and verified on rigorous cascading prose.
           </p>
@@ -679,7 +680,7 @@
       </button>
       <button class="step-tab-btn" id="tabBtn2" onclick="switchStep(2)">
         <span class="step-badge-indicator">2</span>
-        <span>Heavy Cascade Text Tree (The Book &amp; The Test)</span>
+        <span>Cascading Policy Tree (The Book &amp; The Test)</span>
       </button>
       <button class="step-tab-btn" id="tabBtn3" onclick="switchStep(3)">
         <span class="step-badge-indicator">3</span>
@@ -837,11 +838,22 @@
     <div id="stepPanel2" class="step-content-panel">
       <div class="step2-cascade-layout">
         
-        <!-- LEFT: THE BOOK (APPROVED MARKDOWN SOURCE) -->
+        <!-- LEFT: THE BOOK & RAW INPUTS COMPARATOR (SIDE-BY-SIDE) -->
         <div class="panel-card">
-          <div class="panel-header">
-            <div class="panel-title"><span>📘</span> The Book: Approved Markdown Source</div>
-            <span class="pill" style="background:#dbeafe; color:#1e40af;">Topic Frontmatter</span>
+          <div class="panel-header" style="flex-wrap: wrap; gap: 8px;">
+            <div class="panel-title"><span>📘</span> Step 2 Sources: Approved Book &amp; Raw Inputs</div>
+            <div class="view-segmented-group" style="font-size: 11px;">
+              <button class="view-seg-btn active" id="btnStep2ViewBook" onclick="setStep2LeftView('book')">📘 Approved Markdown</button>
+              <button class="view-seg-btn" id="btnStep2ViewDual" onclick="setStep2LeftView('dual')">👥 Raw &amp; Web (Side-by-Side)</button>
+              <button class="view-seg-btn" id="btnStep2ViewDoc" onclick="setStep2LeftView('doc')">📄 Raw Doc</button>
+              <button class="view-seg-btn" id="btnStep2ViewWeb" onclick="setStep2LeftView('web')">🌐 Web Portal</button>
+            </div>
+          </div>
+          <div id="step2LeftContainer">
+            <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px;">
+              Clean human-approved markdown with strict YAML headers. One page per process.
+            </p>
+            <pre class="markdown-page-box" id="approvedMarkdownBox" style="background: #f8fafc; color: #1e293b; border: 1px solid #cbd5e1; font-family: var(--font-mono); font-size: 11px; padding: 12px; border-radius: 8px; height: 380px; overflow-y: auto; line-height: 1.5; white-space: pre-wrap;"></pre>
           </div>
           <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px;">
             Clean human-approved markdown with strict YAML headers. One page per process.
@@ -859,7 +871,7 @@
         <div class="cascade-tree-card">
           <div class="panel-header" style="margin-bottom: 8px;">
             <div>
-              <div class="panel-title"><span>📑</span> Heavy Cascade Text Specification (The Test)</div>
+              <div class="panel-title"><span>📑</span> Cascading Policy Specification (The Test)</div>
               <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
                 Multi-tiered cascading rulebook: Root Invariants ➔ Scoped Directives ➔ Action Criteria ➔ Dead Ends.
               </p>
@@ -1835,6 +1847,86 @@ applies-to: devops, platform-engineering
       }
     }
 
+    
+    // ==========================================
+    // STEP 2: LEFT VIEW SWITCHER (MARKDOWN vs RAW & WEB SIDE-BY-SIDE)
+    // ==========================================
+    window.setStep2LeftView = function(mode) {
+      const container = document.getElementById('step2LeftContainer');
+      const p = PRESETS[state.selectedPreset];
+      if (!container || !p) return;
+
+      // Update button active classes
+      ['book', 'dual', 'doc', 'web'].forEach(m => {
+        const btn = document.getElementById(`btnStep2View${m.charAt(0).toUpperCase() + m.slice(1)}`);
+        if (btn) btn.classList.toggle('active', mode === m);
+      });
+
+      if (mode === 'book') {
+        container.innerHTML = `
+          <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px;">
+            Clean human-approved markdown with strict YAML headers. One page per process.
+          </p>
+          <pre class="markdown-page-box" id="approvedMarkdownBox" style="background: #f8fafc; color: #1e293b; border: 1px solid #cbd5e1; font-family: var(--font-mono); font-size: 11px; padding: 12px; border-radius: 8px; height: 380px; overflow-y: auto; line-height: 1.5; white-space: pre-wrap;">${p.markdownContent}</pre>
+        `;
+      } else if (mode === 'dual') {
+        // RAW & WEB SIDE-BY-SIDE INSIDE STEP 2
+        container.innerHTML = `
+          <div style="font-size: 11.5px; color: #475569; margin-bottom: 6px; font-weight: 600;">
+            ⚖️ Raw Document &amp; Web Portal (Side-by-Side Inputs Grounding the Cascade):
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; height: 380px; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; background: #cbd5e1;">
+            <div style="background: #ffffff; display: flex; flex-direction: column; overflow: hidden;">
+              <div style="background: #f8fafc; padding: 4px 8px; font-size: 10.5px; font-weight: 700; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
+                <span>📄 ${p.document.id}</span>
+                <span style="color: #0284c7;">Input 1</span>
+              </div>
+              <div style="flex: 1; overflow-y: auto; padding: 8px; font-size: 11px;">
+                ${p.document.html}
+              </div>
+            </div>
+            <div style="background: #ffffff; display: flex; flex-direction: column; overflow: hidden;">
+              <div style="background: #f8fafc; padding: 4px 8px; font-size: 10.5px; font-weight: 700; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
+                <span>🌐 ${p.brand}</span>
+                <span style="color: #059669;">Input 2</span>
+              </div>
+              <div style="flex: 1; overflow-y: auto; padding: 8px; font-size: 11px;">
+                <div style="background: #f1f5f9; padding: 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; margin-bottom: 6px;">
+                  Active Route: ${state.currentRoute}
+                </div>
+                <div id="step2WebMiniBody"></div>
+              </div>
+            </div>
+          </div>
+        `;
+        // Populate mini web body
+        const miniBody = document.getElementById('step2WebMiniBody');
+        if (miniBody) miniBody.innerHTML = p.routes.map(r => `
+          <div style="padding: 6px; border: 1px solid #e2e8f0; border-radius: 4px; margin-bottom: 4px; background: #fafafa;">
+            <strong>${r.label}</strong> (<code>${r.path}</code>)
+          </div>
+        `).join('');
+      } else if (mode === 'doc') {
+        container.innerHTML = `
+          <div style="height: 380px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; background: #ffffff;">
+            ${p.document.html}
+          </div>
+        `;
+      } else if (mode === 'web') {
+        container.innerHTML = `
+          <div style="height: 380px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; background: #ffffff;">
+            <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">${p.brand} (Routes)</div>
+            ${p.routes.map(r => `
+              <div style="padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 6px; background: #f8fafc;">
+                <div style="font-weight: 700; color: #1e293b;">${r.label}</div>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: #0284c7;">https://internal.corp.local${r.path}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    };
+    
     window.compileAndRenderWebsite = function() {
       const p = PRESETS[state.selectedPreset];
       state.currentRoute = p.routes[0].path;

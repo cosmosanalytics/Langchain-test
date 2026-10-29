@@ -602,9 +602,9 @@
 
     /* DUAL VIEW GRID (SIDE-BY-SIDE) */
     .dual-inputs-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      height: 600px;
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      height: 620px;
       background: #cbd5e1;
       gap: 1px;
     }
@@ -617,11 +617,7 @@
     }
     @media (max-width: 1200px) {
       .dual-inputs-grid {
-        grid-template-columns: 1fr;
-        height: auto;
-      }
-      .dual-inputs-col {
-        height: 500px;
+        grid-template-columns: 1fr 1fr !important;
       }
     }
 
@@ -794,7 +790,8 @@
       grid-template-columns: 460px 1fr;
       gap: 20px;
     }
-    @media (max-width: 1024px) { .step2-grid { grid-template-columns: 1fr; } }
+    /* Step 2 always side by side */
+    .step2-grid { display: grid !important; grid-template-columns: minmax(420px, 1fr) 1fr !important; gap: 20px; }
 
     .markdown-page-box {
       background: #f8fafc;
@@ -1226,13 +1223,23 @@
     <div id="stepPanel2" class="step-content-panel">
       <div class="step2-grid">
         
-        <!-- LEFT: THE BOOK (APPROVED MARKDOWN) -->
+        <!-- LEFT: THE BOOK & RAW INPUTS (SIDE-BY-SIDE) -->
         <div class="panel-card">
-          <div class="panel-header">
+          <div class="panel-header" style="flex-wrap: wrap; gap: 8px;">
             <div class="panel-title">
-              <span>📘</span> The Book: Approved Markdown
+              <span>📘</span> Step 2: Book &amp; Raw Inputs
             </div>
-            <span class="pill" style="background:#dbeafe; color:#1e40af;">One Page Per Process</span>
+            <div class="view-segmented-group" style="font-size: 11px;">
+              <button class="view-seg-btn active" id="btnStep2ViewBook" onclick="setStep2LeftView('book')">📘 Approved Markdown</button>
+              <button class="view-seg-btn" id="btnStep2ViewDual" onclick="setStep2LeftView('dual')">👥 Raw &amp; Web (Side-by-Side)</button>
+              <button class="view-seg-btn" id="btnStep2ViewDoc" onclick="setStep2LeftView('doc')">📄 Raw Doc</button>
+            </div>
+          </div>
+          <div id="step2LeftContainer">
+            <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px;">
+              Clean markdown distilled from ARIA clean HTML. Header: owner, status, source, applies-to. No menus or boilerplate.
+            </p>
+            <pre class="markdown-page-box" id="approvedMarkdownBox" style="background: #f8fafc; color: #1e293b; border: 1px solid #cbd5e1; font-family: var(--font-mono); font-size: 11px; padding: 12px; border-radius: 8px; height: 380px; overflow-y: auto; line-height: 1.5; white-space: pre-wrap;"></pre>
           </div>
           <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px;">
             Clean markdown distilled from ARIA clean HTML. Header: <code>owner</code>, <code>status</code>, <code>source</code>, <code>applies-to</code>. No menus or boilerplate.
@@ -2185,6 +2192,63 @@ applies-to: devops, platform-engineering
       }
     }
 
+    
+    window.setStep2LeftView = function(mode) {
+      const container = document.getElementById('step2LeftContainer');
+      const p = PRESETS[state.selectedPreset];
+      if (!container || !p) return;
+
+      ['book', 'dual', 'doc'].forEach(m => {
+        const btn = document.getElementById(`btnStep2View${m.charAt(0).toUpperCase() + m.slice(1)}`);
+        if (btn) btn.classList.toggle('active', mode === m);
+      });
+
+      if (mode === 'book') {
+        container.innerHTML = `
+          <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px;">
+            Clean markdown distilled from ARIA clean HTML. Header: owner, status, source, applies-to. No menus or boilerplate.
+          </p>
+          <pre class="markdown-page-box" id="approvedMarkdownBox" style="background: #f8fafc; color: #1e293b; border: 1px solid #cbd5e1; font-family: var(--font-mono); font-size: 11px; padding: 12px; border-radius: 8px; height: 380px; overflow-y: auto; line-height: 1.5; white-space: pre-wrap;">${p.markdownContent}</pre>
+        `;
+      } else if (mode === 'dual') {
+        container.innerHTML = `
+          <div style="font-size: 11.5px; color: #475569; margin-bottom: 6px; font-weight: 600;">
+            ⚖️ Raw Document &amp; Web Portal (Side-by-Side Inputs Grounding the DAG):
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; height: 380px; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; background: #cbd5e1;">
+            <div style="background: #ffffff; display: flex; flex-direction: column; overflow: hidden;">
+              <div style="background: #f8fafc; padding: 4px 8px; font-size: 10.5px; font-weight: 700; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
+                <span>📄 ${p.document.id}</span>
+                <span style="color: #0284c7;">Input 1</span>
+              </div>
+              <div style="flex: 1; overflow-y: auto; padding: 8px; font-size: 11px;">
+                ${p.document.html}
+              </div>
+            </div>
+            <div style="background: #ffffff; display: flex; flex-direction: column; overflow: hidden;">
+              <div style="background: #f8fafc; padding: 4px 8px; font-size: 10.5px; font-weight: 700; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
+                <span>🌐 ${p.brand}</span>
+                <span style="color: #059669;">Input 2</span>
+              </div>
+              <div style="flex: 1; overflow-y: auto; padding: 8px; font-size: 11px;">
+                ${p.routes.map(r => `
+                  <div style="padding: 4px 6px; border: 1px solid #e2e8f0; border-radius: 4px; margin-bottom: 4px; background: #fafafa; font-size: 10.5px;">
+                    <strong>${r.label}</strong> (<code>${r.path}</code>)
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (mode === 'doc') {
+        container.innerHTML = `
+          <div style="height: 380px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; background: #ffffff;">
+            ${p.document.html}
+          </div>
+        `;
+      }
+    };
+    
     window.compileAndRenderWebsite = function() {
       const p = PRESETS[state.selectedPreset];
       state.currentRoute = p.routes[0].path;
