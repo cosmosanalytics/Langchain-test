@@ -698,8 +698,20 @@
         <!-- LEFT: SELECTION & INVARIANT AUDIT -->
         <div class="panel-card">
           <div class="panel-header">
-            <div class="panel-title"><span>🔀</span> Step 1: Ingest &amp; Markdown Distillation</div>
-            <span class="pill" style="background:#ecfdf5; color:#065f46;">Light Mode</span>
+            <div class="panel-title"><span>🔀</span> Step 1: Two Inputs, One Path (Documents &amp; Portals)</div>
+            <span class="pill" style="background:#ecfdf5; color:#065f46;">HTML ➔ Markdown</span>
+          </div>
+
+          <!-- TWO INPUTS BOX -->
+          <div class="inputs-split-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+            <div class="input-source-card active" id="inputCardDocs" onclick="setInputViewMode('documents')" style="cursor: pointer;">
+              <div class="input-source-title"><span>📄</span> Documents (Click)</div>
+              <div class="input-source-sub" style="font-size: 10.5px; color: #64748b;">SOP PDFs, policies &amp; wikis with links preserved.</div>
+            </div>
+            <div class="input-source-card active" id="inputCardWeb" onclick="setInputViewMode('web_pages')" style="cursor: pointer;">
+              <div class="input-source-title"><span>🌐</span> Web Pages (Click)</div>
+              <div class="input-source-sub" style="font-size: 10.5px; color: #64748b;">Internal portals &amp; consoles behind SSO.</div>
+            </div>
           </div>
 
           <label style="font-size: 11.5px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Select Enterprise Policy Domain:</label>
@@ -721,10 +733,11 @@
           <!-- INVARIANT CHECKER -->
           <div class="panel-card" style="background: #fffbeb; border-color: #fef3c7; padding: 12px; margin-top: 14px;">
             <div style="font-size: 12px; font-weight: 800; color: #92400e; margin-bottom: 4px;">
-              ⚖️ Invariant Survival Audit (Preserving Negations &amp; Numbers):
+              ⚖️ Two Checks Keep It Honest (Survival &amp; Reality Grounding):
             </div>
             <div style="font-size: 11.5px; color: #78350f; line-height: 1.5;" id="invariantAuditText">
-              Confirming that numbers, durations, and critical "NOT" / "PROHIBITED" directives survived the HTML ➔ Markdown distillation intact.
+              <strong>1. Conversion Check:</strong> Numbers ($150, 72h, 200ms, 5%) and "NOT" / "PROHIBITED" statements confirmed survived into Markdown.<br/>
+              <strong>2. Reality Grounding Check:</strong> Cross-reference cascade tiers against the live document PDF and web portal.
             </div>
             <button class="btn btn-secondary btn-sm" style="margin-top: 8px; width: 100%;" onclick="runInvariantAudit()">
               <span>🔍</span> Run Conversion Invariant Check
