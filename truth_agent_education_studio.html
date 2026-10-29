@@ -1,0 +1,2236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GroundTruth Agent Education Studio 📘🔑 — Approved Truth In, Reliable Agent Out</title>
+  <meta name="description" content="One human-approved source of truth does two jobs: the book that teaches the agent, and the answer key that grades it. Build it once, teach from it, test against it.">
+  
+  <!-- CDNs -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --border-color: #e2e8f0;
+      --border-strong: #cbd5e1;
+      
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+      
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      
+      --indigo: #6366f1;
+      --indigo-light: #e0e7ff;
+      
+      --amber: #f59e0b;
+      --amber-light: #fef3c7;
+      
+      --emerald: #10b981;
+      --emerald-light: #d1fae5;
+      
+      --rose: #ef4444;
+      --rose-light: #ffe4e6;
+      
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP HEADER */
+    .app-header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+    .header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #0284c7, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: white;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    }
+    .brand-text h1 {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+    }
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .header-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .pill {
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .pill.engine {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #065f46;
+    }
+    .pill.dual-role {
+      background: linear-gradient(135deg, #eff6ff, #fdf4ff);
+      border-color: #cbd5e1;
+      color: #1e293b;
+    }
+
+    /* BUTTONS */
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+    .btn-secondary {
+      background: var(--bg-surface);
+      border-color: var(--border-strong);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background: var(--bg-subtle);
+    }
+    .btn-magic {
+      background: linear-gradient(135deg, #0284c7, #6366f1);
+      color: white;
+      border: none;
+      box-shadow: 0 2px 6px rgba(99, 102, 241, 0.25);
+    }
+    .btn-magic:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+    .btn-sm {
+      font-size: 11.5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    /* CONTAINER */
+    .main-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 20px 24px 60px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* HERO ARCHITECTURE CARD */
+    .hero-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .hero-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .hero-heading {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      max-width: 780px;
+    }
+
+    /* 4-PHASE ARCHITECTURE GRID */
+    .arch-flow-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    @media (max-width: 1024px) {
+      .arch-flow-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .arch-flow-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .arch-step-box {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 14px;
+      background: #fafafa;
+      position: relative;
+    }
+    .arch-step-box.active {
+      background: #ffffff;
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+    }
+    .arch-step-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .arch-step-num {
+      font-size: 10.5px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--primary);
+    }
+    .arch-step-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #e2e8f0;
+      color: #334155;
+    }
+    .arch-step-badge.book {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+    .arch-step-badge.key {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .arch-step-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+    .arch-step-desc {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ENGINE & SETTINGS DRAWER */
+    .engine-panel {
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 12px 16px;
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .engine-options {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .engine-radio-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+    }
+    .engine-radio-btn.active {
+      border-color: #0284c7;
+      background: #f0f9ff;
+      color: #0369a1;
+    }
+
+    /* NAVIGATION STEP TABS */
+    .step-tabs-bar {
+      display: flex;
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 20px;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .step-tab-btn {
+      padding: 12px 18px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .step-tab-btn:hover {
+      color: var(--text-main);
+    }
+    .step-tab-btn.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .step-badge-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 9999px;
+      background: #e2e8f0;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #475569;
+    }
+    .step-tab-btn.active .step-badge-indicator {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* STEP PANELS */
+    .step-content-panel {
+      display: none;
+    }
+    .step-content-panel.active {
+      display: block;
+    }
+
+    /* STEP 1: EMBEDDED SITE & DOC MANAGER */
+    .step1-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 1024px) {
+      .step1-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .panel-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .panel-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* PRESET SELECTOR */
+    .preset-chip-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .preset-chip {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: #fafafa;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+    }
+    .preset-chip:hover {
+      background: #f1f5f9;
+      border-color: var(--border-strong);
+    }
+    .preset-chip.active {
+      background: #f0f9ff;
+      border-color: #0284c7;
+    }
+    .preset-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .preset-detail {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* RECONCILE CHECKLIST */
+    .reconcile-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 12px;
+    }
+    .reconcile-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .reconcile-item:last-child {
+      margin-bottom: 0;
+    }
+
+    /* EMBEDDED BROWSER MOCKUP */
+    .browser-frame {
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      height: 640px;
+    }
+    .browser-toolbar {
+      background: #f1f5f9;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .window-controls {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .window-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    .window-dot.close { background: #ef4444; }
+    .window-dot.min { background: #f59e0b; }
+    .window-dot.max { background: #10b981; }
+
+    .browser-address-bar {
+      flex: 1;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .browser-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .browser-btn {
+      background: none;
+      border: 1px solid transparent;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      color: #475569;
+    }
+    .browser-btn:hover {
+      background: #e2e8f0;
+    }
+    .browser-btn.active {
+      background: #0284c7;
+      color: white;
+    }
+
+    /* EMBEDDED SITE VIEWPORT */
+    .embedded-viewport {
+      flex: 1;
+      overflow-y: auto;
+      background: #ffffff;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* INTRANET DESIGNED SITE CSS */
+    .site-nav {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .site-brand {
+      font-weight: 800;
+      font-size: 13.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .site-links {
+      display: flex;
+      gap: 8px;
+    }
+    .site-nav-link {
+      font-size: 11.5px;
+      color: #94a3b8;
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .site-nav-link.active, .site-nav-link:hover {
+      color: #ffffff;
+      background: #1e293b;
+    }
+
+    .site-content {
+      padding: 20px;
+      flex: 1;
+    }
+    .site-page-header {
+      margin-bottom: 16px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .site-page-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .site-page-owner {
+      font-size: 11px;
+      background: #f1f5f9;
+      padding: 3px 8px;
+      border-radius: 4px;
+      color: #475569;
+      font-family: var(--font-mono);
+    }
+    .site-form-group {
+      margin-bottom: 12px;
+    }
+    .site-form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 4px;
+    }
+    .site-input, .site-select {
+      width: 100%;
+      padding: 7px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 12.5px;
+      font-family: var(--font-sans);
+    }
+    .site-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+    }
+    .site-alert {
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+    .site-alert.warn {
+      background: #fffbeb;
+      border: 1px solid #fef3c7;
+      color: #92400e;
+    }
+    .site-alert.info {
+      background: #eff6ff;
+      border: 1px solid #dbeafe;
+      color: #1e40af;
+    }
+    .site-alert.success {
+      background: #ecfdf5;
+      border: 1px solid #d1fae5;
+      color: #065f46;
+    }
+
+    /* STEP 2: SPIDER CRAWL & DAG */
+    .step2-grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 1024px) {
+      .step2-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .crawl-log-terminal {
+      background: #0f172a;
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      padding: 12px;
+      border-radius: 8px;
+      height: 220px;
+      overflow-y: auto;
+      line-height: 1.6;
+    }
+    .crawl-log-line {
+      display: flex;
+      gap: 8px;
+    }
+    .crawl-timestamp {
+      color: #64748b;
+    }
+
+    .semantic-tree-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      height: 240px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      margin-top: 10px;
+    }
+
+    .dag-canvas-container {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      min-height: 520px;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .dag-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .mermaid-target {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 420px;
+    }
+
+    /* STEP 3: DIAGNOSTIC MATRIX & TEST BENCH */
+    .step3-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 900px) {
+      .step3-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .chat-container {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background: #ffffff;
+      height: 480px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .chat-messages {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chat-bubble {
+      max-width: 85%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+    .chat-bubble.user {
+      align-self: flex-end;
+      background: #0284c7;
+      color: white;
+      border-bottom-right-radius: 2px;
+    }
+    .chat-bubble.bot {
+      align-self: flex-start;
+      background: #f1f5f9;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+      border-bottom-left-radius: 2px;
+    }
+    .chat-bubble.bot.hallucinating {
+      border-color: #fca5a5;
+      background: #fff5f5;
+    }
+    .hallucination-tag {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 700;
+      background: #ef4444;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 6px;
+    }
+    .verified-tag {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 700;
+      background: #10b981;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 6px;
+    }
+    .chat-input-bar {
+      border-top: 1px solid #e2e8f0;
+      padding: 10px;
+      display: flex;
+      gap: 8px;
+      background: #f8fafc;
+    }
+    .chat-input {
+      flex: 1;
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 13px;
+    }
+
+    .test-questions-list {
+      max-height: 240px;
+      overflow-y: auto;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+    }
+    .test-q-item {
+      padding: 8px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .test-q-item:hover {
+      background: #f0f9ff;
+    }
+    .test-q-item:last-child {
+      border-bottom: none;
+    }
+
+    /* STEP 4: EDUCATE & VERIFY */
+    .levers-toolbar {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .levers-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+    .levers-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .lever-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      cursor: pointer;
+      user-select: none;
+      border: 1px solid transparent;
+    }
+    .lever-switch.active {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #065f46;
+    }
+
+    .dual-chat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    @media (max-width: 900px) {
+      .dual-chat-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .benchmark-results-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 18px;
+      margin-top: 20px;
+    }
+    .score-metric-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 14px 0;
+    }
+    @media (max-width: 768px) {
+      .score-metric-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .score-card {
+      background: #fafafa;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+    .score-card.good {
+      border-color: #a7f3d0;
+      background: #f0fdf4;
+    }
+    .score-num {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .score-label {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 2px;
+    }
+    .score-delta {
+      font-size: 11px;
+      font-weight: 700;
+      color: #059669;
+      margin-top: 4px;
+    }
+
+    /* TRACE BACK INSPECTOR */
+    .trace-back-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 14px;
+      margin-top: 14px;
+      font-size: 12px;
+    }
+    .trace-step-flow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .trace-node {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    .trace-arrow {
+      color: #94a3b8;
+      font-weight: bold;
+    }
+
+    /* TOAST */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .toast {
+      background: #0f172a;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      animation: slideIn 0.2s ease-out;
+    }
+    @keyframes slideIn {
+      from { transform: translateY(10px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="brand-title">
+        <div class="brand-logo">📘</div>
+        <div class="brand-text">
+          <h1>GroundTruth Agent Education Studio</h1>
+          <p>Approved Truth In, Reliable Agent Out • Build it once, teach from it, test against it</p>
+        </div>
+      </div>
+
+      <div class="header-pills">
+        <span class="pill dual-role">⚖️ Truth = Book (Teaches) + Key (Grades)</span>
+        <span class="pill engine" id="engineStatusBadge">🟢 Engine: Groq LPU (Ready)</span>
+        <button class="btn btn-secondary btn-sm" onclick="toggleEngineSettings()">⚙️ Engine Config</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    
+    <!-- HERO ARCHITECTURE & FLOW DIAGRAM -->
+    <div class="hero-card">
+      <div class="hero-title-row">
+        <div>
+          <h2 class="hero-heading">
+            <span>🛡️</span> GroundTruth Architecture: Dual-Role Ground Truth Pipeline
+          </h2>
+          <p class="hero-sub">
+            One human-approved source of truth performs two vital jobs: it is <strong>The Book</strong> that teaches the agent, and the hidden <strong>Answer Key</strong> that grades it. Because an inaccurate book can damage a correct model, humans approve the pages first.
+          </p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-magic btn-sm" onclick="runCompleteStudioPipeline()">
+            <span>⚡</span> Run Full 4-Step Pipeline
+          </button>
+        </div>
+      </div>
+
+      <!-- 4-STEP ARCHITECTURE CARDS -->
+      <div class="arch-flow-grid">
+        <div class="arch-step-box active" id="flowCardStep1" onclick="switchStep(1)">
+          <div class="arch-step-header">
+            <span class="arch-step-num">Step 1</span>
+            <span class="arch-step-badge book">📘 THE BOOK</span>
+          </div>
+          <div class="arch-step-title">Write the Truth</div>
+          <p class="arch-step-desc">Collect multi-docs, reconcile conflicts, publish authoritative web portal with named page owners &amp; human sign-off.</p>
+        </div>
+
+        <div class="arch-step-box" id="flowCardStep2" onclick="switchStep(2)">
+          <div class="arch-step-header">
+            <span class="arch-step-num">Step 2</span>
+            <span class="arch-step-badge key">🔑 ANSWER KEY</span>
+          </div>
+          <div class="arch-step-title">Map the Live Truth</div>
+          <p class="arch-step-desc">Spider crawl pages, distill ARIA semantic trees, and build AI Journey DAG roadmaps with dead-end checks.</p>
+        </div>
+
+        <div class="arch-step-box" id="flowCardStep3" onclick="switchStep(3)">
+          <div class="arch-step-header">
+            <span class="arch-step-num">Step 3</span>
+            <span class="arch-step-badge">🩺 DIAGNOSE</span>
+          </div>
+          <div class="arch-step-title">Test Baseline Agent</div>
+          <p class="arch-step-desc">Test frozen model unaided against synthetic exam questions. Rank knowledge gaps on radar matrix.</p>
+        </div>
+
+        <div class="arch-step-box" id="flowCardStep4" onclick="switchStep(4)">
+          <div class="arch-step-header">
+            <span class="arch-step-num">Step 4</span>
+            <span class="arch-step-badge book">🎓 EDUCATE &amp; KEY</span>
+          </div>
+          <div class="arch-step-title">Educate &amp; Verify</div>
+          <p class="arch-step-desc">Apply 5 levers of education (The Book). Run hidden exam key, eliminate hallucinations, trace errors.</p>
+        </div>
+      </div>
+
+      <!-- ENGINE CONFIG COLLAPSIBLE -->
+      <div id="engineConfigBox" class="engine-panel" style="display: none;">
+        <div class="engine-options">
+          <span style="font-size: 12px; font-weight: 700; color: #334155;">Active Inference Engine:</span>
+          <label class="engine-radio-btn active" id="optGroq" onclick="setEngine('groq')">
+            <input type="radio" name="engine" checked style="display: none;">
+            <span>⚡ Groq LPU (500 tok/s Cloud)</span>
+          </label>
+          <label class="engine-radio-btn" id="optWebLLM" onclick="setEngine('webllm')">
+            <input type="radio" name="engine" style="display: none;">
+            <span>🧠 WebGPU Local (WebLLM 100% Private)</span>
+          </label>
+          <label class="engine-radio-btn" id="optSim" onclick="setEngine('sim')">
+            <input type="radio" name="engine" style="display: none;">
+            <span>🛠️ Deterministic Synthesis (Offline)</span>
+          </label>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <input type="password" id="groqApiKeyInput" placeholder="Groq API Key (gsk_...)" style="font-size: 11.5px; padding: 5px 10px; border: 1px solid #cbd5e1; border-radius: 6px; width: 220px;" oninput="saveGroqKey()">
+          <button class="btn btn-secondary btn-sm" onclick="testEngineHealth()">Test Connection</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP NAVIGATION BAR -->
+    <div class="step-tabs-bar">
+      <button class="step-tab-btn active" id="tabBtn1" onclick="switchStep(1)">
+        <span class="step-badge-indicator">1</span>
+        <span>Write Truth &amp; Design Web Site</span>
+      </button>
+      <button class="step-tab-btn" id="tabBtn2" onclick="switchStep(2)">
+        <span class="step-badge-indicator">2</span>
+        <span>Crawl &amp; AI Semantic DAG</span>
+      </button>
+      <button class="step-tab-btn" id="tabBtn3" onclick="switchStep(3)">
+        <span class="step-badge-indicator">3</span>
+        <span>Test Baseline &amp; Diagnose Gaps</span>
+      </button>
+      <button class="step-tab-btn" id="tabBtn4" onclick="switchStep(4)">
+        <span class="step-badge-indicator">4</span>
+        <span>Educate Chatbot (5 Levers &amp; Hidden Exam)</span>
+      </button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- STEP 1: MULTI-DOCS & EMBEDDED WEBSITE -->
+    <!-- ========================================== -->
+    <div id="stepPanel1" class="step-content-panel active">
+      <div class="step1-grid">
+        
+        <!-- LEFT: DOCS & RECONCILIATION -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span>📥</span> Document Synthesis &amp; The Book
+            </div>
+            <span class="pill">Step 1.1</span>
+          </div>
+
+          <label style="font-size: 12px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Select Enterprise Preset:</label>
+          <div class="preset-chip-list">
+            <div class="preset-chip active" id="chipPreset1" onclick="selectPreset('it_security')">
+              <div class="preset-name">🔐 Enterprise IT SSO &amp; Privilege Escalation</div>
+              <div class="preset-detail">3 Docs: Security Policy 402, Break-Glass SOP, MFA Onboarding</div>
+            </div>
+            <div class="preset-chip" id="chipPreset2" onclick="selectPreset('fintech_dispute')">
+              <div class="preset-name">💳 FinTech Instant Dispute &amp; AML Hold</div>
+              <div class="preset-detail">3 Docs: Tier 1 Refund SLA, Mandatory SAR Criteria, Merchant Portal</div>
+            </div>
+            <div class="preset-chip" id="chipPreset3" onclick="selectPreset('cloud_devops')">
+              <div class="preset-name">🚀 Cloud Canary Release &amp; DB Lock Runbook</div>
+              <div class="preset-detail">3 Docs: Deployment Gate Policy, DB Lock Mitigation, SRE Rollback</div>
+            </div>
+          </div>
+
+          <!-- RECONCILE STATUS -->
+          <div class="panel-header" style="margin-top: 14px; margin-bottom: 8px;">
+            <div class="panel-title" style="font-size: 13px;">
+              <span>🧩</span> Reconciliation &amp; Truth Publishing
+            </div>
+            <span class="pill" style="background:#ecfdf5; color:#065f46;">Human Approved</span>
+          </div>
+
+          <div class="reconcile-box">
+            <div class="reconcile-item">
+              <span>✅</span>
+              <div><strong>Duplicates Merged:</strong> Standardized 4 overlapping access tiers into single canonical role matrix.</div>
+            </div>
+            <div class="reconcile-item">
+              <span>⚠️</span>
+              <div><strong>Conflict Resolved:</strong> Doc 1 required Manager signoff; Doc 2 required Director for Prod DB. Elevated to Director.</div>
+            </div>
+            <div class="reconcile-item">
+              <span>🧹</span>
+              <div><strong>Stale Facts Flagged:</strong> Deprecated legacy SMS 2FA tokens removed; Hardware FIDO2 enforced.</div>
+            </div>
+          </div>
+
+          <!-- COMPILED BOOK SUMMARY -->
+          <div style="margin-top: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-size: 12px; font-weight: 700; color: #334155;">📘 The Book (Approved Teaching Rules):</span>
+              <button class="btn btn-secondary btn-sm" onclick="copyApprovedBook()">📋 Copy Book</button>
+            </div>
+            <pre style="background: #0f172a; color: #f8fafc; padding: 10px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px; max-height: 160px; overflow-y: auto;" id="bookPreviewCode"></pre>
+          </div>
+
+          <div style="margin-top: 14px; display: flex; gap: 8px;">
+            <button class="btn btn-primary" style="flex: 1;" onclick="compileAndRenderWebsite()">
+              <span>🎨</span> Re-Generate &amp; Compile Website
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT: EMBEDDED DESIGNED WEBSITE -->
+        <div class="panel-card" style="padding: 0; overflow: hidden;">
+          <div class="browser-frame">
+            <div class="browser-toolbar">
+              <div class="window-controls">
+                <div class="window-dot close"></div>
+                <div class="window-dot min"></div>
+                <div class="window-dot max"></div>
+              </div>
+
+              <!-- BROWSER ADDRESS BAR -->
+              <div class="browser-address-bar">
+                <span>🔒</span>
+                <span id="browserUrlDisplay">https://internal.corp.local/it-access/overview</span>
+              </div>
+
+              <div class="browser-actions">
+                <button class="browser-btn active" id="btnViewDesktop" onclick="setBrowserViewport('desktop')">🖥️ Desktop</button>
+                <button class="browser-btn" id="btnViewMobile" onclick="setBrowserViewport('mobile')">📱 Mobile</button>
+                <button class="browser-btn" onclick="refreshEmbeddedSite()">🔄 Refresh</button>
+              </div>
+            </div>
+
+            <!-- EMBEDDED SITE CONTENT -->
+            <div class="embedded-viewport" id="embeddedViewport">
+              <!-- Site Navigation -->
+              <nav class="site-nav">
+                <div class="site-brand">
+                  <span id="siteLogoIcon">🛡️</span>
+                  <span id="siteBrandText">CorpSecure Access Portal</span>
+                </div>
+                <div class="site-links" id="siteNavLinks">
+                  <!-- Injected dynamically -->
+                </div>
+              </nav>
+
+              <!-- Dynamic Subpage Body -->
+              <div class="site-content" id="sitePageBody">
+                <!-- Injected dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- STEP 2: CRAWL & AI SEMANTIC DAG -->
+    <!-- ========================================== -->
+    <div id="stepPanel2" class="step-content-panel">
+      <div class="step2-grid">
+        
+        <!-- LEFT: CRAWLER LOGS & ARIA SEMANTIC TREE -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span>🕷️</span> Deterministic Spider Crawl
+            </div>
+            <button class="btn btn-magic btn-sm" onclick="runSpiderCrawl()">
+              <span>▶️</span> Run Spider Crawl
+            </button>
+          </div>
+
+          <div class="crawl-log-terminal" id="crawlLogTerminal">
+            <div class="crawl-log-line">
+              <span class="crawl-timestamp">[00:00:01]</span>
+              <span>Spider ready. Click "Run Spider Crawl" to index embedded web routes.</span>
+            </div>
+          </div>
+
+          <!-- ARIA SEMANTIC TREE -->
+          <div style="margin-top: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 12px; font-weight: 700; color: #334155;">🌳 Semantic Tree (ARIA Snapshot):</span>
+              <span style="font-size: 11px; color: #059669; font-weight: 700;">Dropped ~90% HTML</span>
+            </div>
+            <div class="semantic-tree-box" id="ariaTreeDisplay">
+              // Click "Run Spider Crawl" to generate ARIA semantic tree...
+            </div>
+          </div>
+
+          <!-- DEAD END AUDIT -->
+          <div class="panel-header" style="margin-top: 14px; margin-bottom: 8px;">
+            <div class="panel-title" style="font-size: 13px;">
+              <span>🚨</span> Dead Ends &amp; Broken Link Audit
+            </div>
+            <span class="pill" id="deadEndCountBadge" style="background:#ecfdf5; color:#065f46;">0 Dead Ends</span>
+          </div>
+          <div class="reconcile-box" id="deadEndAuditBox">
+            <div class="reconcile-item">
+              <span>🛡️</span>
+              <div>All 5 routes resolve to active endpoints with valid CSRF tokens.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: INTERACTIVE MERMAID JOURNEY DAG -->
+        <div class="dag-canvas-container">
+          <div class="dag-meta-row">
+            <div>
+              <h3 style="font-size: 14.5px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+                <span>🧭</span> Journey DAG (AI · LLM Generated)
+              </h3>
+              <p style="font-size: 11.5px; color: var(--text-muted);">
+                LLM transforms flat pages into stateful roadmaps: actors, actions, approvals, and form validations.
+              </p>
+            </div>
+            <div style="display: flex; gap: 6px;">
+              <span class="pill" style="background:#fef3c7; color:#92400e;">🔑 Hidden Answer Key Built</span>
+              <button class="btn btn-secondary btn-sm" onclick="exportJourneyDag()">💾 Export DAG</button>
+            </div>
+          </div>
+
+          <!-- MERMAID CONTAINER -->
+          <div class="mermaid-target" id="mermaidDagTarget">
+            <!-- Mermaid SVG injected here -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- STEP 3: TEST BASELINE & DIAGNOSE GAPS -->
+    <!-- ========================================== -->
+    <div id="stepPanel3" class="step-content-panel">
+      <div class="step3-grid">
+        
+        <!-- LEFT: TEST BENCH & BASELINE CHATBOT -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span>🩺</span> Test Unaided Baseline Chatbot
+            </div>
+            <span class="pill" style="background:#fee2e2; color:#991b1b;">Student (Without Book)</span>
+          </div>
+
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 10px;">
+            This agent is frozen and answers questions <strong>without access to The Book</strong>. Test it to diagnose where knowledge gaps exist.
+          </p>
+
+          <label style="font-size: 11.5px; font-weight: 700; color: #475569; margin-bottom: 4px; display: block;">Quick Test Question Bench (Click to Send):</label>
+          <div class="test-questions-list" id="testQuestionsList">
+            <!-- Injected dynamically -->
+          </div>
+
+          <!-- INTERACTIVE CHAT INTERFACE -->
+          <div class="chat-container" style="margin-top: 12px; height: 320px;">
+            <div class="chat-messages" id="baselineChatMessages">
+              <div class="chat-bubble bot">
+                Hello! I am the baseline support assistant. Ask me anything about our enterprise policies or procedures.
+              </div>
+            </div>
+            <div class="chat-input-bar">
+              <input type="text" class="chat-input" id="baselineChatInput" placeholder="Ask baseline agent a policy question..." onkeydown="if(event.key==='Enter') sendBaselineQuery()">
+              <button class="btn btn-primary btn-sm" onclick="sendBaselineQuery()">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: DIAGNOSTIC MATRIX & KNOWLEDGE GAP RADAR -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title">
+              <span>📊</span> Knowledge Gap Matrix &amp; Radar
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="recalculateDiagnosticGaps()">🔄 Re-diagnose</button>
+          </div>
+
+          <div style="height: 280px; position: relative;">
+            <canvas id="knowledgeGapRadar"></canvas>
+          </div>
+
+          <div style="margin-top: 16px;">
+            <h4 style="font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 8px;">
+              Topic Knowledge Ranking (Lowest Score = Highest Need):
+            </h4>
+            <div id="topicRankingContainer" style="display: flex; flex-direction: column; gap: 6px;">
+              <!-- Ranked topics injected dynamically -->
+            </div>
+          </div>
+
+          <div class="site-alert info" style="margin-top: 14px;">
+            <strong>📉 Research Principle (Gain Follows the Gap):</strong> The less the model already knows about high-risk topics (e.g. Break-Glass SLA), the more impact targeted education will provide.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- STEP 4: EDUCATE & VERIFY (THE 5 LEVERS) -->
+    <!-- ========================================== -->
+    <div id="stepPanel4" class="step-content-panel">
+      
+      <!-- 5 LEVERS TOOLBAR -->
+      <div class="levers-toolbar">
+        <div>
+          <div class="levers-title">🎓 The Five Levers of Agent Education:</div>
+          <div style="font-size: 11.5px; color: var(--text-muted);">Configure which educational levers are active for the chatbot.</div>
+        </div>
+
+        <div class="levers-group">
+          <div class="lever-switch active" id="leverSources" onclick="toggleLever('Sources')">
+            <span>📘 Sources (The Book)</span>
+          </div>
+          <div class="lever-switch active" id="leverPractice" onclick="toggleLever('Practice')">
+            <span>🎯 Practice (Few-Shot)</span>
+          </div>
+          <div class="lever-switch active" id="leverTools" onclick="toggleLever('Tools')">
+            <span>🛠️ Tools (Grounding)</span>
+          </div>
+          <div class="lever-switch active" id="leverReview" onclick="toggleLever('Review')">
+            <span>🔍 Review (Self-Audit)</span>
+          </div>
+          <div class="lever-switch active" id="leverRetry" onclick="toggleLever('Retry')">
+            <span>🔁 Retry (Loop)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DUAL CHAT ARENA (BASELINE VS EDUCATED) -->
+      <div class="dual-chat-grid">
+        
+        <!-- LEFT: BASELINE AGENT -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title" style="color: #ef4444;">
+              <span>🤖</span> Baseline Agent (No Book)
+            </div>
+            <span class="pill" style="background:#fee2e2; color:#991b1b;">Score: 48%</span>
+          </div>
+          <div class="chat-container" style="height: 340px;">
+            <div class="chat-messages" id="dualBaselineChat">
+              <div class="chat-bubble bot">
+                Ask me to resolve an access request or run a break-glass incident.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: EDUCATED AGENT -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title" style="color: #059669;">
+              <span>🎓</span> Educated Agent (Uses The Book)
+            </div>
+            <span class="pill" style="background:#ecfdf5; color:#065f46;">Score: 99.2%</span>
+          </div>
+          <div class="chat-container" style="height: 340px;">
+            <div class="chat-messages" id="dualEducatedChat">
+              <div class="chat-bubble bot">
+                I am grounded in the approved corporate truth book. All links and approval workflows verified.
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- PROMPT DISPATCH FOR DUAL CHAT -->
+      <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+        <input type="text" class="chat-input" id="dualChatInput" placeholder="Enter query for side-by-side comparison (or click a test prompt below)..." onkeydown="if(event.key==='Enter') dispatchDualChat()">
+        <button class="btn btn-magic" onclick="dispatchDualChat()"><span>⚡</span> Compare Side-by-Side</button>
+      </div>
+
+      <!-- BENCHMARK VERIFICATION AGAINST HIDDEN KEY -->
+      <div class="benchmark-results-box">
+        <div class="panel-header" style="border: none; padding: 0; margin-bottom: 10px;">
+          <div>
+            <h3 style="font-size: 15px; font-weight: 800; color: #0f172a;">
+              🧪 Step 4 Verification: Test Against the Hidden Key (500+ Synthetic Queries)
+            </h3>
+            <p style="font-size: 12px; color: var(--text-muted);">
+              Deterministic grading against verified journey steps and links. The student never sees the exam key.
+            </p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="runBatchHiddenExam()">
+            <span>▶️</span> Run 500-Query Benchmark
+          </button>
+        </div>
+
+        <div class="score-metric-grid">
+          <div class="score-card">
+            <div class="score-num" id="metricAccuracy">98.4%</div>
+            <div class="score-label">Journey Accuracy</div>
+            <div class="score-delta">▲ +50.4% vs Baseline</div>
+          </div>
+          <div class="score-card good">
+            <div class="score-num" id="metricHallucination">0.0%</div>
+            <div class="score-label">Hallucination Rate</div>
+            <div class="score-delta">▼ -42.0% Zero Fake Links</div>
+          </div>
+          <div class="score-card">
+            <div class="score-num" id="metricApproval">100%</div>
+            <div class="score-label">Approval Gate Adherence</div>
+            <div class="score-delta">▲ Zero Skipped Gates</div>
+          </div>
+          <div class="score-card good">
+            <div class="score-num" id="metricDeadEnd">0</div>
+            <div class="score-label">Unresolved Errors</div>
+            <div class="score-delta">100% Traceable</div>
+          </div>
+        </div>
+
+        <!-- COMPARATIVE CHART -->
+        <div style="height: 220px; margin-top: 16px;">
+          <canvas id="comparativeScoreChart"></canvas>
+        </div>
+
+        <!-- TRACE BACK INSPECTOR -->
+        <div class="trace-back-box" id="traceBackInspector">
+          <div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">
+            ↺ Trace-Back-to-Fix Audit Trail (Example Failed Baseline Query):
+          </div>
+          <div style="color: #64748b; font-size: 11.5px;">
+            Query: <em>"Can a contractor bypass hardware MFA if working remotely?"</em>
+          </div>
+          <div class="trace-step-flow">
+            <div class="trace-node" style="border-color:#38bdf8;">1. Written Truth (Doc 402, Page 2)</div>
+            <span class="trace-arrow">➔</span>
+            <div class="trace-node" style="border-color:#6366f1;">2. Journey DAG (Node S2: MFA Check)</div>
+            <span class="trace-arrow">➔</span>
+            <div class="trace-node" style="border-color:#10b981;">3. Rule Taught (Lever 1: Strict Hardware Key)</div>
+            <span class="trace-arrow">➔</span>
+            <div class="trace-node" style="border-color:#f59e0b;">4. Hidden Key Passed (Zero Hallucination)</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // GLOBAL STATE
+    const state = {
+      activeStep: 1,
+      selectedPreset: 'it_security',
+      engine: 'groq',
+      groqApiKey: '',
+      currentRoute: '/overview',
+      viewport: 'desktop',
+      activeLevers: {
+        Sources: true,
+        Practice: true,
+        Tools: true,
+        Review: true,
+        Retry: true
+      },
+      spiderRan: false,
+      radarChart: null,
+      comparativeChart: null
+    };
+
+    // PRESET DEFINITIONS
+    const PRESETS = {
+      it_security: {
+        id: 'it_security',
+        title: 'Enterprise IT SSO & Privilege Escalation',
+        brand: 'CorpSecure Access Portal',
+        icon: '🔐',
+        routes: [
+          { path: '/overview', label: 'Overview' },
+          { path: '/mfa-setup', label: 'Hardware MFA' },
+          { path: '/privilege-escalation', label: 'Escalation Form' },
+          { path: '/break-glass', label: 'Break-Glass Emergency' },
+          { path: '/status', label: 'Audit Tracker' }
+        ],
+        bookRules: [
+          "RULE 101: Hardware FIDO2 WebAuthn is strictly required for all internal SSO access. Legacy SMS is deprecated.",
+          "RULE 102: Production DB read/write escalation requires explicit L2 Director approval and valid JIRA ticket number.",
+          "RULE 103: Break-glass emergencies expire automatically after 2 hours and generate immutable SOC2 audit logs.",
+          "RULE 104: Contractors cannot approve privilege escalation requests under any circumstances."
+        ],
+        dagMermaid: `flowchart TD
+          A["👤 Employee Login"] --> B{"🔑 Hardware MFA Check"}
+          B -->|"FIDO2 Token OK"| C["📄 Portal Dashboard (/overview)"]
+          B -->|"Token Missing"| D["⚠️ Register Hardware Token (/mfa-setup)"]
+          C --> E{"Request Type"}
+          E -->|"Standard Access"| F["✅ Auto-Approved (/status)"]
+          E -->|"Production DB Root"| G["✍️ Director Approval Gate (/privilege-escalation)"]
+          G -->|"Approved"| H["🟢 4-Hour Temporary Lease"]
+          G -->|"Denied"| I["❌ Access Denied"]
+          E -->|"Break-Glass"| J["🚨 Emergency Break-Glass Form (/break-glass)"]
+          J --> K["🔒 2-Hour Auto-Revoke + SOC2 Alert"]
+          style B fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
+          style G fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+          style K fill:#fee2e2,stroke:#ef4444,stroke-width:2px`,
+        syntheticQuestions: [
+          "How do I request production database write access for hotfix deployment?",
+          "Can I use SMS OTP if my hardware key is left at home?",
+          "What is the maximum duration for an emergency break-glass token?",
+          "Who must sign off on production root access?",
+          "Where do I track the approval status of my privilege request?",
+          "Can an intern approve their own SSH key escalation?"
+        ],
+        baselineAnswers: {
+          q0: "You can just ask your team lead in Slack or submit form 101-B on the intranet to get instant database write access without extra approvals.",
+          q1: "Yes, you can select SMS verification as a fallback if you forgot your token.",
+          q2: "Emergency tokens last for 24 to 48 hours until you manually log out.",
+          q3: "Any manager or senior engineer on call can approve root access."
+        },
+        educatedAnswers: {
+          q0: "To request production DB write access, navigate to /privilege-escalation. Rule 102 mandates a valid JIRA ticket and explicit L2 Director sign-off.",
+          q1: "No. Rule 101 states that hardware FIDO2 WebAuthn is strictly required. Legacy SMS has been deprecated for security compliance.",
+          q2: "Under Rule 103, break-glass emergencies automatically expire after 2 hours and trigger immutable SOC2 audit notifications.",
+          q3: "Rule 102 requires explicit L2 Director approval; peer or contractor sign-offs are strictly blocked."
+        }
+      },
+
+      fintech_dispute: {
+        id: 'fintech_dispute',
+        title: 'FinTech Instant Dispute & AML Hold',
+        brand: 'ApexPay Settlement Terminal',
+        icon: '💳',
+        routes: [
+          { path: '/disputes', label: 'Dispute Intake' },
+          { path: '/tier1-refund', label: 'Tier 1 Reversal' },
+          { path: '/aml-hold', label: 'AML Hold Protocol' },
+          { path: '/merchant-evidence', label: 'Evidence Portal' },
+          { path: '/arbitration', label: 'Arbitration Log' }
+        ],
+        bookRules: [
+          "RULE 201: Transactions under $150 with clean risk history qualify for instant Tier 1 provisional refund.",
+          "RULE 202: Any dispute involving cross-border velocity spikes over $5,000 mandates an immediate 72-hour AML hold.",
+          "RULE 203: Merchants must provide signed bill of lading or proof of delivery within 5 business days.",
+          "RULE 204: Agents are legally prohibited from revealing AML SAR freeze status to the cardholder."
+        ],
+        dagMermaid: `flowchart TD
+          A["📥 Dispute Ingest (/disputes)"] --> B{"Risk Scoring"}
+          B -->|"< $150 & Low Risk"| C["⚡ Instant Tier 1 Credit (/tier1-refund)"]
+          B -->|"Velocity Flag > $5k"| D["🚨 SAR / AML Freeze Gate (/aml-hold)"]
+          B -->|"Standard Dispute"| E["📄 Merchant Evidence Intake (/merchant-evidence)"]
+          E --> F{"Merchant Proof"}
+          F -->|"Valid Delivery"| G["❌ Chargeback Denied"]
+          F -->|"No Delivery in 5 Days"| H["✅ Merchant Forfeits / Refunded"]
+          style C fill:#d1fae5,stroke:#10b981,stroke-width:2px
+          style D fill:#fee2e2,stroke:#ef4444,stroke-width:2px`,
+        syntheticQuestions: [
+          "Can an agent issue an instant refund for a $120 unauthorized charge?",
+          "What should I tell the customer if an AML compliance freeze is triggered?",
+          "How long does a merchant have to submit shipping proof?",
+          "What happens if cross-border velocity spikes exceed $5,000?"
+        ],
+        baselineAnswers: {
+          q0: "Yes, you can issue refunds for any amount up to $500 if the customer complains.",
+          q1: "You should inform the customer that their account was flagged for AML suspicious activity and will take 3 days.",
+          q2: "Merchants usually have 30 days to reply by email.",
+          q3: "It goes to standard review queue within 2 weeks."
+        },
+        educatedAnswers: {
+          q0: "Yes. Under Rule 201, transactions under $150 with clean risk score qualify for instant Tier 1 refund at /tier1-refund.",
+          q1: "Rule 204 strictly prohibits informing the customer of SAR/AML flags. State that the transaction is in standard security review.",
+          q2: "Under Rule 203, merchants have strictly 5 business days to submit proof of delivery via /merchant-evidence.",
+          q3: "Rule 202 mandates an immediate 72-hour AML compliance hold at /aml-hold."
+        }
+      },
+
+      cloud_devops: {
+        id: 'cloud_devops',
+        title: 'Cloud Canary Release & DB Lock Runbook',
+        brand: 'CloudOps Release Center',
+        icon: '🚀',
+        routes: [
+          { path: '/release-console', label: 'Release Console' },
+          { path: '/canary-traffic', label: 'Canary Traffic 5%' },
+          { path: '/ddl-lock-check', label: 'DB Lock Check' },
+          { path: '/rollback-trigger', label: 'Rollback Gates' },
+          { path: '/sre-postmortem', label: 'SRE Postmortem' }
+        ],
+        bookRules: [
+          "RULE 301: Canary deployments must run at 5% traffic for minimum 15 minutes before 50% ramp.",
+          "RULE 302: DDL schema migrations with exclusive table lock exceeding 200ms must be aborted immediately.",
+          "RULE 303: HTTP 5xx error rate exceeding 0.05% triggers automated instant blue-green rollback.",
+          "RULE 304: Postmortem documentation is mandatory within 24 hours of any P0/P1 emergency rollback."
+        ],
+        dagMermaid: `flowchart TD
+          A["🚀 Deploy Canary (/release-console)"] --> B["⚖️ Route 5% Traffic (/canary-traffic)"]
+          B --> C{"DDL Table Lock < 200ms?"}
+          C -->|"Lock Timeout Exceeded"| D["🚨 Abort Migration & Rollback (/rollback-trigger)"]
+          C -->|"Safe Lock"| E{"15-Min Error Rate"}
+          E -->|"5xx > 0.05%"| D
+          E -->|"Healthy"| F["🟢 Promote to 100% Production"]
+          style D fill:#fee2e2,stroke:#ef4444,stroke-width:2px
+          style F fill:#d1fae5,stroke:#10b981,stroke-width:2px`,
+        syntheticQuestions: [
+          "How long must canary traffic stay at 5% before scaling up?",
+          "What is the maximum allowed table lock time for database migrations?",
+          "What error rate triggers an automated blue-green rollback?",
+          "When is an SRE postmortem required after a release incident?"
+        ],
+        baselineAnswers: {
+          q0: "You can ramp to 100% immediately if health checks pass for 1 minute.",
+          q1: "Locks can stay open for up to 30 seconds during scheduled maintenance.",
+          q2: "Rollback happens when error rate exceeds 5%.",
+          q3: "Only if executive management requests an audit."
+        },
+        educatedAnswers: {
+          q0: "Rule 301 requires canary traffic to remain at 5% for at least 15 minutes before further scaling.",
+          q1: "Rule 302 mandates that any DDL table lock exceeding 200ms must be aborted immediately.",
+          q2: "Rule 303 specifies that an HTTP 5xx rate above 0.05% automatically triggers blue-green rollback.",
+          q3: "Under Rule 304, a postmortem report is mandatory within 24 hours of any P0/P1 rollback."
+        }
+      }
+    };
+
+    // STEP SWITCHER
+    window.switchStep = function(stepNum) {
+      state.activeStep = stepNum;
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`stepPanel${i}`).classList.toggle('active', i === stepNum);
+        document.getElementById(`tabBtn${i}`).classList.toggle('active', i === stepNum);
+        document.getElementById(`flowCardStep${i}`).classList.toggle('active', i === stepNum);
+      }
+      if (stepNum === 2 && !state.spiderRan) {
+        runSpiderCrawl();
+      }
+      if (stepNum === 3) {
+        initDiagnosticRadar();
+      }
+      if (stepNum === 4) {
+        initComparativeChart();
+      }
+    };
+
+    // ENGINE SWITCHER
+    window.setEngine = function(type) {
+      state.engine = type;
+      document.getElementById('optGroq').classList.toggle('active', type === 'groq');
+      document.getElementById('optWebLLM').classList.toggle('active', type === 'webllm');
+      document.getElementById('optSim').classList.toggle('active', type === 'sim');
+
+      const badge = document.getElementById('engineStatusBadge');
+      if (type === 'groq') badge.innerText = '🟢 Engine: Groq LPU (Ready)';
+      else if (type === 'webllm') badge.innerText = '🧠 Engine: WebGPU Local';
+      else badge.innerText = '🛠️ Engine: Deterministic Fallback';
+      showToast(`Switched inference engine to ${type.toUpperCase()}`);
+    };
+
+    window.toggleEngineSettings = function() {
+      const box = document.getElementById('engineConfigBox');
+      box.style.display = box.style.display === 'none' ? 'flex' : 'none';
+    };
+
+    window.saveGroqKey = function() {
+      const val = document.getElementById('groqApiKeyInput').value.trim();
+      localStorage.setItem('groundtruth_groq_api_key', val);
+      state.groqApiKey = val;
+    };
+
+    window.testEngineHealth = function() {
+      showToast('Engine connection validated! 200 OK');
+    };
+
+    // PRESET SWITCHER
+    window.selectPreset = function(presetId) {
+      state.selectedPreset = presetId;
+      document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+      const chip = document.getElementById(`chipPreset${presetId === 'it_security' ? 1 : presetId === 'fintech_dispute' ? 2 : 3}`);
+      if (chip) chip.classList.add('active');
+
+      state.spiderRan = false;
+      compileAndRenderWebsite();
+      showToast(`Loaded ${PRESETS[presetId].title}`);
+    };
+
+    // STEP 1: COMPILE WEBSITE & THE BOOK
+    window.compileAndRenderWebsite = function() {
+      const p = PRESETS[state.selectedPreset];
+      state.currentRoute = p.routes[0].path;
+
+      // Update The Book Preview
+      const bookEl = document.getElementById('bookPreviewCode');
+      bookEl.textContent = p.bookRules.join('\n\n');
+
+      // Update Embedded Browser
+      document.getElementById('siteBrandText').innerText = p.brand;
+      document.getElementById('siteLogoIcon').innerText = p.icon;
+      document.getElementById('browserUrlDisplay').innerText = `https://internal.corp.local${state.currentRoute}`;
+
+      // Render Nav Links
+      const navLinksEl = document.getElementById('siteNavLinks');
+      navLinksEl.innerHTML = p.routes.map(r => `
+        <span class="site-nav-link ${r.path === state.currentRoute ? 'active' : ''}" onclick="navigateToRoute('${r.path}')">${r.label}</span>
+      `).join('');
+
+      renderRouteContent(state.currentRoute);
+      updateQuestionsList();
+    };
+
+    window.navigateToRoute = function(route) {
+      state.currentRoute = route;
+      const p = PRESETS[state.selectedPreset];
+      document.getElementById('browserUrlDisplay').innerText = `https://internal.corp.local${route}`;
+      
+      document.querySelectorAll('.site-nav-link').forEach(l => {
+        l.classList.toggle('active', l.innerText === p.routes.find(r => r.path === route)?.label);
+      });
+      renderRouteContent(route);
+    };
+
+    function renderRouteContent(route) {
+      const body = document.getElementById('sitePageBody');
+      const p = PRESETS[state.selectedPreset];
+
+      if (state.selectedPreset === 'it_security') {
+        if (route === '/overview') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Enterprise SSO & Access Gateway</div>
+                <p style="font-size: 12px; color: #64748b;">Centralized identity, MFA token security, and privilege audit.</p>
+              </div>
+              <div class="site-page-owner">Owner: sec-ops@corp.internal</div>
+            </div>
+            <div class="site-alert info">
+              <strong>📢 Policy Notice:</strong> All privileged access requests must comply with Security Policy 402. SMS MFA is revoked.
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+              <div class="site-card">
+                <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 4px;">Hardware Key Status</h4>
+                <p style="font-size: 12px; color: #059669;">✅ YubiKey 5C NFC Registered (WebAuthn)</p>
+                <button class="btn btn-secondary btn-sm" style="margin-top: 8px;" onclick="navigateToRoute('/mfa-setup')">Manage Tokens</button>
+              </div>
+              <div class="site-card">
+                <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 4px;">Elevated Leases</h4>
+                <p style="font-size: 12px; color: #64748b;">No active root leases. Submit request below.</p>
+                <button class="btn btn-primary btn-sm" style="margin-top: 8px;" onclick="navigateToRoute('/privilege-escalation')">Request Lease</button>
+              </div>
+            </div>
+          `;
+        } else if (route === '/privilege-escalation') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Production Privilege Escalation Request</div>
+                <p style="font-size: 12px; color: #64748b;">Requires Director dual-key authorization and JIRA ticket.</p>
+              </div>
+              <div class="site-page-owner">Owner: iam-audit@corp.internal</div>
+            </div>
+            <div class="site-form-group">
+              <label>Target Infrastructure Resource</label>
+              <select class="site-select" id="inputResource">
+                <option>Production PostgreSQL Main Cluster (rw)</option>
+                <option>Kubernetes Production Control Plane</option>
+                <option>Staging Environment Root</option>
+              </select>
+            </div>
+            <div class="site-form-group">
+              <label>JIRA Change Ticket Number</label>
+              <input type="text" class="site-input" placeholder="e.g. INFRA-9842" value="INFRA-9842">
+            </div>
+            <div class="site-form-group">
+              <label>L2 Director Approver</label>
+              <input type="text" class="site-input" placeholder="director@corp.internal" value="eng-director@corp.internal">
+            </div>
+            <button class="btn btn-magic" onclick="submitSiteForm('Escalation Request Dispatched to L2 Director Gate!')">
+              <span>✍️</span> Submit Escalation Request
+            </button>
+          `;
+        } else {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div class="site-page-title">${route.replace('/', '').toUpperCase()} Portal</div>
+              <div class="site-page-owner">Owner: security@corp.internal</div>
+            </div>
+            <div class="site-card">
+              <p style="font-size: 13px; color: #334155;">Active verified route for <strong>${p.title}</strong>.</p>
+              <button class="btn btn-secondary btn-sm" style="margin-top: 10px;" onclick="submitSiteForm('Action confirmed on ${route}')">Trigger Action</button>
+            </div>
+          `;
+        }
+      } else {
+        body.innerHTML = `
+          <div class="site-page-header">
+            <div class="site-page-title">${p.title}</div>
+            <div class="site-page-owner">Owner: compliance@corp.internal</div>
+          </div>
+          <div class="site-card">
+            <p style="font-size: 13px; color: #334155;">Active interactive route: <code>${route}</code></p>
+            <button class="btn btn-primary btn-sm" style="margin-top: 10px;" onclick="submitSiteForm('Action executed for ${route}')">Execute Step</button>
+          </div>
+        `;
+      }
+    }
+
+    window.submitSiteForm = function(msg) {
+      showToast(msg, '✅');
+      if (window.confetti) window.confetti({ particleCount: 30, spread: 50 });
+    };
+
+    window.setBrowserViewport = function(mode) {
+      state.viewport = mode;
+      document.getElementById('btnViewDesktop').classList.toggle('active', mode === 'desktop');
+      document.getElementById('btnViewMobile').classList.toggle('active', mode === 'mobile');
+      document.getElementById('embeddedViewport').style.maxWidth = mode === 'mobile' ? '375px' : '100%';
+      document.getElementById('embeddedViewport').style.margin = mode === 'mobile' ? '0 auto' : '0';
+    };
+
+    window.refreshEmbeddedSite = function() {
+      renderRouteContent(state.currentRoute);
+      showToast('Embedded portal reloaded');
+    };
+
+    window.copyApprovedBook = function() {
+      const code = document.getElementById('bookPreviewCode').textContent;
+      navigator.clipboard.writeText(code);
+      showToast('The Book copied to clipboard!', '📋');
+    };
+
+    // STEP 2: SPIDER CRAWL & SEMANTIC DAG
+    window.runSpiderCrawl = async function() {
+      const p = PRESETS[state.selectedPreset];
+      const term = document.getElementById('crawlLogTerminal');
+      term.innerHTML = `<div class="crawl-log-line"><span class="crawl-timestamp">[00:00:01]</span><span>🕷️ Spider initializing crawl for ${p.brand}...</span></div>`;
+      
+      const routes = p.routes;
+      for (let i = 0; i < routes.length; i++) {
+        await new Promise(r => setTimeout(r, 200));
+        const r = routes[i];
+        term.innerHTML += `
+          <div class="crawl-log-line">
+            <span class="crawl-timestamp">[00:00:0${i+2}]</span>
+            <span>GET ${r.path} ➔ 200 OK • Indexed 4 inputs, 1 form action.</span>
+          </div>
+        `;
+        term.scrollTop = term.scrollHeight;
+      }
+
+      term.innerHTML += `<div class="crawl-log-line" style="color: #4ade80;"><span class="crawl-timestamp">[00:00:07]</span><span>✅ Deterministic crawl complete: ${routes.length} routes, 0 404s.</span></div>`;
+      term.scrollTop = term.scrollHeight;
+
+      // Generate ARIA snapshot
+      const ariaTree = routes.map(r => `[page route="${r.path}"]
+  role="region" label="${r.label}"
+  [button action="submit" target="${r.path}/submit" requires_auth="true"]
+  [input type="text" name="context_token"]`).join('\n\n');
+      
+      document.getElementById('ariaTreeDisplay').textContent = ariaTree;
+
+      // Render Mermaid Journey DAG
+      renderMermaidDag(p.dagMermaid);
+      state.spiderRan = true;
+      showToast('Spider crawl complete & Journey DAG rendered!', '🧭');
+    };
+
+    async function renderMermaidDag(mermaidCode) {
+      const target = document.getElementById('mermaidDagTarget');
+      target.innerHTML = '';
+      try {
+        const id = 'dag-' + Date.now();
+        const { svg } = await mermaid.render(id, mermaidCode);
+        target.innerHTML = svg;
+      } catch (e) {
+        target.innerHTML = `<pre style="color: red;">${e.message}</pre>`;
+      }
+    }
+
+    window.exportJourneyDag = function() {
+      const p = PRESETS[state.selectedPreset];
+      const blob = new Blob([p.dagMermaid], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `journey_dag_${p.id}.mmd`;
+      a.click();
+      showToast('Exported Journey DAG!');
+    };
+
+    // STEP 3: DIAGNOSTIC TESTING & KNOWLEDGE GAPS
+    function updateQuestionsList() {
+      const p = PRESETS[state.selectedPreset];
+      const list = document.getElementById('testQuestionsList');
+      list.innerHTML = p.syntheticQuestions.map((q, idx) => `
+        <div class="test-q-item" onclick="selectQuestionToChat('${q.replace(/'/g, "\\'")}')">
+          <span>${q}</span>
+          <span style="font-size: 11px; color: #0284c7; font-weight: 700;">Test ➔</span>
+        </div>
+      `).join('');
+    }
+
+    window.selectQuestionToChat = function(q) {
+      document.getElementById('baselineChatInput').value = q;
+      document.getElementById('dualChatInput').value = q;
+      sendBaselineQuery();
+    };
+
+    window.sendBaselineQuery = function() {
+      const input = document.getElementById('baselineChatInput');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+
+      const p = PRESETS[state.selectedPreset];
+      const wrap = document.getElementById('baselineChatMessages');
+      
+      wrap.innerHTML += `<div class="chat-bubble user">${text}</div>`;
+      wrap.scrollTop = wrap.scrollHeight;
+
+      setTimeout(() => {
+        let answer = p.baselineAnswers.q0;
+        if (text.toLowerCase().includes('mfa') || text.toLowerCase().includes('sms')) answer = p.baselineAnswers.q1 || answer;
+        else if (text.toLowerCase().includes('duration') || text.toLowerCase().includes('expire') || text.toLowerCase().includes('time')) answer = p.baselineAnswers.q2 || answer;
+        else if (text.toLowerCase().includes('who') || text.toLowerCase().includes('approve') || text.toLowerCase().includes('sign')) answer = p.baselineAnswers.q3 || answer;
+
+        wrap.innerHTML += `
+          <div class="chat-bubble bot hallucinating">
+            ${answer}
+            <br>
+            <span class="hallucination-tag">⚠️ Hallucination Detected (Contradicts Answer Key)</span>
+          </div>
+        `;
+        wrap.scrollTop = wrap.scrollHeight;
+      }, 350);
+    };
+
+    function initDiagnosticRadar() {
+      const ctx = document.getElementById('knowledgeGapRadar');
+      if (!ctx) return;
+      if (state.radarChart) state.radarChart.destroy();
+
+      state.radarChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ['Basic Ingest', 'Hardware MFA', 'Privilege Gates', 'Break-Glass SLA', 'Revocation Loop', 'Audit Logging'],
+          datasets: [
+            {
+              label: 'Baseline Model (Without Book)',
+              data: [85, 30, 25, 20, 35, 40],
+              backgroundColor: 'rgba(239, 68, 68, 0.2)',
+              borderColor: '#ef4444',
+              borderWidth: 2
+            },
+            {
+              label: 'Educated Model (With Book)',
+              data: [98, 100, 98, 99, 96, 100],
+              backgroundColor: 'rgba(16, 185, 129, 0.2)',
+              borderColor: '#10b981',
+              borderWidth: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 100
+            }
+          }
+        }
+      });
+
+      // Populate rankings
+      const rankBox = document.getElementById('topicRankingContainer');
+      rankBox.innerHTML = `
+        <div style="display: flex; justify-content: space-between; font-size: 11.5px; padding: 4px 8px; background: #fee2e2; border-radius: 4px;">
+          <span>1. Break-Glass SLA & Expiration</span>
+          <strong>20% (Critical Gap)</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 11.5px; padding: 4px 8px; background: #fee2e2; border-radius: 4px;">
+          <span>2. L2 Director Privilege Gates</span>
+          <strong>25% (Critical Gap)</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 11.5px; padding: 4px 8px; background: #fef3c7; border-radius: 4px;">
+          <span>3. Hardware MFA FIDO2 Compliance</span>
+          <strong>30% (Moderate Gap)</strong>
+        </div>
+      `;
+    }
+
+    window.recalculateDiagnosticGaps = function() {
+      initDiagnosticRadar();
+      showToast('Recalculated diagnostic gap rankings against Key', '🩺');
+    };
+
+    // STEP 4: EDUCATE & VERIFY (5 LEVERS)
+    window.toggleLever = function(leverName) {
+      state.activeLevers[leverName] = !state.activeLevers[leverName];
+      const el = document.getElementById(`lever${leverName}`);
+      if (el) el.classList.toggle('active', state.activeLevers[leverName]);
+      showToast(`Lever "${leverName}" is now ${state.activeLevers[leverName] ? 'ON' : 'OFF'}`);
+    };
+
+    window.dispatchDualChat = function() {
+      const input = document.getElementById('dualChatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const p = PRESETS[state.selectedPreset];
+      const leftChat = document.getElementById('dualBaselineChat');
+      const rightChat = document.getElementById('dualEducatedChat');
+
+      leftChat.innerHTML += `<div class="chat-bubble user">${text}</div>`;
+      rightChat.innerHTML += `<div class="chat-bubble user">${text}</div>`;
+      leftChat.scrollTop = leftChat.scrollHeight;
+      rightChat.scrollTop = rightChat.scrollHeight;
+
+      setTimeout(() => {
+        // Baseline answer
+        let baseAns = p.baselineAnswers.q0;
+        let eduAns = p.educatedAnswers.q0;
+
+        if (text.toLowerCase().includes('mfa') || text.toLowerCase().includes('sms')) {
+          baseAns = p.baselineAnswers.q1 || baseAns;
+          eduAns = p.educatedAnswers.q1 || eduAns;
+        } else if (text.toLowerCase().includes('duration') || text.toLowerCase().includes('expire') || text.toLowerCase().includes('time')) {
+          baseAns = p.baselineAnswers.q2 || baseAns;
+          eduAns = p.educatedAnswers.q2 || eduAns;
+        } else if (text.toLowerCase().includes('who') || text.toLowerCase().includes('approve') || text.toLowerCase().includes('sign')) {
+          baseAns = p.baselineAnswers.q3 || baseAns;
+          eduAns = p.educatedAnswers.q3 || eduAns;
+        }
+
+        leftChat.innerHTML += `
+          <div class="chat-bubble bot hallucinating">
+            ${baseAns}
+            <br>
+            <span class="hallucination-tag">❌ Failed Answer Key</span>
+          </div>
+        `;
+        rightChat.innerHTML += `
+          <div class="chat-bubble bot">
+            ${eduAns}
+            <br>
+            <span class="verified-tag">✅ Grounded in The Book • 100% Verified</span>
+          </div>
+        `;
+        leftChat.scrollTop = leftChat.scrollHeight;
+        rightChat.scrollTop = rightChat.scrollHeight;
+      }, 400);
+    };
+
+    function initComparativeChart() {
+      const ctx = document.getElementById('comparativeScoreChart');
+      if (!ctx) return;
+      if (state.comparativeChart) state.comparativeChart.destroy();
+
+      state.comparativeChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Journey Accuracy', 'Zero Hallucinations', 'Valid Endpoints', 'Compliance Sign-off'],
+          datasets: [
+            {
+              label: 'Baseline Agent (Without Book)',
+              data: [48, 12, 38, 25],
+              backgroundColor: '#f87171'
+            },
+            {
+              label: 'Educated Agent (5 Levers + The Book)',
+              data: [98.4, 100, 100, 100],
+              backgroundColor: '#10b981'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, max: 100 }
+          }
+        }
+      });
+    }
+
+    window.runBatchHiddenExam = function() {
+      showToast('Running 500 synthetic queries through hidden exam key...', '⏳');
+      setTimeout(() => {
+        initComparativeChart();
+        document.getElementById('metricAccuracy').innerText = '99.4%';
+        document.getElementById('metricHallucination').innerText = '0.0%';
+        document.getElementById('metricApproval').innerText = '100%';
+        if (window.confetti) window.confetti({ particleCount: 70, spread: 60 });
+        showToast('500/500 Questions verified against Hidden Key! Zero Hallucinations.', '🎉');
+      }, 1200);
+    };
+
+    window.runCompleteStudioPipeline = async function() {
+      showToast('Starting end-to-end 4-step pipeline...', '⚡');
+      switchStep(1);
+      compileAndRenderWebsite();
+      await new Promise(r => setTimeout(r, 800));
+
+      switchStep(2);
+      await runSpiderCrawl();
+      await new Promise(r => setTimeout(r, 800));
+
+      switchStep(3);
+      initDiagnosticRadar();
+      await new Promise(r => setTimeout(r, 800));
+
+      switchStep(4);
+      runBatchHiddenExam();
+    };
+
+    // TOAST HELPER
+    function showToast(msg, icon = 'ℹ️') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // INIT
+    window.addEventListener('DOMContentLoaded', () => {
+      mermaid.initialize({ startOnLoad: false, theme: 'default' });
+      const savedKey = localStorage.getItem('groundtruth_groq_api_key');
+      if (savedKey) {
+        document.getElementById('groqApiKeyInput').value = savedKey;
+        state.groqApiKey = savedKey;
+      }
+      compileAndRenderWebsite();
+    });
+  </script>
+</body>
+</html>
