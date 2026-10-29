@@ -1102,30 +1102,30 @@
 
     <!-- 4 STEP FLOW -->
     <div class="ninja-steps-bar">
-      <div class="ninja-step">
-        <span class="step-num">1</span>
-        <span>Paste Authenticated Link</span>
+      <div class="ninja-step active" id="ninjaStep1">
+        <span class="step-num" id="stepNum1" style="background:#0284c7;">1</span>
+        <span id="stepLabel1" style="font-weight: 700; color: #0284c7;">Paste Authenticated Link</span>
       </div>
       <div class="ninja-step-arrow">➔</div>
-      <div class="ninja-step">
-        <span class="step-num">2</span>
-        <span>Describe Workflow</span>
+      <div class="ninja-step" id="ninjaStep2">
+        <span class="step-num" id="stepNum2">2</span>
+        <span id="stepLabel2">Describe Workflow</span>
       </div>
       <div class="ninja-step-arrow">➔</div>
-      <div class="ninja-step active">
-        <span class="step-num" style="background:#059669;">3</span>
-        <span style="color: #059669; font-weight: 700;">Click "Copy for Workflow Ninja"</span>
+      <div class="ninja-step" id="ninjaStep3">
+        <span class="step-num" id="stepNum3" style="background:#94a3b8;">3</span>
+        <span id="stepLabel3">Click "Copy for Workflow Ninja"</span>
       </div>
       <div class="ninja-step-arrow">➔</div>
-      <div class="ninja-step">
-        <span class="step-num">4</span>
-        <span>Paste into Workflow Ninja in Omniscope</span>
+      <div class="ninja-step" id="ninjaStep4">
+        <span class="step-num" id="stepNum4">4</span>
+        <span id="stepLabel4">Paste into Workflow Ninja in Omniscope</span>
       </div>
     </div>
 
     <!-- CODE PREVIEW -->
     <div class="ninja-output-box">
-      <pre style="margin: 0; background: #0f172a; color: #f8fafc; padding: 14px 16px; border-radius: 8px; font-family: var(--font-mono); font-size: 12px; line-height: 1.5; max-height: 240px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;"><code id="heroNinjaOutputCode"></code></pre>
+      <pre style="margin: 0; background: #0f172a; color: #f8fafc; padding: 14px 16px; border-radius: 8px; font-family: var(--font-mono); font-size: 12px; line-height: 1.5; max-height: 240px; min-height: 54px; overflow-y: auto; white-space: pre-wrap; word-break: break-all;"><code id="heroNinjaOutputCode"><span style="color: #64748b; font-style: italic;">// Waiting for authenticated Omniscope link... Paste your link in Step 1 above to generate Workflow Ninja code.</span></code></pre>
     </div>
   </div>
 
@@ -1164,11 +1164,17 @@
           <div class="legend-item"><div class="legend-dot python"></div> Stage 3: Custom Python Analytics (Plan)</div>
           <div class="legend-item"><div class="legend-dot report"></div> Stage 4: Executive Report Output</div>
         </div>
-        <div style="font-weight: 700; color: #0284c7;" id="workflowBlockCount">4 Functional Stage Groups • 7 Active Blocks</div>
+        <div style="font-weight: 700; color: #64748b;" id="workflowBlockCount">0 Functional Blocks • Awaiting Link</div>
       </div>
 
       <div id="mermaidWorkflowTarget">
-        <div style="color: var(--text-muted); font-size: 13px;">Loading Omniscope Workflow Canvas...</div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 280px; padding: 40px 20px; text-align: center; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; margin: 12px 0;">
+          <div style="font-size: 38px; margin-bottom: 10px; opacity: 0.6;">🧭</div>
+          <div style="font-size: 15px; font-weight: 800; color: #334155; margin-bottom: 4px;">Workflow Canvas is Empty</div>
+          <div style="font-size: 13px; color: #64748b; max-width: 420px; line-height: 1.5;">
+            Paste your authenticated Omniscope link in <strong>Step 1</strong> above to generate your workflow stage graph and block connections.
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1725,19 +1731,126 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
     }
   };
 
+  // STEP PROGRESS & EMPTY STATE CONTROLLERS
+  window.updateStepsProgress = function(hasLink) {
+    const s1 = document.getElementById('ninjaStep1');
+    const s2 = document.getElementById('ninjaStep2');
+    const s3 = document.getElementById('ninjaStep3');
+    const s4 = document.getElementById('ninjaStep4');
+    const num1 = document.getElementById('stepNum1');
+    const lbl1 = document.getElementById('stepLabel1');
+    const num3 = document.getElementById('stepNum3');
+    const lbl3 = document.getElementById('stepLabel3');
+    if (!s1 || !s3) return;
+
+    if (hasLink) {
+      s1.className = 'ninja-step completed';
+      if (num1) { num1.style.background = '#059669'; num1.innerText = '✓'; }
+      if (lbl1) { lbl1.style.color = '#059669'; lbl1.style.fontWeight = '600'; }
+      if (s2) s2.className = 'ninja-step';
+      s3.className = 'ninja-step active';
+      if (num3) { num3.style.background = '#059669'; num3.innerText = '3'; }
+      if (lbl3) { lbl3.style.color = '#059669'; lbl3.style.fontWeight = '700'; }
+      if (s4) s4.className = 'ninja-step';
+    } else {
+      s1.className = 'ninja-step active';
+      if (num1) { num1.style.background = '#0284c7'; num1.innerText = '1'; }
+      if (lbl1) { lbl1.style.color = '#0284c7'; lbl1.style.fontWeight = '700'; }
+      if (s2) s2.className = 'ninja-step';
+      s3.className = 'ninja-step';
+      if (num3) { num3.style.background = '#94a3b8'; num3.innerText = '3'; }
+      if (lbl3) { lbl3.style.color = 'var(--text-muted)'; lbl3.style.fontWeight = 'normal'; }
+      if (s4) s4.className = 'ninja-step';
+    }
+  };
+
+  window.renderEmptyWorkspace = function() {
+    updateStepsProgress(false);
+
+    // 1. Clear Code Preview
+    const codeEl = document.getElementById('heroNinjaOutputCode');
+    if (codeEl) {
+      codeEl.innerHTML = `<span style="color: #64748b; font-style: italic;">// Waiting for authenticated Omniscope link... Paste your link in Step 1 above to generate Workflow Ninja code.</span>`;
+    }
+    const modalCodeEl = document.getElementById('ninjaCodePayload');
+    if (modalCodeEl) {
+      modalCodeEl.textContent = '// Please paste your authenticated Omniscope link in Step 1 first.';
+    }
+
+    // 2. Clear Workflow Canvas
+    const blockCount = document.getElementById('workflowBlockCount');
+    if (blockCount) {
+      blockCount.innerText = '0 Functional Blocks • Awaiting Link';
+      blockCount.style.color = '#64748b';
+    }
+    const canvasTarget = document.getElementById('mermaidWorkflowTarget');
+    if (canvasTarget) {
+      canvasTarget.innerHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 280px; padding: 40px 20px; text-align: center; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; margin: 12px 0;">
+          <div style="font-size: 38px; margin-bottom: 10px; opacity: 0.6;">🧭</div>
+          <div style="font-size: 15px; font-weight: 800; color: #334155; margin-bottom: 4px;">Workflow Canvas is Empty</div>
+          <div style="font-size: 13px; color: #64748b; max-width: 420px; line-height: 1.5;">
+            Paste your authenticated Omniscope link in <strong>Step 1</strong> above to generate your workflow stage graph and block connections.
+          </div>
+        </div>
+      `;
+    }
+
+    // 3. Clear Python Block Code
+    const pyEl = document.getElementById('pythonCodeBlock');
+    if (pyEl) {
+      pyEl.textContent = '# Python block code will be generated once your authenticated Omniscope link is pasted in Step 1 above.';
+      if (window.Prism) Prism.highlightElement(pyEl);
+    }
+
+    // 4. Clear KPIs & Charts
+    const kpiWrap = document.getElementById('reportKpis');
+    if (kpiWrap) {
+      kpiWrap.innerHTML = `
+        <div style="grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 16px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; color: #64748b; font-size: 13px;">
+          <span style="font-size: 24px; margin-bottom: 6px;">📊</span>
+          <span>Paste your authenticated Omniscope link in Step 1 to generate live executive KPI metrics.</span>
+        </div>
+      `;
+    }
+    if (state.chart1) { state.chart1.destroy(); state.chart1 = null; }
+    if (state.chart2) { state.chart2.destroy(); state.chart2 = null; }
+    const tbody = document.getElementById('tableBody');
+    if (tbody) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 24px;">No data rows • Awaiting Omniscope link in Step 1</td></tr>`;
+    }
+  };
+
   // LOAD STARTER SPEC
   window.loadSpec = function(specKey, notify = true) {
     const s = SPECS[specKey];
     if (!s) return;
     state.currentSpec = specKey;
     document.getElementById('omniPrompt').value = s.prompt;
-    renderAll(s);
-    if (notify) showToast(`Loaded ${specKey.replace('_', ' ')} spec!`);
+    const url = getUserOmniscopeUrl();
+    if (url) {
+      renderAll(s);
+      if (notify) showToast(`Loaded ${specKey.replace('_', ' ')} spec!`);
+    } else {
+      renderEmptyWorkspace();
+      if (notify) showToast(`Prompt loaded. Now paste your authenticated Omniscope link in Step 1 to generate!`, '🧭');
+    }
   };
 
   // SYNTHESIZE WORKFLOW & REPORT
   window.synthesizeOmniscopeApp = async function() {
     if (state.isSynthesizing) return;
+    const url = getUserOmniscopeUrl();
+    if (!url) {
+      showToast('Please paste your authenticated Omniscope link in Step 1 first!', '⚠️');
+      const input = document.getElementById('omniscopeServerUrl');
+      if (input) {
+        input.focus();
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
     const promptText = document.getElementById('omniPrompt').value.trim();
     if (!promptText) { showToast('Please enter prompt!', '⚠️'); return; }
 
@@ -1768,7 +1881,19 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
   };
 
   async function renderAll(spec) {
-    document.getElementById('workflowBlockCount').innerText = spec.blocksCount;
+    const url = getUserOmniscopeUrl();
+    if (!url) {
+      renderEmptyWorkspace();
+      return;
+    }
+
+    updateStepsProgress(true);
+
+    const blockCountEl = document.getElementById('workflowBlockCount');
+    if (blockCountEl) {
+      blockCountEl.innerText = spec.blocksCount;
+      blockCountEl.style.color = '#0284c7';
+    }
 
     // 1. Render Mermaid Workflow Canvas
     const target = document.getElementById('mermaidWorkflowTarget');
@@ -1882,8 +2007,7 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
 
   function getUserOmniscopeUrl() {
     const el = document.getElementById('omniscopeServerUrl');
-    const val = el ? el.value.trim() : '';
-    return val || localStorage.getItem('omniscope_user_account_url') || '';
+    return el ? el.value.trim() : '';
   }
 
   function updateCloudStatusBadge() {
@@ -1943,18 +2067,21 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
     const key = document.getElementById('omniscopeApiKey').value.trim();
     if (url) {
       localStorage.setItem('omniscope_user_account_url', url);
-      showToast('Omniscope account link saved!', '🧭');
+      showToast('Omniscope account link saved! Workflow canvas & code generated.', '🧭');
+      updateCloudStatusBadge();
+      const s = SPECS[state.currentSpec || 'sop_inventory'];
+      if (s) renderAll(s);
     } else {
       localStorage.removeItem('omniscope_user_account_url');
       showToast('Account link cleared.', '🧭');
+      updateCloudStatusBadge();
+      renderEmptyWorkspace();
     }
     if (key) {
       localStorage.setItem('omniscope_api_key', key);
     } else {
       localStorage.removeItem('omniscope_api_key');
     }
-    updateCloudStatusBadge();
-    updateHeroNinjaOutput();
   };
 
   window.testOmniscopeCloudConnection = async function() {
@@ -2027,7 +2154,13 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
   };
 
   window.pushWorkflowToOmniscope = async function() {
-    const url = getUserOmniscopeUrl() || 'http://localhost:24678';
+    const url = getUserOmniscopeUrl();
+    if (!url) {
+      showToast('Please paste your authenticated Omniscope link in Step 1 first!', '⚠️');
+      const input = document.getElementById('omniscopeServerUrl');
+      if (input) { input.focus(); input.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      return;
+    }
     const token = document.getElementById('omniscopeApiKey').value.trim();
     const s = SPECS[state.currentSpec];
     
@@ -2099,16 +2232,24 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
     const rawUrl = document.getElementById('omniscopeServerUrl').value.trim();
     if (rawUrl) {
       localStorage.setItem('omniscope_user_account_url', rawUrl);
+      updateCloudStatusBadge();
+      const s = SPECS[state.currentSpec || 'sop_inventory'];
+      if (s) renderAll(s);
     } else {
       localStorage.removeItem('omniscope_user_account_url');
+      updateCloudStatusBadge();
+      renderEmptyWorkspace();
     }
-    updateCloudStatusBadge();
-    updateHeroNinjaOutput();
   };
 
   window.updateHeroNinjaOutput = function() {
     const codeEl = document.getElementById('heroNinjaOutputCode');
     if (!codeEl) return;
+    const url = getUserOmniscopeUrl();
+    if (!url) {
+      codeEl.innerHTML = `<span style="color: #64748b; font-style: italic;">// Waiting for authenticated Omniscope link... Paste your link in Step 1 above to generate Workflow Ninja code.</span>`;
+      return;
+    }
     const payload = getNinjaPayload(window.heroNinjaFormat);
     codeEl.textContent = payload;
     updateCloudStatusBadge();
@@ -2122,6 +2263,17 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
   };
 
   window.copyHeroNinjaPayload = function() {
+    const url = getUserOmniscopeUrl();
+    if (!url) {
+      showToast('Please paste your authenticated Omniscope link in Step 1 first!', '⚠️');
+      const input = document.getElementById('omniscopeServerUrl');
+      if (input) {
+        input.focus();
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+
     const codeEl = document.getElementById('heroNinjaOutputCode');
     if (!codeEl) return;
     navigator.clipboard.writeText(codeEl.textContent);
@@ -2243,6 +2395,16 @@ ${s.python}
   }
 
   window.openWorkflowNinjaModal = function() {
+    const url = getUserOmniscopeUrl();
+    if (!url) {
+      showToast('Please paste your authenticated Omniscope link in Step 1 first!', '⚠️');
+      const input = document.getElementById('omniscopeServerUrl');
+      if (input) {
+        input.focus();
+        input.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
     const payload = getNinjaPayload(window.ninjaFormat);
     document.getElementById('ninjaCodePayload').textContent = payload;
     document.getElementById('ninjaModal').style.display = 'flex';
@@ -2266,6 +2428,11 @@ ${s.python}
   };
 
   window.copyNinjaPayload = function() {
+    const url = getUserOmniscopeUrl();
+    if (!url) {
+      showToast('Please paste your authenticated Omniscope link in Step 1 first!', '⚠️');
+      return;
+    }
     const text = document.getElementById('ninjaCodePayload').textContent;
     navigator.clipboard.writeText(text);
     showToast('Copied for Visokio Workflow Ninja!', '🥷');
@@ -2316,8 +2483,15 @@ print(response.text)
   };
 
   window.exportWorkflowJson = function() {
+    const url = getUserOmniscopeUrl();
+    if (!url) {
+      showToast('Please paste your authenticated Omniscope link in Step 1 first!', '⚠️');
+      const input = document.getElementById('omniscopeServerUrl');
+      if (input) { input.focus(); input.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      return;
+    }
     const s = SPECS[state.currentSpec];
-    const userUrl = getUserOmniscopeUrl();
+    const userUrl = url;
     const data = {
       omniscope_version: "Evo 2026.1",
       cloud_workspace: userUrl || "Active Omniscope Workspace",
@@ -2332,17 +2506,23 @@ print(response.text)
       }
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
+    const blobUrl = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
+    a.href = blobUrl;
     a.download = `omniscope_${state.currentSpec}.iox.json`;
     a.click();
     showToast('Exported Omniscope workflow JSON!');
   };
 
   window.triggerMcpHandshake = function() {
+    const url = getUserOmniscopeUrl();
+    if (!url) {
+      showToast('Please paste your authenticated Omniscope link in Step 1 first!', '⚠️');
+      const input = document.getElementById('omniscopeServerUrl');
+      if (input) { input.focus(); input.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      return;
+    }
     const s = SPECS[state.currentSpec];
-    const url = getUserOmniscopeUrl() || 'http://localhost:24678';
     const mcpWrap = document.getElementById('mcpLogContainer');
     mcpWrap.innerHTML = `<div class="mcp-log-line"><span class="mcp-tag req">mcp</span><span>Connecting to Omniscope endpoint: ${url}...</span></div>`;
     
@@ -2367,16 +2547,31 @@ print(response.text)
     }
 
     const savedUrl = localStorage.getItem('omniscope_user_account_url');
-    if (savedUrl) {
-      document.getElementById('omniscopeServerUrl').value = savedUrl;
+    if (savedUrl && savedUrl.trim()) {
+      document.getElementById('omniscopeServerUrl').value = savedUrl.trim();
+      updateCloudStatusBadge();
+      loadSpec('sop_inventory', false);
+    } else {
+      // Code and Canvas MUST be empty before link is pasted!
+      document.getElementById('omniscopeServerUrl').value = '';
+      document.getElementById('omniPrompt').value = SPECS.sop_inventory.prompt;
+      state.currentSpec = 'sop_inventory';
+      updateCloudStatusBadge();
+      renderEmptyWorkspace();
     }
+
     const savedOmniKey = localStorage.getItem('omniscope_api_key');
     if (savedOmniKey) {
       document.getElementById('omniscopeApiKey').value = savedOmniKey;
     }
-    updateCloudStatusBadge();
 
-    loadSpec('sop_inventory', false);
+    // Attach paste event listener to immediately detect when user pastes link
+    const inputEl = document.getElementById('omniscopeServerUrl');
+    if (inputEl) {
+      inputEl.addEventListener('paste', () => {
+        setTimeout(window.handleOmniscopeUrlInput, 50);
+      });
+    }
   });
 </script>
 
