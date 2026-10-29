@@ -552,17 +552,17 @@
 
           <label style="font-size: 11.5px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Select Specialized Enterprise Domain:</label>
           <div class="preset-chip-list">
-            <div class="preset-chip active" id="chipPreset1" onclick="selectPreset('satellite_collision')">
-              <div class="preset-name">🛰️ Orbital Collision Avoidance &amp; Handover</div>
-              <div class="preset-detail">NASA/ESA CARA: PoC &gt; 1e-4 Alert, 96-Min Thruster Lockout, Dual-Key Gate</div>
+            <div class="preset-chip active" id="chipPreset1" onclick="selectPreset('mpc_optimization')">
+              <div class="preset-name">⚙️ Model Predictive Control (MPC)</div>
+              <div class="preset-detail">Distillation Column: MV Slew Rate <= 1.5%/min, Tray Delta-P <= 42 kPa, Flare Interlock</div>
             </div>
-            <div class="preset-chip" id="chipPreset2" onclick="selectPreset('nuclear_islanding')">
-              <div class="preset-name">⚡ Nuclear Grid Islanding &amp; Shedding</div>
-              <div class="preset-detail">NERC PRC-024: 59.3 Hz / 160ms Tripwire, 4-Cycle Breaker, Phase &lt; 10° Sync</div>
+            <div class="preset-chip" id="chipPreset2" onclick="selectPreset('sop_planning')">
+              <div class="preset-name">📦 Sales &amp; Operations Planning (S&amp;OP)</div>
+              <div class="preset-detail">Supply Chain Balance: Safety Stock Delta <= 15%, Overtime <= 12%, Non-Neg Inventory</div>
             </div>
-            <div class="preset-chip" id="chipPreset3" onclick="selectPreset('darkpool_crossing')">
-              <div class="preset-name">📈 Dark Pool Block Crossing &amp; Reg NMS</div>
-              <div class="preset-detail">SEC Rule 612 Sub-Penny Guard, $200k MFS, 35 bps Toxic Flow 30s Freeze</div>
+            <div class="preset-chip" id="chipPreset3" onclick="selectPreset('cooling_tower_water')">
+              <div class="preset-name">💧 Cooling Tower Water Treatment</div>
+              <div class="preset-detail">Legionella &amp; LSI Cycles: Conductivity <= 2,400 uS/cm, Biocide 4h Soak, LSI +0.2 to +0.8</div>
             </div>
           </div>
 
@@ -572,7 +572,7 @@
               ⚖️ Two Checks Keep It Honest:
             </div>
             <div style="font-size: 11.5px; color: #78350f; line-height: 1.5;" id="invariantAuditText">
-              <strong>1. Conversion Check:</strong> Invariants (PoC 1e-4, 96-min, 59.3 Hz, 160ms, $200k, 35 bps) and "NOT/PROHIBITED" confirmed survived.<br/>
+              <strong>1. Conversion Check:</strong> Invariants (Tray Delta-P <= 42 kPa, MV Slew <= 1.5%/min, SS >= 21d, OT <= 12%, Cond <= 2400 uS/cm, 4h Soak, LSI +0.2 to +0.8) and "NOT/PROHIBITED" confirmed survived.<br/>
               <strong>2. Reality Grounding Check:</strong> Spot-check policy tiers against live document and console telemetry.
             </div>
             <button class="btn btn-secondary btn-sm" style="margin-top: 8px; width: 100%;" onclick="runInvariantAudit()">
@@ -724,10 +724,10 @@
   <script>
     let state = {
       activeStep: 1,
-      selectedPreset: 'satellite_collision',
+      selectedPreset: 'mpc_optimization',
       inputViewMode: 'side_by_side',
       highlightDocInvariants: true,
-      currentRoute: '/conjunction-radar',
+      currentRoute: '/state-estimator',
       viewport: 'desktop',
       radarChart: null,
       comparativeChart: null
@@ -735,80 +735,80 @@
 
     const PRESETS = {
       // ==============================================================
-      // 1. SATELLITE ORBITAL COLLISION AVOIDANCE & HANDOVER
+      // 1. MODEL PREDICTIVE CONTROL (MPC) - INDUSTRIAL CHEMICAL PROCESS
       // ==============================================================
-      satellite_collision: {
-        id: 'satellite_collision',
-        title: 'Orbital Collision Avoidance & Ground Station Handover',
-        brand: 'AstroFlight Conjunction & Space Surveillance Console',
-        icon: '🛰️',
+      mpc_optimization: {
+        id: 'mpc_optimization',
+        title: 'Model Predictive Control (MPC) — Chemical Distillation & Flare',
+        brand: 'AspenControl MPC Real-Time Supervisory Console',
+        icon: '⚙️',
         routes: [
-          { path: '/conjunction-radar', label: 'Conjunction Radar' },
-          { path: '/delta-v-planner', label: 'Delta-V Maneuver Planner' },
-          { path: '/dual-station-key', label: 'Dual-Key Madrid/Canberra' },
-          { path: '/thruster-ignition', label: 'Thruster Sequencer' },
-          { path: '/kessler-abort', label: 'Kessler Safe Orbit Abort' }
+          { path: '/state-estimator', label: 'Kalman State Estimator' },
+          { path: '/reflux-trajectory', label: 'Reflux MV Optimizer' },
+          { path: '/delta-p-monitor', label: 'Tray Differential Pressure' },
+          { path: '/qp-solver', label: 'Quadratic Program Solver' },
+          { path: '/flare-interlock', label: 'Flare Vent Safety Interlock' }
         ],
         document: {
-          id: 'NASA-ESA-CARA-2026.pdf',
-          title: 'Civil Conjunction Assessment & Orbital Collision Avoidance Maneuver Protocol',
-          badge: 'SPACE SAFETY // MANDATORY CIVIL FLIGHT RULE',
-          version: 'v4.1.0-CARA',
-          effectiveDate: 'March 1, 2026',
-          pages: '8 pages (CCSDS 502.0-B-2 Standard)',
+          id: 'SOP-ENG-MPC-704.pdf',
+          title: 'Petrochemical Distillation Column Model Predictive Control (MPC) Operating Philosophy',
+          badge: 'PROCESS SAFETY MANAGEMENT // OSHA 1910.119',
+          version: 'v5.2.0-PLANT',
+          effectiveDate: 'April 1, 2026',
+          pages: '14 pages (ISA-88 Batch & Continuous Process)',
           html: `
             <div class="doc-page">
               <div class="doc-header-banner">
                 <div class="doc-logo-title">
-                  <span style="font-size: 26px;">🛰️</span>
+                  <span style="font-size: 26px;">⚙️</span>
                   <div>
-                    <div class="doc-company">Civil Spaceflight Safety Agency</div>
-                    <div class="doc-subtitle">Conjunction Assessment &amp; Risk Analysis (CARA) Operating Standard</div>
+                    <div class="doc-company">Apex Chemical &amp; Refining Corp.</div>
+                    <div class="doc-subtitle">Process Automation Engineering — Multi-Variable MPC Protocol MPC-704</div>
                   </div>
                 </div>
-                <div class="doc-stamp approved">FLIGHT CERTIFIED</div>
+                <div class="doc-stamp approved">SAFETY CERTIFIED</div>
               </div>
               <div class="doc-meta-grid">
-                <div><strong>Standard:</strong> CCSDS 502.0-B-2 Orbit Data Messages</div>
-                <div><strong>Classification:</strong> UNCLASSIFIED // CIVIL SPACE SAFETY</div>
-                <div><strong>Effective Date:</strong> Mar 1, 2026 (Semi-Annual Ephemeris)</div>
-                <div><strong>Scope:</strong> LEO Orbital Altitudes 400km - 800km</div>
+                <div><strong>Target Asset:</strong> C3 Splitter Distillation Column (T-102)</div>
+                <div><strong>Optimization Objective:</strong> Maximize High-Purity Propylene at Min Reboiler Duty</div>
+                <div><strong>Prediction Horizon (Hp):</strong> 60 Execution Intervals (30 Minutes)</div>
+                <div><strong>Control Horizon (Hc):</strong> 12 Execution Intervals (6 Minutes)</div>
               </div>
               <div class="doc-body">
                 <div class="doc-toc">
                   <div style="font-weight: 700; margin-bottom: 2px;">Table of Contents:</div>
                   <div style="display: flex; gap: 12px; font-size: 11px; color: #0284c7;">
-                    <span>§ 1.0 PoC Conjunction Trigger</span>
-                    <span>§ 2.0 Hard Soak Window</span>
-                    <span>§ 3.0 Dual Ground-Station Handover</span>
+                    <span>§ 1.0 MV Slew-Rate Constraints</span>
+                    <span>§ 2.0 Column Flooding Invariant</span>
+                    <span>§ 3.0 Flare Interlock Dead End</span>
                   </div>
                 </div>
                 <div class="doc-section">
-                  <div class="doc-section-heading">§ 1.0 Probability of Collision (PoC) Invariant</div>
+                  <div class="doc-section-heading">§ 1.0 Manipulated Variable (MV) Slew-Rate Bound</div>
                   <p class="doc-paragraph">
-                    1.1. If radar tracking ephemeris determines the Probability of Collision (PoC) with space debris or an active satellite <span class="doc-highlight">EXCEEDS 1 x 10^-4 (1 in 10,000)</span> and miss distance is under 200 meters, an automated maneuver advisory is declared.
+                    1.1. In solving the dynamic quadratic programming (QP) objective, the optimizer shall <span class="doc-highlight">NEVER ADJUST THE REFLUX VALVE RATE (MV1) BY MORE THAN 1.5% PER MINUTE</span>. Rapid moves induce thermal hydraulic weeping and unbalance internal column vapor dynamics.
                   </p>
                 </div>
                 <div class="doc-section">
-                  <div class="doc-section-heading">§ 2.0 Strict Pre-Conjunction Thruster Lockout</div>
-                  <div class="doc-callout warn">
-                    <strong>CRITICAL TIMING BOUND 2.1:</strong> Delta-V thruster burns are <span class="doc-highlight">STRICTLY PROHIBITED WITHIN 2 FULL ORBITS (96 MINUTES)</span> of closest approach (TCA). Late burns induce plume tracking dispersion and exacerbate conjunction collision geometry.
+                  <div class="doc-section-heading">§ 2.0 Hard Column Flooding Delta-P Invariant</div>
+                  <div class="doc-callout alert">
+                    <strong>CRITICAL PROCESS SAFETY CEILING 2.1:</strong> The differential pressure across Column Trays 15 to 45 (Controlled Variable CV2) must <span class="doc-highlight">STRICTLY REMAIN BELOW 42.0 kPa (0.42 bar)</span>. If tray delta-P exceeds 42.0 kPa for greater than 3 consecutive sampling cycles (90 seconds), MPC optimizer authority is revoked instantly and reboiler steam is throttled by 20%.
                   </div>
                 </div>
                 <div class="doc-section">
-                  <div class="doc-section-heading">§ 3.0 Dual Ground-Station Handover Gate</div>
+                  <div class="doc-section-heading">§ 3.0 Flare Gas Venting Prohibition</div>
                   <p class="doc-paragraph">
-                    3.1. Chemical propulsion burns exceeding 0.25 m/s delta-V require cryptographic token authorization from <span class="doc-highlight">TWO INDEPENDENT GROUND STATIONS (Madrid DSN and Canberra DSN)</span>. Single-operator override is strictly blocked.
+                    3.1. Under EPA Clean Air Act Title V mandates, the MPC optimizer is <span class="doc-highlight">STRICTLY PROHIBITED FROM PURGING COLUMN HEAD VAPOR TO THE FLARE HEADER</span> to recover off-spec purity during normal economic optimization. Off-spec product must be recycled to slop tanks.
                   </p>
                 </div>
                 <div class="doc-signature-row">
                   <div>
-                    <div style="font-size: 10px; color: #64748b;">FLIGHT DYNAMICS DIRECTOR</div>
-                    <div style="font-weight: 700;">Dr. Aris Thorne</div>
+                    <div style="font-size: 10px; color: #64748b;">LEAD ADVANCED PROCESS CONTROL (APC) ENGINEER</div>
+                    <div style="font-weight: 700;">Dr. Elena Rostova, PE</div>
                   </div>
                   <div style="text-align: right;">
-                    <div style="font-size: 10px; color: #64748b;">EPHEMERIS SIGNATURE</div>
-                    <code style="font-size: 10px; color: #0284c7;">CCSDS-CARA-PASS-7819</code>
+                    <div style="font-size: 10px; color: #64748b;">CONTROLLER ALGORITHM ID</div>
+                    <code style="font-size: 10px; color: #0284c7;">DMC3-MPC-COL-102-QP</code>
                   </div>
                 </div>
               </div>
@@ -818,22 +818,22 @@
         cascadeTiers: [
           {
             tier: 'Tier 0: Root Invariants',
-            desc: 'Physics & Regulatory Ceilings (Never Negotiable)',
+            desc: 'Thermodynamic & Process Safety Ceilings (Non-Negotiable)',
             badge: 'root-invariant',
             rules: [
-              'INVARIANT: Satellite Probability of Collision (PoC) cannot exceed 1e-4 without mandatory avoidance maneuver.',
-              'STRICT NEGATION: Thruster burns are STRICTLY PROHIBITED within 2 orbits (96 minutes) of conjunction TCA.',
-              'NON-BYPASSABLE: Autonomous burn execution CANNOT proceed on single-station telemetry.'
+              'INVARIANT: Column differential pressure (CV2) must NEVER exceed 42.0 kPa (prevents column liquid flooding).',
+              'STRICT NEGATION: Purging off-spec hydrocarbon vapor to atmospheric flare is PROHIBITED during economic optimization.',
+              'PROCESS BOUND: Bottoms reboiler steam temperature shall NOT exceed 138.5°C to avoid heavy polymer fouling.'
             ]
           },
           {
             tier: 'Tier 1: Scoped Directives',
-            desc: 'Operational Stage Protocols',
+            desc: 'MPC Supervisory Execution Phases',
             badge: 'directive',
             rules: [
-              'DIRECTIVE /conjunction-radar: Calculate miss distance and conjunction radial covariance.',
-              'DIRECTIVE /delta-v-planner: Formulate Hohmann prograde/retrograde phase vector (0.25 - 0.75 m/s).',
-              'DIRECTIVE /dual-station-key: Exchange cryptographic challenge with Madrid and Canberra stations.'
+              'DIRECTIVE /state-estimator: Run extended Kalman filter (EKF) across 16 tray thermocouples and analyzer GC lags.',
+              'DIRECTIVE /reflux-trajectory: Compute 60-step dynamic prediction horizon with MV move penalties (R-matrix weights).',
+              'DIRECTIVE /qp-solver: Execute active-set Quadratic Program optimization within 250ms control loop deadline.'
             ]
           },
           {
@@ -841,9 +841,9 @@
             desc: 'Step-by-Step Gate Prerequisites',
             badge: 'execution',
             rules: [
-              'RULE: Check onboard hydrazine tank pressure > 18.5 bar before arming thruster catalyst beds.',
-              'RULE: Align star tracker attitude sensors away from solar blinding angle before maneuver ignition.',
-              'RULE: Relay post-burn orbital vectors to 18th Space Defense Squadron within 15 minutes.'
+              'RULE: Reflux flow rate adjustments must strictly respect the 1.5%/min actuator slew-rate ceiling.',
+              'RULE: Online gas chromatograph (GC) product analyzer validity flag must be TRUE (sample age < 180 seconds).',
+              'RULE: Re-estimate plant gain model matrix whenever column feed throughput shifts by > 8%.'
             ]
           },
           {
@@ -851,9 +851,9 @@
             desc: 'Hard Numeric Guardrails',
             badge: 'param-bound',
             rules: [
-              'BOUND: Delta-V burn time maximum: 42.0 seconds.',
-              'BOUND: Attitude pointing error tolerance: < 0.35 degrees.',
-              'BOUND: Madrid / Canberra token exchange timeout: <= 120 seconds.'
+              'BOUND: Max MV1 (Reflux Rate) move ceiling: 1.5% per minute.',
+              'BOUND: Max CV2 (Tray Delta-P) limit: 42.0 kPa.',
+              'BOUND: Propylene product purity floor: 99.60 mol% purity.'
             ]
           },
           {
@@ -861,110 +861,110 @@
             desc: 'Automatic Circuit Breakers',
             badge: 'dead-end',
             rules: [
-              'DEAD END: If burn attitude deviates > 2.0 degrees -> Trigger /kessler-abort and vent propellant to safe orbit.',
-              'DEAD END: If ground station token expires -> Freeze thrusters and fall back to passive aerodynamic drag trimming.'
+              'DEAD END: If Tray Delta-P exceeds 42.0 kPa for > 90s -> Drop MPC to manual, dump reboiler steam, and route to recycle.',
+              'DEAD END: If QP solver fails convergence in 250ms -> Hold previous control moves and flag APC fallback alarm.'
             ]
           }
         ],
         mermaidDag: `flowchart TD
-  A["Conjunction Alert<br/>(/conjunction-radar)"] --> B{"PoC > 1e-4 &<br/>Miss < 200m?"}
-  B -- "No: Safe Pass" --> C["Log Passive Pass<br/>(Telemetry Green)"]
-  B -- "Yes: Conjunction Declared" --> D{"Time to TCA ><br/>96 Minutes (2 Orbits)?"}
-  D -- "No: Lockout Violated" --> E["🛑 CRITICAL DEAD END<br/>Thruster Burn Prohibited<br/>(Late Plume Danger)"]
-  D -- "Yes: Safe Burn Window" --> F["Compute Hohmann Vector<br/>(/delta-v-planner)"]
-  F --> G{"Dual-Key Token<br/>Madrid + Canberra?"}
-  G -- "Single Key Only" --> H["🛑 DEAD END<br/>Station Auth Blocked"]
-  G -- "Dual Keys Validated" --> I["Ignite Thruster<br/>(/thruster-ignition)"]
-  I --> J{"Attitude Deviation<br/>< 2.0 Degrees?"}
-  J -- "Safe Trajectory" --> K["✅ Orbit Cleared<br/>(PoC < 1e-7)"]
-  J -- "Deviated > 2.0°" --> L["🚨 EMERGENCY ABORT<br/>(/kessler-abort)"]
+  A["Sample Column Sensors<br/>(/state-estimator)"] --> B{"Analyzer GC Fresh &<br/>Kalman Covariance OK?"}
+  B -- "Stale GC (> 180s)" --> C["🛑 DEAD END<br/>Hold Previous MV Vector<br/>(Freeze Moves)"]
+  B -- "Estimates Healthy" --> D["Solve MPC QP Horizon<br/>(/qp-solver)"]
+  D --> E{"Reflux Slew Rate <<br/>1.5% per Minute?"}
+  E -- "Rate Slew Exceeded" --> F["Clip Moves to Slew Floor<br/>(Dampen Actuator Shock)"]
+  E -- "Within 1.5%/min" --> G["Simulate 60-Step Delta-P<br/>(/delta-p-monitor)"]
+  F --> G
+  G --> H{"Predicted Tray Delta-P <<br/>42.0 kPa Ceiling?"}
+  H -- "Flooding Predicted (> 42 kPa)" --> I["🚨 EMERGENCY TRIP<br/>Throttle Reboiler Steam 20%<br/>(/flare-interlock)"]
+  H -- "Delta-P Safe (< 42 kPa)" --> J["Dispatched MVs to Plant<br/>(99.65% Propylene Purity)"]
+  J --> K["✅ Optimal Operation<br/>(Zero Flaring, Min Energy)"]
 
   classDef blue fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0369a1;
   classDef green fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#065f46;
   classDef red fill:#fef2f2,stroke:#ef4444,stroke-width:2px,color:#991b1b;
   classDef amber fill:#fffbeb,stroke:#f59e0b,stroke-width:2px,color:#92400e;
 
-  class A,F,I blue;
-  class B,D,G,J amber;
-  class C,K green;
-  class E,H,L red;`
+  class A,D,G blue;
+  class B,E,H amber;
+  class J,K green;
+  class C,I red;`
       },
 
       // ==============================================================
-      // 2. NUCLEAR POWER GRID ISLANDING & SYNCHROPHASOR SHEDDING
+      // 2. SALES & OPERATIONS PLANNING (S&OP) - SUPPLY CHAIN BALANCE
       // ==============================================================
-      nuclear_islanding: {
-        id: 'nuclear_islanding',
-        title: 'Nuclear Power Grid Islanding & Synchrophasor Shedding',
-        brand: 'AtomicGrid NERC Protective Relaying & Synchrophasor Console',
-        icon: '⚡',
+      sop_planning: {
+        id: 'sop_planning',
+        title: 'Sales & Operations Planning (S&OP) — Multi-Echelon Balance',
+        brand: 'OmniSupply S&OP Executive Mass-Balance Console',
+        icon: '📦',
         routes: [
-          { path: '/synchrophasor-radar', label: 'Synchrophasor Frequency' },
-          { path: '/breaker-islanding', label: 'SF6 Islanding Breaker' },
-          { path: '/turbine-damping', label: 'Turbine Torsional Stress' },
-          { path: '/intertie-sync', label: 'Phase Angle Re-Sync' },
-          { path: '/emergency-scram', label: 'Reactor Emergency SCRAM' }
+          { path: '/unconstrained-demand', label: 'Unconstrained Demand' },
+          { path: '/capacity-rough-cut', label: 'Rough-Cut Capacity Planning' },
+          { path: '/safety-stock-buffer', label: 'Safety Stock Dynamic Buffers' },
+          { path: '/inventory-mass-balance', label: 'Mass-Balance Reconciliation' },
+          { path: '/executive-signoff', label: 'Executive Pre-S&OP Signoff' }
         ],
         document: {
-          id: 'NERC-PRC-024-3.pdf',
-          title: 'Generator Frequency & Voltage Protective Relaying Operating Standard',
-          badge: 'CRITICAL INFRASTRUCTURE // NERC PRC-024-3',
-          version: 'v3.2.0-GRID',
-          effectiveDate: 'January 10, 2026',
-          pages: '11 pages (IEEE C37.118 Synchrophasor Standard)',
+          id: 'SOP-SCM-OP-2026.pdf',
+          title: 'Integrated Business Planning (IBP) & Multi-Echelon S&OP Policy Standard',
+          badge: 'SUPPLY CHAIN GOVERNANCE // OLIVER WIGHT CLASS-A',
+          version: 'v3.4.0-IBP',
+          effectiveDate: 'March 15, 2026',
+          pages: '12 pages (Multi-Echelon Inventory Optimization)',
           html: `
             <div class="doc-page">
               <div class="doc-header-banner">
                 <div class="doc-logo-title">
-                  <span style="font-size: 26px;">⚡</span>
+                  <span style="font-size: 26px;">📦</span>
                   <div>
-                    <div class="doc-company">North American Electric Reliability Corp.</div>
-                    <div class="doc-subtitle">Generator Frequency Protection Relaying — Control PRC-024-3</div>
+                    <div class="doc-company">Apex Global Distribution &amp; Logistics</div>
+                    <div class="doc-subtitle">Supply Chain Center of Excellence — S&amp;OP Mass-Balance Manual SCM-2026</div>
                   </div>
                 </div>
-                <div class="doc-stamp approved">NERC AUDITED</div>
+                <div class="doc-stamp approved">AUDIT CERTIFIED</div>
               </div>
               <div class="doc-meta-grid">
-                <div><strong>Standard:</strong> NERC PRC-024-3 &amp; IEEE C37.118</div>
-                <div><strong>Classification:</strong> CIP-002 CRITICAL CYBER ASSET</div>
-                <div><strong>Nominal Frequency:</strong> 60.00 Hz +/- 0.05 Hz</div>
-                <div><strong>Protection Scope:</strong> 1,150 MW Pressurized Water Reactor</div>
+                <div><strong>Planning Horizon:</strong> 18 Months Rolling (Monthly Buckets)</div>
+                <div><strong>Standard:</strong> Oliver Wight Class-A S&amp;OP &amp; APICS CSCP</div>
+                <div><strong>Reconciliation Principle:</strong> Unconstrained Demand = Supply + Stock Delta</div>
+                <div><strong>Scope:</strong> 4 Regional Hubs &amp; 14 Production Facilities</div>
               </div>
               <div class="doc-body">
                 <div class="doc-toc">
                   <div style="font-weight: 700; margin-bottom: 2px;">Table of Contents:</div>
                   <div style="display: flex; gap: 12px; font-size: 11px; color: #0284c7;">
-                    <span>§ 1.0 Frequency Tripwire</span>
-                    <span>§ 2.0 High-Speed Islanding</span>
-                    <span>§ 3.0 Black-Start Resync</span>
+                    <span>§ 1.0 Safety Stock Thresholds</span>
+                    <span>§ 2.0 Plant Overtime Cap</span>
+                    <span>§ 3.0 Stockout Backorder Invariant</span>
                   </div>
                 </div>
                 <div class="doc-section">
-                  <div class="doc-section-heading">§ 1.0 Under-Frequency Hard Tripwire (59.30 Hz)</div>
+                  <div class="doc-section-heading">§ 1.0 Non-Negative Safety Stock Floor Invariant</div>
                   <p class="doc-paragraph">
-                    1.1. If transmission interconnect frequency drops below <span class="doc-highlight">59.30 Hz FOR LONGER THAN 160 MILLISECONDS</span>, automated generator islanding relays must immediately trip the transmission inter-tie.
+                    1.1. In resolving month-end inventory reconciliations across central distribution hubs, ending safety stock allocations <span class="doc-highlight">MUST NEVER FALL BELOW 85% OF TARGET DAYS OF COVER (MINIMUM 21 DAYS)</span>. Arbitrary drawdown to meet short-term revenue quota is strictly forbidden.
                   </p>
                 </div>
                 <div class="doc-section">
-                  <div class="doc-section-heading">§ 2.0 Four-Cycle High-Speed Breaker Actuation</div>
+                  <div class="doc-section-heading">§ 2.0 Manufacturing Overtime &amp; Shift Boundary</div>
+                  <div class="doc-callout warn">
+                    <strong>ROUGH-CUT CAPACITY INVARIANT 2.1:</strong> Production schedules generated during Supply Planning shall <span class="doc-highlight">NOT EXCEED 12.0% OVERTIME HOURS PER SHIFT</span> across tier-1 assembly lines. Overtime exceeding 12% triggers mandatory contract packaging outsourcing.
+                  </div>
+                </div>
+                <div class="doc-section">
+                  <div class="doc-section-heading">§ 3.0 Unreconciled Mass-Balance Prohibition</div>
                   <div class="doc-callout alert">
-                    <strong>EQUIPMENT PROTECTION INVARIANT 2.1:</strong> Substation SF6 circuit breakers must sever the external grid tie within <span class="doc-highlight">EXACTLY 4 ELECTRICAL CYCLES (66.7 MILLISECONDS)</span> to isolate the turbine generator from rotor torsional fatigue and blade vibration resonance.
+                    <strong>EXECUTIVE GOVERNANCE STATUTE 3.1:</strong> S&amp;OP consensus plans are <span class="doc-highlight">STRICTLY PROHIBITED FROM ADMITTING ARITHMETIC GAPS</span>: Beginning Inventory + Production - Confirmed Shipments MUST equal Projected Ending Inventory within a 0.05% rounding tolerance.
                   </div>
-                </div>
-                <div class="doc-section">
-                  <div class="doc-section-heading">§ 3.0 Resynchronization Phase Angle Ceiling</div>
-                  <p class="doc-paragraph">
-                    3.1. Re-closing the transmission breaker is <span class="doc-highlight">STRICTLY PROHIBITED UNTIL PHASE ANGLE DIFFERENTIAL IS UNDER 10 DEGREES FOR 180 CONSECUTIVE SECONDS</span>. Out-of-phase reclosure causes catastrophic generator shaft destruction.
-                  </p>
                 </div>
                 <div class="doc-signature-row">
                   <div>
-                    <div style="font-size: 10px; color: #64748b;">CHIEF RELAY ENGINEER</div>
-                    <div style="font-weight: 700;">Marcus Chen, PE</div>
+                    <div style="font-size: 10px; color: #64748b;">VP OF GLOBAL SUPPLY CHAIN</div>
+                    <div style="font-weight: 700;">Marcus Vance, CSCP</div>
                   </div>
                   <div style="text-align: right;">
-                    <div style="font-size: 10px; color: #64748b;">CIP COMPLIANCE HASH</div>
-                    <code style="font-size: 10px; color: #0284c7;">NERC-PRC-024-PW-9901</code>
+                    <div style="font-size: 10px; color: #64748b;">PLAN CERTIFICATE HASH</div>
+                    <code style="font-size: 10px; color: #0284c7;">IBP-SOP-2026-CYCLE-04</code>
                   </div>
                 </div>
               </div>
@@ -974,22 +974,22 @@
         cascadeTiers: [
           {
             tier: 'Tier 0: Root Invariants',
-            desc: 'Physics & Grid Stability Ceilings (Never Negotiable)',
+            desc: 'Supply Chain Conservation & Financial Integrity (Never Negotiable)',
             badge: 'root-invariant',
             rules: [
-              'INVARIANT: Frequency below 59.30 Hz for > 160ms triggers non-negotiable automated islanding.',
-              'STRICT NEGATION: Re-closing transmission tie is STRICTLY PROHIBITED if phase angle differential exceeds 10 degrees.',
-              'EQUIPMENT BOUND: Turbine shaft torsional stress must not exceed 45 ksi during island transition.'
+              'INVARIANT: Total ending inventory across regional distribution centers can NEVER be projected as negative.',
+              'STRICT NEGATION: Overtime scheduling > 12.0% is PROHIBITED across manufacturing plants without COO sign-off.',
+              'INTEGRITY BOUND: Material mass-balance discrepancy cannot exceed 0.05% between Demand and Supply plans.'
             ]
           },
           {
             tier: 'Tier 1: Scoped Directives',
-            desc: 'Protection Relaying Stages',
+            desc: 'Monthly S&OP SteerCo Phases',
             badge: 'directive',
             rules: [
-              'DIRECTIVE /synchrophasor-radar: Sample IEEE C37.118 synchrophasor vectors at 60 frames per second.',
-              'DIRECTIVE /breaker-islanding: Trip transmission disconnect and throttle steam bypass to 38% house-load.',
-              'DIRECTIVE /intertie-sync: Run synchroscope phase alignment and voltage delta matching.'
+              'DIRECTIVE /unconstrained-demand: Aggregate statistical consensus sales baseline without supply constraints.',
+              'DIRECTIVE /capacity-rough-cut: Run RCCP analysis on critical bottleneck work centers (extruders, autoclaves).',
+              'DIRECTIVE /safety-stock-buffer: Calculate dynamic target stock using Kingman formula for lead-time variance.'
             ]
           },
           {
@@ -997,9 +997,9 @@
             desc: 'Step-by-Step Gate Prerequisites',
             badge: 'execution',
             rules: [
-              'RULE: SF6 circuit breaker trip coil actuation must complete in <= 66.7ms (4 cycles).',
-              'RULE: Verify reactor control rods hold at 40% thermal power during stable islanding state.',
-              'RULE: Lock out manual tie re-closer until regional grid dispatcher issues clearance.'
+              'RULE: New product introduction (NPI) phase-in must be synchronized with legacy stock scrap dates.',
+              'RULE: Inventory holding carrying cost modeled at 18.5% annual hurdle rate in all trade-off models.',
+              'RULE: Pre-S&OP executive sign-off required prior to releasing monthly manufacturing master production schedule.'
             ]
           },
           {
@@ -1007,9 +1007,9 @@
             desc: 'Hard Numeric Guardrails',
             badge: 'param-bound',
             rules: [
-              'BOUND: Frequency trip threshold: 59.30 Hz.',
-              'BOUND: Breaker delay ceiling: 160 milliseconds.',
-              'BOUND: Re-sync dwell requirement: Phase delta < 10 degrees for 180 consecutive seconds.'
+              'BOUND: Safety stock minimum floor: 21 days of supply (85% of target).',
+              'BOUND: Manufacturing plant overtime ceiling: 12.0% of total hours.',
+              'BOUND: Maximum allowed backorder rate: 1.2% of order volume.'
             ]
           },
           {
@@ -1017,22 +1017,24 @@
             desc: 'Automatic Circuit Breakers',
             badge: 'dead-end',
             rules: [
-              'DEAD END: If steam bypass fails during island transition -> Trigger /emergency-scram (full reactor shutdown in 2.2s).',
-              'DEAD END: If breaker trips out-of-phase (> 10 deg) -> Immediate lockout trip to prevent shaft shearing.'
+              'DEAD END: If demand exceeds capacity by > 25% with OT capped at 12% -> Trigger commercial demand shaping / allocation gate.',
+              'DEAD END: If stock-out projected on critical tier-1 SKUs -> Freeze demand promotion and alert Pre-S&OP council.'
             ]
           }
         ],
         mermaidDag: `flowchart TD
-  A["Synchrophasor Monitor<br/>(/synchrophasor-radar)"] --> B{"Grid Frequency <<br/>59.30 Hz for > 160ms?"}
-  B -- "No: Grid Stable" --> C["Maintain Intertie<br/>(60.00 Hz Normal)"]
-  B -- "Yes: Frequency Collapse" --> D["Command Islanding<br/>(/breaker-islanding)"]
-  D --> E{"SF6 Breaker Opens<br/>in <= 4 Cycles (66.7ms)?"}
-  E -- "Breaker Hangs" --> F["🛑 DEAD END: TURBINE RISK<br/>Trigger Reactor SCRAM<br/>(/emergency-scram)"]
-  E -- "Breaker Trips Fast" --> G["Throttle House Load<br/>(Stable 40% Island)"]
-  G --> H{"Intertie Phase Delta <<br/>10° for 180s?"}
-  H -- "Phase Unaligned" --> I["🛑 DEAD END<br/>Re-Sync Blocked"]
-  H -- "Phase Locked (< 10°)" --> J["Close Tie Breaker<br/>(/intertie-sync)"]
-  J --> K["✅ Grid Re-Connected<br/>(Full 1,150 MW Restored)"]
+  A["Unconstrained Demand Intake<br/>(/unconstrained-demand)"] --> B{"Demand Variance <<br/>15% vs Sales Quota?"}
+  B -- "Erratic Spike (> 15%)" --> C["Demand Shaping Gate<br/>(Throttle Promo Discount)"]
+  B -- "Demand Approved" --> D["Run Rough-Cut Capacity<br/>(/capacity-rough-cut)"]
+  C --> D
+  D --> E{"Overtime Required <<br/>12.0% Shift Ceiling?"}
+  E -- "Overtime > 12%" --> F["Contract Co-Packer Outsource<br/>(Protect Factory Labor Bound)"]
+  E -- "Within 12% OT" --> G["Reconcile Multi-Echelon Stock<br/>(/inventory-mass-balance)"]
+  F --> G
+  G --> H{"Safety Stock >= 21 Days<br/>& Balance Error < 0.05%?"}
+  H -- "Stockout Risk (< 21d)" --> I["🛑 DEAD END: REJECT PLAN<br/>Violates Buffer Floor"]
+  H -- "Mass Balance Validated" --> J["Pre-S&OP Exec Signoff<br/>(/executive-signoff)"]
+  J --> K["✅ Master Production Released<br/>(100% On-Time In-Full OTD)"]
 
   classDef blue fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0369a1;
   classDef green fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#065f46;
@@ -1041,85 +1043,85 @@
 
   class A,D,G,J blue;
   class B,E,H amber;
-  class C,K green;
-  class F,I red;`
+  class K green;
+  class I red;`
       },
 
       // ==============================================================
-      // 3. DARK POOL INSTITUTIONAL BLOCK CROSSING & REG NMS
+      // 3. COOLING TOWER WATER TREATMENT - LEGIONELLA & LSI SCALING
       // ==============================================================
-      darkpool_crossing: {
-        id: 'darkpool_crossing',
-        title: 'Dark Pool Institutional Block Crossing & Reg NMS Rule 612',
-        brand: 'Apex ATS Alternative Trading System & Dark Liquidity Engine',
-        icon: '📈',
+      cooling_tower_water: {
+        id: 'cooling_tower_water',
+        title: 'Cooling Tower Water Treatment — Legionella & LSI Scaling',
+        brand: 'AquaShield Industrial Cooling Tower & Biocide Dosing Console',
+        icon: '💧',
         routes: [
-          { path: '/order-intake', label: 'Block Order Ticket' },
-          { path: '/midpoint-crossing', label: 'NBBO Midpoint Engine' },
-          { path: '/toxicity-detector', label: 'Adverse Selection Velocity' },
-          { path: '/circuit-freeze', label: '30s Matching Circuit Freeze' },
-          { path: '/finra-cats-audit', label: 'FINRA CATS Immutable Audit' }
+          { path: '/conductivity-sensor', label: 'Toroidal Conductivity & TDS' },
+          { path: '/lsi-calculator', label: 'Langelier Saturation Index' },
+          { path: '/biocide-alternator', label: 'Oxidizing Biocide Dosing' },
+          { path: '/blowdown-valve', label: 'Automatic Blowdown Actuator' },
+          { path: '/legionella-containment', label: 'Legionella Hyper-Chlorination' }
         ],
         document: {
-          id: 'SEC-FINRA-REG-NMS-612.pdf',
-          title: 'Alternative Trading System (ATS) Dark Pool Order Matching & Toxicity Mitigation Rulebook',
-          badge: 'REGULATORY COMPLIANCE // SEC 17 CFR § 242.612',
-          version: 'v2.8.0-ATS',
-          effectiveDate: 'April 15, 2026',
-          pages: '7 pages (FINRA Rule 4554 Standard)',
+          id: 'SOP-WTR-CT-409.pdf',
+          title: 'Industrial Cooling Tower Water Chemistry, Legionella Control & Scale Prevention Standard',
+          badge: 'PUBLIC HEALTH & OSHA PSM // ASHRAE 188-2021',
+          version: 'v4.0.1-WATER',
+          effectiveDate: 'February 20, 2026',
+          pages: '10 pages (CTI & ASHRAE Guideline 12-2020)',
           html: `
             <div class="doc-page">
               <div class="doc-header-banner">
                 <div class="doc-logo-title">
-                  <span style="font-size: 26px;">📈</span>
+                  <span style="font-size: 26px;">💧</span>
                   <div>
-                    <div class="doc-company">Apex Institutional ATS Corp.</div>
-                    <div class="doc-subtitle">Dark Pool Operating Standard — SEC Reg NMS &amp; FINRA ATS Reporting</div>
+                    <div class="doc-company">Apex Industrial Utilities &amp; Environmental Systems</div>
+                    <div class="doc-subtitle">Water Chemistry Operating Protocol — ASHRAE 188 / Control CT-409</div>
                   </div>
                 </div>
-                <div class="doc-stamp approved">SEC REGISTERED</div>
+                <div class="doc-stamp approved">ASHRAE 188 CERTIFIED</div>
               </div>
               <div class="doc-meta-grid">
-                <div><strong>Regulation:</strong> SEC Rule 612 Sub-Penny &amp; FINRA 4554</div>
-                <div><strong>Classification:</strong> CONFIDENTIAL ATS TRADING RULES</div>
-                <div><strong>Execution Model:</strong> Un-displayed Midpoint Crossing</div>
-                <div><strong>Target Asset:</strong> US Equities (NMS Stocks >= $1.00)</div>
+                <div><strong>Standard:</strong> ASHRAE 188-2021 &amp; CTI WTB-148</div>
+                <div><strong>Cooling Loop:</strong> 12,000 GPM Evaporative Induced-Draft Tower</div>
+                <div><strong>Cycles of Concentration (CoC):</strong> Target 4.5 to 5.5 Cycles</div>
+                <div><strong>Key Risk:</strong> Legionella pneumophila Biofilm &amp; CaCO3 Scale</div>
               </div>
               <div class="doc-body">
                 <div class="doc-toc">
                   <div style="font-weight: 700; margin-bottom: 2px;">Table of Contents:</div>
                   <div style="display: flex; gap: 12px; font-size: 11px; color: #0284c7;">
-                    <span>§ 1.0 Sub-Penny Rule 612</span>
-                    <span>§ 2.0 Minimum Fill Size</span>
-                    <span>§ 3.0 Toxic Flow 30s Freeze</span>
+                    <span>§ 1.0 Conductivity Blowdown Limit</span>
+                    <span>§ 2.0 Langelier Saturation Bounds</span>
+                    <span>§ 3.0 Biocide Blowdown Lockout</span>
                   </div>
                 </div>
                 <div class="doc-section">
-                  <div class="doc-section-heading">§ 1.0 SEC Rule 612 Sub-Penny Guardrail</div>
+                  <div class="doc-section-heading">§ 1.0 Maximum Conductivity &amp; Cycles of Concentration</div>
                   <p class="doc-paragraph">
-                    1.1. Dark pool crossing engines are <span class="doc-highlight">STRICTLY PROHIBITED FROM ACCEPTING OR DISPLAYING ORDERS IN INCREMENTS SMALLER THAN $0.01</span> for any stock priced at or above $1.00. Sub-penny quote gaming is a federal securities violation.
+                    1.1. Basin water electrical conductivity must <span class="doc-highlight">NEVER EXCEED 2,400 uS/cm</span> (equivalent to 1,500 ppm Total Dissolved Solids). Exceeding 2,400 uS/cm causes immediate calcium carbonate precipitation on chiller condenser tubes.
                   </p>
                 </div>
                 <div class="doc-section">
-                  <div class="doc-section-heading">§ 2.0 Minimum Fill Size (MFS) Block Boundary</div>
+                  <div class="doc-section-heading">§ 2.0 Langelier Saturation Index (LSI) Equilibrium</div>
                   <div class="doc-callout warn">
-                    <strong>INSTITUTIONAL LIQUIDITY INVARIANT 2.1:</strong> Institutional liquidity tiers enforce a <span class="doc-highlight">HARD MINIMUM FILL SIZE OF 10,000 SHARES OR $200,000.00 VALUE</span>. Sub-tier small lot orders ("pinging") must be rejected immediately without execution.
+                    <strong>WATER CHEMISTRY INVARIANT 2.1:</strong> The calculated Langelier Saturation Index (LSI) must <span class="doc-highlight">STRICTLY DWELL BETWEEN +0.2 AND +0.8</span>. An LSI below +0.2 causes corrosive piping pitting; an LSI above +0.8 causes irreversible heat exchanger scale buildup.
                   </div>
                 </div>
                 <div class="doc-section">
-                  <div class="doc-section-heading">§ 3.0 Adverse Selection Velocity Tripwire (35 bps)</div>
+                  <div class="doc-section-heading">§ 3.0 Biocide Addition Blowdown Lockout Invariant</div>
                   <div class="doc-callout alert">
-                    <strong>HFT TOXICITY CIRCUIT BREAKER 3.1:</strong> If counterparty adverse selection velocity <span class="doc-highlight">EXCEEDS 35 BASIS POINTS (35 BPS) OVER A 50-MILLISECOND ROLLING WINDOW</span>, the crossing engine must trigger an instantaneous <span class="doc-highlight">30-SECOND MATCHING HALT</span> to shield institutional resting blocks.
+                    <strong>LEGIONELLA BIO-SLIME PROTOCOL 3.1:</strong> When dosing oxidizing or non-oxidizing biocide (isothiazolone/bleach), the automated blowdown bleed valve <span class="doc-highlight">MUST BE LOCKED SHUT FOR A MANDATORY SOAK PERIOD OF EXACTLY 4.0 HOURS</span>. Discharging treated water before 4 hours violates EPA effluent toxicity limits and fails to eradicate sessile Legionella biofilm.
                   </div>
                 </div>
                 <div class="doc-signature-row">
                   <div>
-                    <div style="font-size: 10px; color: #64748b;">HEAD OF ATS COMPLIANCE</div>
-                    <div style="font-weight: 700;">Sarah Jenkins, Series 24</div>
+                    <div style="font-size: 10px; color: #64748b;">CERTIFIED WATER TECHNOLOGIST (CWT)</div>
+                    <div style="font-weight: 700;">Julian Thorne, CWT</div>
                   </div>
                   <div style="text-align: right;">
-                    <div style="font-size: 10px; color: #64748b;">FINRA CATS IDENTIFIER</div>
-                    <code style="font-size: 10px; color: #0284c7;">ATS-CAT-APEX-8820</code>
+                    <div style="font-size: 10px; color: #64748b;">CTI AUDIT REGISTRATION</div>
+                    <code style="font-size: 10px; color: #0284c7;">AQUA-CTI-188-WT-881</code>
                   </div>
                 </div>
               </div>
@@ -1129,22 +1131,22 @@
         cascadeTiers: [
           {
             tier: 'Tier 0: Root Invariants',
-            desc: 'Federal Securities & Toxicity Ceilings (Never Negotiable)',
+            desc: 'Water Chemistry & Public Health Safety Ceilings (Never Negotiable)',
             badge: 'root-invariant',
             rules: [
-              'INVARIANT: SEC Rule 612 strictly prohibits sub-penny pricing increments for stocks >= $1.00.',
-              'STRICT NEGATION: Retail order pinging under $200k / 10,000 shares is PROHIBITED in institutional tier.',
-              'TOXICITY BOUND: Adverse selection velocity > 35 bps over 50ms triggers mandatory 30s matching freeze.'
+              'INVARIANT: Basin water conductivity must NEVER exceed 2,400 uS/cm to prevent condenser scale fouling.',
+              'STRICT NEGATION: Bleed-off blowdown valve CANNOT open during the mandatory 4.0-hour biocide contact soak.',
+              'CORROSION BOUND: LSI must remain in the non-corrosive, non-scaling window (+0.2 to +0.8).'
             ]
           },
           {
             tier: 'Tier 1: Scoped Directives',
-            desc: 'Order Matching Phases',
+            desc: 'Chemical Dosing & Bleed Control Phases',
             badge: 'directive',
             rules: [
-              'DIRECTIVE /order-intake: Inspect block size, customer limit price, and sub-penny pricing validity.',
-              'DIRECTIVE /midpoint-crossing: Query direct SIP feed and calculate exact National Best Bid & Offer (NBBO) midpoint.',
-              'DIRECTIVE /toxicity-detector: Run microsecond latency monitoring for predatory latency arbitrage.'
+              'DIRECTIVE /conductivity-sensor: Read temperature-compensated toroidal conductivity probes every 10 seconds.',
+              'DIRECTIVE /lsi-calculator: Calculate live LSI from pH (7.8 - 8.4), calcium hardness, and total alkalinity.',
+              'DIRECTIVE /biocide-alternator: Alternate weekly between oxidizing (NaOCl) and non-oxidizing biocide to stop bacterial resistance.'
             ]
           },
           {
@@ -1152,9 +1154,9 @@
             desc: 'Step-by-Step Gate Prerequisites',
             badge: 'execution',
             rules: [
-              'RULE: Execute trades with zero public pre-trade market impact (100% dark un-displayed liquidity).',
-              'RULE: Timestamp all internal crossing fills with nanosecond precision for FINRA CAT reporting.',
-              'RULE: Disconnect counterparties sending toxic flow (> 35 bps) after 3 consecutive circuit freezes.'
+              'RULE: Modulate motorized blowdown butterfly valve proportionally when conductivity crosses 2,200 uS/cm.',
+              'RULE: Dose polymeric phosphonate scale inhibitor proportional to fresh makeup water flow meter pulses.',
+              'RULE: Conduct weekly dip-slide microbial culture testing for heterotrophic plate bacteria (< 10,000 CFU/mL).'
             ]
           },
           {
@@ -1162,9 +1164,9 @@
             desc: 'Hard Numeric Guardrails',
             badge: 'param-bound',
             rules: [
-              'BOUND: Sub-penny price check increment: Exactly $0.01.',
-              'BOUND: Minimum block value: $200,000.00 (or 10,000 shares).',
-              'BOUND: Toxicity circuit freeze duration: Exactly 30 seconds.'
+              'BOUND: Max electrical conductivity ceiling: 2,400 uS/cm.',
+              'BOUND: LSI acceptable operating window: +0.2 <= LSI <= +0.8.',
+              'BOUND: Biocide contact soak lockout timer: Exactly 4.0 hours (240 minutes).'
             ]
           },
           {
@@ -1172,35 +1174,38 @@
             desc: 'Automatic Circuit Breakers',
             badge: 'dead-end',
             rules: [
-              'DEAD END: If order submitted with sub-penny pricing ($142.504) -> Immediate reject (HTTP 422 SEC Violation).',
-              'DEAD END: If toxic velocity hits 35 bps -> Trigger /circuit-freeze (halt all matching for 30s).'
+              'DEAD END: If Legionella count exceeds 1,000 CFU/L -> Trigger /legionella-containment (immediate 10 ppm emergency hyper-chlorination).',
+              'DEAD END: If blowdown valve fails open during biocide soak -> Sound environmental safety alarm and shut chemical injection pumps.'
             ]
           }
         ],
         mermaidDag: `flowchart TD
-  A["Block Order Intake<br/>(/order-intake)"] --> B{"Sub-Penny Check:<br/>Price Increment >= $0.01?"}
-  B -- "Sub-Penny Detected" --> C["🛑 DEAD END: REJECT<br/>SEC Rule 612 Violation"]
-  B -- "Valid Increment" --> D{"Block Value >= $200k<br/>or >= 10,000 Shares?"}
-  D -- "Small Lot Ping" --> E["🛑 DEAD END: REJECT<br/>MFS Floor Violation"]
-  D -- "Valid Institutional Block" --> F["Compute NBBO Midpoint<br/>(/midpoint-crossing)"]
-  F --> G{"Adverse Selection <<br/>35 bps over 50ms?"}
-  G -- "Toxic Flow > 35 bps" --> H["🚨 30-SEC CIRCUIT FREEZE<br/>(/circuit-freeze)"]
-  G -- "Clean Flow (< 35 bps)" --> I["Cross Fills at Midpoint<br/>(Zero Market Leakage)"]
-  I --> J["Dispatch FINRA CAT Audit<br/>(/finra-cats-audit)"]
-  J --> K["✅ Block Executed Cleanly<br/>($1.2M Liquidity Matched)"]
+  A["Sample Water Probes<br/>(/conductivity-sensor)"] --> B{"Conductivity ><br/>2,400 uS/cm Ceiling?"}
+  B -- "Yes: Scale Risk" --> C["Open Blowdown Valve<br/>(/blowdown-valve)"]
+  B -- "Conductivity Safe" --> D["Calculate LSI Index<br/>(/lsi-calculator)"]
+  C --> D
+  D --> E{"LSI between +0.2<br/>and +0.8 Range?"}
+  E -- "LSI < +0.2: Corrosive" --> F["Feed Alkaline Buffer<br/>(Protect Steel Piping)"]
+  E -- "LSI > +0.8: Scaling" --> G["Increase Acid Dosing<br/>(Prevent Mineral Choke)"]
+  E -- "LSI Stable" --> H{"Biocide Cycle Active<br/>(/biocide-alternator)?"}
+  F --> H
+  G --> H
+  H -- "Biocide Dosed" --> I{"Blowdown Locked for<br/>Full 4.0-Hour Soak?"}
+  I -- "Valve Leaks Early" --> J["🛑 DEAD END<br/>Effluent Violation &<br/>Biofilm Survival"]
+  I -- "4h Soak Respected" --> K["✅ Clean Biocide Pass<br/>(Legionella < 10 CFU/L)"]
+  H -- "Standard Monitoring" --> K
 
   classDef blue fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0369a1;
   classDef green fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#065f46;
   classDef red fill:#fef2f2,stroke:#ef4444,stroke-width:2px,color:#991b1b;
   classDef amber fill:#fffbeb,stroke:#f59e0b,stroke-width:2px,color:#92400e;
 
-  class A,F,I,J blue;
-  class B,D,G amber;
-  class C,K green;
-  class C,E,H red;`
+  class A,D,H blue;
+  class B,E,I amber;
+  class K green;
+  class J red;`
       }
     };
-
     // ==========================================
     // STEP NAVIGATION
     // ==========================================
@@ -1228,7 +1233,7 @@
     window.selectPreset = function(presetKey) {
       state.selectedPreset = presetKey;
       document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
-      const chip = document.getElementById(`chipPreset${presetKey === 'satellite_collision' ? 1 : presetKey === 'nuclear_islanding' ? 2 : 3}`);
+      const chip = document.getElementById(`chipPreset${presetKey === 'mpc_optimization' ? 1 : presetKey === 'sop_planning' ? 2 : 3}`);
       if (chip) chip.classList.add('active');
 
       const p = PRESETS[presetKey];
@@ -1362,53 +1367,55 @@
       if (!body) return;
       const p = PRESETS[state.selectedPreset];
 
-      if (state.selectedPreset === 'satellite_collision') {
+      if (state.selectedPreset === 'mpc_optimization') {
         body.innerHTML = `
           <div class="site-page-header">
             <div>
               <div class="site-page-title">${p.routes.find(r => r.path === route)?.label || 'Console'}</div>
-              <p style="font-size: 11.5px; color: #64748b;">Active telemetry route: <code>${route}</code></p>
+              <p style="font-size: 11.5px; color: #64748b;">Active process route: <code>${route}</code></p>
             </div>
-            <span class="site-tag">CARA 2026 ACTIVE</span>
+            <span class="site-tag" style="background:#fef3c7; color:#92400e;">OSHA 1910.119 PSM</span>
           </div>
           <div class="site-alert warn">
-            <strong>⚠️ Collision Invariant:</strong> PoC threshold = 1.0 x 10^-4. Thruster burn prohibited within 96 minutes of TCA.
+            <strong>⚠️ Process Safety Invariant:</strong> Tray Delta-P must remain &lt;= 42.0 kPa. Reflux MV move rate capped at 1.5%/min. Flaring prohibited.
           </div>
           <div class="site-card">
-            <h4 style="font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">Live Telemetry &amp; Ephemeris Tracking</h4>
+            <h4 style="font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">Live Distillation Column Telemetry &amp; QP Optimizer</h4>
             <div style="font-size: 11.5px; line-height: 1.6; margin-bottom: 8px;">
-              <div><strong>Conjunction Object:</strong> DEBRIS-NORAD-49210 (Upper Stage Fragment)</div>
-              <div><strong>Computed PoC:</strong> <span style="color: #ef4444; font-weight: 700;">2.4 x 10^-4 (EXCEEDS 1e-4 THRESHOLD)</span></div>
-              <div><strong>Miss Distance:</strong> 142.6 meters (Radial: 28m)</div>
-              <div><strong>Time to Closest Approach (TCA):</strong> 14 hours 22 minutes (Within safe 96-min pre-soak window)</div>
+              <div><strong>Distillation Unit:</strong> C3 Splitter Column T-102 (54 Trays)</div>
+              <div><strong>Current Tray Delta-P (CV2):</strong> <span style="color: #059669; font-weight: 700;">34.8 kPa (Safe; &lt; 42.0 kPa Flooding Limit)</span></div>
+              <div><strong>Reflux Valve Position (MV1):</strong> 62.4% (Current Slew Rate: 0.8%/min &lt; 1.5% Cap)</div>
+              <div><strong>Product Purity:</strong> 99.68 mol% Propylene (Target: &gt;= 99.60 mol%)</div>
+              <div><strong>Flare Vent Status:</strong> <span style="color: #0284c7; font-weight: 700;">CLOSED (Zero Flaring — 100% Economizer Recovery)</span></div>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="showToast('Ephemeris pass updated with latest 18th Space Defense tracking data!')">
-              <span>📡</span> Fetch Latest Orbit Ephemeris
+            <button class="btn btn-primary btn-sm" onclick="showToast('Executed Active-Set QP Solver: 60-step horizon optimized in 142ms!')">
+              <span>⚡</span> Solve Next Dynamic MPC Move (250ms Loop)
             </button>
           </div>
         `;
-      } else if (state.selectedPreset === 'nuclear_islanding') {
+      } else if (state.selectedPreset === 'sop_planning') {
         body.innerHTML = `
           <div class="site-page-header">
             <div>
               <div class="site-page-title">${p.routes.find(r => r.path === route)?.label || 'Console'}</div>
-              <p style="font-size: 11.5px; color: #64748b;">Active substation route: <code>${route}</code></p>
+              <p style="font-size: 11.5px; color: #64748b;">Active supply chain route: <code>${route}</code></p>
             </div>
-            <span class="site-tag">NERC PRC-024</span>
+            <span class="site-tag" style="background:#dbeafe; color:#1e40af;">OLIVER WIGHT CLASS-A</span>
           </div>
           <div class="site-alert warn">
-            <strong>⚠️ Islanding Invariant:</strong> Trip threshold = 59.30 Hz for > 160ms. Breaker must sever tie in <= 4 cycles (66.7ms).
+            <strong>⚠️ S&amp;OP Invariant:</strong> Safety stock must remain &gt;= 21 days (85% target). Overtime capped at 12.0%. Mass balance error &lt; 0.05%.
           </div>
           <div class="site-card">
-            <h4 style="font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">Synchrophasor Vector &amp; Breaker Telemetry</h4>
+            <h4 style="font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">Multi-Echelon Inventory &amp; Rough-Cut Capacity</h4>
             <div style="font-size: 11.5px; line-height: 1.6; margin-bottom: 8px;">
-              <div><strong>Bus 1 Frequency:</strong> <span style="color: #d97706; font-weight: 700;">59.34 Hz (Oscillating near 59.30 Hz tripwire)</span></div>
-              <div><strong>Rate of Change (RoCoF):</strong> -0.18 Hz/sec</div>
-              <div><strong>SF6 Circuit Breaker State:</strong> CLOSED (Arming high-speed trip coil)</div>
-              <div><strong>Synchroscope Phase Delta:</strong> 8.2° (Must dwell < 10° for 180s to reconnect)</div>
+              <div><strong>Planning Cycle:</strong> Month 4 Rolling Plan (Horizon: 18 Months)</div>
+              <div><strong>Unconstrained Demand:</strong> 1,420,000 Units (Forecast Consensus)</div>
+              <div><strong>Manufacturing Overtime:</strong> <span style="color: #059669; font-weight: 700;">9.4% (Within 12.0% Maximum Shift Bound)</span></div>
+              <div><strong>Central Hub Safety Buffer:</strong> 24.2 Days Supply (Above 21-Day Mandatory Floor)</div>
+              <div><strong>Supply/Demand Mass-Balance Gap:</strong> 0.012% (Complies with 0.05% Class-A Bound)</div>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="showToast('IEEE C37.118 Synchrophasor sampled at 60 FPS!')">
-              <span>⚡</span> Sample Synchrophasor Waveform
+            <button class="btn btn-primary btn-sm" onclick="showToast('Reconciled Multi-Echelon Mass-Balance across 4 Hubs!')">
+              <span>📦</span> Run Pre-S&amp;OP Executive Reconciliation
             </button>
           </div>
         `;
@@ -1417,29 +1424,29 @@
           <div class="site-page-header">
             <div>
               <div class="site-page-title">${p.routes.find(r => r.path === route)?.label || 'Console'}</div>
-              <p style="font-size: 11.5px; color: #64748b;">Active ATS route: <code>${route}</code></p>
+              <p style="font-size: 11.5px; color: #64748b;">Active water treatment route: <code>${route}</code></p>
             </div>
-            <span class="site-tag">SEC REG NMS 612</span>
+            <span class="site-tag" style="background:#ecfdf5; color:#065f46;">ASHRAE 188 CERTIFIED</span>
           </div>
           <div class="site-alert warn">
-            <strong>⚠️ Reg NMS Guardrail:</strong> Sub-penny prices strictly banned (increment >= $0.01). Toxic flow > 35 bps triggers 30s halt.
+            <strong>⚠️ Water Chemistry Invariant:</strong> Conductivity &lt;= 2,400 uS/cm. LSI between +0.2 and +0.8. Biocide 4.0h blowdown lockout.
           </div>
           <div class="site-card">
-            <h4 style="font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">Dark Pool Block Cross &amp; Toxicity Engine</h4>
+            <h4 style="font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">Basin Water Chemistry &amp; Legionella Disinfection</h4>
             <div style="font-size: 11.5px; line-height: 1.6; margin-bottom: 8px;">
-              <div><strong>Active Symbol:</strong> MSFT (NBBO: $418.20 x $418.22 | Midpoint: $418.21)</div>
-              <div><strong>Institutional Block Size:</strong> 25,000 shares ($10.45M value — passes $200k MFS)</div>
-              <div><strong>Adverse Selection Velocity:</strong> <span style="color: #059669; font-weight: 700;">22.4 bps (Safe; below 35 bps tripwire)</span></div>
-              <div><strong>Pre-Trade Market Impact:</strong> 0.00% (Completely un-displayed dark crossing)</div>
+              <div><strong>Basin Conductivity:</strong> <span style="color: #059669; font-weight: 700;">1,940 uS/cm (Safe; &lt; 2,400 uS/cm Ceiling)</span></div>
+              <div><strong>Cycles of Concentration (CoC):</strong> 4.8 Cycles (Target: 4.5 - 5.5)</div>
+              <div><strong>Calculated LSI:</strong> <span style="color: #0284c7; font-weight: 700;">+0.42 (Optimal Non-Corrosive / Non-Scaling Zone)</span></div>
+              <div><strong>Biocide Lockout Timer:</strong> <span style="color: #92400e; font-weight: 700;">ACTIVE (2h 14m remaining of mandatory 4.0h soak)</span></div>
+              <div><strong>Motorized Blowdown Bleed Valve:</strong> LOCKED SHUT (Zero Biocide Effluent Discharge)</div>
             </div>
-            <button class="btn btn-primary btn-sm" onclick="showToast('Executed un-displayed midpoint block match with zero leakage!')">
-              <span>📈</span> Cross Liquidity at NBBO Midpoint
+            <button class="btn btn-primary btn-sm" onclick="showToast('Water chemistry validated: LSI +0.42, zero Legionella bio-slime detected!')">
+              <span>💧</span> Run Automated Chemistry Sensor Audit
             </button>
           </div>
         `;
       }
     }
-
     // ==========================================
     // STEP 2: CASCADING POLICY TREE & FLOWCHART
     // ==========================================
@@ -1535,7 +1542,7 @@
       state.comparativeChart = new Chart(ctx, {
         type: 'bar',
         data: {
-          labels: ['Satellite Conjunction', 'Nuclear Islanding', 'Dark Pool Reg NMS'],
+          labels: ['MPC Distillation', 'S&OP Inventory Balance', 'Cooling Tower Water'],
           datasets: [
             { label: 'Unaided Baseline Model', data: [32, 28, 41], backgroundColor: 'rgba(239, 68, 68, 0.7)' },
             { label: 'Dual Governance Educated', data: [99.2, 98.4, 98.9], backgroundColor: 'rgba(5, 150, 105, 0.7)' }
