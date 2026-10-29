@@ -892,7 +892,7 @@
       </div>
     </div>
     <div class="header-badges">
-      <a href="https://omniscope.visokio.com/u/94dqo/" target="_blank" rel="noopener noreferrer" class="pill cloud" style="text-decoration: none;" title="Open authenticated Visokio Omniscope Cloud instance">🌐 Cloud: /u/94dqo/ ↗</a>
+      <span class="pill cloud" id="topHeaderCloudBadge">🌐 Omniscope Web: Awaiting User Link</span>
       <span class="pill omniscope">🧭 Visokio Omniscope Evo</span>
       <span class="pill mcp">🔌 MCP Server: Ready</span>
       <span class="pill engine" id="engineStatusBadge">🟢 Engine: Groq LPU</span>
@@ -903,7 +903,7 @@
   <div class="arch-card">
     <div class="arch-header">
       <div class="arch-title">
-        <span>💡</span> Architecture: In-Browser Compiler (WebLLM / Groq) ➔ Visokio Omniscope Evo &amp; Cloud (<code>/u/94dqo/</code>)
+        <span>💡</span> Architecture: In-Browser Compiler (WebLLM / Groq) ➔ Visokio Omniscope Evo &amp; Cloud
       </div>
       <span class="pill" style="background:#e0f2fe; color:#0369a1; border-color:#bae6fd;">Zero-Server Client-Side Studio</span>
     </div>
@@ -914,8 +914,8 @@
       </div>
       <div class="arch-arrow">➔</div>
       <div class="arch-box">
-        <strong>🧭 In Visokio Omniscope Evo (MCP Server / Cloud)</strong>
-        <span>Dispatches JSON-RPC <code>tools/call</code> and REST commands to your Visokio Cloud instance (<code>https://omniscope.visokio.com/u/94dqo/</code>) or local runner (<code>http://localhost:24678</code>) to instantiate blocks, configure Python nodes, and render executive reports.</span>
+        <strong>🧭 In Visokio Omniscope Evo (Workflow Ninja &amp; Cloud)</strong>
+        <span>Dispatches JSON-RPC <code>tools/call</code> schemas and Workflow Ninja payloads directly to the user's authenticated Omniscope workspace or local runner (<code>http://localhost:24678</code>) to instantiate blocks, configure Python nodes, and render executive reports.</span>
       </div>
     </div>
   </div>
@@ -925,12 +925,12 @@
     <div class="cloud-conn-header">
       <div class="cloud-conn-title">
         <span>🔗</span>
-        <span>Step 1: Paste Your Authenticated Omniscope Link</span>
-        <span class="pill cloud" id="cloudConnBadge">🟢 Connected Target: /u/94dqo/</span>
+        <span>Step 1: Paste Your Authenticated Omniscope Account / Workspace Address</span>
+        <span class="pill" id="cloudConnBadge">⚪ Awaiting Authenticated Link</span>
       </div>
       <div style="display: flex; align-items: center; gap: 8px;">
-        <a id="topOpenOmniLink" href="https://omniscope.visokio.com/u/94dqo/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="text-decoration: none; padding: 4px 10px; font-size: 11.5px; display: inline-flex; align-items: center; gap: 4px;" title="Open Omniscope Cloud in a new browser tab">
-          <span>↗</span> Open Omniscope Web
+        <a id="topOpenOmniLink" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="text-decoration: none; padding: 4px 10px; font-size: 11.5px; display: none; align-items: center; gap: 4px;" title="Open your authenticated Omniscope workspace">
+          <span>↗</span> Open My Omniscope
         </a>
         <button class="btn btn-secondary" style="padding: 4px 10px; font-size: 11.5px;" onclick="toggleCloudConfig()">
           <span id="toggleCloudConfigIcon">⚙️</span> Token / Auth Settings
@@ -941,15 +941,15 @@
     <div class="cloud-conn-body" style="display: block; margin-top: 10px; padding-top: 10px;">
       <div class="form-row" style="margin-bottom: 6px;">
         <div class="form-group" style="flex: 3;">
-          <label for="omniscopeServerUrl">Paste Your Omniscope Web Link (after logging in)</label>
+          <label for="omniscopeServerUrl">Paste Your Omniscope Web Link (from your browser after logging in)</label>
           <div style="display: flex; gap: 8px;">
-            <input type="text" id="omniscopeServerUrl" value="https://omniscope.visokio.com/u/94dqo/" placeholder="E.g., https://omniscope.visokio.com/u/94dqo/" oninput="handleOmniscopeUrlInput()" style="font-family: var(--font-mono); font-size: 13px;">
+            <input type="text" id="omniscopeServerUrl" value="" placeholder="Paste your authenticated Visokio Omniscope web link (e.g. https://omniscope.visokio.com/u/your-account-id/)" oninput="handleOmniscopeUrlInput()" style="font-family: var(--font-mono); font-size: 13px;">
             <button class="btn btn-secondary" onclick="saveOmniscopeSettings()">Save Link</button>
           </div>
         </div>
       </div>
       <div id="urlHelperText" style="font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 6px;">
-        <span>💡</span> OmniSmith formats the Workflow Ninja output specifically for this workspace.
+        <span>💡</span> OmniSmith formats the Workflow Ninja output specifically for whichever user account address is pasted above.
       </div>
       <div id="cloudFeedbackBox" class="cloud-feedback-box"></div>
     </div>
@@ -1082,7 +1082,7 @@
             Workflow Ninja Output Text (Ready to Copy)
           </h2>
           <p style="font-size: 12px; color: var(--text-muted); margin: 0;">
-            Target: <span id="ninjaTargetDisplay" style="color: #0284c7; font-weight: 700; font-family: var(--font-mono);">https://omniscope.visokio.com/u/94dqo/</span> • Copy this text and paste directly into Workflow Ninja.
+            Target Account: <span id="ninjaTargetDisplay" style="color: #0284c7; font-weight: 700; font-family: var(--font-mono);">Awaiting user authenticated link above</span> • Copy this text and paste directly into Workflow Ninja.
           </p>
         </div>
       </div>
@@ -1094,8 +1094,8 @@
         <button id="btnHeroCopyNinja" class="btn btn-magic" style="padding: 6px 16px; font-size: 13px; font-weight: 800; background: linear-gradient(135deg, #0284c7, #2563eb); color: white;" onclick="copyHeroNinjaPayload()">
           <span id="heroCopyIcon">📋</span> Copy for Workflow Ninja
         </button>
-        <a id="heroOpenOmniLink" href="https://omniscope.visokio.com/u/94dqo/" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;" title="Open your authenticated Omniscope Cloud workspace">
-          <span>↗</span> Open Omniscope (/u/94dqo/)
+        <a id="heroOpenOmniLink" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; text-decoration: none; display: none; align-items: center; gap: 4px;" title="Open your authenticated Omniscope workspace">
+          <span>↗</span> Open My Omniscope
         </a>
       </div>
     </div>
@@ -1150,7 +1150,7 @@
       <div class="tabs-actions">
         <button class="btn btn-magic" onclick="openWorkflowNinjaModal()" style="font-weight: 700; background: linear-gradient(135deg, #0284c7, #2563eb); color: white;"><span>🥷</span> Copy for Workflow Ninja</button>
         <button class="btn btn-secondary" onclick="exportWorkflowJson()">💾 Export .IOX / JSON</button>
-        <button class="btn btn-secondary" onclick="pushWorkflowToOmniscope()" style="background:#e0f2fe; border-color:#bae6fd; color:#0369a1; font-weight:700;">🚀 Push to Cloud (/u/94dqo/)</button>
+        <button class="btn btn-secondary" onclick="pushWorkflowToOmniscope()" style="background:#e0f2fe; border-color:#bae6fd; color:#0369a1; font-weight:700;">🚀 Push to Omniscope</button>
         <button class="btn btn-secondary" onclick="triggerMcpHandshake()">▶️ Execute MCP Handshake</button>
       </div>
     </div>
@@ -1237,18 +1237,18 @@
             🔌 Omniscope MCP Server (JSON-RPC 2.0 Telemetry)
           </h3>
           <p style="font-size: 12px; color: var(--text-muted);">
-            Captures real-time Model Context Protocol tool invocations connecting the compiler to Visokio Omniscope Evo &amp; Cloud (<code>/u/94dqo/</code>).
+            Captures real-time Model Context Protocol tool invocations connecting the compiler to your Visokio Omniscope Evo workspace.
           </p>
         </div>
         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
           <button class="btn btn-secondary" onclick="testOmniscopeCloudConnection()">
-            <span>🔗</span> Ping /u/94dqo/
+            <span>🔗</span> Ping Workspace
           </button>
           <button class="btn btn-secondary" onclick="copyPythonBridgeCode()">
             <span>🐍</span> Copy CLI/Python Pusher
           </button>
           <button class="btn btn-magic" onclick="pushWorkflowToOmniscope()">
-            <span>🚀</span> Push to Omniscope Cloud
+            <span>🚀</span> Push to Omniscope
           </button>
         </div>
       </div>
@@ -1276,7 +1276,7 @@
         <span style="font-size: 24px;">🥷</span>
         <div>
           <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">Visokio Omniscope — Workflow Ninja Payload</h3>
-          <p style="font-size: 11.5px; color: var(--text-muted); margin: 0;">Paste this text directly into Workflow Ninja on <a href="https://omniscope.visokio.com/u/94dqo/" target="_blank" style="color:#0284c7; font-weight:700;">/u/94dqo/</a></p>
+          <p style="font-size: 11.5px; color: var(--text-muted); margin: 0;">Paste this text directly into Workflow Ninja in your authenticated Omniscope workspace</p>
         </div>
       </div>
       <button class="btn btn-secondary" onclick="closeNinjaModal()" style="padding: 4px 10px; font-size: 14px; font-weight: 700;">✕</button>
@@ -1284,7 +1284,7 @@
 
     <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 10px 14px; margin-bottom: 12px; font-size: 12px; color: #166534; line-height: 1.5;">
       <strong>📌 How to use in Visokio Omniscope:</strong><br>
-      1. Open your workspace at <a href="https://omniscope.visokio.com/u/94dqo/" target="_blank" style="color: #15803d; font-weight: 700; text-decoration: underline;">https://omniscope.visokio.com/u/94dqo/</a>.<br>
+      1. Open your workspace tab in Omniscope.<br>
       2. Click <strong>Workflow Ninja</strong> (or the AI prompt icon in Omniscope).<br>
       3. Paste this compiled JSON or Prompt text into the box and click <strong>Generate</strong> — Omniscope will automatically instantiate all blocks, pipes, and Python scripts!
     </div>
@@ -1296,7 +1296,7 @@
       </div>
       <div style="display: flex; gap: 6px;">
         <button class="btn btn-magic" style="font-size: 11.5px; padding: 4px 14px; font-weight: 700;" onclick="copyNinjaPayload()">📋 Copy to Clipboard</button>
-        <a href="https://omniscope.visokio.com/u/94dqo/" target="_blank" class="btn btn-secondary" style="font-size: 11.5px; padding: 4px 10px; text-decoration: none;">↗ Open Omniscope (/u/94dqo/)</a>
+        <a id="modalOpenOmniLink" href="#" target="_blank" class="btn btn-secondary" style="font-size: 11.5px; padding: 4px 10px; text-decoration: none; display: none;">↗ Open My Omniscope</a>
       </div>
     </div>
 
@@ -1880,37 +1880,98 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
     updateCloudStatusBadge();
   };
 
-  function updateCloudStatusBadge() {
-    const url = document.getElementById('omniscopeServerUrl').value.trim() || 'https://omniscope.visokio.com/u/94dqo/';
-    const badge = document.getElementById('cloudConnBadge');
-    if (url.includes('/u/94dqo')) {
-      badge.innerText = '🟢 Connected Target: /u/94dqo/';
-      badge.className = 'pill cloud';
-    } else {
-      try {
-        const u = new URL(url);
-        badge.innerText = `🟢 Target: ${u.pathname}`;
-      } catch (e) {
-        badge.innerText = '⚠️ Invalid URL';
-      }
-    }
-    const targetDisp = document.getElementById('ninjaTargetDisplay');
-    if (targetDisp) targetDisp.textContent = url;
-    const heroOpenLink = document.getElementById('heroOpenOmniLink');
-    if (heroOpenLink) heroOpenLink.href = url;
-    const topOpenLink = document.getElementById('topOpenOmniLink');
-    if (topOpenLink) topOpenLink.href = url;
+  function getUserOmniscopeUrl() {
+    const el = document.getElementById('omniscopeServerUrl');
+    const val = el ? el.value.trim() : '';
+    return val || localStorage.getItem('omniscope_user_account_url') || '';
   }
 
+  function updateCloudStatusBadge() {
+    const url = getUserOmniscopeUrl();
+    const badge = document.getElementById('cloudConnBadge');
+    const topBadge = document.getElementById('topHeaderCloudBadge');
+    const targetDisp = document.getElementById('ninjaTargetDisplay');
+    const heroOpenLink = document.getElementById('heroOpenOmniLink');
+    const topOpenLink = document.getElementById('topOpenOmniLink');
+    const modalOpenLink = document.getElementById('modalOpenOmniLink');
+
+    if (url) {
+      let cleanLabel = url;
+      try {
+        const u = new URL(url);
+        cleanLabel = u.pathname && u.pathname !== '/' ? u.pathname : u.host;
+      } catch (e) {
+        cleanLabel = url;
+      }
+      if (badge) {
+        badge.innerText = `🟢 Connected: ${cleanLabel}`;
+        badge.className = 'pill cloud';
+      }
+      if (topBadge) {
+        topBadge.innerText = `🌐 Omniscope: ${cleanLabel}`;
+      }
+      if (targetDisp) targetDisp.textContent = url;
+      if (heroOpenLink) {
+        heroOpenLink.href = url;
+        heroOpenLink.style.display = 'inline-flex';
+      }
+      if (topOpenLink) {
+        topOpenLink.href = url;
+        topOpenLink.style.display = 'inline-flex';
+      }
+      if (modalOpenLink) {
+        modalOpenLink.href = url;
+        modalOpenLink.style.display = 'inline-flex';
+      }
+    } else {
+      if (badge) {
+        badge.innerText = '⚪ Awaiting Authenticated Link';
+        badge.className = 'pill';
+      }
+      if (topBadge) {
+        topBadge.innerText = '🌐 Omniscope: Paste Link Below';
+      }
+      if (targetDisp) targetDisp.textContent = 'Awaiting user account address (paste above)';
+      if (heroOpenLink) heroOpenLink.style.display = 'none';
+      if (topOpenLink) topOpenLink.style.display = 'none';
+      if (modalOpenLink) modalOpenLink.style.display = 'none';
+    }
+  }
+
+  window.saveOmniscopeSettings = function() {
+    const url = document.getElementById('omniscopeServerUrl').value.trim();
+    const key = document.getElementById('omniscopeApiKey').value.trim();
+    if (url) {
+      localStorage.setItem('omniscope_user_account_url', url);
+      showToast('Omniscope account link saved!', '🧭');
+    } else {
+      localStorage.removeItem('omniscope_user_account_url');
+      showToast('Account link cleared.', '🧭');
+    }
+    if (key) {
+      localStorage.setItem('omniscope_api_key', key);
+    } else {
+      localStorage.removeItem('omniscope_api_key');
+    }
+    updateCloudStatusBadge();
+    updateHeroNinjaOutput();
+  };
+
   window.testOmniscopeCloudConnection = async function() {
-    const url = document.getElementById('omniscopeServerUrl').value.trim() || 'https://omniscope.visokio.com/u/94dqo/';
+    const url = getUserOmniscopeUrl();
+    if (!url) {
+      showToast('Please paste your authenticated Omniscope link first!', '⚠️');
+      document.getElementById('omniscopeServerUrl').focus();
+      return;
+    }
+
     const token = document.getElementById('omniscopeApiKey').value.trim();
     const fb = document.getElementById('cloudFeedbackBox');
     const mcpWrap = document.getElementById('mcpLogContainer');
 
     fb.style.display = 'block';
     fb.className = 'cloud-feedback-box info';
-    fb.innerHTML = `<strong>⏳ Connecting...</strong> Probing Visokio Omniscope Cloud at <code>${url}</code>`;
+    fb.innerHTML = `<strong>⏳ Connecting...</strong> Probing user's Omniscope instance at <code>${url}</code>`;
 
     const now = new Date().toLocaleTimeString();
     const logLines = [
@@ -1947,16 +2008,16 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
       }
     } catch (err) {
       // Browser CORS catch
-      logLines.push(`<div class="mcp-log-line"><span class="mcp-tag err">cors</span><span>[${new Date().toLocaleTimeString()}] Browser CORS Security: Direct cross-origin fetch from ${window.location.origin} to visokio.com restricted by browser sandbox.</span></div>`);
-      logLines.push(`<div class="mcp-log-line"><span class="mcp-tag tool">info</span><span>Target workspace is verified live at https://omniscope.visokio.com/u/94dqo/. Use the Python CLI Pusher below for zero-CORS execution.</span></div>`);
+      logLines.push(`<div class="mcp-log-line"><span class="mcp-tag err">cors</span><span>[${new Date().toLocaleTimeString()}] Browser CORS Security: Direct cross-origin fetch from ${window.location.origin} restricted by browser sandbox.</span></div>`);
+      logLines.push(`<div class="mcp-log-line"><span class="mcp-tag tool">info</span><span>Target workspace is verified at ${url}. Use the Workflow Ninja text output directly in your browser.</span></div>`);
 
       fb.className = 'cloud-feedback-box warn';
       fb.innerHTML = `
-        <strong>🔒 Instance Verified at <code>https://omniscope.visokio.com/u/94dqo/</code></strong><br>
-        Browser security prevents static web apps from sending cross-origin authenticated requests without <code>Access-Control-Allow-Origin</code> headers from visokio.com.
+        <strong>🔒 Instance Verified at <code>${url}</code></strong><br>
+        Browser security prevents static web apps from sending cross-origin authenticated requests without <code>Access-Control-Allow-Origin</code> headers.
         <div style="margin-top: 6px; display: flex; gap: 8px; flex-wrap: wrap;">
           <a href="${url}" target="_blank" class="btn btn-secondary" style="font-size: 11px; text-decoration: none; padding: 2px 8px;">↗ Open Web Workspace</a>
-          <button class="btn btn-secondary" style="font-size: 11px; padding: 2px 8px;" onclick="copyPythonBridgeCode()">🐍 Copy Python CLI Pusher</button>
+          <button class="btn btn-secondary" style="font-size: 11px; padding: 2px 8px;" onclick="copyHeroNinjaPayload()">🥷 Copy for Workflow Ninja</button>
         </div>
       `;
       showToast('Cloud instance verified (CORS sandbox noted)', '🧭');
@@ -1966,7 +2027,7 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
   };
 
   window.pushWorkflowToOmniscope = async function() {
-    const url = document.getElementById('omniscopeServerUrl').value.trim() || 'https://omniscope.visokio.com/u/94dqo/';
+    const url = getUserOmniscopeUrl() || 'http://localhost:24678';
     const token = document.getElementById('omniscopeApiKey').value.trim();
     const s = SPECS[state.currentSpec];
     
@@ -1976,30 +2037,38 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
       b.classList.toggle('active', b.innerText.includes('MCP'));
     });
 
+    let spaceName = "User_Workspace";
+    if (url) {
+      try {
+        const parts = new URL(url).pathname.split('/').filter(Boolean);
+        if (parts.length > 0) spaceName = parts[parts.length - 1];
+      } catch (e) {}
+    }
+
     const mcpWrap = document.getElementById('mcpLogContainer');
     const now = new Date().toLocaleTimeString();
     
     mcpWrap.innerHTML = `
       <div class="mcp-log-line"><span class="mcp-tag req">mcp</span><span>[${now}] Initiating live workflow push to ${url}...</span></div>
-      <div class="mcp-log-line"><span class="mcp-tag tool">tools/call</span><span>omniscope_create_workflow(name="${state.currentSpec}", space="94dqo")</span></div>
+      <div class="mcp-log-line"><span class="mcp-tag tool">tools/call</span><span>omniscope_create_workflow(name="${state.currentSpec}", space="${spaceName}")</span></div>
       <div class="mcp-log-line"><span class="mcp-tag tool">tools/call</span><span>omniscope_group_blocks(grouping="SCP", stages=["Scope", "Concept", "Plan", "Output"])</span></div>
       <div class="mcp-log-line"><span class="mcp-tag tool">tools/call</span><span>omniscope_inject_python_block(code="inputs[0] -> pandas -> output")</span></div>
       <div class="mcp-log-line"><span class="mcp-tag tool">tools/call</span><span>omniscope_publish_report(dashboard="${s.chart1.title} + ${s.chart2.title}")</span></div>
-      <div class="mcp-log-line"><span class="mcp-tag res">status</span><span>[${new Date().toLocaleTimeString()}] Workflow spec compiled and packaged for Visokio Omniscope Cloud.</span></div>
+      <div class="mcp-log-line"><span class="mcp-tag res">status</span><span>[${new Date().toLocaleTimeString()}] Workflow spec compiled and packaged for Visokio Omniscope.</span></div>
     `;
 
     try {
       const headers = { 'Content-Type': 'application/json' };
       if (token) headers['Authorization'] = `Bearer ${token}`;
 
-      const res = await fetch(`${url}api/rest/v1/workflows`, {
+      const res = await fetch(`${url}/api/rest/v1/workflows`, {
         method: 'POST',
         mode: 'cors',
         credentials: 'include',
         headers,
         body: JSON.stringify({
           name: state.currentSpec,
-          workspace: "94dqo",
+          workspace: spaceName,
           grouping: document.getElementById('scpGroupingSelect').value,
           python_script: s.python
         })
@@ -2016,9 +2085,9 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
     } catch (e) {
       mcpWrap.innerHTML += `
         <div class="mcp-log-line"><span class="mcp-tag warn">cors</span><span>Notice: Browser CORS prevented direct in-browser POST to visokio.com.</span></div>
-        <div class="mcp-log-line"><span class="mcp-tag tool">solution</span><span>Workflow payload prepared! You can export the .IOX/JSON file directly into Omniscope, or run the Python CLI script.</span></div>
+        <div class="mcp-log-line"><span class="mcp-tag tool">solution</span><span>Workflow payload prepared! You can copy the Workflow Ninja text directly into your Omniscope tab.</span></div>
       `;
-      showToast('Workflow compiled! Ready for import or CLI push.', '🧭');
+      showToast('Workflow compiled! Ready for Workflow Ninja paste.', '🧭');
     }
   };
 
@@ -2029,7 +2098,9 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
   window.handleOmniscopeUrlInput = function() {
     const rawUrl = document.getElementById('omniscopeServerUrl').value.trim();
     if (rawUrl) {
-      localStorage.setItem('omniscope_server_url', rawUrl);
+      localStorage.setItem('omniscope_user_account_url', rawUrl);
+    } else {
+      localStorage.removeItem('omniscope_user_account_url');
     }
     updateCloudStatusBadge();
     updateHeroNinjaOutput();
@@ -2040,15 +2111,7 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
     if (!codeEl) return;
     const payload = getNinjaPayload(window.heroNinjaFormat);
     codeEl.textContent = payload;
-    
-    const url = document.getElementById('omniscopeServerUrl').value.trim() || 'https://omniscope.visokio.com/u/94dqo/';
-    const targetDisp = document.getElementById('ninjaTargetDisplay');
-    if (targetDisp) targetDisp.textContent = url;
-
-    const heroOpenLink = document.getElementById('heroOpenOmniLink');
-    if (heroOpenLink) heroOpenLink.href = url;
-    const topOpenLink = document.getElementById('topOpenOmniLink');
-    if (topOpenLink) topOpenLink.href = url;
+    updateCloudStatusBadge();
   };
 
   window.setHeroNinjaFormat = function(fmt) {
@@ -2079,9 +2142,18 @@ output = df.sort_values(by='total_landed_cost', ascending=False)`,
 
   function getNinjaPayload(fmt) {
     const s = SPECS[state.currentSpec];
-    const url = document.getElementById('omniscopeServerUrl').value.trim() || 'https://omniscope.visokio.com/u/94dqo/';
+    const userUrl = getUserOmniscopeUrl();
+    const targetLabel = userUrl || 'Active Omniscope Workspace';
+    let spaceName = 'User_Workspace';
+    if (userUrl) {
+      try {
+        const parts = new URL(userUrl).pathname.split('/').filter(Boolean);
+        if (parts.length > 0) spaceName = parts[parts.length - 1];
+      } catch (e) {}
+    }
+
     if (fmt === 'prompt') {
-      return `Target: Visokio Omniscope Evo (${url})
+      return `Target: Visokio Omniscope (${targetLabel})
 Workflow: ${state.currentSpec}
 Stage Grouping: ${document.getElementById('scpGroupingSelect').value}
 
@@ -2103,7 +2175,8 @@ ${s.python}
     } else {
       const data = {
         "generator": "OmniSmith Studio -> Visokio Omniscope Workflow Ninja",
-        "cloud_workspace": url,
+        "cloud_workspace": targetLabel,
+        "workspace_name": spaceName,
         "workflow_name": state.currentSpec,
         "scp_grouping": document.getElementById('scpGroupingSelect').value,
         "stages": [
@@ -2199,7 +2272,7 @@ ${s.python}
   };
 
   window.copyPythonBridgeCode = function() {
-    const url = document.getElementById('omniscopeServerUrl').value.trim() || 'https://omniscope.visokio.com/u/94dqo/';
+    const url = getUserOmniscopeUrl() || "https://omniscope.visokio.com/u/YOUR_WORKSPACE_ID/";
     const s = SPECS[state.currentSpec];
     const script = `"""
 Visokio Omniscope MCP Bridge Script
@@ -2229,7 +2302,7 @@ workflow_payload = {
 }
 
 print(f"Pushing workflow '{state.currentSpec}' to Visokio Omniscope Cloud...")
-response = requests.post(f"{OMNISCOPE_URL}api/rest/v1/workflows", headers=headers, json=workflow_payload)
+response = requests.post(f"{OMNISCOPE_URL}/api/rest/v1/workflows", headers=headers, json=workflow_payload)
 print(f"Status: {response.status_code}")
 print(response.text)
 `;
@@ -2244,9 +2317,10 @@ print(response.text)
 
   window.exportWorkflowJson = function() {
     const s = SPECS[state.currentSpec];
+    const userUrl = getUserOmniscopeUrl();
     const data = {
       omniscope_version: "Evo 2026.1",
-      cloud_workspace: "https://omniscope.visokio.com/u/94dqo/",
+      cloud_workspace: userUrl || "Active Omniscope Workspace",
       generator: "OmniSmith In-Browser MCP Compiler",
       workflow_name: state.currentSpec,
       scp_grouping: document.getElementById('scpGroupingSelect').value,
@@ -2268,7 +2342,7 @@ print(response.text)
 
   window.triggerMcpHandshake = function() {
     const s = SPECS[state.currentSpec];
-    const url = document.getElementById('omniscopeServerUrl').value.trim() || 'https://omniscope.visokio.com/u/94dqo/';
+    const url = getUserOmniscopeUrl() || 'http://localhost:24678';
     const mcpWrap = document.getElementById('mcpLogContainer');
     mcpWrap.innerHTML = `<div class="mcp-log-line"><span class="mcp-tag req">mcp</span><span>Connecting to Omniscope endpoint: ${url}...</span></div>`;
     
@@ -2292,7 +2366,7 @@ print(response.text)
       document.getElementById('engineStatusBadge').innerText = '🟢 Engine: Groq LPU (Ready)';
     }
 
-    const savedUrl = localStorage.getItem('omniscope_server_url');
+    const savedUrl = localStorage.getItem('omniscope_user_account_url');
     if (savedUrl) {
       document.getElementById('omniscopeServerUrl').value = savedUrl;
     }
