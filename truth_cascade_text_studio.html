@@ -1383,21 +1383,465 @@ applies-to: devops, platform-engineering
       const body = document.getElementById('sitePageBody');
       const p = PRESETS[state.selectedPreset];
 
-      body.innerHTML = `
-        <div class="site-page-header">
-          <div>
-            <div class="site-page-title">${p.title}</div>
-            <p style="font-size: 12px; color: #64748b;">Active verified route: <code>${route}</code></p>
-          </div>
-          <span class="site-tag">owner: sec-ops@corp.internal</span>
-        </div>
-        <div class="site-card">
-          <p style="font-size: 13px; color: #334155;">Interactive intranet interface running in 100% Light Mode.</p>
-          <button class="btn btn-primary btn-sm" style="margin-top: 10px;" onclick="showToast('Action confirmed for ' + '${route}', '✅')">
-            Submit Process Action
-          </button>
-        </div>
-      `;
+      // ==========================================
+      // PRESET 1: ENTERPRISE IT SSO & PRIVILEGE ESCALATION
+      // ==========================================
+      if (state.selectedPreset === 'it_security') {
+        if (route === '/overview') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Enterprise SSO & Access Gateway</div>
+                <p style="font-size: 12px; color: #64748b;">Centralized identity, MFA token security, and privilege audit.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: sec-ops@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert info">
+              <strong>📢 Policy 402 Active:</strong> Hardware FIDO2 WebAuthn is strictly required. Legacy SMS and voice OTP are revoked.
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+              <div class="site-card">
+                <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 4px;">Hardware Key Inventory</h4>
+                <p style="font-size: 12px; color: #059669;">✅ YubiKey 5C NFC Registered (WebAuthn)</p>
+                <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Last authenticated: Today at 09:14 AM</div>
+                <button class="btn btn-secondary btn-sm" style="margin-top: 8px;" onclick="navigateToRoute('/mfa-setup')">Manage Tokens</button>
+              </div>
+              <div class="site-card">
+                <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 4px;">Elevated Database Leases</h4>
+                <p style="font-size: 12px; color: #64748b;">No active root leases. Max duration capped at 4 hours.</p>
+                <button class="btn btn-primary btn-sm" style="margin-top: 8px;" onclick="navigateToRoute('/privilege-escalation')">Request DB Lease</button>
+              </div>
+            </div>
+            <div class="site-card">
+              <h4 style="font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">P0 Emergency Protocol</h4>
+              <p style="font-size: 11.5px; color: #64748b;">In case of Sev-1/P0 outages where normal approvals are blocked:</p>
+              <button class="btn btn-secondary btn-sm" style="margin-top: 6px; color: #ef4444; border-color: #fca5a5;" onclick="navigateToRoute('/break-glass')">🚨 Emergency Break-Glass (2-Hour Token)</button>
+            </div>
+          `;
+        } else if (route === '/mfa-setup') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Hardware MFA Registration & Compliance</div>
+                <p style="font-size: 12px; color: #64748b;">Enroll WebAuthn cryptographic hardware keys. SMS OTP is prohibited.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: identity-team@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert warn">
+              <strong>⚠️ Rule 101 Invariant:</strong> SMS OTP and phone call verifications CANNOT be used as fallback under any circumstances.
+            </div>
+            <div class="site-card">
+              <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Registered Security Keys</h4>
+              <table style="width: 100%; font-size: 11.5px; border-collapse: collapse; margin-bottom: 10px;">
+                <tr style="border-bottom: 1px solid #e2e8f0; color: #64748b; text-align: left;">
+                  <th style="padding: 4px;">Key Model</th><th>Type</th><th>Enrolled</th><th>Status</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 6px 4px; font-weight: 600;">YubiKey 5C NFC #8921</td><td>FIDO2 / WebAuthn</td><td>2026-03-12</td><td><span class="pill" style="background:#d1fae5; color:#065f46; font-size:10px;">Active</span></td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 4px; font-weight: 600;">TouchID Platform Key</td><td>Biometric</td><td>2026-01-08</td><td><span class="pill" style="background:#d1fae5; color:#065f46; font-size:10px;">Active</span></td>
+                </tr>
+              </table>
+              <button class="btn btn-primary btn-sm" onclick="submitSiteForm('Hardware WebAuthn challenge passed! Key verified.')">
+                <span>➕</span> Register Additional FIDO2 Key
+              </button>
+            </div>
+          `;
+        } else if (route === '/privilege-escalation') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Production Privilege Escalation Request</div>
+                <p style="font-size: 12px; color: #64748b;">Requires Director dual-key authorization and valid JIRA ticket.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: iam-audit@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert info">
+              <strong>✍️ Rule 102 Requirement:</strong> Peer or contractor approvals are PROHIBITED. Maximum duration NOT to exceed 4 hours.
+            </div>
+            <div class="site-form-group">
+              <label>Target Production Resource</label>
+              <select class="site-select" id="inputResource">
+                <option>Production PostgreSQL Main Cluster (rw) - us-east-2</option>
+                <option>Kubernetes Production Control Plane (Cluster-Admin)</option>
+                <option>Payment Gateway Key Management Service (KMS)</option>
+              </select>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div class="site-form-group">
+                <label>JIRA Change Ticket Number</label>
+                <input type="text" class="site-input" id="jiraInput" placeholder="e.g. INFRA-9842" value="INFRA-9842">
+              </div>
+              <div class="site-form-group">
+                <label>Requested Duration (Max 4h)</label>
+                <select class="site-select">
+                  <option>2 Hours (Standard Maintenance)</option>
+                  <option selected>4 Hours (Maximum Lease Allowed)</option>
+                </select>
+              </div>
+            </div>
+            <div class="site-form-group">
+              <label>Designated L2 Director Approver</label>
+              <input type="text" class="site-input" value="eng-director@corp.internal" readonly style="background:#f8fafc;">
+            </div>
+            <button class="btn btn-magic" onclick="submitSiteForm('Escalation Request Dispatched to L2 Director Gate!')">
+              <span>✍️</span> Submit Escalation Request
+            </button>
+          `;
+        } else if (route === '/break-glass') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title" style="color: #ef4444;">🚨 Emergency Break-Glass Console</div>
+                <p style="font-size: 12px; color: #64748b;">For active P0 outage mitigation when approval chains are offline.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag" style="background:#fee2e2; color:#991b1b;">owner: ciso-incident@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert warn">
+              <strong>🚨 Rule 103 Strict Invariant:</strong> Break-glass credentials automatically expire after exactly <strong>2 hours (7200s)</strong> and trigger immutable SOC2 audit notifications.
+            </div>
+            <div class="site-form-group">
+              <label>Active P0 Outage Incident ID</label>
+              <input type="text" class="site-input" value="INC-2026-P0-4081" placeholder="e.g. INC-P0-XXXX">
+            </div>
+            <div class="site-form-group">
+              <label>Technical Root Cause Justification</label>
+              <textarea class="site-input" style="height: 60px; font-family: var(--font-sans);" placeholder="Describe why standard director approval is bypassed...">Payment settlement database deadlock causing customer transaction timeouts. Standard director approval queue unreachable.</textarea>
+            </div>
+            <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:6px; padding:10px; margin-bottom:12px; font-size:11.5px; color:#991b1b;">
+              ⚠️ By activating, your session will be recorded and an immutable audit alert dispatched to security-alert@corp.internal.
+            </div>
+            <button class="btn btn-primary" style="background:#ef4444; border-color:#dc2626;" onclick="submitSiteForm('Emergency 2-Hour Break-Glass Active! SOC2 Incident Logged.')">
+              <span>🚨</span> Activate 2-Hour Break-Glass Token
+            </button>
+          `;
+        } else if (route === '/status') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Audit Tracker & Request Timeline</div>
+                <p style="font-size: 12px; color: #64748b;">Track active privilege leases and verification history.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: sec-audit@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-card">
+              <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 8px;">Active Lease Status: INFRA-9842</h4>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                <span>Resource: PostgreSQL Main Cluster</span>
+                <span class="pill" style="background:#d1fae5; color:#065f46;">Approved by Director</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                <span>Remaining Time:</span>
+                <strong style="color: #0284c7;">3 hours, 48 minutes</strong>
+              </div>
+              <div style="background:#e2e8f0; height:6px; border-radius:3px; overflow:hidden; margin: 8px 0;">
+                <div style="background:#0284c7; width:95%; height:100%;"></div>
+              </div>
+              <button class="btn btn-secondary btn-sm" style="margin-top: 6px;" onclick="submitSiteForm('Lease revoked voluntarily. Audit recorded.')">Voluntarily Revoke Lease Now</button>
+            </div>
+          `;
+        }
+      }
+
+      // ==========================================
+      // PRESET 2: FINTECH INSTANT DISPUTE & AML HOLD
+      // ==========================================
+      else if (state.selectedPreset === 'fintech_dispute') {
+        if (route === '/disputes') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Dispute Intake & Risk Classification</div>
+                <p style="font-size: 12px; color: #64748b;">Cardholder chargeback triage, automated risk scoring, and routing.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: dispute-ops@apexpay.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert info">
+              <strong>💳 Routing SLA:</strong> Transactions &lt; $150 route to instant Tier 1 refund. Transactions &gt; $5,000 velocity spikes route to mandatory AML hold.
+            </div>
+            <table style="width: 100%; font-size: 11.5px; border-collapse: collapse; margin-bottom: 12px;">
+              <tr style="border-bottom: 1px solid #cbd5e1; color: #475569; text-align: left; background:#f8fafc;">
+                <th style="padding: 6px;">Dispute ID</th><th>Cardholder</th><th>Amount</th><th>Risk Score</th><th>Action Route</th>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 6px; font-weight:700;">#DISP-8921</td><td>Sarah Jenkins</td><td>$120.00</td><td><span class="pill" style="background:#d1fae5; color:#065f46; font-size:10px;">Low (12)</span></td>
+                <td><button class="btn btn-secondary btn-sm" onclick="navigateToRoute('/tier1-refund')">Process $120 Refund ➔</button></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 6px; font-weight:700;">#DISP-9104</td><td>Global Imports LLC</td><td>$8,450.00</td><td><span class="pill" style="background:#fee2e2; color:#991b1b; font-size:10px;">Velocity Spike (94)</span></td>
+                <td><button class="btn btn-secondary btn-sm" style="color:#ef4444; border-color:#fca5a5;" onclick="navigateToRoute('/aml-hold')">SAR Hold ➔</button></td>
+              </tr>
+            </table>
+          `;
+        } else if (route === '/tier1-refund') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Tier 1 Instant Provisional Reversal</div>
+                <p style="font-size: 12px; color: #64748b;">Instant credit disbursement for low-risk dispute claims.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: settlement@apexpay.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert success">
+              <strong>✅ Rule 201 Threshold:</strong> Transactions under $150 with clean risk history qualify for instant provisional credit.
+            </div>
+            <div class="site-card">
+              <h4 style="font-size: 13px; font-weight:700; margin-bottom: 6px;">Target Dispute: #DISP-8921</h4>
+              <div style="font-size: 12px; line-height: 1.6; margin-bottom: 10px;">
+                <div><strong>Merchant:</strong> Digital Goods Online (MID: #4409)</div>
+                <div><strong>Amount:</strong> $120.00 USD (Under $150 limit)</div>
+                <div><strong>Reason:</strong> Unauthorized Digital Transaction</div>
+                <div><strong>Automated Decision:</strong> Eligible for instant automated reversal</div>
+              </div>
+              <button class="btn btn-magic" onclick="submitSiteForm('Instant Provisional Credit of $120.00 Disbursed to Cardholder!')">
+                <span>⚡</span> Disburse $120.00 Instant Refund
+              </button>
+            </div>
+          `;
+        } else if (route === '/aml-hold') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title" style="color: #ef4444;">🚨 Anti-Money Laundering (AML) 72-Hour Hold</div>
+                <p style="font-size: 12px; color: #64748b;">Mandatory compliance freeze for high-velocity cross-border transactions.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag" style="background:#fee2e2; color:#991b1b;">owner: aml-compliance@apexpay.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert warn">
+              <strong>⚖️ Rule 204 Non-Tipping Invariant:</strong> Agents are legally PROHIBITED from revealing AML SAR freeze status to the cardholder. Inform them it is in standard review.
+            </div>
+            <div class="site-card">
+              <h4 style="font-size: 13px; font-weight:700; color:#991b1b; margin-bottom: 4px;">Target Transaction: #DISP-9104 ($8,450.00)</h4>
+              <p style="font-size: 11.5px; color:#475569; margin-bottom: 8px;">Trigger: Cross-border velocity spike exceeding $5,000 threshold (Rule 202).</p>
+              <div style="background:#fffbeb; border:1px solid #fef3c7; border-radius:6px; padding:10px; margin-bottom: 10px; font-size:12px;">
+                <strong>Compliance Hold Countdown:</strong> <span style="font-family:var(--font-mono); color:#92400e; font-weight:700;">71 hours, 54 minutes remaining</span> (Mandatory 72h window)
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="submitSiteForm('SAR compliance dossier logged. Hold maintained.')">Log Compliance Dossier</button>
+            </div>
+          `;
+        } else if (route === '/merchant-evidence') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Merchant Evidence & Fulfillment Portal</div>
+                <p style="font-size: 12px; color: #64748b;">Upload signed delivery proof and dispute rebuttal documentation.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: merchant-ops@apexpay.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert info">
+              <strong>📅 Rule 203 Strict SLA:</strong> Merchants have strictly <strong>5 business days</strong> to submit signed carrier proof before automatic forfeiture.
+            </div>
+            <div class="site-form-group">
+              <label>Carrier Tracking & Signed Bill of Lading</label>
+              <input type="text" class="site-input" placeholder="e.g. 1Z9999999999999999" value="FEDEX-EXPRESS-9921">
+            </div>
+            <div style="border: 2px dashed #cbd5e1; border-radius: 8px; padding: 20px; text-align: center; background:#f8fafc; margin-bottom: 12px;">
+              <span style="font-size: 24px;">📄</span>
+              <div style="font-size: 12px; font-weight:600; color:#334155; margin-top: 4px;">Drag and drop signed proof of delivery (PDF, PNG)</div>
+              <div style="font-size: 11px; color:#94a3b8;">SLA expires in 3 business days</div>
+            </div>
+            <button class="btn btn-primary" onclick="submitSiteForm('Merchant delivery evidence accepted and verified!')">
+              <span>📤</span> Upload & Verify Evidence
+            </button>
+          `;
+        } else if (route === '/arbitration') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Arbitration & Settlement Ledger</div>
+                <p style="font-size: 12px; color: #64748b;">Final dispute resolutions, fee recoveries, and ledger postings.</p>
+              </div>
+              <div class="site-page-meta"><span class="site-tag">status: approved</span></div>
+            </div>
+            <div class="site-card">
+              <p style="font-size: 12px; color: #334155;">All chargeback resolutions recorded with immutable cryptographic receipts.</p>
+            </div>
+          `;
+        }
+      }
+
+      // ==========================================
+      // PRESET 3: CLOUD CANARY RELEASE & DB LOCK RUNBOOK
+      // ==========================================
+      else if (state.selectedPreset === 'cloud_devops') {
+        if (route === '/release-console') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Cloud Canary Release Console</div>
+                <p style="font-size: 12px; color: #64748b;">Zero-downtime blue/green deployment orchestration and verification.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: sre-leads@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert info">
+              <strong>🚀 Release SOP-80:</strong> Canary deployment must route at 5% traffic for not less than 15 minutes before 50% ramp.
+            </div>
+            <div class="site-card" style="margin-bottom: 12px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                <h4 style="font-size: 13px; font-weight: 700;">Release Candidate: svc-orders:v2.4.1</h4>
+                <span class="pill" style="background:#e0f2fe; color:#0369a1;">Canary Staged</span>
+              </div>
+              <div style="font-size: 12px; color:#475569; line-height: 1.6; margin-bottom: 10px;">
+                <div><strong>Commit:</strong> <code>git@e4a89bc</code> (Feature: instant checkout queue)</div>
+                <div><strong>Target Cluster:</strong> Kubernetes us-east-2 (Production)</div>
+                <div><strong>Active Traffic Gate:</strong> Stage 1 (5% Canary)</div>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="navigateToRoute('/canary-traffic')">Inspect 5% Traffic Gate ➔</button>
+            </div>
+          `;
+        } else if (route === '/canary-traffic') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Canary Traffic Split & Observation Gate</div>
+                <p style="font-size: 12px; color: #64748b;">5% traffic split telemetry and error rate monitoring.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: platform@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert warn">
+              <strong>⏱️ Rule 301 Gate:</strong> Canary traffic must remain clamped at 5% for NOT less than 15 minutes (900 seconds).
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+              <div class="site-card">
+                <div style="font-size: 11px; color:#64748b;">Traffic Split</div>
+                <div style="font-size: 20px; font-weight:800; color:#0284c7; margin-top:2px;">95% Blue / 5% Green</div>
+                <div style="font-size: 11px; color:#059669; margin-top: 4px;">Canary pod replica: 2 / 40</div>
+              </div>
+              <div class="site-card">
+                <div style="font-size: 11px; color:#64748b;">Mandatory 15-Min Observation</div>
+                <div style="font-size: 20px; font-weight:800; color:#f59e0b; margin-top:2px;">14:48 Remaining</div>
+                <div style="font-size: 11px; color:#64748b; margin-top: 4px;">Scale-up blocked until 00:00</div>
+              </div>
+            </div>
+            <div class="site-card">
+              <h4 style="font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">Live Telemetry Thresholds:</h4>
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                <span>HTTP 5xx Error Rate:</span>
+                <strong style="color: #059669;">0.012% (Healthy, threshold 0.05%)</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px;">
+                <span>p99 Latency:</span>
+                <strong style="color: #059669;">142ms (Healthy, budget 300ms)</strong>
+              </div>
+              <button class="btn btn-secondary btn-sm" style="margin-top: 10px;" onclick="navigateToRoute('/ddl-lock-check')">Pre-Flight DB DDL Lock Check ➔</button>
+            </div>
+          `;
+        } else if (route === '/ddl-lock-check') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Database DDL Table Lock Monitor</div>
+                <p style="font-size: 12px; color: #64748b;">Exclusive lock timeout inspection and migration guardrails.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: dba@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert warn">
+              <strong>🛑 Rule 302 Strict Invariant:</strong> Any DDL migration holding exclusive table lock exceeding <strong>200ms</strong> must be aborted IMMEDIATELY.
+            </div>
+            <div class="site-card" style="margin-bottom: 12px;">
+              <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Active Migration Query</h4>
+              <pre style="background:#f1f5f9; padding:8px; border-radius:6px; font-family:var(--font-mono); font-size:11px; color:#0369a1; margin-bottom:8px;">ALTER TABLE customer_orders ADD COLUMN fulfillment_channel VARCHAR(32);</pre>
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                <span>Target Table:</span>
+                <strong>customer_orders (54M rows)</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                <span>Acquired Lock Type:</span>
+                <strong>AccessExclusiveLock</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px;">
+                <span>Current Lock Hold Time:</span>
+                <strong style="color: #059669;">118ms (Within 200ms safe margin)</strong>
+              </div>
+              <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:6px; padding:8px; font-size:11.5px; color:#065f46; margin-bottom:10px;">
+                ✅ <strong>Lock Safety Daemon Active:</strong> Auto-abort PID will execute if duration hits 200ms.
+              </div>
+              <button class="btn btn-primary" onclick="submitSiteForm('Pre-flight DDL dry-run completed in 118ms! Ready for migration.')">
+                <span>⚡</span> Run Pre-Flight Lock Dry-Run
+              </button>
+            </div>
+          `;
+        } else if (route === '/rollback-trigger') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title" style="color: #ef4444;">Automated Rollback & Circuit Breaker</div>
+                <p style="font-size: 12px; color: #64748b;">Instant traffic reversion gates for canary regressions.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag" style="background:#fee2e2; color:#991b1b;">owner: sre-oncall@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert warn">
+              <strong>🚨 Rule 303 Invariant:</strong> HTTP 5xx error rate exceeding <strong>0.05%</strong> triggers instant automated rollback to Blue.
+            </div>
+            <div class="site-card">
+              <div style="font-size: 12px; line-height: 1.6; margin-bottom: 10px;">
+                <div><strong>Current 5xx Rate:</strong> 0.012% (Safe)</div>
+                <div><strong>Rollback Trigger Threshold:</strong> 0.05% (5 errors per 10,000 requests)</div>
+                <div><strong>Circuit Breaker Action:</strong> Immediate DNS switch back to Blue pods (0s delay)</div>
+              </div>
+              <button class="btn btn-primary" style="background:#ef4444; border-color:#dc2626;" onclick="submitSiteForm('Emergency Rollback Activated! 100% Traffic Flipped to Blue.')">
+                <span>🚨</span> Trigger Emergency Rollback to Blue
+              </button>
+            </div>
+          `;
+        } else if (route === '/sre-postmortem') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">SRE Incident Postmortem Registry</div>
+                <p style="font-size: 12px; color: #64748b;">Mandatory post-incident analysis within 24 hours.</p>
+              </div>
+              <div class="site-page-meta"><span class="site-tag">status: approved</span></div>
+            </div>
+            <div class="site-alert info">
+              <strong>📝 Rule 304 SLA:</strong> Postmortem documentation is mandatory within <strong>24 hours</strong> of any P0/P1 emergency rollback.
+            </div>
+            <div class="site-card">
+              <p style="font-size: 12px; color: #334155;">No P0 rollbacks active in the last 72 hours. All deployments clean.</p>
+            </div>
+          `;
+        }
+      }
     }
 
     window.setBrowserViewport = function(mode) {
