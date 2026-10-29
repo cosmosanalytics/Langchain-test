@@ -489,14 +489,15 @@
 
     /* INTRANET DESIGNED SITE */
     .site-nav {
-      background: #0f172a;
-      color: #f8fafc;
+      background: #ffffff;
+      color: #0f172a;
+      border-bottom: 1px solid #e2e8f0;
       padding: 10px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .site-brand { font-weight: 800; font-size: 13.5px; display: flex; align-items: center; gap: 6px; }
+    .site-brand { font-weight: 800; font-size: 13.5px; display: flex; align-items: center; gap: 6px; color: #0284c7; }
     .site-links { display: flex; gap: 8px; }
     .site-nav-link {
       font-size: 11.5px;
@@ -506,7 +507,7 @@
       border-radius: 4px;
       cursor: pointer;
     }
-    .site-nav-link.active, .site-nav-link:hover { color: #ffffff; background: #1e293b; }
+    .site-nav-link.active, .site-nav-link:hover { color: #0284c7; background: #e0f2fe; font-weight: 700; }
 
     .site-content { padding: 20px; flex: 1; }
     .site-page-header {
@@ -552,15 +553,17 @@
     @media (max-width: 1024px) { .step2-grid { grid-template-columns: 1fr; } }
 
     .markdown-page-box {
-      background: #0f172a;
-      color: #f8fafc;
+      background: #f8fafc;
+      color: #1e293b;
+      border: 1px solid #cbd5e1;
       font-family: var(--font-mono);
-      font-size: 11px;
-      padding: 12px;
+      font-size: 11.5px;
+      padding: 14px;
       border-radius: 8px;
       height: 240px;
       overflow-y: auto;
-      line-height: 1.5;
+      line-height: 1.55;
+      white-space: pre-wrap;
     }
 
     .dag-canvas-container {
@@ -658,7 +661,7 @@
 
     /* TOAST */
     .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 100; display: flex; flex-direction: column; gap: 8px; }
-    .toast { background: #0f172a; color: white; padding: 10px 16px; border-radius: 8px; font-size: 12.5px; font-weight: 600; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px; animation: slideIn 0.2s ease-out; }
+    .toast { background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; box-shadow: var(--shadow-lg); padding: 10px 16px; border-radius: 8px; font-size: 12.5px; font-weight: 600; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px; animation: slideIn 0.2s ease-out; }
     @keyframes slideIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   </style>
 </head>
@@ -961,7 +964,7 @@
               <span style="font-size: 12px; font-weight: 700; color: #334155;">🕷️ Deterministic Spider Crawler:</span>
               <span class="pill" style="font-size: 10px; background:#ecfdf5; color:#065f46;">Same Crawler for Both Inputs</span>
             </div>
-            <pre style="background: #0f172a; color: #38bdf8; padding: 10px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px; max-height: 120px; overflow-y: auto;" id="step2CrawlLog"></pre>
+            <pre style="background: #f8fafc; color: #0369a1; border: 1px solid #cbd5e1; padding: 10px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px; max-height: 120px; overflow-y: auto;" id="step2CrawlLog"></pre>
           </div>
         </div>
 
