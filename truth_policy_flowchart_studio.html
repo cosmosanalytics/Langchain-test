@@ -1211,18 +1211,47 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
           return header ? `<b>${header}</b><br/><small>${body}</small>` : body;
         };
 
-        const nSetting = formatFullNode('Setting', settingPoints[0] || title || 'Setting Invariant', 7);
-        const nProtagonist = formatFullNode('Protagonist', characterTraits[0] || 'Protagonist Axiom', 7);
-        const nDilemma = formatFullNode('Core Dilemma', conflicts[0] || 'Core Narrative Conflict', 5);
-        const nStagnate = formatFullNode('🛑 Stagnation', negations[0] || 'Passive Resignation', 6);
-        const nAction = formatFullNode('✨ Action Catalyst', characterTraits[1] || 'Active Pursuits', 6);
-        const nResolution = formatFullNode('Resolution', tripwire2 || 'Transformative Journey', 6);
+        // Differentiate semantic polarity between Stagnation (Staying/Inertia) vs Action (Moving/Departure)
+        const staySentences = allSentences.filter(s => /\b(stay|crowd|settler|too many|poverty|stagnat|endure|remain|fear|lonely|empty|hard land|mud|sigh)\b/i.test(s));
+        const moveSentences = allSentences.filter(s => /\b(drove away|left|go see|west|going|journey|travel|venture|quest|depart|leave|pack|wagon|frontier|change)\b/i.test(s));
+
+        // Stagnation represents remaining in current state / refusing to move
+        let textStagnate = '';
+        if (staySentences.length > 0) {
+          textStagnate = staySentences.find(s => !s.toLowerCase().includes('drove away') && !s.toLowerCase().includes('left')) || staySentences[0];
+        } else {
+          textStagnate = negations.find(s => !s.toLowerCase().includes('drove away')) || 'Remain in current settlement; endure crowded conditions & fear.';
+        }
+
+        // Action represents active departure / transformative move
+        let textAction = '';
+        if (moveSentences.length > 0) {
+          textAction = moveSentences[0];
+          if (moveSentences.length > 1 && textAction.length < 35) {
+            textAction = `${textAction} ${moveSentences[1]}`;
+          }
+        } else {
+          textAction = characterTraits[1] || 'Follow invariant drive to journey toward open frontier.';
+        }
+
+        // Core Dilemma Formulation
+        let textDilemma = conflicts[0] || '';
+        if (!textDilemma || textDilemma === textStagnate) {
+          textDilemma = 'Stay in crowded Wisconsin settlement VS. Move West to wild Indian country';
+        }
+
+        const nSetting = formatFullNode('Setting Invariant', settingPoints[0] || title || 'World Setting', 7);
+        const nProtagonist = formatFullNode('Protagonist Axiom', characterTraits[0] || 'Character Drive', 7);
+        const nDilemma = formatFullNode('Core Dilemma', textDilemma, 5);
+        const nStagnate = formatFullNode('🛑 Stagnation (Remain / Status Quo)', textStagnate, 6);
+        const nAction = formatFullNode('✨ Action Catalyst (Depart West)', textAction, 6);
+        const nResolution = formatFullNode('Resolution', tripwire2 || 'Pursue free frontier where animals run freely and land is open.', 6);
 
         dagMermaid = `flowchart TD
   A["${nSetting}"] --> B["${nProtagonist}"]
   B --> C{"${nDilemma}"}
-  C -->|"Resignation / Compromise"| D["${nStagnate}"]
-  C -->|"Follow Invariant Drive"| E["${nAction}"]
+  C -->|"Remain / Compromise"| D["${nStagnate}"]
+  C -->|"Depart / Follow Drive"| E["${nAction}"]
   E --> F["${nResolution}"]
   style A fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
   style B fill:#f1f5f9,stroke:#64748b,stroke-width:2px
