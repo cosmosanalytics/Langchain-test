@@ -660,7 +660,7 @@
           <!-- INPUT 1: USER DOCUMENT ENTRY -->
           <div style="margin-bottom: 14px;">
             <label class="input-label">📄 Input 1: Custom Document / Policy / SOP:</label>
-            <input type="text" id="customDocTitleInput" class="custom-input-box" placeholder="Document Title" value="SOP-FIN-VAULT-2026: Multi-Sig Treasury & Settlement Standard" />
+            <input type="text" id="customDocTitleInput" class="custom-input-box" placeholder="Document Title (e.g. The Great Gatsby, SOP-402, etc.)" value="" />
             <textarea id="customDocTextInput" class="custom-input-box" placeholder="Paste your raw policy document, SOP manual, markdown rules, or PDF text here...
 Include numbers (e.g., $500,000.00, 15 minutes) and strict constraints (STRICTLY PROHIBITED, MUST NEVER)...">§ 1.0 Multi-Factor Authentication (MFA) Mandate: All engineers, contractor personnel, and automated system accounts accessing production VPCs, Kubernetes clusters, and database enclaves must authenticate using physical, hardware-backed FIDO2 WebAuthn cryptographic keys (e.g. YubiKey 5 Series). Legacy SMS OTP and voice-call telephone verifications are STRICTLY PROHIBITED.
 § 2.0 Elevated Database Write Leases & Authorization Ceilings: Direct write access to customer relational databases (PostgreSQL/Aurora) requires an active JIRA Change Reference ticket and mandatory sign-off from an L2 Engineering Director or VP. Elevated access leases are strictly ephemeral: TTL SHALL NOT EXCEED 4 HOURS (240 minutes).
@@ -671,7 +671,7 @@ Include numbers (e.g., $500,000.00, 15 minutes) and strict constraints (STRICTLY
           <div style="margin-bottom: 14px;">
             <label class="input-label">🌐 Input 2: Web Address / Internal Portal URL:</label>
             <div style="display: flex; gap: 6px;">
-              <input type="text" id="customWebAddressInput" class="custom-input-box" style="margin-bottom: 0;" value="https://internal.corp.local/overview" />
+              <input type="text" id="customWebAddressInput" class="custom-input-box" style="margin-bottom: 0;" placeholder="Paste any excerpt link or portal URL (e.g. https://...)" value="" />
               <button class="btn btn-secondary btn-sm" id="connectWebBtn" onclick="applyCustomWebUrl()">Connect</button>
             </div>
           </div>
@@ -886,40 +886,17 @@ Ready to execute Step 1: IngestInputs...
       activeStep: 1,
       inputViewMode: 'side_by_side',
       highlightDocInvariants: true,
-      currentWebUrl: 'https://internal.corp.local/overview',
-      currentTemplateKey: 'it_security',
+      currentWebUrl: '',
+      currentTemplateKey: null,
       customDoc: {
-        title: 'SEC-POL-402_Rev4: Enterprise IT SSO & Privilege Escalation Policy',
-        text: `§ 1.0 Multi-Factor Authentication (MFA) Mandate: All engineers, contractor personnel, and automated system accounts accessing production VPCs, Kubernetes clusters, and database enclaves must authenticate using physical, hardware-backed FIDO2 WebAuthn cryptographic keys (e.g. YubiKey 5 Series). Legacy SMS OTP and voice-call telephone verifications are STRICTLY PROHIBITED.
-§ 2.0 Elevated Database Write Leases & Authorization Ceilings: Direct write access to customer relational databases (PostgreSQL/Aurora) requires an active JIRA Change Reference ticket and mandatory sign-off from an L2 Engineering Director or VP. Elevated access leases are strictly ephemeral: TTL SHALL NOT EXCEED 4 HOURS (240 minutes).
-§ 3.0 Emergency Break-Glass Exception Protocol: In the extraordinary circumstance of an active Sev-1 / P0 outage where designated approvers are unreachable, an on-call SRE may trigger the automated Emergency Break-Glass procedure. Break-Glass tokens are hard-capped at 2 HOURS (7,200 SECONDS). A non-dismissible audit event is dispatched instantly to SIRT.`
+        title: '',
+        text: ''
       },
       cascadeTiers: [],
-      mermaidDag: `flowchart TD
-  A["👤 Employee Login"] --> B{"🔑 Hardware MFA Check"}
-  B -->|"FIDO2 Token OK"| C["📄 Portal Dashboard (/overview)"]
-  B -->|"Token Missing"| D["⚠️ Register Hardware Token (/mfa-setup)"]
-  C --> E{"Request Type"}
-  E -->|"Standard Access"| F["✅ Auto-Approved (/status)"]
-  E -->|"Production DB Root"| G["✍️ Director Approval Gate (/privilege-escalation)"]
-  G -->|"Approved"| H["🟢 4-Hour Temporary Lease"]
-  G -->|"Denied"| I["❌ Access Denied"]
-  E -->|"Break-Glass"| J["🚨 Emergency Break-Glass Form (/break-glass)"]
-  J --> K["🔒 2-Hour Auto-Revoke + SOC2 Alert"]
-  style B fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
-  style G fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-  style K fill:#fee2e2,stroke:#ef4444,stroke-width:2px`,
-      lgCurrentNodeIndex: 0,
-      lgState: {},
-      traces: [],
-      selectedTraceId: null,
-      radarChart: null,
-      comparativeChart: null
+      mermaidDag: ''
     };
 
-    const LG_NODES = ['intake', 'check', 'eval', 'dispatch', 'audit'];
-
-        const TEMPLATES = {
+    const TEMPLATES = {
       it_security: {
         key: 'it_security',
         title: 'SEC-POL-402_Rev4: Enterprise IT SSO & Privilege Escalation Policy',
@@ -1131,7 +1108,29 @@ Ready to execute Step 1: IngestInputs...
     // (Extracts ONLY what exists in source - ZERO hallucinated numbers)
     // ==========================================
     
-    // =========================================================================
+    
+    window.loadStarterTemplate = function(key) {
+      const t = TEMPLATES[key];
+      if (!t) return;
+      state.currentTemplateKey = key;
+      const titleEl = document.getElementById('customDocTitleInput');
+      const textEl = document.getElementById('customDocTextInput');
+      const urlEl = document.getElementById('customWebAddressInput');
+      if (titleEl) titleEl.value = t.title;
+      if (textEl) textEl.value = t.text;
+      if (urlEl) urlEl.value = t.url;
+      state.currentWebUrl = t.url;
+      state.customDoc.title = t.title;
+      state.customDoc.text = t.text;
+      state.mermaidDag = t.dagMermaid;
+      state.cascadeTiers = t.cascadeTiers;
+      renderStep1Inputs();
+      renderCascadeTree();
+      if (state.activeStep === 2) renderMermaidDag();
+      showToast(Loaded );
+    };
+
+// =========================================================================
     // UNIVERSAL LIVE WEB FETCHER & CONTENT-AWARE GROUND TRUTH COMPILER
     // =========================================================================
 
@@ -1609,154 +1608,144 @@ Ready to execute Step 1: IngestInputs...
       const container = document.getElementById('step1InputsContainer');
       if (!container) return;
 
-      const docHtml = `
+      const hasDoc = state.customDoc.title || state.customDoc.text;
+      const docHtml = hasDoc ? `
         <div class="doc-page">
           <div class="doc-header-banner">
             <div class="doc-logo-title">
               <span style="font-size: 26px;">📄</span>
               <div>
-                <div class="doc-company">${escapeHtml(state.customDoc.title)}</div>
-                <div class="doc-subtitle">User-Submitted Standard &bull; Operating Governance Protocol</div>
+                <div class="doc-company">${escapeHtml(state.customDoc.title || 'Untitled Document')}</div>
+                <div class="doc-subtitle">Active Ground Truth Ingestion</div>
               </div>
             </div>
             <div class="doc-stamp approved">AUDIT READY</div>
           </div>
-          <div class="doc-meta-grid">
-            <div><strong>Document Source:</strong> User Document Input</div>
-            <div><strong>Status:</strong> Active Ingestion</div>
-            <div><strong>Target Scope:</strong> LangGraph Agent Compliance</div>
-            <div><strong>Execution Endpoint:</strong> ${escapeHtml(state.currentWebUrl)}</div>
-          </div>
           <div class="doc-body">
-            <div class="doc-section-heading">§ Policy Invariants &amp; Rules</div>
-            <div style="font-size: 12px; line-height: 1.6; color: #334155; white-space: pre-wrap;">${highlightInvariantsInText(escapeHtml(state.customDoc.text))}</div>
+            <div class="doc-section">
+              <div class="doc-section-heading">§ Ingested Content &amp; Invariants</div>
+              <div style="font-size: 12px; line-height: 1.6; color: #334155; white-space: pre-wrap;">${highlightInvariantsInText(escapeHtml(state.customDoc.text))}</div>
+            </div>
           </div>
+        </div>
+      ` : `
+        <div style="height: 100%; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 30px; text-align: center; color: #64748b;">
+          <div style="font-size: 40px; margin-bottom: 12px;">📄</div>
+          <div style="font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 6px;">Input 1 is Empty</div>
+          <div style="font-size: 12px; max-width: 320px; line-height: 1.5;">Paste any text excerpt, SOP, or policy document into Input 1 on the left, or connect a web URL in Input 2.</div>
         </div>
       `;
 
-      const webHtml = `
+      const hasUrl = Boolean(state.currentWebUrl);
+      const webHtml = hasUrl ? `
         <div class="browser-frame" style="height: 100%;">
           <div class="browser-toolbar">
-            <div class="window-controls"><div class="window-dot close"></div><div class="window-dot min"></div><div class="window-dot max"></div></div>
-            <div class="browser-address-bar">
-              <span>🔒</span>
-              <input type="text" class="browser-address-input" value="${escapeHtml(state.currentWebUrl)}" onchange="updateWebAddressFromBar(this.value)" />
+            <div class="browser-dots">
+              <span class="dot dot-red"></span>
+              <span class="dot dot-yellow"></span>
+              <span class="dot dot-green"></span>
             </div>
+            <div class="browser-url-bar">${escapeHtml(state.currentWebUrl)}</div>
           </div>
-          <div class="embedded-viewport">
-            <nav class="site-nav">
-              <div class="site-brand"><span>🌐</span> <span>Internal Control Console</span></div>
-              <div class="site-links">
-                <span class="site-nav-link active">Live Telemetry</span>
-                <span class="site-nav-link">Control Gates</span>
-                <span class="site-nav-link">Audit Log</span>
-              </div>
-            </nav>
-            <div class="site-content">
-              <div class="site-page-header">
-                <div>
-                  <div class="site-page-title">Connected Target Endpoint</div>
-                  <p style="font-size: 11.5px; color: #64748b;">Target: <code>${escapeHtml(state.currentWebUrl)}</code></p>
-                </div>
-                <span class="site-tag" style="background:#ecfdf5; color:#065f46;">ONLINE 200 OK</span>
-              </div>
-              <div class="site-alert info">
-                <strong>📡 LangGraph Observation Channel:</strong> StateGraph will dispatch API calls to this endpoint and observe telemetry responses.
-              </div>
-              <div class="site-card">
-                <h4 style="font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">Live System Interface Monitor</h4>
-                <div style="font-size: 11.5px; line-height: 1.6; margin-bottom: 8px;">
-                  <div><strong>Host:</strong> ${escapeHtml(state.currentWebUrl.split('/')[2] || 'internal.corp.local')}</div>
-                  <div><strong>Path:</strong> /${escapeHtml(state.currentWebUrl.split('/').slice(3).join('/') || 'console')}</div>
-                  <div><strong>Compliance Filter:</strong> Enforcing LangGraph Invariant Nodes</div>
-                </div>
-                <button class="btn btn-primary btn-sm" onclick="showToast('Dispatched test probe to ' + state.currentWebUrl)">
-                  <span>⚡</span> Dispatch Probe Ping
-                </button>
-              </div>
+          <div class="browser-viewport" style="padding: 16px;">
+            <div style="font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 6px;">Connected Target Endpoint</div>
+            <div style="font-size: 11px; color: #0284c7; word-break: break-all; margin-bottom: 14px;">Target: ${escapeHtml(state.currentWebUrl)}</div>
+            <div class="panel-card" style="background: #f0fdf4; border-color: #bbf7d0; padding: 12px;">
+              <div style="font-size: 12px; font-weight: 700; color: #166534; margin-bottom: 4px;">✅ Observation Channel Ready</div>
+              <div style="font-size: 11px; color: #15803d; line-height: 1.5;">Live telemetry channel open. System will verify all agent actions and invariants against this target interface.</div>
             </div>
           </div>
         </div>
+      ` : `
+        <div style="height: 100%; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 30px; text-align: center; color: #64748b;">
+          <div style="font-size: 40px; margin-bottom: 12px;">🌐</div>
+          <div style="font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 6px;">Input 2 is Empty</div>
+          <div style="font-size: 12px; max-width: 320px; line-height: 1.5;">Enter any web address or excerpt link in Input 2 and click Connect to crawl live content automatically.</div>
+        </div>
       `;
 
+      let contentHtml = '';
       if (state.inputViewMode === 'documents') {
-        container.innerHTML = `
-          <div class="doc-viewer-frame">
-            <div class="doc-viewer-toolbar">
-              <div class="doc-file-info"><span>📄</span> <span>${escapeHtml(state.customDoc.title)}</span></div>
-              <div style="font-size: 11px; color: #64748b;">User Document Intake</div>
-            </div>
-            <div class="doc-viewport">${docHtml}</div>
-          </div>
-        `;
+        contentHtml = docHtml;
       } else if (state.inputViewMode === 'web_pages') {
-        container.innerHTML = `<div style="height: 620px;">${webHtml}</div>`;
+        contentHtml = webHtml;
       } else {
-        container.innerHTML = `
-          <div class="dual-inputs-grid">
-            <div class="dual-inputs-col" style="border-right: 1px solid #cbd5e1;">
-              <div class="doc-viewer-toolbar" style="padding: 6px 10px;">
-                <div class="doc-file-info" style="font-size: 11px;">
-                  <span>📄</span>
-                  <span style="max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(state.customDoc.title)}</span>
-                </div>
-                <span class="site-tag" style="font-size: 9px; padding: 2px 6px; background:#fef3c7; color:#92400e;">Input 1: Document</span>
+        contentHtml = `
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; height: 100%;">
+            <div style="overflow-y: auto;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding: 0 4px;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Input 1: Document</span>
+                <span class="pill blue" style="font-size: 9px;">Text Ingest</span>
               </div>
-              <div class="doc-viewport" style="flex: 1; padding: 12px;">${docHtml}</div>
+              ${docHtml}
             </div>
-
-            <div class="dual-inputs-col">
-              <div class="doc-viewer-toolbar" style="padding: 6px 10px; background: #f8fafc;">
-                <div class="doc-file-info" style="font-size: 11px;">
-                  <span>🌐</span>
-                  <span style="max-width: 170px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(state.currentWebUrl)}</span>
-                </div>
-                <span class="site-tag" style="font-size: 9px; padding: 2px 6px; background:#dbeafe; color:#1e40af;">Input 2: Web Address</span>
+            <div style="overflow-y: auto;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; padding: 0 4px;">
+                <span style="font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase;">Input 2: Web Address</span>
+                <span class="pill purple" style="font-size: 9px;">Endpoint</span>
               </div>
-              <div style="flex: 1; overflow: hidden;">${webHtml}</div>
+              ${webHtml}
             </div>
           </div>
         `;
       }
 
-      const highlights = document.querySelectorAll('.doc-highlight');
-      highlights.forEach(el => el.classList.toggle('off', !state.highlightDocInvariants));
+      container.innerHTML = contentHtml;
     };
 
-    window.updateWebAddressFromBar = function(newUrl) {
-      state.currentWebUrl = newUrl;
-      document.getElementById('customWebAddressInput').value = newUrl;
-      renderStep1Inputs();
-      showToast(`Updated target URL: ${newUrl}`);
-    };
-
-    function highlightInvariantsInText(text) {
-      return text.replace(/(STRICTLY PROHIBITED|MUST NOT|MUST NEVER|PROHIBITED|NEVER|\b\d+(\.\d+)?\s*(kPa|%|uS\/cm|ms|s|bar|days|hours|mol%|\$)?\b)/gi, '<span class="doc-highlight">$1</span>');
-    }
-
-    // ==========================================
-    // STEP 2: CASCADING POLICY TREE & FLOWCHART
-    // ==========================================
-    window.renderCascadeTree = function() {
+    renderCascadeTree = function() {
       const container = document.getElementById('cascadeTreeContainer');
       if (!container) return;
 
-      container.innerHTML = state.cascadeTiers.map((t, idx) => `
-        <div class="cascade-tier-block">
-          <div class="cascade-tier-header tier-${idx}">
-            <span>${t.tier}</span>
-            <span class="site-tag" style="font-size: 9.5px;">${t.desc}</span>
+      if (!state.cascadeTiers || state.cascadeTiers.length === 0) {
+        container.innerHTML = `
+          <div style="height: 100%; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 30px; text-align: center; color: #64748b;">
+            <div style="font-size: 40px; margin-bottom: 12px;">📑</div>
+            <div style="font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 6px;">No Invariants Extracted Yet</div>
+            <div style="font-size: 12px; max-width: 320px; line-height: 1.5;">Provide a document or web address on Step 1, or click one of the quick starter templates below to compile the policy tree.</div>
           </div>
-          <div class="cascade-tier-body">
-            ${t.rules.map(r => `<div class="cascade-rule-item">${escapeHtml(r)}</div>`).join('')}
+        `;
+        return;
+      }
+
+      let htmlTiers = '';
+      state.cascadeTiers.forEach((tier, index) => {
+        let borderClass = 'tier-0';
+        if (index === 1) borderClass = 'tier-1';
+        if (index === 2) borderClass = 'tier-2';
+        if (index === 3) borderClass = 'tier-3';
+        if (index === 4) borderClass = 'tier-4';
+
+        htmlTiers += `
+          <div class="tier-card ${borderClass}">
+            <div class="tier-header">
+              <span class="tier-title">${escapeHtml(tier.tier)}</span>
+              <span class="tier-badge ${tier.badge}">${escapeHtml(tier.desc)}</span>
+            </div>
+            <div class="tier-rules">
+              ${tier.rules.map(rule => `<div class="tier-rule-item">${escapeHtml(rule)}</div>`).join('')}
+            </div>
           </div>
-        </div>
-      `).join('');
+        `;
+      });
+
+      container.innerHTML = htmlTiers;
     };
 
-        window.renderMermaidDag = function() {
+    renderMermaidDag = function() {
       const el = document.getElementById('mermaidGraphEl');
       if (!el) return;
+
+      if (!state.mermaidDag) {
+        el.innerHTML = `
+          <div style="height: 100%; min-height: 480px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 30px; text-align: center; color: #64748b;">
+            <div style="font-size: 40px; margin-bottom: 12px;">🔑</div>
+            <div style="font-size: 14px; font-weight: 700; color: #334155; margin-bottom: 6px;">No Flowchart DAG Compiled Yet</div>
+            <div style="font-size: 12px; max-width: 320px; line-height: 1.5;">Enter an excerpt link or custom text on Step 1, or click one of the quick starter templates to compile the topological decision graph.</div>
+          </div>
+        `;
+        return;
+      }
 
       el.removeAttribute('data-processed');
       el.innerHTML = state.mermaidDag;
@@ -2065,7 +2054,9 @@ Ready to execute Step 1: IngestInputs...
         padding: 15
       }
     });
-      synthesizeFromCustomInputs();
+      renderStep1Inputs();
+      renderCascadeTree();
+      renderMermaidDag();
     });
   </script>
 </body>
