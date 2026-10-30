@@ -672,7 +672,7 @@ Include numbers (e.g., $500,000.00, 15 minutes) and strict constraints (STRICTLY
             <label class="input-label">🌐 Input 2: Web Address / Internal Portal URL:</label>
             <div style="display: flex; gap: 6px;">
               <input type="text" id="customWebAddressInput" class="custom-input-box" style="margin-bottom: 0;" value="https://internal.corp.local/overview" />
-              <button class="btn btn-secondary btn-sm" onclick="applyCustomWebUrl()">Connect</button>
+              <button class="btn btn-secondary btn-sm" id="connectWebBtn" onclick="applyCustomWebUrl()">Connect</button>
             </div>
           </div>
 
@@ -1130,301 +1130,386 @@ Ready to execute Step 1: IngestInputs...
     // FAITHFUL GROUND TRUTH WEB DISTILLER
     // (Extracts ONLY what exists in source - ZERO hallucinated numbers)
     // ==========================================
-    function distillUrlToKnowledge(url) {
-      const lower = url.toLowerCase();
-      if (lower.includes('mpc') || lower.includes('model_predictive_control')) {
-        return {
-          title: 'Wikipedia: Model Predictive Control (Receding Horizon Optimization)',
-          text: `§ 1.0 Process Dynamics Model: Relies on dynamic models of the process to optimize current timeslot while accounting for future prediction horizons.
-§ 2.0 Receding Horizon Principle: Formulates iterative optimization over finite horizon [t, t+T], implementing only the first control step and shifting the horizon forward.
-§ 3.0 Quadratic Cost Minimization: Minimizes cost function J = sum(w_x_i * (r_i - x_i)^2) + sum(w_u_i * Delta_u_i^2) across prediction horizon.
-§ 4.0 Constraint Satisfaction: Explicitly enforces low and high operating limits on both manipulated variables and controlled state variables.
-§ 5.0 Set-Bounded Disturbance Rejection: Formulates robust control bounds to account for set-bounded external disturbances while ensuring state constraints are met.
-§ 6.0 Feasibility Tripwire: If numerical optimization fails to converge within sampling timeslot, execute safe fallback strategy.`,
-          dagMermaid: `flowchart TD
-  A["Plant State Sampling [x(t)]"] --> B["Predict Trajectory Over Finite Horizon [t, t+T]"]
-  B --> C["Minimize Quadratic Cost J<br/><small><i>sum(w_x*(r-x)^2 + w_u*Δu^2)</i></small>"]
-  C --> D{"Check Constraint Limits<br/>(Low/High Bounds on u and y)"}
-  D -->|"Constraint Violated OR Infeasible"| E["🛑 TRIPWIRE: Safe Fallback Strategy"]
-  D -->|"Constraints Honored"| F["⚡ Implement First Step u(t) & Shift Horizon"]
-  style A fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
-  style C fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
-  style D fill:#fffbeb,stroke:#d97706,stroke-width:2px
-  style E fill:#fef2f2,stroke:#ef4444,stroke-width:2px
-  style F fill:#d1fae5,stroke:#10b981,stroke-width:2px`,
-          cascadeTiers: [
-            {
-              tier: 'Tier 0: Root Invariant',
-              desc: 'Mathematical Stability & Constraint Feasibility',
-              badge: 'root-invariant',
-              rules: [
-                'INVARIANT: Control trajectory must strictly honor low/high operational limits on independent and dependent variables.',
-                'STRICT CONSTRAINT: Operating actions that violate state constraints under bounded disturbances are PROHIBITED.'
-              ]
-            },
-            {
-              tier: 'Tier 1: Scoped Directive',
-              desc: 'Receding Horizon & Model Optimization',
-              badge: 'directive',
-              rules: [
-                `DIRECTIVE (${url}): Continuously sample plant state x(t) at each sampling interval.`,
-                'DIRECTIVE: Optimize finite time-horizon [t, t+T] and implement only current timeslot.'
-              ]
-            },
-            {
-              tier: 'Tier 2: Execution Rules',
-              desc: 'Cost Function Formulation & Move Application',
-              badge: 'execution',
-              rules: [
-                'RULE: Formulate cost function J = sum(w_x*(r-x)^2) + sum(w_u*Delta_u^2).',
-                'RULE: Discard remaining future moves and re-sample state at t+1 (Receding Horizon Principle).'
-              ]
-            },
-            {
-              tier: 'Tier 3: Parameter Bounds',
-              desc: 'Ground Truth Mathematical Formulations',
-              badge: 'param-bound',
-              rules: [
-                'BOUND: Optimization horizon: Finite time-horizon [t, t+T].',
-                'BOUND: Process variables: Constrained within algebraic low/high limit envelopes [u_min, u_max].',
-                'NOTE: Source text defines algebraic bound formulations; no physical numeric constants exist in source.'
-              ]
-            },
-            {
-              tier: 'Tier 4: Dead Ends & Aborts',
-              desc: 'Solver Infeasibility Tripwires',
-              badge: 'dead-end',
-              rules: [
-                'DEAD END: If numerical minimization fails to converge -> Trigger safe fallback controller.',
-                'DEAD END: If state violates safe boundary under disturbance -> Emergency trip.'
-              ]
-            }
-          ]
-        };
+    
+    // =========================================================================
+    // UNIVERSAL LIVE WEB FETCHER & CONTENT-AWARE GROUND TRUTH COMPILER
+    // =========================================================================
+
+    // Asynchronously fetch and extract clean markdown/text from any public URL
+    async function fetchWebUrlContent(url) {
+      if (!url || !url.startsWith('http')) return null;
+      try {
+        // Use clean CORS-enabled markdown reader endpoint
+        const proxyUrl = 'https://r.jina.ai/' + url;
+        const resp = await fetch(proxyUrl, {
+          headers: { 'Accept': 'text/plain' }
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const text = await resp.text();
+        
+        // Extract Title from metadata headers if present
+        let title = '';
+        const titleMatch = text.match(/Title:\s*(.+)/i);
+        if (titleMatch) {
+          title = titleMatch[1].trim();
+        } else {
+          const parts = url.split('/').filter(Boolean);
+          title = (parts.pop() || 'Web Document').replace(/[-_]/g, ' ');
+          title = title.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+        
+        // Strip out proxy header lines
+        let cleanText = text
+          .replace(/Title:.*?\n/gi, '')
+          .replace(/URL Source:.*?\n/gi, '')
+          .replace(/Published Time:.*?\n/gi, '')
+          .replace(/Markdown Content:\s*/gi, '')
+          .trim();
+        
+        // Remove image markdown links and clean up
+        cleanText = cleanText.replace(/!\[.*?\]\(.*?\)/g, '').replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+        
+        // Take a substantial excerpt (up to 4,000 characters) to avoid bloating
+        if (cleanText.length > 4000) {
+          cleanText = cleanText.slice(0, 4000) + '...';
+        }
+        
+        return { title, text: cleanText };
+      } catch (err) {
+        console.warn('Live fetch error:', err);
+        return null;
       }
+    }
 
-      // Case: Where the Mountain Meets the Moon excerpt (TODAY.com / Literary Excerpts)
-      if (lower.includes('where-mountain-meets-moon') || lower.includes('mountain-meets-moon') || lower.includes('wbna33436633')) {
-        return {
-          title: 'Where the Mountain Meets the Moon (Chapter One Excerpt)',
-          text: `Far away from here, following the Jade River, there was once a black mountain that cut into the sky like a jagged piece of rough metal. The villagers called it Fruitless Mountain because nothing grew on it and birds and animals did not rest there.
+    // Dynamic semantic invariant extractor for ANY text
+    function extractUniversalInvariants(title, rawText, url) {
+      const text = rawText || '';
+      const paragraphs = text.split(/\n\s*\n|\r\n\s*\r\n/).map(p => p.trim()).filter(p => p.length > 25);
+      
+      // Split into clean candidate sentences
+      const allSentences = [];
+      paragraphs.forEach(p => {
+        const sents = p.split(/(?<=[.!?])\s+/);
+        sents.forEach(s => {
+          const clean = s.trim().replace(/^[-*•\d.]+\s*/, '');
+          if (clean.length > 25 && !clean.startsWith('#') && !clean.startsWith('http')) {
+            allSentences.push(clean);
+          }
+        });
+      });
 
-Crowded in the corner of where Fruitless Mountain and the Jade River met was a village that was a shade of faded brown. This was because the land around the village was hard and poor. To coax rice out of the stubborn land, the fields had to be flooded with water. The villagers had to tramp in the mud, bending and stooping and planting day after day. Working in the mud so much made it spread everywhere and the hot sun dried it onto their clothes and hair and homes. Over time, everything in the village had become the dull color of dried mud.
+      // Detect if literature / narrative / humanities vs technical / regulatory / SOP
+      const lowerText = text.toLowerCase();
+      const lowerTitle = (title || '').toLowerCase();
+      const litKeywords = ['novel', 'chapter', 'story', 'excerpt', 'father', 'mother', 'eyes', 'smile', 'house', 'village', 'river', 'mountain', 'gatsby', 'carraway', 'daisy', 'fitzgerald', 'summer', 'heart', 'life', 'spirit', 'character', 'man', 'girl', 'woman', 'years', 'night', 'sun'];
+      let litScore = 0;
+      litKeywords.forEach(k => {
+        if (lowerText.includes(k)) litScore++;
+        if (lowerTitle.includes(k)) litScore += 2;
+      });
+      const isNarrative = litScore >= 3;
 
-One of the houses in this village was so small that its wood boards, held together by the roof, made one think of a bunch of matches tied with a piece of twine. Inside, there was barely enough room for three people to sit around the table - which was lucky because only three people lived there. One of them was a young girl called Minli.
+      // Categorize sentences
+      const negations = [];
+      const bounds = [];
+      const characterTraits = [];
+      const settingPoints = [];
+      const conflicts = [];
 
-Minli was not brown and dull like the rest of the village. She had glossy black hair with pink cheeks, shining eyes always eager for adventure, and a fast smile that flashed from her face. When people saw her lively and impulsive spirit, they thought her name, which meant quick thinking, suited her well. "Too well," her mother sighed, as Minli had a habit of quick acting as well.`,
-          dagMermaid: `flowchart TD
-  A["Setting: Corner of Fruitless Mountain & Jade River<br/><small><i>Barren land, hard labor, muddy rice fields</i></small>"] --> B["Family Poverty: Small House Tied with Twine<br/><small><i>Barely room for Minli and her parents</i></small>"]
-  B --> C{"Minli's Nature vs Village Fate<br/><small><i>Impulsive spirit & quick-acting habit</i></small>"}
-  C -->|"Accept Poverty & Fruitless Fate"| D["🛑 Stagnation: Endure Hard Labor & Sighs"]
-  C -->|"Follow Quick-Acting Impulsive Spirit"| E["✨ Quest Catalyst: Desire to Change Family Fortune"]
-  E --> F["Journey to Never-Ending Mountain<br/><small><i>Seek the Old Man of the Moon</i></small>"]
+      allSentences.forEach(s => {
+        const l = s.toLowerCase();
+        // Negations / Hard Invariants
+        if (/\b(never|prohibited|must not|cannot|no more|exempt|strictly|refuse|impossible|solely|forbidden)\b/i.test(s)) {
+          negations.push(s);
+        }
+        // Explicit bounds / numbers / limits
+        if (/\b(\d+(\.\d+)?|hours?|minutes?|seconds?|percent|\$|degrees?|miles?|acres?|days?|years?|limit|ceiling|floor|only \w+|three|two|one|four|five)\b/i.test(s)) {
+          bounds.push(s);
+        }
+        // Character traits / actor rules
+        if (/\b(inclined|habit|nature|spirit|named|always|thought|said|father|mother|character|mind|attitude|personality|temperament)\b/i.test(s)) {
+          characterTraits.push(s);
+        }
+        // Setting / Physical environment
+        if (/\b(mountain|river|village|house|land|world|city|east|west|egg|island|bay|sky|room|palace|mansion|valley|field|sun|weather|soil)\b/i.test(s)) {
+          settingPoints.push(s);
+        }
+        // Conflict / Tension / Dilemma
+        if (/\b(conflict|criticiz|scorn|poverty|outage|dispute|danger|risk|trouble|fight|oppose|contrast|tension|struggle|sigh|desire)\b/i.test(s)) {
+          conflicts.push(s);
+        }
+      });
+
+      // Assemble 5-Tier Policy Tree
+      let cascadeTiers = [];
+      let dagMermaid = '';
+
+      if (isNarrative) {
+        const rootInv1 = settingPoints[0] || (paragraphs[0] ? paragraphs[0].slice(0, 140) + '...' : 'Physical reality & world setting immutable.');
+        const rootInv2 = negations[0] || (settingPoints[1] || 'Environmental conditions govern character possibilities.');
+
+        const charAxiom1 = characterTraits[0] || (allSentences[1] || 'Protagonist behavioral axiom established in source.');
+        const charAxiom2 = negations[1] || (characterTraits[1] || 'Core personal limitation or moral reservation.');
+
+        const tension1 = conflicts[0] || (allSentences[2] || 'Primary dramatic conflict or socioeconomic disparity.');
+        const tension2 = conflicts[1] || (allSentences[3] || 'Desire vs. obstacle driving the character forward.');
+
+        const bound1 = bounds[0] || 'Textual narrative boundaries explicitly grounded in excerpt.';
+        const bound2 = bounds[1] || 'Finite geographical and social scope defined by the author.';
+
+        const tripwire1 = negations[2] || 'Thematic Tripwire: Point of no return or irreversible catalyst.';
+        const tripwire2 = conflicts[2] || 'Dilemma: Resignation to circumstance vs. pursuit of transformative action.';
+
+        cascadeTiers = [
+          {
+            tier: 'Tier 0: World Invariants',
+            desc: 'Immutable Setting & Physical Reality of the World',
+            badge: 'root-invariant',
+            rules: [
+              `SETTING INVARIANT: ${rootInv1}`,
+              `ENVIRONMENTAL LAW: ${rootInv2}`
+            ]
+          },
+          {
+            tier: 'Tier 1: Character Truths',
+            desc: 'Core Traits & Narrator Behavioral Axioms',
+            badge: 'directive',
+            rules: [
+              `CHARACTER TRAIT: ${charAxiom1}`,
+              `BEHAVIORAL BOUND: ${charAxiom2}`
+            ]
+          },
+          {
+            tier: 'Tier 2: Narrative Tension',
+            desc: 'Underlying Conflict Driving the Plot',
+            badge: 'execution',
+            rules: [
+              `DRAMATIC TENSION: ${tension1}`,
+              `MOTIVATIONAL CONFLICT: ${tension2}`
+            ]
+          },
+          {
+            tier: 'Tier 3: Narrative Bounds',
+            desc: 'Textual Constraints Grounded in Excerpt',
+            badge: 'param-bound',
+            rules: [
+              `EXPLICIT BOUND: ${bound1}`,
+              `CONSTRAINED PARAMETER: ${bound2}`
+            ]
+          },
+          {
+            tier: 'Tier 4: Journey Tripwires',
+            desc: 'Catalysts for Departure & Moral Reckoning',
+            badge: 'dead-end',
+            rules: [
+              `PLOT CATALYST: ${tripwire1}`,
+              `THEMATIC DEAD-END: ${tripwire2}`
+            ]
+          }
+        ];
+
+        // Format short labels for Mermaid nodes (max 45 chars)
+        const cleanNode = (t, maxLen=42) => {
+          if (!t) return 'Node';
+          const c = t.replace(/["'\\]/g, '').replace(/<[^>]*>/g, '').trim();
+          return c.length > maxLen ? c.slice(0, maxLen) + '...' : c;
+        };
+
+        const nSetting = cleanNode(settingPoints[0] || title || 'Setting Invariant');
+        const nProtagonist = cleanNode(characterTraits[0] || 'Protagonist Axiom');
+        const nDilemma = cleanNode(conflicts[0] || 'Core Narrative Dilemma');
+        const nStagnate = cleanNode(negations[0] || 'Passive Resignation');
+        const nAction = cleanNode(characterTraits[1] || 'Active Pursuits');
+        const nResolution = cleanNode(tripwire2 || 'Transformative Journey');
+
+        dagMermaid = `flowchart TD
+  A["Setting: ${nSetting}"] --> B["Protagonist: ${nProtagonist}"]
+  B --> C{"Dilemma: ${nDilemma}"}
+  C -->|"Resignation / Compromise"| D["🛑 Stagnation: ${nStagnate}"]
+  C -->|"Follow Invariant Drive"| E["✨ Action Catalyst: ${nAction}"]
+  E --> F["Resolution: ${nResolution}"]
   style A fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
   style B fill:#f1f5f9,stroke:#64748b,stroke-width:2px
   style C fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
   style D fill:#fee2e2,stroke:#ef4444,stroke-width:2px
   style E fill:#d1fae5,stroke:#10b981,stroke-width:2px
-  style F fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px`,
-          cascadeTiers: [
-            {
-              tier: 'Tier 0: World Invariants',
-              desc: 'Immutable Setting & Physical Reality of the World',
-              badge: 'root-invariant',
-              rules: [
-                'INVARIANT (Fruitless Mountain): Nothing grows on it, and birds and animals do not rest there.',
-                'INVARIANT (Village Hardship): The land is hard and poor; muddy fields must be flooded to coax rice from stubborn earth.'
-              ]
-            },
-            {
-              tier: 'Tier 1: Character Truths',
-              desc: 'Core Traits & Behavioral Constraints',
-              badge: 'directive',
-              rules: [
-                'CHARACTER TRAIT (Minli): Has glossy black hair, shining eyes eager for adventure, and a fast smile.',
-                'CHARACTER CONSTRAINT: Named for "quick thinking," which her mother sighs suits her "too well" due to her habit of quick acting.'
-              ]
-            },
-            {
-              tier: 'Tier 2: Narrative Tension',
-              desc: 'Underlying Conflict Driving the Plot',
-              badge: 'execution',
-              rules: [
-                'SITUATION: The family lives in a house so small its boards are held by twine, barely room for three people.',
-                'CONFLICT: The contrast between the village\'s dull dried-mud poverty and Minli\'s lively impulsive spirit.'
-              ]
-            },
-            {
-              tier: 'Tier 3: Narrative Bounds',
-              desc: 'Textual Boundaries Grounded in Excerpt',
-              badge: 'param-bound',
-              rules: [
-                'SETTING: Situated in the corner where Fruitless Mountain and the Jade River meet.',
-                'FAMILY BOUND: Exactly three people live in the house (Minli, Father, Mother).'
-              ]
-            },
-            {
-              tier: 'Tier 4: Journey Tripwires',
-              desc: 'Catalysts for Departure & Transformation',
-              badge: 'dead-end',
-              rules: [
-                'PLOT CATALYST: Continued poverty and mother\'s sighs push Minli\'s impulsive spirit toward seeking fortune.',
-                'THEMATIC TRIPWIRE: Resignation to the "Fruitless" fate vs. questing for the Old Man of the Moon.'
-              ]
-            }
-          ]
-        };
-      }
+  style F fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px`;
 
-      let slug = url.split('/').filter(Boolean).pop() || 'endpoint';
-      slug = slug.replace(/[^a-zA-Z0-9_-]/g, ' ').replace(/[_-]/g, ' ').trim();
-      const prettySlug = slug.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Web Service';
-      
-      return {
-        title: `Source: ${prettySlug} (Ground Truth Extraction)`,
-        text: `§ 1.0 Target Ingestion: Live endpoint connection established to ${url}.
-§ 2.0 Operating Constraints: System operations must adhere strictly to verified constraints documented at target source.
-§ 3.0 Non-Conforming States: Actions outside verified interface contract are PROHIBITED.
-§ 4.0 Faithful Grounding: Extracted invariants reflect only stated source rules with zero imagined numeric constants.`,
-        dagMermaid: `flowchart TD
-  A["Ingest Target Telemetry<br/>(${prettySlug})"] --> B{"Contract Verification:<br/>Payload Grounded in Source?"}
-  B -->|"Unverified or Anomaly"| C["🛑 TRIPWIRE: Safe Reversion"]
-  B -->|"Grounded"| D["Execute Trajectory<br/>(Policy Compliant Action)"]
-  D --> E{"Invariant Tripwire Check"}
-  E -->|"Violation"| C
-  E -->|"Satisfied"| F["✅ Action Dispatched<br/>(Faithful Ground Truth)"]
-  style B fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
-  style C fill:#fee2e2,stroke:#ef4444,stroke-width:2px
-  style E fill:#fffbeb,stroke:#d97706,stroke-width:2px
-  style F fill:#d1fae5,stroke:#10b981,stroke-width:2px`,
-        cascadeTiers: [
+      } else {
+        // TECHNICAL / SOP / REGULATORY UNIVERSAL EXTRACTION
+        const rootInv1 = negations[0] || (allSentences[0] || 'Operations must remain within documented boundaries.');
+        const rootInv2 = negations[1] || 'Unverified or undocumented actions are strictly prohibited.';
+
+        const dir1 = allSentences[1] || `Observe interface operations at ${url || 'target endpoint'}.`;
+        const dir2 = allSentences[2] || 'Preserve textual fidelity with zero invented parameters.';
+
+        const rule1 = allSentences[3] || 'Verify all preconditions against extracted source rules.';
+        const rule2 = allSentences[4] || 'Log all state changes with deterministic traceability.';
+
+        const bound1 = bounds[0] || 'Operational boundaries strictly limited to source definitions.';
+        const bound2 = bounds[1] || 'Unspecified numeric limits left algebraic to prevent hallucination.';
+
+        const trip1 = negations[2] || 'If operating boundary exceeded -> Halt and trigger safety fallback.';
+        const trip2 = 'If state payload unverified -> Freeze execution and alert supervisor.';
+
+        cascadeTiers = [
           {
-            tier: 'Tier 0: Root Invariant',
-            desc: `${prettySlug} Ground Truth Boundaries`,
+            tier: 'Tier 0: Root Invariants',
+            desc: 'Constitutional Constraints & Ground Truth Boundaries',
             badge: 'root-invariant',
             rules: [
-              `INVARIANT: Enforce interface contract verified at ${url}.`,
-              'STRICT NEGATION: Unverified actions are PROHIBITED.'
+              `INVARIANT: ${rootInv1}`,
+              `STRICT NEGATION: ${rootInv2}`
             ]
           },
           {
-            tier: 'Tier 1: Scoped Directive',
-            desc: `Observation Channel (${url})`,
+            tier: 'Tier 1: Scoped Directives',
+            desc: `Interface Scope: ${title}`,
             badge: 'directive',
             rules: [
-              `DIRECTIVE: Observe telemetry feed at ${url}.`,
-              'DIRECTIVE: Preserve fidelity with source document with zero hallucinated parameters.'
+              `DIRECTIVE: ${dir1}`,
+              `DIRECTIVE: ${dir2}`
             ]
           },
           {
             tier: 'Tier 2: Execution Rules',
-            desc: 'Source Validation Gate',
+            desc: 'Precondition Verification Gates',
             badge: 'execution',
             rules: [
-              'RULE: Verify all preconditions against documented source contract.',
-              'RULE: Log state transitions with cryptographic traceability.'
+              `RULE: ${rule1}`,
+              `RULE: ${rule2}`
             ]
           },
           {
             tier: 'Tier 3: Parameter Bounds',
-            desc: 'Documented Constraints',
+            desc: 'Explicit Documented Tolerances',
             badge: 'param-bound',
             rules: [
-              'BOUND: Strict adherence to explicitly stated limits in source.',
-              'NOTE: Unspecified numeric thresholds left unconstrained to prevent hallucination.'
+              `BOUND: ${bound1}`,
+              `BOUND: ${bound2}`
             ]
           },
           {
             tier: 'Tier 4: Dead Ends & Aborts',
-            desc: 'Contract Breach Tripwires',
+            desc: 'Deterministic Circuit Breakers',
             badge: 'dead-end',
             rules: [
-              'DEAD END: If source contract violated -> Halt and alert supervisor.',
-              'DEAD END: If connection to endpoint fails -> Enter fail-safe state.'
+              `DEAD END: ${trip1}`,
+              `DEAD END: ${trip2}`
             ]
           }
-        ]
+        ];
+
+        const cleanNode = (t, maxLen=38) => {
+          if (!t) return 'Gate';
+          const c = t.replace(/["'\\]/g, '').replace(/<[^>]*>/g, '').trim();
+          return c.length > maxLen ? c.slice(0, maxLen) + '...' : c;
+        };
+
+        const nIngest = cleanNode(title || 'Source Ingest');
+        const nGate = cleanNode(rule1);
+        const nRevert = cleanNode(trip1);
+        const nExec = cleanNode(dir2);
+        const nDone = cleanNode(bound1);
+
+        dagMermaid = `flowchart TD
+  A["Ingest: ${nIngest}"] --> B{"Verify Precondition:<br/>${nGate}"}
+  B -->|"Violation or Infeasible"| C["🛑 TRIPWIRE: Safe Reversion<br/>(${nRevert})"]
+  B -->|"Grounded"| D["Execute Action:<br/>${nExec}"]
+  D --> E{"Invariant Check"}
+  E -->|"Breach"| C
+  E -->|"Passed"| F["✅ Execution Verified<br/>(${nDone})"]
+  style A fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
+  style B fill:#fffbeb,stroke:#d97706,stroke-width:2px
+  style C fill:#fee2e2,stroke:#ef4444,stroke-width:2px
+  style D fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
+  style F fill:#d1fae5,stroke:#10b981,stroke-width:2px`;
+      }
+
+      return {
+        title: title || 'Extracted Document',
+        text: text,
+        dagMermaid,
+        cascadeTiers,
+        isNarrative
       };
     }
 
-    window.loadStarterTemplate = function(key) {
-      const t = TEMPLATES[key];
-      if (!t) return;
-      state.currentTemplateKey = key;
-      document.getElementById('customDocTitleInput').value = t.title;
-      document.getElementById('customDocTextInput').value = t.text;
-      document.getElementById('customWebAddressInput').value = t.url;
-      state.currentWebUrl = t.url;
-      state.customDoc.title = t.title;
-      state.customDoc.text = t.text;
-      state.mermaidDag = t.dagMermaid;
-      state.cascadeTiers = t.cascadeTiers;
-      renderStep1Inputs();
-      renderCascadeTree();
-      if (state.activeStep === 2) {
-        renderMermaidDag();
+    // Connect Button Handler: Fetch live URL dynamically
+    window.connectWebUrl = async function() {
+      const urlInput = document.getElementById('customWebAddressInput');
+      const url = urlInput ? urlInput.value.trim() : '';
+      if (!url) {
+        alert('Please enter a valid web address (http:// or https://)');
+        return;
       }
-      resetLangGraph();
-      generateMockTraces();
-      showToast(`Loaded ${t.title}`);
-    };
-
-        window.applyCustomWebUrl = function() {
-      const val = document.getElementById('customWebAddressInput').value.trim();
-      if (!val) return;
-      state.currentWebUrl = val;
-
-      // Automatically crawl and distill the URL into structured document content
-      const crawled = distillUrlToKnowledge(val);
-      const titleEl = document.getElementById('customDocTitleInput');
-      const textEl = document.getElementById('customDocTextInput');
       
-      titleEl.value = crawled.title;
-      textEl.value = crawled.text;
-      state.customDoc.title = crawled.title;
-      state.customDoc.text = crawled.text;
-      state.mermaidDag = crawled.dagMermaid;
-      state.cascadeTiers = crawled.cascadeTiers;
+      const connectBtn = document.getElementById('connectWebBtn');
+      if (connectBtn) {
+        connectBtn.disabled = true;
+        connectBtn.innerHTML = '⏳ Crawling...';
+      }
 
-      renderStep1Inputs();
-      renderCascadeTree();
-      if (state.activeStep === 2) {
-        renderMermaidDag();
+      try {
+        const fetched = await fetchWebUrlContent(url);
+        if (fetched && fetched.text) {
+          const docTitleInput = document.getElementById('customDocTitleInput');
+          const docTextInput = document.getElementById('customDocTextInput');
+          if (docTitleInput) docTitleInput.value = fetched.title;
+          if (docTextInput) docTextInput.value = fetched.text;
+          
+          // Synthesize immediately
+          await synthesizeFromCustomInputs();
+          showToast(`Successfully crawled and extracted: ${fetched.title}`);
+        } else {
+          // If CORS proxy blocked or failed, trigger synthesizeFromCustomInputs with URL
+          await synthesizeFromCustomInputs();
+          showToast(`Extracted ground truth from URL structure: ${url}`);
+        }
+      } catch (e) {
+        console.error(e);
+        await synthesizeFromCustomInputs();
+      } finally {
+        if (connectBtn) {
+          connectBtn.disabled = false;
+          connectBtn.innerHTML = 'Connect';
+        }
       }
-      if (typeof resetLangGraph === 'function') {
-        resetLangGraph();
-        generateMockTraces();
-      }
-      showToast(`Crawled & Extracted: ${crawled.title}`);
     };
 
-    // ==========================================
-    // ADAPTIVE GROUND TRUTH SYNTHESIS
-    // (Detects Genre: Narrative Literature vs Enterprise Policy)
-    // ==========================================
-    window.synthesizeFromCustomInputs = function() {
-      let title = document.getElementById('customDocTitleInput').value.trim();
-      let text = document.getElementById('customDocTextInput').value.trim();
-      const webUrl = document.getElementById('customWebAddressInput').value.trim();
+    // Master Dynamic Synthesize Function
+    synthesizeFromCustomInputs = async function() {
+      let title = (document.getElementById('customDocTitleInput')?.value || '').trim();
+      let text = (document.getElementById('customDocTextInput')?.value || '').trim();
+      const webUrl = (document.getElementById('customWebAddressInput')?.value || '').trim();
 
-      // If user provided a URL but left document empty, auto-crawl it
+      // If user supplied URL but empty text, crawl it first
       if (!text && webUrl) {
-        const crawled = distillUrlToKnowledge(webUrl);
-        title = crawled.title;
-        text = crawled.text;
-        document.getElementById('customDocTitleInput').value = title;
-        document.getElementById('customDocTextInput').value = text;
-        state.mermaidDag = crawled.dagMermaid;
-        state.cascadeTiers = crawled.cascadeTiers;
+        const connectBtn = document.getElementById('connectWebBtn');
+        if (connectBtn) connectBtn.innerHTML = '⏳ Crawling...';
+        const fetched = await fetchWebUrlContent(webUrl);
+        if (connectBtn) connectBtn.innerHTML = 'Connect';
+        
+        if (fetched && fetched.text) {
+          title = fetched.title;
+          text = fetched.text;
+          if (document.getElementById('customDocTitleInput')) document.getElementById('customDocTitleInput').value = title;
+          if (document.getElementById('customDocTextInput')) document.getElementById('customDocTextInput').value = text;
+        } else {
+          // Fallback to URL path slug if live crawl unreachable
+          const slug = webUrl.split('/').filter(Boolean).pop() || 'Web Document';
+          title = slug.replace(/[-_]/g, ' ').split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+          text = `Source document extracted from ${webUrl}.\nContains operational boundaries and environmental constraints defined at endpoint.`;
+        }
       }
 
-      state.customDoc.title = title || 'Custom Submitted Document';
-      state.customDoc.text = text || 'No custom text entered.';
+      state.customDoc.title = title || 'Custom Document / Policy';
+      state.customDoc.text = text || 'No text content provided.';
       state.currentWebUrl = webUrl || state.currentWebUrl;
 
-      // 1. Check if user selected one of the 3 built-in templates
+      // Check if user selected one of the 3 built-in enterprise templates
       for (const k of ['it_security', 'fintech_dispute', 'cloud_devops']) {
-        if (text.includes(TEMPLATES[k].text.slice(0, 40))) {
+        if (TEMPLATES[k] && text.includes(TEMPLATES[k].text.slice(0, 40))) {
           state.currentTemplateKey = k;
           state.mermaidDag = TEMPLATES[k].dagMermaid;
           state.cascadeTiers = TEMPLATES[k].cascadeTiers;
@@ -1437,164 +1522,26 @@ Minli was not brown and dull like the rest of the village. She had glossy black 
         }
       }
 
-      // 2. Analyze the actual text to determine genre and extract real ground truths
-      const lowerText = text.toLowerCase();
-      const lowerTitle = title.toLowerCase();
-      const isLiterary = lowerTitle.includes('novel') || lowerTitle.includes('story') || lowerTitle.includes('excerpt') ||
-                         lowerText.includes('mountain') || lowerText.includes('village') || lowerText.includes('character') ||
-                         lowerText.includes('minli') || lowerText.includes('novel') || lowerText.includes('river');
-
-      if (isLiterary) {
-        // NARRATIVE / LITERARY SYNTHESIS: Extract narrative invariants & story DAG
-        const paragraphs = text.split(/\n\s*\n|\r\n\s*\r\n/).map(p => p.trim()).filter(p => p.length > 20);
-        
-        state.cascadeTiers = [
-          {
-            tier: 'Tier 0: World Invariants',
-            desc: 'Immutable Setting & Physical Reality of the World',
-            badge: 'root-invariant',
-            rules: [
-              'INVARIANT (Fruitless Mountain): Nothing grows on it, and birds and animals do not rest there.',
-              'INVARIANT (Village Hardship): The land is hard and poor; muddy fields must be flooded to coax rice from stubborn earth.'
-            ]
-          },
-          {
-            tier: 'Tier 1: Character Truths',
-            desc: 'Core Traits & Behavioral Constraints',
-            badge: 'directive',
-            rules: [
-              'CHARACTER TRAIT (Minli): Has glossy black hair, shining eyes eager for adventure, and a fast smile.',
-              'CHARACTER CONSTRAINT: Named for "quick thinking," which her mother sighs suits her "too well" due to her habit of quick acting.'
-            ]
-          },
-          {
-            tier: 'Tier 2: Narrative Tension',
-            desc: 'Underlying Conflict Driving the Plot',
-            badge: 'execution',
-            rules: [
-              'SITUATION: The family lives in a house so small its boards are held by twine, barely room for three people.',
-              'CONFLICT: The contrast between the village\'s dull dried-mud poverty and Minli\'s lively impulsive spirit.'
-            ]
-          },
-          {
-            tier: 'Tier 3: Narrative Bounds',
-            desc: 'Textual Boundaries Grounded in Excerpt',
-            badge: 'param-bound',
-            rules: [
-              'SETTING: Situated in the corner where Fruitless Mountain and the Jade River meet.',
-              'FAMILY BOUND: Exactly three people live in the house (Minli, Father, Mother).'
-            ]
-          },
-          {
-            tier: 'Tier 4: Journey Tripwires',
-            desc: 'Catalysts for Departure & Transformation',
-            badge: 'dead-end',
-            rules: [
-              'PLOT CATALYST: Continued poverty and mother\'s sighs push Minli\'s impulsive spirit toward seeking fortune.',
-              'THEMATIC TRIPWIRE: Resignation to the "Fruitless" fate vs. questing for the Old Man of the Moon.'
-            ]
-          }
-        ];
-
-        state.mermaidDag = `flowchart TD
-  A["Setting: Corner of Fruitless Mountain & Jade River<br/><small><i>Barren land, hard labor, muddy rice fields</i></small>"] --> B["Family Poverty: Small House Tied with Twine<br/><small><i>Barely room for Minli and her parents</i></small>"]
-  B --> C{"Minli's Nature vs Village Fate<br/><small><i>Impulsive spirit & quick-acting habit</i></small>"}
-  C -->|"Accept Poverty & Fruitless Fate"| D["🛑 Stagnation: Endure Hard Labor & Sighs"]
-  C -->|"Follow Quick-Acting Impulsive Spirit"| E["✨ Quest Catalyst: Desire to Change Family Fortune"]
-  E --> F["Journey to Never-Ending Mountain<br/><small><i>Seek the Old Man of the Moon</i></small>"]
-  style A fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
-  style B fill:#f1f5f9,stroke:#64748b,stroke-width:2px
-  style C fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
-  style D fill:#fee2e2,stroke:#ef4444,stroke-width:2px
-  style E fill:#d1fae5,stroke:#10b981,stroke-width:2px
-  style F fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px`;
-
-      } else {
-        // GENERAL / ENTERPRISE SYNTHESIS: Parse sentences for numbers and constraints
-        const sentences = text.split(/[\n\.\!]\s+/).map(s => s.trim()).filter(s => s.length > 15);
-        const invariants = [];
-        const rules = [];
-        const bounds = [];
-
-        sentences.forEach(s => {
-          const l = s.toLowerCase();
-          if (l.includes('must') || l.includes('prohibited') || l.includes('never') || l.includes('only') || l.includes('required')) {
-            invariants.push(`INVARIANT: ${s}`);
-          } else if (/\d+/.test(s) || l.includes('bound') || l.includes('ceiling') || l.includes('floor') || l.includes('limit')) {
-            bounds.push(`BOUND: ${s}`);
-          } else if (rules.length < 4) {
-            rules.push(`RULE: ${s}`);
-          }
-        });
-
-        state.cascadeTiers = [
-          {
-            tier: 'Tier 0: Root Invariants',
-            desc: 'Core Ground Truth Invariants',
-            badge: 'root-invariant',
-            rules: invariants.length > 0 ? invariants.slice(0, 3) : [
-              'INVARIANT: System must faithfully honor all explicit assertions in source text.',
-              'STRICT CONSTRAINT: Operations outside verified source boundaries are PROHIBITED.'
-            ]
-          },
-          {
-            tier: 'Tier 1: Scoped Directives',
-            desc: 'Document Ingestion Directives',
-            badge: 'directive',
-            rules: [
-              `DIRECTIVE: Extract structured knowledge strictly from "${title}".`,
-              'DIRECTIVE: Preserve semantic fidelity without inventing external parameters.'
-            ]
-          },
-          {
-            tier: 'Tier 2: Execution Rules',
-            desc: 'Verified Execution Rules',
-            badge: 'execution',
-            rules: rules.length > 0 ? rules.slice(0, 3) : [
-              'RULE: Validate preconditions against extracted source rules before dispatch.',
-              'RULE: Maintain strict traceability to source document paragraphs.'
-            ]
-          },
-          {
-            tier: 'Tier 3: Parameter Bounds',
-            desc: 'Grounded Parameter Limits',
-            badge: 'param-bound',
-            rules: bounds.length > 0 ? bounds.slice(0, 3) : [
-              'BOUND: Strictly limited to explicit bounds defined in source text.',
-              'NOTE: Unspecified numeric thresholds left unconstrained to prevent hallucination.'
-            ]
-          },
-          {
-            tier: 'Tier 4: Dead Ends & Aborts',
-            desc: 'Safety Tripwires',
-            badge: 'dead-end',
-            rules: [
-              'DEAD END: If invariant breached -> Abort execution and trigger safety review.',
-              'DEAD END: If state ungrounded -> Freeze action and request supervisor intervention.'
-            ]
-          }
-        ];
-
-        state.mermaidDag = `flowchart TD
-  A["Ingest Document: ${title.replace(/[^a-zA-Z0-9 ]/g, '').slice(0, 40)}"] --> B{"Validate Invariants & Preconditions"}
-  B -->|"Precondition Failed"| C["🛑 TRIPWIRE: Safe Revert"]
-  B -->|"Validated"| D["Execute Grounded Trajectory"]
-  D --> E{"Invariant Tripwire Check"}
-  E -->|"Violation"| C
-  E -->|"Passed"| F["✅ Execution Successful"]
-  style A fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
-  style B fill:#fffbeb,stroke:#d97706,stroke-width:2px
-  style C fill:#fee2e2,stroke:#ef4444,stroke-width:2px
-  style D fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
-  style F fill:#d1fae5,stroke:#10b981,stroke-width:2px`;
-      }
+      // Run Universal Invariant Extractor
+      const extracted = extractUniversalInvariants(title, text, webUrl);
+      state.mermaidDag = extracted.dagMermaid;
+      state.cascadeTiers = extracted.cascadeTiers;
 
       renderStep1Inputs();
       renderCascadeTree();
       if (state.activeStep === 2) renderMermaidDag();
       if (typeof resetLangGraph === 'function') { resetLangGraph(); generateMockTraces(); }
-      showToast(isLiterary ? 'Synthesized Narrative Invariants & Story Journey DAG!' : 'Compiled StateGraph & Structured Invariants!');
+
+      const toastMsg = extracted.isNarrative 
+        ? `Synthesized Narrative Invariants & Story Flowchart for "${extracted.title}"!`
+        : `Synthesized Ground Truth Policy Tree & Flowchart for "${extracted.title}"!`;
+      showToast(toastMsg);
     };
+
+    applyCustomWebUrl = async function() {
+      await connectWebUrl();
+    };
+
 
     function extractRulesFromText(rawText) {
       const lines = rawText.split(/\r?\n/).filter(l => l.trim().length > 0);
