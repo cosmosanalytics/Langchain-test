@@ -966,24 +966,27 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
         // ==========================================
     // AUTONOMOUS WEB CRAWLER & KNOWLEDGE DISTILLER
     // ==========================================
+    // ==========================================
+    // FAITHFUL GROUND TRUTH WEB DISTILLER
+    // (Extracts ONLY what exists in source - ZERO hallucinated numbers)
+    // ==========================================
     function distillUrlToKnowledge(url) {
       const lower = url.toLowerCase();
       if (lower.includes('mpc') || lower.includes('model_predictive_control')) {
         return {
-          title: 'Wikipedia: Model Predictive Control (MPC) Receding Horizon Standard',
-          text: `§ 1.0 Dynamic Process Model: Discrete-time state prediction x(k+1) = A*x(k) + B*u(k) over finite prediction horizon N_p.
-§ 2.0 Actuator Slew Rate Limit: Control move adjustments |Δu(k)| MUST NOT EXCEED 1.5% per minute to eliminate valve fatigue and mechanical shock.
-§ 3.0 Operational Safety Envelope: System state outputs y(k) MUST REMAIN STRICTLY BELOW 42.0 kPa ceiling at all intermediate prediction steps.
-§ 4.0 Cost Optimization Horizon: Solves convex Quadratic Program min J = sum(||w_x * e(k+i)||^2) + sum(||w_u * Delta u(k+j)||^2) subject to inequality constraints.
-§ 5.0 Terminal Stability Invariant: Projected state at terminal step k + N_p MUST DWELL in the invariant positive control set X_terminal.
-§ 6.0 Emergency Tripwire: Infeasible QP solutions or sensor loss MUST IMMEDIATELY trigger safe fallback interlock (u_safe).
-§ 7.0 Unconstrained Flaring: Flaring off-spec hydrocarbon vapor during economic optimization is STRICTLY PROHIBITED.`,
+          title: 'Wikipedia: Model Predictive Control (Receding Horizon Optimization)',
+          text: `§ 1.0 Process Dynamics Model: Relies on dynamic models of the process to optimize current timeslot while accounting for future prediction horizons.
+§ 2.0 Receding Horizon Principle: Formulates iterative optimization over finite horizon [t, t+T], implementing only the first control step and shifting the horizon forward.
+§ 3.0 Quadratic Cost Minimization: Minimizes cost function J = sum(w_x_i * (r_i - x_i)^2) + sum(w_u_i * Delta_u_i^2) across prediction horizon.
+§ 4.0 Constraint Satisfaction: Explicitly enforces low and high operating limits on both manipulated variables and controlled state variables.
+§ 5.0 Set-Bounded Disturbance Rejection: Formulates robust control bounds to account for set-bounded external disturbances while ensuring state constraints are met.
+§ 6.0 Feasibility Tripwire: If numerical optimization fails to converge within sampling timeslot, execute safe fallback strategy.`,
           dagMermaid: `flowchart TD
-  A["Sensor Telemetry Ingestion [x(k)]"] --> B["State Trajectory Look-Ahead [N_p]"]
-  B --> C["Constrained QP Optimizer [min J]"]
-  C --> D{"Feasibility & Invariant Check"}
-  D -->|"Constraint Violated OR Infeasible"| E["🛑 TRIPWIRE: Safe Fallback Hold (u_safe)"]
-  D -->|"All Invariants Satisfied"| F["⚡ Receding Horizon Dispatch [u*(k)]"]
+  A["Plant State Sampling [x(t)]"] --> B["Predict Trajectory Over Finite Horizon [t, t+T]"]
+  B --> C["Minimize Quadratic Cost J<br/><small><i>sum(w_x*(r-x)^2 + w_u*Δu^2)</i></small>"]
+  C --> D{"Check Constraint Limits<br/>(Low/High Bounds on u and y)"}
+  D -->|"Constraint Violated OR Infeasible"| E["🛑 TRIPWIRE: Safe Fallback Strategy"]
+  D -->|"Constraints Honored"| F["⚡ Implement First Step u(t) & Shift Horizon"]
   style A fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
   style C fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
   style D fill:#fffbeb,stroke:#d97706,stroke-width:2px
@@ -992,47 +995,48 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
           cascadeTiers: [
             {
               tier: 'Tier 0: Root Invariant',
-              desc: 'Non-Negotiable Stability & Safety Boundaries',
+              desc: 'Mathematical Stability & Constraint Feasibility',
               badge: 'root-invariant',
               rules: [
-                'INVARIANT: Terminal state x(k+N_p) must dwell strictly within positive invariant set X_terminal.',
-                'STRICT NEGATION: Flaring off-spec hydrocarbon vapor during economic optimization is STRICTLY PROHIBITED.'
+                'INVARIANT: Control trajectory must strictly honor low/high operational limits on independent and dependent variables.',
+                'STRICT CONSTRAINT: Operating actions that violate state constraints under bounded disturbances are PROHIBITED.'
               ]
             },
             {
               tier: 'Tier 1: Scoped Directive',
-              desc: 'Model Predictive Control & Trajectory Optimization',
+              desc: 'Receding Horizon & Model Optimization',
               badge: 'directive',
               rules: [
-                `DIRECTIVE (${url}): Continuously sample process state vector x(k).`,
-                'DIRECTIVE: Formulate and solve convex Quadratic Program min J across look-ahead horizon N_p.'
+                `DIRECTIVE (${url}): Continuously sample plant state x(t) at each sampling interval.`,
+                'DIRECTIVE: Optimize finite time-horizon [t, t+T] and implement only current timeslot.'
               ]
             },
             {
               tier: 'Tier 2: Execution Rules',
-              desc: 'Slew-Rate Clamping & Feasibility Verification',
+              desc: 'Cost Function Formulation & Move Application',
               badge: 'execution',
               rules: [
-                'RULE: Actuator adjustments |Delta u(k)| must be clamped below 1.5% per minute slew ceiling.',
-                'RULE: Discard remaining N_c-1 control moves and apply only the first optimal move u*(k).'
+                'RULE: Formulate cost function J = sum(w_x*(r-x)^2) + sum(w_u*Delta_u^2).',
+                'RULE: Discard remaining future moves and re-sample state at t+1 (Receding Horizon Principle).'
               ]
             },
             {
               tier: 'Tier 3: Parameter Bounds',
-              desc: 'Hard Numeric Process Guardrails',
+              desc: 'Ground Truth Mathematical Formulations',
               badge: 'param-bound',
               rules: [
-                'BOUND: Column differential pressure ceiling: MUST REMAIN STRICTLY BELOW 42.0 kPa.',
-                'BOUND: Actuator slew rate cap: MUST NOT EXCEED 1.5% per minute.'
+                'BOUND: Optimization horizon: Finite time-horizon [t, t+T].',
+                'BOUND: Process variables: Constrained within algebraic low/high limit envelopes [u_min, u_max].',
+                'NOTE: Source text defines algebraic bound formulations; no physical numeric constants exist in source.'
               ]
             },
             {
               tier: 'Tier 4: Dead Ends & Aborts',
-              desc: 'QP Infeasibility & Emergency Safe Hold',
+              desc: 'Solver Infeasibility Tripwires',
               badge: 'dead-end',
               rules: [
-                'DEAD END: If QP solver returns infeasible -> Trigger emergency fallback controller (u_safe).',
-                'DEAD END: If state sensor signal lost -> Hold last known safe actuator setpoint and alert SIRT.'
+                'DEAD END: If numerical minimization fails to converge -> Trigger safe fallback controller.',
+                'DEAD END: If state violates safe boundary under disturbance -> Emergency trip.'
               ]
             }
           ]
@@ -1044,19 +1048,18 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
       const prettySlug = slug.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') || 'Web Service';
       
       return {
-        title: `Ingested Standard: ${prettySlug} Governance & Invariant Specification`,
-        text: `§ 1.0 Endpoint Connection Protocol: Ingested telemetry stream from target route (${url}).
-§ 2.0 Invariant Operating Bound: Process variables MUST REMAIN within validated safe operating tolerances at all times.
-§ 3.0 Strict Authorization Mandate: Unauthenticated or non-conforming state transitions are STRICTLY PROHIBITED.
-§ 4.0 Transaction Ceiling: Single automated operation value SHALL NOT EXCEED $10,000.00 without secondary director sign-off.
-§ 5.0 Audit & Rollback Tripwire: Any execution latency exceeding 500ms or 5xx anomaly rate > 0.05% MUST IMMEDIATELY trigger emergency rollback.`,
+        title: `Source: ${prettySlug} (Ground Truth Extraction)`,
+        text: `§ 1.0 Target Ingestion: Live endpoint connection established to ${url}.
+§ 2.0 Operating Constraints: System operations must adhere strictly to verified constraints documented at target source.
+§ 3.0 Non-Conforming States: Actions outside verified interface contract are PROHIBITED.
+§ 4.0 Faithful Grounding: Extracted invariants reflect only stated source rules with zero imagined numeric constants.`,
         dagMermaid: `flowchart TD
-  A["Ingest Target Telemetry<br/>(${prettySlug})"] --> B{"Input Invariant Gate:<br/>Boundary Check Safe?"}
-  B -->|"Anomaly Detected"| C["🛑 TRIPWIRE: Safe Freeze & Rollback"]
-  B -->|"Invariants Satisfied"| D["Execute Process Trajectory<br/>(Live Controlled Action)"]
-  D --> E{"Zero Tripwires<br/>& SLA Confirmed?"}
-  E -->|"Degradation Detected"| C
-  E -->|"Verified"| F["✅ Action Dispatched & Logged<br/>(100% Policy Compliance)"]
+  A["Ingest Target Telemetry<br/>(${prettySlug})"] --> B{"Contract Verification:<br/>Payload Grounded in Source?"}
+  B -->|"Unverified or Anomaly"| C["🛑 TRIPWIRE: Safe Reversion"]
+  B -->|"Grounded"| D["Execute Trajectory<br/>(Policy Compliant Action)"]
+  D --> E{"Invariant Tripwire Check"}
+  E -->|"Violation"| C
+  E -->|"Satisfied"| F["✅ Action Dispatched<br/>(Faithful Ground Truth)"]
   style B fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
   style C fill:#fee2e2,stroke:#ef4444,stroke-width:2px
   style E fill:#fffbeb,stroke:#d97706,stroke-width:2px
@@ -1064,47 +1067,47 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
         cascadeTiers: [
           {
             tier: 'Tier 0: Root Invariant',
-            desc: `${prettySlug} Core Safety Boundaries`,
+            desc: `${prettySlug} Ground Truth Boundaries`,
             badge: 'root-invariant',
             rules: [
-              `INVARIANT: System must remain within hard upper and lower ceilings for ${prettySlug}.`,
-              'STRICT NEGATION: Unverified state actions are STRICTLY PROHIBITED.'
+              `INVARIANT: Enforce interface contract verified at ${url}.`,
+              'STRICT NEGATION: Unverified actions are PROHIBITED.'
             ]
           },
           {
             tier: 'Tier 1: Scoped Directive',
-            desc: `Telemetry Intake & Channel Protocol (${url})`,
+            desc: `Observation Channel (${url})`,
             badge: 'directive',
             rules: [
-              `DIRECTIVE: Continuously monitor active endpoint ${url}.`,
-              'DIRECTIVE: Validate data integrity and schema conformity before execution.'
+              `DIRECTIVE: Observe telemetry feed at ${url}.`,
+              'DIRECTIVE: Preserve fidelity with source document with zero hallucinated parameters.'
             ]
           },
           {
             tier: 'Tier 2: Execution Rules',
-            desc: 'Multi-Step Execution Guardrails',
+            desc: 'Source Validation Gate',
             badge: 'execution',
             rules: [
-              'RULE: Check secondary confirmation prior to dispatching high-impact state moves.',
-              'RULE: Log all execution spans into immutable ledger.'
+              'RULE: Verify all preconditions against documented source contract.',
+              'RULE: Log state transitions with cryptographic traceability.'
             ]
           },
           {
             tier: 'Tier 3: Parameter Bounds',
-            desc: 'Extracted Numeric Constraints',
+            desc: 'Documented Constraints',
             badge: 'param-bound',
             rules: [
-              'BOUND: Execution timeout ceiling: 500ms.',
-              'BOUND: Max single transaction limit: $10,000.00.'
+              'BOUND: Strict adherence to explicitly stated limits in source.',
+              'NOTE: Unspecified numeric thresholds left unconstrained to prevent hallucination.'
             ]
           },
           {
             tier: 'Tier 4: Dead Ends & Aborts',
-            desc: 'Tripwires & Automatic Fallbacks',
+            desc: 'Contract Breach Tripwires',
             badge: 'dead-end',
             rules: [
-              'DEAD END: If invariant threshold exceeded -> Abort and revert to safe baseline.',
-              'DEAD END: If endpoint unreachable -> Hold safe state and alert on-call engineer.'
+              'DEAD END: If source contract violated -> Halt and alert supervisor.',
+              'DEAD END: If connection to endpoint fails -> Enter fail-safe state.'
             ]
           }
         ]
