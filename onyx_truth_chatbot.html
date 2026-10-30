@@ -1082,18 +1082,10 @@ STRICT GROUND TRUTH INVARIANTS:
           response += `> "${sent}"\n\n`;
         });
         response += `**Factual Synthesis**:\n`;
-        if (qLower.includes('father') || qLower.includes('advice')) {
-          const advMatch = sentences.find(s => s.toLowerCase().includes('whenever you feel like criticizing') || s.toLowerCase().includes('father'));
-          if (advMatch) {
-            response += `The narrator recounts his father's foundational advice: "*Whenever you feel like criticizing any one, just remember that all the people in this world haven't had the advantages that you've had.*"\n`;
-          }
-        }
-        if (qLower.includes('pa') || qLower.includes('wisconsin') || qLower.includes('west')) {
-          response += `The text details that Pa decided to leave Wisconsin because it had grown too crowded with settlers, compelling the Ingalls family to journey west toward open frontier land where wild animals lived without fear.\n`;
-        }
-        if (qLower.includes('mfa') || qLower.includes('yubikey') || qLower.includes('token') || qLower.includes('security')) {
-          response += `Security invariants strictly mandate hardware-backed FIDO2 WebAuthn cryptographic keys (e.g., YubiKey 5 Series). Legacy SMS OTP is strictly prohibited.\n`;
-        }
+        response += `Key grounded statements extracted directly from the source context:\n`;
+        topMatches.forEach((sent, idx) => {
+          response += `${idx + 1}. ${sent}\n`;
+        });
       } else {
         response += `I searched the excerpt for references to your query (${queryWords.join(', ')}), but found no explicit mention in the text.\n\n*Strict Invariant Principle: No out-of-context details are fabricated.*`;
       }
@@ -1207,42 +1199,7 @@ STRICT GROUND TRUTH INVARIANTS:
       lucide.createIcons();
     };
 
-    window.loadSample = function(key) {
-      if (key === 'gatsby') {
-        document.getElementById('webUrlInput').value = 'https://en.wikipedia.org/wiki/The_Great_Gatsby';
-        document.getElementById('docTitleInput').value = 'The Great Gatsby (Chapter 1 Excerpt)';
-        document.getElementById('docTextInput').value = `In my younger and more vulnerable years my father gave me some advice that I've been turning over in my mind ever since.
-"Whenever you feel like criticizing anyone," he told me, "just remember that all the people in this world haven't had the advantages that you've had."
-In consequence, I'm inclined to reserve all judgements, a habit that has opened up many curious natures to me and also made me the victim of not a few veteran bores.
-Reserving judgements is a matter of infinite hope. I am still a little afraid of missing something if I forget that a sense of the fundamental decencies is parcelled out unequally at birth.
-And, after boasting this way of my tolerance, I come to the admission that it has a limit. Conduct may be founded on the hard rock or the wet marshes, but after a certain point I don't care what it's founded on.
-When I came back from the East last autumn I felt that I wanted the world to be in uniform and at a sort of moral attention forever; I wanted no more riotous excursions with privileged glimpses into the human heart.
-Only Gatsby, the man who gives his name to this book, was exempt from my reaction — Gatsby, who represented everything for which I have an unaffected scorn.`;
-        showToast('Loaded The Great Gatsby excerpt');
-      } else if (key === 'ingalls') {
-        document.getElementById('webUrlInput').value = 'https://www.npr.org/little-house-excerpt';
-        document.getElementById('docTitleInput').value = 'Little House on the Prairie (Big Woods Excerpt)';
-        document.getElementById('docTextInput').value = `A long time ago, when all the grandfathers and grandmothers were either tiny babies or not born yet, a family lived in the Big Woods of Wisconsin. In a little gray house made of logs lived Pa, Ma, Mary, Laura, and baby Carrie.
-So far as the little girls could see, there was only the woods, with no houses and no roads. The nearest village was four days away through the dark forest.
-In the long winter evenings Pa talked to Ma about the Western country. "Let's go see the West," he said. "The land is flat and the grass grows thick and high. Animals run freely and there are no settlers. Only Indians live there."
-Pa said there were too many people in Wisconsin now. Wild animals did not stay in a country where there were so many people, so Pa didn't want to stay.`;
-        showToast('Loaded Little House excerpt');
-      } else if (key === 'security') {
-        document.getElementById('webUrlInput').value = 'https://internal.corp.local/sso-policy';
-        document.getElementById('docTitleInput').value = 'SEC-POL-402: Production Access & SOC2 Break-Glass';
-        document.getElementById('docTextInput').value = `§ 1.0 Multi-Factor Authentication: All engineers accessing production VPCs must authenticate using physical, hardware-backed FIDO2 WebAuthn cryptographic keys (YubiKey 5 Series). Legacy SMS OTP and voice verifications are STRICTLY PROHIBITED.
-§ 2.0 Elevated Write Leases: Direct write access to customer databases requires an active JIRA Change Reference ticket and sign-off from an L2 Engineering Director. Elevated leases are strictly ephemeral: TTL SHALL NOT EXCEED 4 HOURS (240 minutes).
-§ 3.0 Emergency Break-Glass: In active Sev-1 outages where approvers are unreachable, Break-Glass tokens are hard-capped at 2 HOURS (7,200 SECONDS). A non-dismissible audit event is dispatched instantly to SIRT.`;
-        showToast('Loaded SOC2 Security policy');
-      } else if (key === 'canary') {
-        document.getElementById('webUrlInput').value = 'https://internal.corp.local/release-console';
-        document.getElementById('docTitleInput').value = 'SRE-RUN-DB-MIG-2026: Cloud Canary Release Runbook';
-        document.getElementById('docTextInput').value = `§ 1.0 Canary Deployment: New builds must route strictly 5% of production traffic to canary pods. Observation window must not be less than 15 MINUTES (900 seconds) prior to promotion.
-§ 2.0 Database Lock Ceiling: DDL migrations (ALTER TABLE, CREATE INDEX) must acquire metadata locks in LESS THAN 200 MILLISECONDS. If lock acquisition exceeds 200ms, the script must abort immediately.
-§ 3.0 Automated Rollback: If Canary 5xx HTTP error rates exceed 0.05% or P99 latency degrades by > 20%, automated deployment orchestrators must trigger an instant rollback.`;
-        showToast('Loaded Cloud Canary Runbook');
-      }
-    };
+    
 
     window.setLeftView = function(view) {
       document.getElementById('tabDoc').classList.toggle('active', view === 'doc');
