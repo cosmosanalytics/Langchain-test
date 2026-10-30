@@ -901,7 +901,188 @@
         grid-template-columns: 1fr 1fr !important;
       }
     }
-  </style>
+  
+    /* =========================================================================
+       DUAL VIEWS OF INVARIANT (POLICY TREE & FLOWCHART DAG)
+       ========================================================================= */
+    .left-view-panel {
+      display: none;
+      flex: 1 1 0%;
+      min-height: 0;
+      flex-direction: column;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    .left-view-panel.active {
+      display: flex;
+    }
+
+    /* Policy Tree View Styles */
+    .panel-inner-header {
+      flex-shrink: 0;
+      padding: 8px 14px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .cascade-tree-scroll {
+      flex: 1 1 0%;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #ffffff;
+    }
+
+    .cascade-tier-block {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .cascade-tier-header {
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+    .cascade-tier-header.tier-0 { background: #fef2f2; color: #991b1b; border-bottom: 1px solid #fecaca; }
+    .cascade-tier-header.tier-1 { background: #fffbeb; color: #92400e; border-bottom: 1px solid #fde68a; }
+    .cascade-tier-header.tier-2 { background: #f0fdf4; color: #166534; border-bottom: 1px solid #bbf7d0; }
+    .cascade-tier-header.tier-3 { background: #eff6ff; color: #1e40af; border-bottom: 1px solid #bfdbfe; }
+    .cascade-tier-header.tier-4 { background: #faf5ff; color: #6b21a8; border-bottom: 1px solid #e9d5ff; }
+
+    .tier-desc-tag {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255,255,255,0.7);
+    }
+
+    .cascade-tier-body {
+      padding: 8px 12px;
+      font-size: 11px;
+      line-height: 1.5;
+      color: #334155;
+    }
+    .cascade-rule-item {
+      padding: 6px 10px;
+      border-radius: 5px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      word-break: break-word;
+    }
+    .cascade-rule-item:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Flowchart DAG View Styles */
+    .dag-chart-scroll {
+      flex: 1 1 0%;
+      min-height: 0;
+      overflow: auto;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+    }
+
+    .mermaid-target {
+      width: 100%;
+      min-height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mermaid-target svg {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: auto !important;
+      min-height: 480px;
+    }
+    .mermaid-target .node text,
+    .mermaid-target .label text,
+    .mermaid-target text {
+      font-size: 12px !important;
+      font-weight: 600 !important;
+    }
+
+    /* Dual Invariant View Styles (Side-by-Side) */
+    .dual-invariants-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      height: 100%;
+      min-height: 0;
+      padding: 12px;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+    .dual-col-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      height: 100%;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .dual-col-header {
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .dual-col-body {
+      flex: 1 1 0%;
+      min-height: 0;
+      overflow-y: auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tier-pill {
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--accent-cyan-glow);
+      color: var(--accent-cyan);
+    }
+
+    @media (max-width: 900px) {
+      .dual-invariants-split {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+      }
+      .dual-col-card {
+        height: auto;
+        min-height: 420px;
+      }
+    }
+
+</style>
 </head>
 <body>
 
@@ -947,12 +1128,14 @@
     <div class="pane-source">
       <div class="pane-toolbar">
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 12px; font-weight: 700; color: #0f172a;">📄 Context Grounding Source</span>
+          <span style="font-size: 12px; font-weight: 700; color: #0f172a;">📄 Invariant Grounding Source</span>
           <span style="font-size: 10px; color: var(--accent-cyan); background: var(--accent-cyan-glow); padding: 2px 6px; border-radius: 4px; font-weight: 700;">Ground Truth Anchor</span>
         </div>
         <div class="pane-tabs">
-          <button class="pane-tab active" id="tabDoc" onclick="setLeftView('doc')"><i data-lucide="file-text" style="width: 12px;"></i> Document</button>
-          <button class="pane-tab" id="tabLive" onclick="setLeftView('live')"><i data-lucide="globe" style="width: 12px;"></i> Web Reader</button>
+          <button class="pane-tab active" id="tabDoc" onclick="setLeftView('doc')" title="Raw Document & Source Text"><i data-lucide="file-text" style="width: 12px;"></i> Source</button>
+          <button class="pane-tab" id="tabPolicy" onclick="setLeftView('policy')" title="5-Tier Cascading Policy Tree"><i data-lucide="list-tree" style="width: 12px;"></i> Policy Tree</button>
+          <button class="pane-tab" id="tabDag" onclick="setLeftView('dag')" title="Topological Flowchart DAG"><i data-lucide="git-branch" style="width: 12px;"></i> Flowchart DAG</button>
+          <button class="pane-tab" id="tabDual" onclick="setLeftView('dual')" title="Side-by-Side Dual View: Policy Tree + Flowchart DAG"><i data-lucide="columns" style="width: 12px;"></i> Dual View</button>
         </div>
         <!-- MOBILE VIEW TOGGLES IN LEFT PANE -->
         <div class="mobile-view-tabs" style="margin-left: auto;">
@@ -974,15 +1157,68 @@
         </button>
       </div>
 
-      <!-- SOURCE CONTAINER -->
-      <div class="source-container">
-        <input type="text" id="docTitleInput" class="source-title-input" placeholder="Document Title (e.g. The Great Gatsby Chapter 1, SRE Runbook...)" />
+      <!-- VIEW 1: SOURCE DOCUMENT VIEW -->
+      <div class="left-view-panel source-container active" id="sourceDocView">
+        <input type="text" id="docTitleInput" class="source-title-input" placeholder="Document Title (e.g. The Great Gatsby Chapter 1, SRE Runbook...)" oninput="debouncedUpdateInvariants()" />
         <textarea id="docTextInput" class="source-textarea" placeholder="Paste raw text, book excerpt, novel chapter, SOC2 manual, or policy rules here...
 
-The chatbot will strictly tether all answers and reasoning to this context without hallucinating external constants!"></textarea>
+The chatbot will strictly tether all answers and reasoning to this context without hallucinating external constants!" oninput="debouncedUpdateInvariants()"></textarea>
+      </div>
 
-        <!-- SAMPLE STARTER PRESETS -->
-        </div></div>
+      <!-- VIEW 2: TEXTUAL INVARIANTS (CASCADING POLICY TREE) -->
+      <div class="left-view-panel" id="policyTreeView">
+        <div class="panel-inner-header">
+          <div>
+            <div style="font-size: 12.5px; font-weight: 700; color: #0f172a;">📑 5-Tier Cascading Policy Tree (Textual Invariants)</div>
+            <div style="font-size: 11px; color: #64748b;">Hierarchical specification of ground truth contracts and behavioral boundaries</div>
+          </div>
+          <button class="btn-ghost" onclick="copyPolicyTreeText()" style="padding: 3px 8px; font-size: 11px;"><i data-lucide="copy" style="width:12px;height:12px;"></i> Copy Contract</button>
+        </div>
+        <div class="cascade-tree-scroll" id="cascadeTreeContainer">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- VIEW 3: VISUAL INVARIANTS (TOPOLOGICAL FLOWCHART DAG) -->
+      <div class="left-view-panel" id="flowchartDagView">
+        <div class="panel-inner-header">
+          <div>
+            <div style="font-size: 12.5px; font-weight: 700; color: #0f172a;">🔑 Topological Flowchart DAG (Visual Invariants)</div>
+            <div style="font-size: 11px; color: #64748b;">Deterministic state machine mapping Setting &rarr; Protagonist &rarr; Dilemma &rarr; Action/Stagnation &rarr; Resolution</div>
+          </div>
+          <button class="btn-ghost" onclick="recompileFlowchartViews()" style="padding: 3px 8px; font-size: 11px;"><i data-lucide="refresh-cw" style="width:12px;height:12px;"></i> Re-render</button>
+        </div>
+        <div class="dag-chart-scroll" id="dagGraphContainer">
+          <div id="mermaidDagEl" class="mermaid-target"></div>
+        </div>
+      </div>
+
+      <!-- VIEW 4: DUAL INVARIANTS VIEW (SIDE-BY-SIDE / DUAL PERSPECTIVE) -->
+      <div class="left-view-panel" id="dualInvariantView">
+        <div class="dual-invariants-split">
+          <!-- Left Column: Textual Invariants -->
+          <div class="dual-col-card">
+            <div class="dual-col-header">
+              <span style="font-weight: 700; font-size: 12px; color: #0f172a;">📑 Textual Invariants (Policy Tree)</span>
+              <span class="tier-pill">5-Tier Contract</span>
+            </div>
+            <div class="dual-col-body" id="dualTreeContainer">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+          <!-- Right Column: Visual Invariants -->
+          <div class="dual-col-card">
+            <div class="dual-col-header">
+              <span style="font-weight: 700; font-size: 12px; color: #0f172a;">🔑 Visual Invariants (Flowchart DAG)</span>
+              <span class="tier-pill">Mermaid State Machine</span>
+            </div>
+            <div class="dual-col-body" id="dualDagContainer">
+              <div id="dualMermaidDagEl" class="mermaid-target"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- RIGHT PANE: ONYX CHATBOT -->
     <div class="pane-chat">
@@ -1086,6 +1322,11 @@ The chatbot will strictly tether all answers and reasoning to this context witho
     const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
 
         document.addEventListener("DOMContentLoaded", () => {
+        // Initialize dual invariants if pre-populated text exists
+        setTimeout(() => {
+          updateAllInvariantViews();
+        }, 150);
+
       if (window.mermaid) {
         mermaid.initialize({
           startOnLoad: false,
@@ -1238,6 +1479,7 @@ The chatbot will strictly tether all answers and reasoning to this context witho
         }
 
         showToast(`Crawled & Loaded: ${title}`);
+        updateAllInvariantViews();
         addBotMessage(`I have loaded and grounded my memory in **"${title}"** from \`${url}\`. What questions do you have about it?`);
       } catch (err) {
         console.error('Fetch error:', err);
@@ -1733,21 +1975,442 @@ STRICT ANSWERING RULES:
         </div>
       `;
       conversationHistory = [];
+      currentInvariants = null;
+      updateAllInvariantViews();
       showToast('Cleared inputs and memory');
       lucide.createIcons();
     };
 
     
 
-    window.setLeftView = function(view) {
-      document.getElementById('tabDoc').classList.toggle('active', view === 'doc');
-      document.getElementById('tabLive').classList.toggle('active', view === 'live');
-      if (view === 'live') {
-        const url = document.getElementById('webUrlInput').value.trim();
-        if (url) connectLiveUrl();
-        else alert('Enter a URL in the web address bar first!');
+    
+    // =========================================================================
+    // UNIVERSAL INVARIANT SYNTHESIZER & DUAL VIEWS ENGINE
+    // =========================================================================
+
+    let currentInvariants = null;
+    let updateInvariantsTimer = null;
+
+    function extractUniversalInvariants(title, rawText, url) {
+      const text = rawText || '';
+      const paragraphs = text.split(/\n\s*\n|\r\n\s*\r\n/).map(p => p.trim()).filter(p => p.length > 25);
+      
+      const allSentences = [];
+      paragraphs.forEach(p => {
+        const sents = p.split(/(?<=[.!?])\s+/);
+        sents.forEach(s => {
+          const clean = s.trim().replace(/^[-*•\d.]+\s*/, '');
+          const isDateline = /\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2},\s+\d{4}\b/i.test(clean) || (/^[A-Z\s_–—-]{5,}\b/.test(clean) && clean.includes('–'));
+          if (clean.length > 25 && !clean.startsWith('#') && !clean.startsWith('http') && !isDateline) {
+            allSentences.push(clean);
+          }
+        });
+      });
+
+      const lowerText = text.toLowerCase();
+      const lowerTitle = (title || '').toLowerCase();
+      const litKeywords = ['novel', 'chapter', 'story', 'excerpt', 'father', 'mother', 'eyes', 'smile', 'house', 'village', 'river', 'mountain', 'gatsby', 'carraway', 'daisy', 'fitzgerald', 'summer', 'heart', 'life', 'spirit', 'character', 'man', 'girl', 'woman', 'years', 'night', 'sun', 'grandpa', 'jeff', 'cade', 'lottery'];
+      let litScore = 0;
+      litKeywords.forEach(k => {
+        if (lowerText.includes(k)) litScore++;
+        if (lowerTitle.includes(k)) litScore += 2;
+      });
+      const isNarrative = litScore >= 3;
+
+      const negations = [];
+      const bounds = [];
+      const characterTraits = [];
+      const settingPoints = [];
+      const conflicts = [];
+
+      allSentences.forEach(s => {
+        if (/\b(never|prohibited|must not|cannot|no more|exempt|strictly|refuse|impossible|solely|forbidden|didn't|did not|had not)\b/i.test(s)) {
+          negations.push(s);
+        }
+        if (/\b(\d+(\.\d+)?|hours?|minutes?|seconds?|percent|\$|degrees?|miles?|acres?|days?|years?|limit|ceiling|floor|only \w+|three|two|one|four|five|eighteen|twenty)\b/i.test(s)) {
+          bounds.push(s);
+        }
+        if (/\b(inclined|habit|nature|spirit|named|always|thought|said|father|mother|character|mind|attitude|personality|temperament|grandpa|jeff|cade)\b/i.test(s)) {
+          characterTraits.push(s);
+        }
+        if (/\b(mountain|river|village|house|land|world|city|east|west|egg|island|bay|sky|room|palace|mansion|valley|field|sun|weather|soil|park|property|shed|garage|store)\b/i.test(s)) {
+          settingPoints.push(s);
+        }
+        if (/\b(conflict|criticiz|scorn|poverty|outage|dispute|danger|risk|trouble|fight|oppose|contrast|tension|struggle|sigh|desire|addicted|won anything)\b/i.test(s)) {
+          conflicts.push(s);
+        }
+      });
+
+      let cascadeTiers = [];
+      let dagMermaid = '';
+
+      const formatFullNode = (header, content, wordsPerLine = 6) => {
+        const raw = (content || header || '').replace(/["\\`]/g, "'").replace(/<[^>]*>/g, '').trim();
+        if (!raw) return `<b>${header}</b>`;
+        const words = raw.split(/\s+/);
+        const lines = [];
+        for (let i = 0; i < words.length; i += wordsPerLine) {
+          lines.push(words.slice(i, i + wordsPerLine).join(' '));
+        }
+        const body = lines.join('<br/>');
+        return header ? `<b>${header}</b><br/><small>${body}</small>` : body;
+      };
+
+      if (isNarrative) {
+        const rootInv1 = settingPoints[0] || (paragraphs[0] ? paragraphs[0].slice(0, 140) + '...' : 'Physical reality & world setting immutable.');
+        const rootInv2 = negations[0] || (settingPoints[1] || 'Environmental conditions govern character possibilities.');
+
+        const charAxiom1 = characterTraits[0] || (allSentences[1] || 'Protagonist behavioral axiom established in source.');
+        const charAxiom2 = negations[1] || (characterTraits[1] || 'Core personal limitation or moral reservation.');
+
+        const tension1 = conflicts[0] || (allSentences[2] || 'Primary dramatic conflict or socioeconomic disparity.');
+        const tension2 = conflicts[1] || (allSentences[3] || 'Desire vs. obstacle driving the character forward.');
+
+        const bound1 = bounds[0] || 'Textual narrative boundaries explicitly grounded in excerpt.';
+        const bound2 = bounds[1] || 'Finite geographical and social scope defined by the author.';
+
+        const tripwire1 = negations[2] || 'Thematic Tripwire: Point of no return or irreversible catalyst.';
+        const tripwire2 = conflicts[2] || 'Dilemma: Resignation to circumstance vs. pursuit of transformative action.';
+
+        cascadeTiers = [
+          {
+            tier: 'Tier 0: World Invariants',
+            desc: 'Immutable Setting & Physical Reality of the World',
+            badge: 'tier-0',
+            rules: [
+              `SETTING INVARIANT: ${rootInv1}`,
+              `ENVIRONMENTAL LAW: ${rootInv2}`
+            ]
+          },
+          {
+            tier: 'Tier 1: Character Truths',
+            desc: 'Core Traits & Narrator Behavioral Axioms',
+            badge: 'tier-1',
+            rules: [
+              `CHARACTER TRAIT: ${charAxiom1}`,
+              `BEHAVIORAL BOUND: ${charAxiom2}`
+            ]
+          },
+          {
+            tier: 'Tier 2: Narrative Tension',
+            desc: 'Underlying Conflict Driving the Plot',
+            badge: 'tier-2',
+            rules: [
+              `DRAMATIC TENSION: ${tension1}`,
+              `MOTIVATIONAL CONFLICT: ${tension2}`
+            ]
+          },
+          {
+            tier: 'Tier 3: Narrative Bounds',
+            desc: 'Textual Constraints Grounded in Excerpt',
+            badge: 'tier-3',
+            rules: [
+              `EXPLICIT BOUND: ${bound1}`,
+              `CONSTRAINED PARAMETER: ${bound2}`
+            ]
+          },
+          {
+            tier: 'Tier 4: Journey Tripwires',
+            desc: 'Catalysts for Departure & Moral Reckoning',
+            badge: 'tier-4',
+            rules: [
+              `PLOT CATALYST: ${tripwire1}`,
+              `THEMATIC DEAD-END: ${tripwire2}`
+            ]
+          }
+        ];
+
+        const staySentences = allSentences.filter(s => /\b(stay|stayed|remain|remained|crowd|settler|too many|poverty|stagnat|endure|fear|lonely|empty|hard land|mud|sigh|hesitat|unstimulated|nothing came|did not tell|wait|stuck|routine|same|default|inaction|refuse|worry)\b/i.test(s));
+        const moveSentences = allSentences.filter(s => /\b(drove away|left|go see|west|going|journey|travel|venture|quest|depart|leave|pack|wagon|frontier|change|created|decided|began|started|planned|launched|picked|suggested|discovered|called|offered|sold|lottery|action|idea|store)\b/i.test(s));
+
+        let textStagnate = '';
+        if (staySentences.length > 0) {
+          textStagnate = staySentences.find(s => !/\b(drove away|left|embarked|departed)\b/i.test(s)) || staySentences[0];
+        } else {
+          textStagnate = negations.find(s => !/\b(drove away|left)\b/i.test(s)) || 'Passive Inertia: Resign to existing constraints without intervention or risk.';
+        }
+
+        let textAction = '';
+        if (moveSentences.length > 0) {
+          textAction = moveSentences.find(s => s !== textStagnate) || moveSentences[0];
+        } else {
+          textAction = characterTraits.find(s => s !== textStagnate) || 'Action Catalyst: Undertake decisive intervention to alter trajectory.';
+        }
+
+        let textDilemma = conflicts.find(s => s !== textStagnate && s !== textAction) || '';
+        if (!textDilemma) {
+          const contrastSent = allSentences.find(s => s !== textStagnate && s !== textAction && /\b(wanted.*?but|tried.*?but|however|although|problem|dilemma|struggled|could not|cannot|instead of|conflict|dispute|worry|trouble|risk)\b/i.test(s));
+          textDilemma = contrastSent || 'Core Narrative Dilemma: Inaction & passive status quo VS. Decisive intervention';
+        }
+
+        const conclusionSentences = allSentences.slice(-8);
+        const resolvedSent = conclusionSentences.find(s => s !== textAction && s !== textStagnate && /\b(finally|end|became|won|lost|result|outcome|learned|profit|money|consequence|smiled|concluded|resolved|realized)\b/i.test(s));
+        const textResolution = resolvedSent || (allSentences.length > 3 ? allSentences[allSentences.length - 1] : 'Resolution: Consequences of decisive choice reshape narrative reality.');
+
+        const nSetting = formatFullNode('Setting Invariant', settingPoints[0] || allSentences[0] || title || 'World Setting', 7);
+        const nProtagonist = formatFullNode('Protagonist Axiom', characterTraits.find(s => s !== settingPoints[0]) || allSentences[1] || 'Character Drive', 7);
+        const nDilemma = formatFullNode('Core Dilemma', textDilemma, 5);
+        const nStagnate = formatFullNode('🛑 Stagnation (Remain / Status Quo)', textStagnate, 6);
+        const nAction = formatFullNode('✨ Action Catalyst (Decisive Action)', textAction, 6);
+        const nResolution = formatFullNode('Resolution', textResolution, 6);
+
+        dagMermaid = `flowchart TD
+  A["${nSetting}"] --> B["${nProtagonist}"]
+  B --> C{"${nDilemma}"}
+  C -->|"Remain / Status Quo"| D["${nStagnate}"]
+  C -->|"Take Initiative / Risk"| E["${nAction}"]
+  E --> F["${nResolution}"]
+  style A fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+  style B fill:#f1f5f9,stroke:#64748b,stroke-width:2px
+  style C fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
+  style D fill:#fee2e2,stroke:#ef4444,stroke-width:2px
+  style E fill:#d1fae5,stroke:#10b981,stroke-width:2px
+  style F fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px`;
+
+      } else {
+        // SOP / Technical / Regulatory Mode
+        const rootInv1 = negations[0] || (allSentences[0] || 'Operations must remain within documented boundaries.');
+        const rootInv2 = negations[1] || 'Unverified or undocumented actions are strictly prohibited.';
+
+        const dir1 = allSentences[1] || `Observe interface operations at ${url || 'target endpoint'}.`;
+        const dir2 = allSentences[2] || 'Preserve textual fidelity with zero invented parameters.';
+
+        const rule1 = allSentences[3] || 'Verify all preconditions against extracted source rules.';
+        const rule2 = allSentences[4] || 'Log all state changes with deterministic traceability.';
+
+        const bound1 = bounds[0] || 'Operational boundaries strictly limited to source definitions.';
+        const bound2 = bounds[1] || 'Unspecified numeric limits left algebraic to prevent hallucination.';
+
+        const trip1 = negations[2] || 'If operating boundary exceeded -> Halt and trigger safety fallback.';
+        const trip2 = 'If state payload unverified -> Freeze execution and alert supervisor.';
+
+        cascadeTiers = [
+          {
+            tier: 'Tier 0: Root Invariants',
+            desc: 'Constitutional Constraints & Ground Truth Boundaries',
+            badge: 'tier-0',
+            rules: [
+              `INVARIANT: ${rootInv1}`,
+              `STRICT NEGATION: ${rootInv2}`
+            ]
+          },
+          {
+            tier: 'Tier 1: Scoped Directives',
+            desc: `Interface Scope: ${title || 'Document Scope'}`,
+            badge: 'tier-1',
+            rules: [
+              `DIRECTIVE: ${dir1}`,
+              `DIRECTIVE: ${dir2}`
+            ]
+          },
+          {
+            tier: 'Tier 2: Execution Rules',
+            desc: 'Precondition Verification Gates',
+            badge: 'tier-2',
+            rules: [
+              `RULE: ${rule1}`,
+              `RULE: ${rule2}`
+            ]
+          },
+          {
+            tier: 'Tier 3: Parameter Bounds',
+            desc: 'Explicit Documented Tolerances',
+            badge: 'tier-3',
+            rules: [
+              `BOUND: ${bound1}`,
+              `BOUND: ${bound2}`
+            ]
+          },
+          {
+            tier: 'Tier 4: Dead Ends & Aborts',
+            desc: 'Deterministic Circuit Breakers',
+            badge: 'tier-4',
+            rules: [
+              `DEAD END: ${trip1}`,
+              `DEAD END: ${trip2}`
+            ]
+          }
+        ];
+
+        const nIngest = formatFullNode('Ingest', title || 'Source Ingest', 7);
+        const nGate = formatFullNode('Verify Precondition', rule1, 6);
+        const nRevert = formatFullNode('🛑 TRIPWIRE: Safe Reversion', trip1, 6);
+        const nExec = formatFullNode('Execute Action', dir2, 6);
+        const nDone = formatFullNode('✅ Execution Verified', bound1, 6);
+
+        dagMermaid = `flowchart TD
+  A["${nIngest}"] --> B{"${nGate}"}
+  B -->|"Violation or Infeasible"| C["${nRevert}"]
+  B -->|"Grounded"| D["${nExec}"]
+  D --> E{"Invariant Check"}
+  E -->|"Breach"| C
+  E -->|"Passed"| F["${nDone}"]
+  style A fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
+  style B fill:#fffbeb,stroke:#d97706,stroke-width:2px
+  style C fill:#fee2e2,stroke:#ef4444,stroke-width:2px
+  style D fill:#f0fdf4,stroke:#16a34a,stroke-width:2px
+  style F fill:#d1fae5,stroke:#10b981,stroke-width:2px`;
       }
+
+      return {
+        title: title || 'Context Source Document',
+        text: text,
+        dagMermaid,
+        cascadeTiers,
+        isNarrative
+      };
+    }
+
+    function renderCascadeTreeHtml(cascadeTiers) {
+      if (!cascadeTiers || cascadeTiers.length === 0) {
+        return `
+          <div style="height: 100%; min-height: 280px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 8px; padding: 24px; text-align: center; color: #64748b;">
+            <div style="font-size: 32px; margin-bottom: 8px;">📑</div>
+            <div style="font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 4px;">No Invariants Extracted Yet</div>
+            <div style="font-size: 11px; max-width: 280px; line-height: 1.5;">Type or paste text in the Source tab to synthesize the 5-Tier Policy Tree.</div>
+          </div>
+        `;
+      }
+
+      let html = '';
+      cascadeTiers.forEach((tier, index) => {
+        html += `
+          <div class="cascade-tier-block">
+            <div class="cascade-tier-header ${tier.badge}">
+              <span>${escapeHtml(tier.tier)}</span>
+              <span class="tier-desc-tag">${escapeHtml(tier.desc)}</span>
+            </div>
+            <div class="cascade-tier-body">
+              ${tier.rules.map(r => `<div class="cascade-rule-item">${escapeHtml(r)}</div>`).join('')}
+            </div>
+          </div>
+        `;
+      });
+      return html;
+    }
+
+    async function renderMermaidViews() {
+      if (!currentInvariants || !currentInvariants.dagMermaid) return;
+      if (!window.mermaid) return;
+
+      const code = currentInvariants.dagMermaid;
+
+      // Render Single Flowchart View
+      const dagEl = document.getElementById('mermaidDagEl');
+      if (dagEl) {
+        try {
+          const uniqueId1 = 'm_dag_' + Math.random().toString(36).substring(2, 9);
+          const { svg } = await mermaid.render(uniqueId1, code);
+          dagEl.innerHTML = svg;
+        } catch (e) {
+          console.warn('DAG render error:', e);
+        }
+      }
+
+      // Render Dual Flowchart View
+      const dualDagEl = document.getElementById('dualMermaidDagEl');
+      if (dualDagEl) {
+        try {
+          const uniqueId2 = 'm_dual_' + Math.random().toString(36).substring(2, 9);
+          const { svg } = await mermaid.render(uniqueId2, code);
+          dualDagEl.innerHTML = svg;
+        } catch (e) {
+          console.warn('Dual DAG render error:', e);
+        }
+      }
+    }
+
+    window.recompileFlowchartViews = function() {
+      updateAllInvariantViews(true);
+      showToast('Recompiled Invariants & Flowchart DAG');
     };
+
+    function updateAllInvariantViews(forceRender = false) {
+      const title = (document.getElementById('docTitleInput') || {}).value || '';
+      const text = (document.getElementById('docTextInput') || {}).value || '';
+      const url = (document.getElementById('webUrlInput') || {}).value || '';
+
+      if (!text.trim()) {
+        currentInvariants = null;
+        const emptyTree = renderCascadeTreeHtml([]);
+        const treeC = document.getElementById('cascadeTreeContainer');
+        const dualTreeC = document.getElementById('dualTreeContainer');
+        if (treeC) treeC.innerHTML = emptyTree;
+        if (dualTreeC) dualTreeC.innerHTML = emptyTree;
+        return;
+      }
+
+      currentInvariants = extractUniversalInvariants(title, text, url);
+
+      // 1. Render Policy Tree into both containers
+      const treeHtml = renderCascadeTreeHtml(currentInvariants.cascadeTiers);
+      const treeContainer = document.getElementById('cascadeTreeContainer');
+      const dualTreeContainer = document.getElementById('dualTreeContainer');
+      if (treeContainer) treeContainer.innerHTML = treeHtml;
+      if (dualTreeContainer) dualTreeContainer.innerHTML = treeHtml;
+
+      // 2. Render Mermaid into both containers
+      renderMermaidViews();
+    }
+
+    function debouncedUpdateInvariants() {
+      clearTimeout(updateInvariantsTimer);
+      updateInvariantsTimer = setTimeout(() => {
+        updateAllInvariantViews();
+      }, 400);
+    }
+
+    window.copyPolicyTreeText = function() {
+      if (!currentInvariants || !currentInvariants.cascadeTiers) {
+        showToast('No policy invariants available to copy');
+        return;
+      }
+      let txt = `POLICY INVARIANTS: ${currentInvariants.title}\n==============================\n\n`;
+      currentInvariants.cascadeTiers.forEach(t => {
+        txt += `[${t.tier}] - ${t.desc}\n`;
+        t.rules.forEach(r => { txt += `  * ${r}\n`; });
+        txt += '\n';
+      });
+      navigator.clipboard.writeText(txt).then(() => {
+        showToast('Copied 5-Tier Policy Contract to Clipboard!');
+      });
+    };
+
+    window.setLeftView = function(view) {
+      // Toggle Tabs
+      const tabs = {
+        'doc': document.getElementById('tabDoc'),
+        'policy': document.getElementById('tabPolicy'),
+        'dag': document.getElementById('tabDag'),
+        'dual': document.getElementById('tabDual')
+      };
+      Object.keys(tabs).forEach(k => {
+        if (tabs[k]) tabs[k].classList.toggle('active', k === view);
+      });
+
+      // Toggle Panels
+      const panels = {
+        'doc': document.getElementById('sourceDocView'),
+        'policy': document.getElementById('policyTreeView'),
+        'dag': document.getElementById('flowchartDagView'),
+        'dual': document.getElementById('dualInvariantView')
+      };
+      Object.keys(panels).forEach(k => {
+        if (panels[k]) panels[k].classList.toggle('active', k === view);
+      });
+
+      // If switching to policy, dag, or dual view, synthesize invariants immediately if needed
+      if (view === 'policy' || view === 'dag' || view === 'dual') {
+        if (!currentInvariants) {
+          updateAllInvariantViews();
+        } else if (view === 'dag' || view === 'dual') {
+          setTimeout(renderMermaidViews, 50);
+        }
+      }
+
+      if (window.lucide) lucide.createIcons();
+    };
+
 
     
     window.setMobileView = function(view) {
