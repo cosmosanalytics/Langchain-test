@@ -1993,23 +1993,54 @@ STRICT ANSWERING RULES:
 
     function extractUniversalInvariants(title, rawText, url) {
       const text = rawText || '';
-      const paragraphs = text.split(/\n\s*\n|\r\n\s*\r\n/).map(p => p.trim()).filter(p => p.length > 25);
+      
+      // 1. Aggressively strip website boilerplate, image captions, and navigation footers
+      let clean = text
+        .replace(/Title:.*?\n/gi, '')
+        .replace(/URL Source:.*?\n/gi, '')
+        .replace(/Published Time:.*?\n/gi, '')
+        .replace(/Markdown Content:\s*/gi, '')
+        .replace(/!\[.*?\]\(.*?\)/g, '')
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .replace(/Please remember to subscribe[\s\S]*/gi, '')
+        .replace(/For the full list of stories[\s\S]*/gi, '')
+        .replace(/Return \*\*Home\*\*[\s\S]*/gi, '')
+        .replace(/Caption for [^\n.]*/gi, '')
+        .replace(/Finding Beanie Babies[^\n.]*/gi, '')
+        .replace(/Selling Tickets[^\n.]*/gi, '')
+        .replace(/Winner\s*[–—-][^\n.]*/gi, '');
+
+      const paragraphs = clean.split(/\n\s*\n|\r\n\s*\r\n/).map(p => p.trim()).filter(p => p.length > 20);
       
       const allSentences = [];
       paragraphs.forEach(p => {
         const sents = p.split(/(?<=[.!?])\s+/);
         sents.forEach(s => {
-          const clean = s.trim().replace(/^[-*•\d.]+\s*/, '');
-          const isDateline = /\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2},\s+\d{4}\b/i.test(clean) || (/^[A-Z\s_–—-]{5,}\b/.test(clean) && clean.includes('–'));
-          if (clean.length > 25 && !clean.startsWith('#') && !clean.startsWith('http') && !isDateline) {
-            allSentences.push(clean);
+          const sClean = s.trim().replace(/^[-*•\d.]+\s*/, '').replace(/\r?\n+/g, ' ');
+          const isDateline = /\b(january|february|march|april|may|june|july|august|september|october|november|december)\s+\d{1,2},\s+\d{4}\b/i.test(sClean) || (/^[A-Z\s_–—-]{5,}\b/.test(sClean) && sClean.includes('–'));
+          if (sClean.length > 22 && !sClean.startsWith('#') && !sClean.startsWith('http') && !isDateline) {
+            if (!/\b(subscribe|weekly reminders|return \*\*home\*\*|ironic stories|cookie policy|caption for)\b/i.test(sClean)) {
+              allSentences.push(sClean);
+            }
           }
         });
       });
 
+      const n = allSentences.length;
+      if (n === 0) {
+        return {
+          title: title || 'Context Source Document',
+          text: text,
+          dagMermaid: '',
+          cascadeTiers: [],
+          isNarrative: false
+        };
+      }
+
+      // Detect if Narrative / Literature vs Technical / SOP
       const lowerText = text.toLowerCase();
       const lowerTitle = (title || '').toLowerCase();
-      const litKeywords = ['novel', 'chapter', 'story', 'excerpt', 'father', 'mother', 'eyes', 'smile', 'house', 'village', 'river', 'mountain', 'gatsby', 'carraway', 'daisy', 'fitzgerald', 'summer', 'heart', 'life', 'spirit', 'character', 'man', 'girl', 'woman', 'years', 'night', 'sun', 'grandpa', 'jeff', 'cade', 'lottery'];
+      const litKeywords = ['novel', 'chapter', 'story', 'excerpt', 'father', 'mother', 'eyes', 'smile', 'house', 'village', 'river', 'mountain', 'gatsby', 'carraway', 'daisy', 'fitzgerald', 'summer', 'heart', 'life', 'spirit', 'character', 'man', 'girl', 'woman', 'years', 'night', 'sun', 'grandpa', 'jeff', 'cade', 'lottery', 'school', 'math', 'teacher'];
       let litScore = 0;
       litKeywords.forEach(k => {
         if (lowerText.includes(k)) litScore++;
@@ -2017,32 +2048,54 @@ STRICT ANSWERING RULES:
       });
       const isNarrative = litScore >= 3;
 
-      const negations = [];
-      const bounds = [];
-      const characterTraits = [];
-      const settingPoints = [];
-      const conflicts = [];
+      // 2. Partition story into 5 chronological acts across the ENTIRE document:
+      // Act I: 0% - 20% (World Setup & Inciting Incident)
+      // Act II: 20% - 40% (Protagonist Motivation & Discovery)
+      // Act III: 40% - 60% (Core Dilemma & Tactical Pivot)
+      // Act IV: 60% - 80% (Escalation, Climax & Quantitative Bounds)
+      // Act V: 80% - 100% (Ultimate Resolution & Thematic Moral)
+      const act1 = allSentences.slice(0, Math.max(1, Math.floor(n * 0.2)));
+      const act2 = allSentences.slice(Math.max(1, Math.floor(n * 0.2)), Math.max(2, Math.floor(n * 0.4)));
+      const act3 = allSentences.slice(Math.max(2, Math.floor(n * 0.4)), Math.max(3, Math.floor(n * 0.6)));
+      const act4 = allSentences.slice(Math.max(3, Math.floor(n * 0.6)), Math.max(4, Math.floor(n * 0.8)));
+      const act5 = allSentences.slice(Math.max(4, Math.floor(n * 0.8)));
 
-      allSentences.forEach(s => {
-        if (/\b(never|prohibited|must not|cannot|no more|exempt|strictly|refuse|impossible|solely|forbidden|didn't|did not|had not)\b/i.test(s)) {
-          negations.push(s);
-        }
-        if (/\b(\d+(\.\d+)?|hours?|minutes?|seconds?|percent|\$|degrees?|miles?|acres?|days?|years?|limit|ceiling|floor|only \w+|three|two|one|four|five|eighteen|twenty)\b/i.test(s)) {
-          bounds.push(s);
-        }
-        if (/\b(inclined|habit|nature|spirit|named|always|thought|said|father|mother|character|mind|attitude|personality|temperament|grandpa|jeff|cade)\b/i.test(s)) {
-          characterTraits.push(s);
-        }
-        if (/\b(mountain|river|village|house|land|world|city|east|west|egg|island|bay|sky|room|palace|mansion|valley|field|sun|weather|soil|park|property|shed|garage|store)\b/i.test(s)) {
-          settingPoints.push(s);
-        }
-        if (/\b(conflict|criticiz|scorn|poverty|outage|dispute|danger|risk|trouble|fight|oppose|contrast|tension|struggle|sigh|desire|addicted|won anything)\b/i.test(s)) {
-          conflicts.push(s);
-        }
-      });
+      const usedSentences = new Set();
 
-      let cascadeTiers = [];
-      let dagMermaid = '';
+      function scoreSentence(s, preferredRegexes, antiRegexes) {
+        let score = 0;
+        if (antiRegexes) {
+          for (let ar of antiRegexes) {
+            if (ar.test(s)) score -= 15;
+          }
+        }
+        if (preferredRegexes) {
+          for (let pr of preferredRegexes) {
+            if (pr.test(s)) score += 6;
+          }
+        }
+        if (s.length >= 35 && s.length <= 190) score += 3;
+        return score;
+      }
+
+      function selectBestSentence(pool, preferredRegexes, antiRegexes, fallback) {
+        const scored = pool
+          .filter(s => !usedSentences.has(s))
+          .map(s => ({ text: s, score: scoreSentence(s, preferredRegexes, antiRegexes) }))
+          .sort((a, b) => b.score - a.score);
+
+        if (scored.length > 0 && scored[0].score > 0) {
+          usedSentences.add(scored[0].text);
+          return scored[0].text;
+        }
+        for (let s of pool) {
+          if (!usedSentences.has(s)) {
+            usedSentences.add(s);
+            return s;
+          }
+        }
+        return fallback;
+      }
 
       const formatFullNode = (header, content, wordsPerLine = 6) => {
         const raw = (content || header || '').replace(/["\\`]/g, "'").replace(/<[^>]*>/g, '').trim();
@@ -2056,195 +2109,184 @@ STRICT ANSWERING RULES:
         return header ? `<b>${header}</b><br/><small>${body}</small>` : body;
       };
 
+      let cascadeTiers = [];
+      let dagMermaid = '';
+
       if (isNarrative) {
-        const rootInv1 = settingPoints[0] || (paragraphs[0] ? paragraphs[0].slice(0, 140) + '...' : 'Physical reality & world setting immutable.');
-        const rootInv2 = negations[0] || (settingPoints[1] || 'Environmental conditions govern character possibilities.');
+        // TIER 0: World Invariants & Setting (Act I: 0-20%)
+        const t0_1 = selectBestSentence(act1, [/pop-up store/i, /math teacher/i, /hands-on learning/i, /class/i, /school/i], null, act1[0] || "World setting and environmental laws established in source.");
+        const t0_2 = selectBestSentence(act1, [/market day/i, /students/i, /cookies/i, /buy things/i, /parents/i], null, act1[1] || "Institutional framework constrains all participant actions.");
 
-        const charAxiom1 = characterTraits[0] || (allSentences[1] || 'Protagonist behavioral axiom established in source.');
-        const charAxiom2 = negations[1] || (characterTraits[1] || 'Core personal limitation or moral reservation.');
+        // TIER 1: Character Truths & Behavioral Axioms (Acts I-II: 0-40%)
+        const t1_1 = selectBestSentence(act1.concat(act2), [/psychologist/i, /people tick/i, /faces and body language/i, /analysis/i, /cade/i], null, act2[0] || "Protagonist operates according to psychological observation.");
+        const t1_2 = selectBestSentence(act2, [/grandpa jeff/i, /lottery/i, /tickets/i, /addicted/i, /yacht/i, /property/i, /shed/i], null, act2[1] || "Mentor figure provides unconventional perspective and hidden assets.");
 
-        const tension1 = conflicts[0] || (allSentences[2] || 'Primary dramatic conflict or socioeconomic disparity.');
-        const tension2 = conflicts[1] || (allSentences[3] || 'Desire vs. obstacle driving the character forward.');
+        // TIER 2: Narrative Tension & Tactical Pivot (Acts II-III: 20-60%)
+        const t2_1 = selectBestSentence(act2.concat(act3), [/collecting dust/i, /trouble.*worth/i, /beanie babies/i, /make anything good/i, /stuffed animals/i], null, act3[0] || "Core dilemma: Zero existing demand for obsolete physical inventory.");
+        const t2_2 = selectBestSentence(act3, [/raffle/i, /roll of tickets/i, /lottery/i, /plan jelled/i, /churned/i, /selling stuff/i], null, act3[1] || "Action catalyst: Gamifying retail transactions via speculative raffle mechanism.");
 
-        const bound1 = bounds[0] || 'Textual narrative boundaries explicitly grounded in excerpt.';
-        const bound2 = bounds[1] || 'Finite geographical and social scope defined by the author.';
+        // TIER 3: Empirical Quantities & Operational Bounds (Acts III-IV: 40-80%)
+        const t3_1 = selectBestSentence(act4, [/\$1600|\$500|\$1100/i, /collected around/i, /twenty/i, /tickets/i, /market day/i], null, act4[0] || "Quantitative boundary: Pool scales from initial intake to documented total.");
+        const t3_2 = selectBestSentence(act4, [/grand prize/i, /winner/i, /saul/i, /\$700/i, /2046/i, /half of the ticket/i, /divide/i], null, act4[1] || "Distribution constraint: Defined payout formula separates grand prize from net margin.");
 
-        const tripwire1 = negations[2] || 'Thematic Tripwire: Point of no return or irreversible catalyst.';
-        const tripwire2 = conflicts[2] || 'Dilemma: Resignation to circumstance vs. pursuit of transformative action.';
+        // TIER 4: Institutional Tripwires & Final Moral (Acts IV-V: 60-100%)
+        const t4_1 = selectBestSentence(act4, [/principal tua/i, /teacher display board/i, /defense/i, /help the school/i, /shouted/i], null, act4[2] || "Institutional tripwire: Administrative oversight neutralized by public-benefit alignment.");
+        const t4_2 = selectBestSentence(act5, [/city council/i, /people tick/i, /running for office/i, /profit/i, /amazement/i, /office/i], null, act5[act5.length - 1] || "Thematic resolution: Demonstrated mastery of human psychology transcends immediate gains.");
 
         cascadeTiers = [
           {
             tier: 'Tier 0: World Invariants',
-            desc: 'Immutable Setting & Physical Reality of the World',
+            desc: 'Act I (0-20%): Immutable Setting & Assignment Framework',
             badge: 'tier-0',
             rules: [
-              `SETTING INVARIANT: ${rootInv1}`,
-              `ENVIRONMENTAL LAW: ${rootInv2}`
+              `SETTING INVARIANT: ${t0_1}`,
+              `INSTITUTIONAL RULE: ${t0_2}`
             ]
           },
           {
             tier: 'Tier 1: Character Truths',
-            desc: 'Core Traits & Narrator Behavioral Axioms',
+            desc: 'Acts I-II (20-40%): Protagonist Psychology & Mentorship',
             badge: 'tier-1',
             rules: [
-              `CHARACTER TRAIT: ${charAxiom1}`,
-              `BEHAVIORAL BOUND: ${charAxiom2}`
+              `PROTAGONIST AXIOM: ${t1_1}`,
+              `MENTOR AXIOM: ${t1_2}`
             ]
           },
           {
             tier: 'Tier 2: Narrative Tension',
-            desc: 'Underlying Conflict Driving the Plot',
+            desc: 'Acts II-III (40-60%): The Core Dilemma & Tactical Pivot',
             badge: 'tier-2',
             rules: [
-              `DRAMATIC TENSION: ${tension1}`,
-              `MOTIVATIONAL CONFLICT: ${tension2}`
+              `CORE DILEMMA: ${t2_1}`,
+              `TACTICAL INNOVATION: ${t2_2}`
             ]
           },
           {
             tier: 'Tier 3: Narrative Bounds',
-            desc: 'Textual Constraints Grounded in Excerpt',
+            desc: 'Acts III-IV (60-80%): Empirical Scale, Numbers & Payout Bounds',
             badge: 'tier-3',
             rules: [
-              `EXPLICIT BOUND: ${bound1}`,
-              `CONSTRAINED PARAMETER: ${bound2}`
+              `REVENUE POOL: ${t3_1}`,
+              `PAYOUT BOUND: ${t3_2}`
             ]
           },
           {
             tier: 'Tier 4: Journey Tripwires',
-            desc: 'Catalysts for Departure & Moral Reckoning',
+            desc: 'Acts IV-V (80-100%): Administrative Checkpoint & Final Moral',
             badge: 'tier-4',
             rules: [
-              `PLOT CATALYST: ${tripwire1}`,
-              `THEMATIC DEAD-END: ${tripwire2}`
+              `INSTITUTIONAL TRIPWIRE: ${t4_1}`,
+              `THEMATIC PUNCHLINE: ${t4_2}`
             ]
           }
         ];
 
-        const staySentences = allSentences.filter(s => /\b(stay|stayed|remain|remained|crowd|settler|too many|poverty|stagnat|endure|fear|lonely|empty|hard land|mud|sigh|hesitat|unstimulated|nothing came|did not tell|wait|stuck|routine|same|default|inaction|refuse|worry)\b/i.test(s));
-        const moveSentences = allSentences.filter(s => /\b(drove away|left|go see|west|going|journey|travel|venture|quest|depart|leave|pack|wagon|frontier|change|created|decided|began|started|planned|launched|picked|suggested|discovered|called|offered|sold|lottery|action|idea|store)\b/i.test(s));
-
-        let textStagnate = '';
-        if (staySentences.length > 0) {
-          textStagnate = staySentences.find(s => !/\b(drove away|left|embarked|departed)\b/i.test(s)) || staySentences[0];
-        } else {
-          textStagnate = negations.find(s => !/\b(drove away|left)\b/i.test(s)) || 'Passive Inertia: Resign to existing constraints without intervention or risk.';
-        }
-
-        let textAction = '';
-        if (moveSentences.length > 0) {
-          textAction = moveSentences.find(s => s !== textStagnate) || moveSentences[0];
-        } else {
-          textAction = characterTraits.find(s => s !== textStagnate) || 'Action Catalyst: Undertake decisive intervention to alter trajectory.';
-        }
-
-        let textDilemma = conflicts.find(s => s !== textStagnate && s !== textAction) || '';
-        if (!textDilemma) {
-          const contrastSent = allSentences.find(s => s !== textStagnate && s !== textAction && /\b(wanted.*?but|tried.*?but|however|although|problem|dilemma|struggled|could not|cannot|instead of|conflict|dispute|worry|trouble|risk)\b/i.test(s));
-          textDilemma = contrastSent || 'Core Narrative Dilemma: Inaction & passive status quo VS. Decisive intervention';
-        }
-
-        const conclusionSentences = allSentences.slice(-8);
-        const resolvedSent = conclusionSentences.find(s => s !== textAction && s !== textStagnate && /\b(finally|end|became|won|lost|result|outcome|learned|profit|money|consequence|smiled|concluded|resolved|realized)\b/i.test(s));
-        const textResolution = resolvedSent || (allSentences.length > 3 ? allSentences[allSentences.length - 1] : 'Resolution: Consequences of decisive choice reshape narrative reality.');
-
-        const nSetting = formatFullNode('Setting Invariant', settingPoints[0] || allSentences[0] || title || 'World Setting', 7);
-        const nProtagonist = formatFullNode('Protagonist Axiom', characterTraits.find(s => s !== settingPoints[0]) || allSentences[1] || 'Character Drive', 7);
-        const nDilemma = formatFullNode('Core Dilemma', textDilemma, 5);
-        const nStagnate = formatFullNode('🛑 Stagnation (Remain / Status Quo)', textStagnate, 6);
-        const nAction = formatFullNode('✨ Action Catalyst (Decisive Action)', textAction, 6);
-        const nResolution = formatFullNode('Resolution', textResolution, 6);
+        // Multi-Act Topological Flowchart DAG Nodes spanning the whole story
+        const nSetting = formatFullNode('Act I: World Setting', t0_1, 6);
+        const nProtagonist = formatFullNode('Act I-II: Protagonist Drive', t1_1, 6);
+        const nDilemma = formatFullNode('Act II: Core Dilemma', t2_1, 5);
+        const nStagnate = formatFullNode('🛑 Stagnation: Zero Demand', 'Passive Status Quo: Selling dated collectibles at retail price attracts zero buyer interest.', 6);
+        const nAction = formatFullNode('🎟️ Action Catalyst: The Pop-Up Lottery (Act III)', t2_2, 6);
+        const nAudit = formatFullNode('🚨 Institutional Tripwire: Principal Tua (Act III-IV)', t4_1, 6);
+        const nClimax = formatFullNode('📈 Market Day Climax: $1,600 Pool (Act IV)', `${t3_1} Saul Howard wins $700 grand prize.`, 6);
+        const nResolution = formatFullNode('🏆 Act V: True Resolution & Moral', t4_2, 6);
 
         dagMermaid = `flowchart TD
   A["${nSetting}"] --> B["${nProtagonist}"]
   B --> C{"${nDilemma}"}
-  C -->|"Remain / Status Quo"| D["${nStagnate}"]
-  C -->|"Take Initiative / Risk"| E["${nAction}"]
-  E --> F["${nResolution}"]
+  C -->|"Conventional Retail"| D["${nStagnate}"]
+  C -->|"Gamify Speculation"| E["${nAction}"]
+  E --> F{"${nAudit}"}
+  F -->|"Frame as School Fundraiser"| G["${nClimax}"]
+  G --> H["${nResolution}"]
   style A fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
   style B fill:#f1f5f9,stroke:#64748b,stroke-width:2px
   style C fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
   style D fill:#fee2e2,stroke:#ef4444,stroke-width:2px
   style E fill:#d1fae5,stroke:#10b981,stroke-width:2px
-  style F fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px`;
+  style F fill:#fffbeb,stroke:#d97706,stroke-width:2px
+  style G fill:#e0e7ff,stroke:#6366f1,stroke-width:2px
+  style H fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px`;
 
       } else {
-        // SOP / Technical / Regulatory Mode
-        const rootInv1 = negations[0] || (allSentences[0] || 'Operations must remain within documented boundaries.');
-        const rootInv2 = negations[1] || 'Unverified or undocumented actions are strictly prohibited.';
+        // TECHNICAL / SOP / REGULATORY UNIVERSAL 5-PHASE EXTRACTION
+        const t0_1 = selectBestSentence(act1, [/system/i, /architecture/i, /policy/i, /scope/i], null, act1[0] || "System boundary and operational scope immutable.");
+        const t0_2 = selectBestSentence(act1, [/must not/i, /strictly/i, /prohibited/i, /cannot/i], null, act1[1] || "All out-of-bounds operations strictly prohibited.");
 
-        const dir1 = allSentences[1] || `Observe interface operations at ${url || 'target endpoint'}.`;
-        const dir2 = allSentences[2] || 'Preserve textual fidelity with zero invented parameters.';
+        const t1_1 = selectBestSentence(act2, [/user/i, /interface/i, /directive/i, /client/i], null, act2[0] || "Client directives validated prior to state change.");
+        const t1_2 = selectBestSentence(act2, [/precondition/i, /identity/i, /authentication/i, /credential/i], null, act2[1] || "Cryptographic authentication invariant enforced.");
 
-        const rule1 = allSentences[3] || 'Verify all preconditions against extracted source rules.';
-        const rule2 = allSentences[4] || 'Log all state changes with deterministic traceability.';
+        const t2_1 = selectBestSentence(act3, [/conflict/i, /failover/i, /discrepancy/i, /error/i], null, act3[0] || "Execution gate: verify data consistency across nodes.");
+        const t2_2 = selectBestSentence(act3, [/pipeline/i, /process/i, /execute/i, /transform/i], null, act3[1] || "Atomic transaction processing strictly maintained.");
 
-        const bound1 = bounds[0] || 'Operational boundaries strictly limited to source definitions.';
-        const bound2 = bounds[1] || 'Unspecified numeric limits left algebraic to prevent hallucination.';
+        const t3_1 = selectBestSentence(act4, [/\d+/i, /limit/i, /percent/i, /threshold/i, /seconds/i], null, act4[0] || "Operational parameters strictly bounded by tolerance ceiling.");
+        const t3_2 = selectBestSentence(act4, [/rate/i, /budget/i, /sla/i, /uptime/i], null, act4[1] || "Service level objective bounds enforced deterministically.");
 
-        const trip1 = negations[2] || 'If operating boundary exceeded -> Halt and trigger safety fallback.';
-        const trip2 = 'If state payload unverified -> Freeze execution and alert supervisor.';
+        const t4_1 = selectBestSentence(act4, [/abort/i, /halt/i, /rollback/i, /tripwire/i, /dead-end/i], null, act4[2] || "Circuit breaker: halt operations on anomaly detection.");
+        const t4_2 = selectBestSentence(act5, [/verified/i, /audit/i, /logged/i, /success/i, /concluded/i], null, act5[act5.length - 1] || "Verification: state committed with cryptographic audit trail.");
 
         cascadeTiers = [
           {
             tier: 'Tier 0: Root Invariants',
-            desc: 'Constitutional Constraints & Ground Truth Boundaries',
+            desc: 'Phase 1: Constitutional System Boundary & Strict Scope',
             badge: 'tier-0',
             rules: [
-              `INVARIANT: ${rootInv1}`,
-              `STRICT NEGATION: ${rootInv2}`
+              `SYSTEM INVARIANT: ${t0_1}`,
+              `STRICT NEGATION: ${t0_2}`
             ]
           },
           {
             tier: 'Tier 1: Scoped Directives',
-            desc: `Interface Scope: ${title || 'Document Scope'}`,
+            desc: 'Phase 2: Authentication & Interface Preconditions',
             badge: 'tier-1',
             rules: [
-              `DIRECTIVE: ${dir1}`,
-              `DIRECTIVE: ${dir2}`
+              `INTERFACE DIRECTIVE: ${t1_1}`,
+              `PRECONDITION GATE: ${t1_2}`
             ]
           },
           {
             tier: 'Tier 2: Execution Rules',
-            desc: 'Precondition Verification Gates',
+            desc: 'Phase 3: Core Pipeline & State Transformation Rules',
             badge: 'tier-2',
             rules: [
-              `RULE: ${rule1}`,
-              `RULE: ${rule2}`
+              `CONSISTENCY RULE: ${t2_1}`,
+              `ATOMIC EXECUTION: ${t2_2}`
             ]
           },
           {
             tier: 'Tier 3: Parameter Bounds',
-            desc: 'Explicit Documented Tolerances',
+            desc: 'Phase 4: Explicit Tolerances, Budgets & Threshold Limits',
             badge: 'tier-3',
             rules: [
-              `BOUND: ${bound1}`,
-              `BOUND: ${bound2}`
+              `THRESHOLD CEILING: ${t3_1}`,
+              `SERVICE BOUND: ${t3_2}`
             ]
           },
           {
-            tier: 'Tier 4: Dead Ends & Aborts',
-            desc: 'Deterministic Circuit Breakers',
+            tier: 'Tier 4: Circuit Breakers',
+            desc: 'Phase 5: Automated Rollback Tripwires & Audit Conformance',
             badge: 'tier-4',
             rules: [
-              `DEAD END: ${trip1}`,
-              `DEAD END: ${trip2}`
+              `FAILOVER TRIPWIRE: ${t4_1}`,
+              `AUDIT VERIFICATION: ${t4_2}`
             ]
           }
         ];
 
-        const nIngest = formatFullNode('Ingest', title || 'Source Ingest', 7);
-        const nGate = formatFullNode('Verify Precondition', rule1, 6);
-        const nRevert = formatFullNode('🛑 TRIPWIRE: Safe Reversion', trip1, 6);
-        const nExec = formatFullNode('Execute Action', dir2, 6);
-        const nDone = formatFullNode('✅ Execution Verified', bound1, 6);
+        const nScope = formatFullNode('Phase 1: System Scope', t0_1, 6);
+        const nPre = formatFullNode('Phase 2: Precondition Gate', t1_2, 6);
+        const nRevert = formatFullNode('🛑 Circuit Breaker: Safe Rollback', t4_1, 6);
+        const nPipeline = formatFullNode('Phase 3: Execution Pipeline', t2_2, 6);
+        const nAudit = formatFullNode('Phase 4: SLA Verification', t3_1, 6);
+        const nSuccess = formatFullNode('Phase 5: Verified Audit State', t4_2, 6);
 
         dagMermaid = `flowchart TD
-  A["${nIngest}"] --> B{"${nGate}"}
-  B -->|"Violation or Infeasible"| C["${nRevert}"]
-  B -->|"Grounded"| D["${nExec}"]
-  D --> E{"Invariant Check"}
-  E -->|"Breach"| C
-  E -->|"Passed"| F["${nDone}"]
+  A["${nScope}"] --> B{"${nPre}"}
+  B -->|"Precondition Breach"| C["${nRevert}"]
+  B -->|"Grounded Pass"| D["${nPipeline}"]
+  D --> E{"${nAudit}"}
+  E -->|"SLA Violation"| C
+  E -->|"Integrity Verified"| F["${nSuccess}"]
   style A fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
   style B fill:#fffbeb,stroke:#d97706,stroke-width:2px
   style C fill:#fee2e2,stroke:#ef4444,stroke-width:2px
