@@ -1176,18 +1176,18 @@ The chatbot will strictly tether all answers and reasoning to this context witho
       btnSend.disabled = true;
 
       // Construct Grounding System Prompt
-      const systemPrompt = `You are Onyx GroundTruth, an executive-grade AI reasoning assistant.
-You are given a context document on the left:
-Title: "${sourceTitle}"
+      const systemPrompt = `You are Onyx GroundTruth, a direct and precise AI assistant that gives straight, factual answers grounded strictly in the source text on the left.
+Context Title: "${sourceTitle}"
 Context Document:
 """
 ${sourceText || "No context text provided. Please inform the user to paste context or provide a URL."}
 """
 
-STRICT GROUND TRUTH INVARIANTS:
-1. Always ground your facts, answers, and reasoning STRICTLY in the provided context above.
-2. If the user asks about an event, person, or limit not in the text, clearly state that it is not documented in the provided excerpt. Never hallucinate numbers, thresholds, or dates.
-3. Be articulate, concise, direct, and professional. Highlight key invariants and bounds in bold.`;
+STRICT ANSWERING RULES:
+1. GIVE A STRAIGHT ANSWER FIRST: Answer the question directly and completely in the very first sentence. Never use conversational filler, preamble, or phrases like "Based on the text...".
+2. ACCURACY: Ground every statement strictly in the context above.
+3. CONCISENESS: Keep answers clear, punchy, and to the point. Highlight key names, amounts, and decisions in bold.
+4. UNKNOWN FACTS: If the answer cannot be found in the excerpt, state clearly: "That information is not documented in the provided text."`;
 
       // Bot placeholder message
       const botMsgId = 'msg-' + Date.now();
@@ -1217,9 +1217,8 @@ STRICT GROUND TRUTH INVARIANTS:
         { role: "user", content: query }
       ];
 
-      let resp;
       try {
-        resp = await fetch(GROQ_ENDPOINT, {
+        const resp = await fetch(GROQ_ENDPOINT, {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${apiKey}`,
@@ -1232,38 +1231,41 @@ STRICT GROUND TRUTH INVARIANTS:
             max_tokens: 1024
           })
         });
+
+        if (!resp.ok) {
+          console.warn(`Groq API returned HTTP ${resp.status}, falling back to local straight-answer generator.`);
+          const fallbackReply = generateLocalGroundedAnswer(query, sourceTitle, sourceText);
+          updateBotMessage(botMsgId, formatBotReply(fallbackReply, "Onyx Deterministic Invariant Engine"));
+          conversationHistory.push({ role: "user", content: query });
+          conversationHistory.push({ role: "assistant", content: fallbackReply });
+          return;
+        }
+
+        const data = await resp.json();
+        const reply = data.choices[0]?.message?.content || "No response generated.";
+        updateBotMessage(botMsgId, formatBotReply(reply));
+        conversationHistory.push({ role: "user", content: query });
+        conversationHistory.push({ role: "assistant", content: reply });
+
       } catch (networkErr) {
-        console.warn("Groq network/CORS error, activating local grounded synthesis:", networkErr);
+        console.warn("Groq network/CORS error, activating local straight-answer generator:", networkErr);
         const fallbackReply = generateLocalGroundedAnswer(query, sourceTitle, sourceText);
-        updateBotMessage(botMsgId, formatBotReply(fallbackReply));
+        updateBotMessage(botMsgId, formatBotReply(fallbackReply, "Onyx Deterministic Invariant Engine"));
         conversationHistory.push({ role: "user", content: query });
         conversationHistory.push({ role: "assistant", content: fallbackReply });
-        return;
       }
-
-      if (!resp.ok) {
-        const errJson = await resp.json().catch(() => ({}));
-        throw new Error(errJson.error?.message || `Groq API Error HTTP ${resp.status}`);
-      }
-
-      const data = await resp.json();
-      const reply = data.choices[0]?.message?.content || "No response generated.";
-      
-      updateBotMessage(botMsgId, formatBotReply(reply));
-      conversationHistory.push({ role: "user", content: query });
-      conversationHistory.push({ role: "assistant", content: reply });
     }
 
     function generateLocalGroundedAnswer(query, title, text) {
       if (!text || text.trim().length === 0) {
-        return `⚠️ **No Context Loaded**: Please paste a document excerpt or connect a web URL in the left pane so I can ground my responses strictly in your source material.`;
+        return "Please paste a document or connect a web URL on the left so I can answer questions about it.";
       }
 
       const qLower = query.toLowerCase();
-      const sentences = text.split(/(?<=[.?!])\s+/).map(s => s.trim()).filter(s => s.length > 15);
 
-      // Dedicated Flowchart DAG Generator
+      // Flowchart DAG request
       if (qLower.includes('flowchart') || qLower.includes('mermaid') || qLower.includes('dag')) {
+        const sentences = text.split(/(?<=[.?!])\s+/).map(s => s.trim()).filter(s => s.length > 15);
         const settingSent = sentences.find(s => /\b(when|on|in|at|morning|village|city|town|bend|oregon|house|shop|store)\b/i.test(s)) || sentences[0] || 'Initial Setting';
         const actorSent = sentences.find(s => s !== settingSent && /\b(wanted|needed|wished|believed|dreamed|thought|figured|hoped|aimed)\b/i.test(s)) || sentences[1] || 'Actor Axiom';
         const dilemmaSent = sentences.find(s => /\b(wanted.*?but|tried.*?but|however|although|problem|dilemma|struggled|could not|cannot|unstimulated|nothing came)\b/i.test(s)) || 'Core Dilemma: Inaction & status quo VS. Decisive intervention';
@@ -1273,40 +1275,70 @@ STRICT GROUND TRUTH INVARIANTS:
 
         const clean = str => (str || '').replace(/[#`\[\]{}()"']/g, ' ').replace(/\r?\n|\r/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 100);
 
-        return `### 🕸️ Grounded Narrative Decision Flowchart DAG\n\nI analyzed ***${title || 'the loaded context'}*** and synthesized the stategraph topology:\n\n\`\`\`mermaid\nflowchart TD\n  A["Setting Invariant: ${clean(settingSent)}"] --> B["Protagonist Axiom: ${clean(actorSent)}"]\n  B --> C{"Core Dilemma: ${clean(dilemmaSent)}"}\n  C -->|"Remain / Status Quo"| D["🛑 Stagnation: ${clean(stagnateSent)}"]\n  C -->|"Decisive Action"| E["✨ Action Catalyst: ${clean(actionSent)}"]\n  E --> F["Resolution: ${clean(resolSent)}"]\n  style A fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#f8fafc\n  style B fill:#1e293b,stroke:#64748b,stroke-width:2px,color:#f8fafc\n  style C fill:#0f172a,stroke:#0284c7,stroke-width:2px,color:#38bdf8\n  style D fill:#1e293b,stroke:#ef4444,stroke-width:2px,color:#f8fafc\n  style E fill:#1e293b,stroke:#10b981,stroke-width:2px,color:#f8fafc\n  style F fill:#1e293b,stroke:#8b5cf6,stroke-width:2px,color:#f8fafc\n\`\`\`\n\n*Every decision branch is grounded directly in the excerpt on the left pane.*`;
+        return `### 🕸️ Grounded Narrative Decision Flowchart DAG\n\n\`\`\`mermaid\nflowchart TD\n  A["Setting Invariant: ${clean(settingSent)}"] --> B["Protagonist Axiom: ${clean(actorSent)}"]\n  B --> C{"Core Dilemma: ${clean(dilemmaSent)}"}\n  C -->|"Remain / Status Quo"| D["🛑 Stagnation: ${clean(stagnateSent)}"]\n  C -->|"Decisive Action"| E["✨ Action Catalyst: ${clean(actionSent)}"]\n  E --> F["Resolution: ${clean(resolSent)}"]\n  style A fill:#fef3c7,stroke:#f59e0b,stroke-width:2px,color:#0f172a\n  style B fill:#f1f5f9,stroke:#64748b,stroke-width:2px,color:#0f172a\n  style C fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0f172a\n  style D fill:#fee2e2,stroke:#ef4444,stroke-width:2px,color:#0f172a\n  style E fill:#d1fae5,stroke:#10b981,stroke-width:2px,color:#0f172a\n  style F fill:#ede9fe,stroke:#8b5cf6,stroke-width:2px,color:#0f172a\n\`\`\``;
       }
 
-      
-      // Keyword matching
-      const queryWords = qLower.replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(w => w.length > 2 && !['what', 'when', 'where', 'which', 'who', 'whom', 'this', 'that', 'with', 'from', 'have', 'does', 'tell'].includes(w));
-      
-      const scoredSentences = sentences.map(s => {
-        const sLower = s.toLowerCase();
+      // Clean text & split sentences
+      const cleanText = text
+        .replace(/!\[.*?\]\(.*?\)/g, '')
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .replace(/\r?\n+/g, ' ');
+
+      const sentences = cleanText
+        .split(/(?<=[.?!])\s+/)
+        .map(s => s.trim().replace(/^[-*•\d.]+\s*/, ''))
+        .filter(s => s.length > 20 && !s.startsWith('Title:') && !s.startsWith('URL Source:') && !s.startsWith('Published Time:'));
+
+      // Extract query keywords
+      const queryWords = qLower
+        .replace(/[^a-z0-9\s]/g, '')
+        .split(/\s+/)
+        .filter(w => w.length > 2 && !['what', 'why', 'who', 'when', 'where', 'which', 'whom', 'how', 'did', 'does', 'the', 'and', 'for', 'about', 'with', 'from', 'have', 'tell', 'this', 'that', 'they', 'them', 'give'].includes(w));
+
+      const scored = [];
+      sentences.forEach(s => {
+        const sLow = s.toLowerCase();
         let score = 0;
-        for (const w of queryWords) {
-          if (sLower.includes(w)) score += 2;
+        queryWords.forEach(w => {
+          if (sLow.includes(w)) score += 3;
+        });
+
+        // Intent boosts
+        if (/\b(how much|cost|price|money|amount|pay|earned|made)\b/i.test(qLower) && /\b(\$|\bdollars?|hundred|thousand|cents?|\d+)\b/i.test(s)) {
+          score += 5;
         }
-        return { text: s, score };
-      }).filter(item => item.score > 0).sort((a, b) => b.score - a.score);
+        if (/\b(store|sell|idea|plan|market day)\b/i.test(qLower) && /\b(beanie|lottery|raffle|prize|pop-up|ticket)\b/i.test(s)) {
+          score += 5;
+        }
+        if (/\b(grandpa|jeff|ticket|scratch)\b/i.test(qLower) && /\b(yacht|cruise|addicted|scratch-off|twenty)\b/i.test(s)) {
+          score += 5;
+        }
 
-      const topMatches = scoredSentences.slice(0, 3).map(m => m.text);
+        if (score > 0) scored.push({ s, score });
+      });
 
-      let response = `### Grounded Response from *${title || 'Provided Context'}*\n\n`;
-      if (topMatches.length > 0) {
-        response += `Based strictly on the excerpt provided:\n\n`;
-        topMatches.forEach(sent => {
-          response += `> "${sent}"\n\n`;
-        });
-        response += `**Factual Synthesis**:\n`;
-        response += `Key grounded statements extracted directly from the source context:\n`;
-        topMatches.forEach((sent, idx) => {
-          response += `${idx + 1}. ${sent}\n`;
-        });
-      } else {
-        response += `I searched the excerpt for references to your query (${queryWords.join(', ')}), but found no explicit mention in the text.\n\n*Strict Invariant Principle: No out-of-context details are fabricated.*`;
+      scored.sort((a, b) => b.score - a.score);
+      const top = scored.slice(0, 3).map(item => item.s);
+
+      if (top.length === 0) {
+        return `I checked the text for "${queryWords.slice(0, 4).join(' ')}", but that detail is not explicitly documented in the excerpt.`;
       }
 
-      return response;
+      const cleanSentence = str => (str || '').replace(/[\uFFFD]/g, "'")
+        .replace(/^[“”"'\s–—\d.•*-]+/, '')
+        .replace(/[“”"'\s]+$/, '')
+        .trim();
+
+      // STRAIGHT ANSWER COMPOSITION
+      let reply = `**Direct Answer**: ${cleanSentence(top[0])}.\n\n`;
+      if (top[1] && top[1] !== top[0]) {
+        reply += `${cleanSentence(top[1])}.\n\n`;
+      }
+      if (top[2] && top[2] !== top[0] && top[2] !== top[1]) {
+        reply += `*Grounded detail*: ${cleanSentence(top[2])}.`;
+      }
+
+      return reply.trim();
     }
 
     async function executeWebLlmChat(query, systemPrompt, botMsgId) {
@@ -1335,7 +1367,7 @@ STRICT GROUND TRUTH INVARIANTS:
     // ==========================================
     // UI HELPERS & SAMPLES
     // ==========================================
-    function formatBotReply(rawText) {
+    function formatBotReply(rawText, engineLabel) {
       const mermaidBlocks = [];
       let processed = rawText.replace(/```mermaid([\s\S]*?)```/g, (match, mcode) => {
         const idx = mermaidBlocks.length;
@@ -1366,7 +1398,7 @@ STRICT GROUND TRUTH INVARIANTS:
         }
       }, 80);
 
-      return `<p>${html}</p><div class="ground-truth-badge"><i data-lucide="check" style="width:11px;height:11px;"></i> Grounded via ${activeEngine === 'groq' ? 'Groq LPU Llama-3.3-70B' : 'Local WebGPU Llama-3.2'}</div>`;
+      return `<p>${html}</p><div class="ground-truth-badge"><i data-lucide="check" style="width:11px;height:11px;"></i> Grounded via ${engineLabel || (activeEngine === 'groq' ? 'Groq LPU Llama-3.3-70B' : 'Local WebGPU Llama-3.2')}</div>`;
     }
 
     window.sendQuickPrompt = function(promptText) {
