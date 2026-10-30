@@ -1313,25 +1313,33 @@ Ready to execute Step 1: IngestInputs...
         ];
 
         // Format short labels for Mermaid nodes (max 45 chars)
-        const cleanNode = (t, maxLen=42) => {
-          if (!t) return 'Node';
-          const c = t.replace(/["'\\]/g, '').replace(/<[^>]*>/g, '').trim();
-          return c.length > maxLen ? c.slice(0, maxLen) + '...' : c;
+
+        // Formats the full content of any block with word-wrapping, never truncating with '...'
+        const formatFullNode = (header, content, wordsPerLine = 6) => {
+          const raw = (content || header || '').replace(/["\\`]/g, "'").replace(/<[^>]*>/g, '').trim();
+          if (!raw) return `<b>${header}</b>`;
+          const words = raw.split(/\s+/);
+          const lines = [];
+          for (let i = 0; i < words.length; i += wordsPerLine) {
+            lines.push(words.slice(i, i + wordsPerLine).join(' '));
+          }
+          const body = lines.join('<br/>');
+          return header ? `<b>${header}</b><br/><small>${body}</small>` : body;
         };
 
-        const nSetting = cleanNode(settingPoints[0] || title || 'Setting Invariant');
-        const nProtagonist = cleanNode(characterTraits[0] || 'Protagonist Axiom');
-        const nDilemma = cleanNode(conflicts[0] || 'Core Narrative Dilemma');
-        const nStagnate = cleanNode(negations[0] || 'Passive Resignation');
-        const nAction = cleanNode(characterTraits[1] || 'Active Pursuits');
-        const nResolution = cleanNode(tripwire2 || 'Transformative Journey');
+        const nSetting = formatFullNode('Setting', settingPoints[0] || title || 'Setting Invariant', 7);
+        const nProtagonist = formatFullNode('Protagonist', characterTraits[0] || 'Protagonist Axiom', 7);
+        const nDilemma = formatFullNode('Core Dilemma', conflicts[0] || 'Core Narrative Conflict', 5);
+        const nStagnate = formatFullNode('🛑 Stagnation', negations[0] || 'Passive Resignation', 6);
+        const nAction = formatFullNode('✨ Action Catalyst', characterTraits[1] || 'Active Pursuits', 6);
+        const nResolution = formatFullNode('Resolution', tripwire2 || 'Transformative Journey', 6);
 
         dagMermaid = `flowchart TD
-  A["Setting: ${nSetting}"] --> B["Protagonist: ${nProtagonist}"]
-  B --> C{"Dilemma: ${nDilemma}"}
-  C -->|"Resignation / Compromise"| D["🛑 Stagnation: ${nStagnate}"]
-  C -->|"Follow Invariant Drive"| E["✨ Action Catalyst: ${nAction}"]
-  E --> F["Resolution: ${nResolution}"]
+  A["${nSetting}"] --> B["${nProtagonist}"]
+  B --> C{"${nDilemma}"}
+  C -->|"Resignation / Compromise"| D["${nStagnate}"]
+  C -->|"Follow Invariant Drive"| E["${nAction}"]
+  E --> F["${nResolution}"]
   style A fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
   style B fill:#f1f5f9,stroke:#64748b,stroke-width:2px
   style C fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
@@ -1404,25 +1412,19 @@ Ready to execute Step 1: IngestInputs...
           }
         ];
 
-        const cleanNode = (t, maxLen=38) => {
-          if (!t) return 'Gate';
-          const c = t.replace(/["'\\]/g, '').replace(/<[^>]*>/g, '').trim();
-          return c.length > maxLen ? c.slice(0, maxLen) + '...' : c;
-        };
-
-        const nIngest = cleanNode(title || 'Source Ingest');
-        const nGate = cleanNode(rule1);
-        const nRevert = cleanNode(trip1);
-        const nExec = cleanNode(dir2);
-        const nDone = cleanNode(bound1);
+        const nIngest = formatFullNode('Ingest', title || 'Source Ingest', 7);
+        const nGate = formatFullNode('Verify Precondition', rule1, 6);
+        const nRevert = formatFullNode('🛑 TRIPWIRE: Safe Reversion', trip1, 6);
+        const nExec = formatFullNode('Execute Action', dir2, 6);
+        const nDone = formatFullNode('✅ Execution Verified', bound1, 6);
 
         dagMermaid = `flowchart TD
-  A["Ingest: ${nIngest}"] --> B{"Verify Precondition:<br/>${nGate}"}
-  B -->|"Violation or Infeasible"| C["🛑 TRIPWIRE: Safe Reversion<br/>(${nRevert})"]
-  B -->|"Grounded"| D["Execute Action:<br/>${nExec}"]
+  A["${nIngest}"] --> B{"${nGate}"}
+  B -->|"Violation or Infeasible"| C["${nRevert}"]
+  B -->|"Grounded"| D["${nExec}"]
   D --> E{"Invariant Check"}
   E -->|"Breach"| C
-  E -->|"Passed"| F["✅ Execution Verified<br/>(${nDone})"]
+  E -->|"Passed"| F["${nDone}"]
   style A fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
   style B fill:#fffbeb,stroke:#d97706,stroke-width:2px
   style C fill:#fee2e2,stroke:#ef4444,stroke-width:2px
