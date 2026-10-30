@@ -542,7 +542,7 @@
           <!-- INPUT 1: USER DOCUMENT ENTRY -->
           <div style="margin-bottom: 14px;">
             <label class="input-label">📄 Input 1: Custom Document / Policy / SOP (Paste or Edit):</label>
-            <input type="text" id="customDocTitleInput" class="custom-input-box" placeholder="Document Title (e.g., SOP-ENG-2026: Reactor Overpressure Standard)" value="SOP-ENG-MPC-704: Distillation Column MPC & Safety Protocol" />
+            <input type="text" id="customDocTitleInput" class="custom-input-box" placeholder="Document Title (e.g., SOP-ENG-2026: Reactor Overpressure Standard)" value="SEC-POL-402_Rev4: Enterprise IT SSO & Privilege Escalation Policy" />
             <textarea id="customDocTextInput" class="custom-input-box" placeholder="Paste your raw policy document, SOP manual, markdown rules, or PDF text here...
 Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROHIBITED, MUST NEVER)..."></textarea>
           </div>
@@ -551,7 +551,7 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
           <div style="margin-bottom: 14px;">
             <label class="input-label">🌐 Input 2: Web Address / Internal Portal URL:</label>
             <div style="display: flex; gap: 6px;">
-              <input type="text" id="customWebAddressInput" class="custom-input-box" style="margin-bottom: 0;" placeholder="https://internal.corp.local/console-route" value="https://process-control.refining.local/reflux-optimizer" />
+              <input type="text" id="customWebAddressInput" class="custom-input-box" style="margin-bottom: 0;" placeholder="https://internal.corp.local/console-route" value="https://internal.corp.local/overview" />
               <button class="btn btn-secondary btn-sm" onclick="applyCustomWebUrl()">Connect</button>
             </div>
           </div>
@@ -565,9 +565,9 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
           <div style="margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border-color);">
             <div style="font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px;">Or load a quick starter template:</div>
             <div style="display: flex; gap: 6px; flex-wrap: wrap;">
-              <button class="btn btn-secondary btn-sm" onclick="loadStarterTemplate('mpc')">⚙️ MPC Control</button>
-              <button class="btn btn-secondary btn-sm" onclick="loadStarterTemplate('sop')">📦 S&amp;OP Balance</button>
-              <button class="btn btn-secondary btn-sm" onclick="loadStarterTemplate('water')">💧 Water Chemistry</button>
+              <button class="btn btn-secondary btn-sm" onclick="loadStarterTemplate('it_security')">🛡️ Enterprise IT SSO</button>
+              <button class="btn btn-secondary btn-sm" onclick="loadStarterTemplate('fintech_dispute')">💳 FinTech Dispute Intake</button>
+              <button class="btn btn-secondary btn-sm" onclick="loadStarterTemplate('cloud_devops')">☁️ Cloud Canary Release</button>
             </div>
           </div>
 
@@ -731,41 +731,232 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
       activeStep: 1,
       inputViewMode: 'side_by_side',
       highlightDocInvariants: true,
-      currentWebUrl: 'https://process-control.refining.local/reflux-optimizer',
+      currentWebUrl: 'https://internal.corp.local/overview',
+      currentTemplateKey: 'it_security',
       customDoc: {
-        title: 'SOP-ENG-MPC-704: Distillation Column MPC & Safety Protocol',
-        text: `§ 1.0 Actuator Slew Rate Limit: Reflux valve moves MUST NOT EXCEED 1.5% per minute to prevent liquid weeping shock.
-§ 2.0 Column Flooding Ceiling: Tray differential pressure MUST REMAIN BELOW 42.0 kPa. Exceeding 42 kPa for > 90 seconds trips reboiler steam by 20%.
-§ 3.0 Clean Air Flaring Prohibition: Flaring off-spec hydrocarbon vapor during economic optimization is STRICTLY PROHIBITED under Title V mandates. Product must route to slop tanks.`
+        title: 'SEC-POL-402_Rev4: Enterprise IT SSO & Privilege Escalation Policy',
+        text: `§ 1.0 Multi-Factor Authentication (MFA) Mandate: All engineers, contractor personnel, and automated system accounts accessing production VPCs, Kubernetes clusters, and database enclaves must authenticate using physical, hardware-backed FIDO2 WebAuthn cryptographic keys (e.g. YubiKey 5 Series). Legacy SMS OTP and voice-call telephone verifications are STRICTLY PROHIBITED.
+§ 2.0 Elevated Database Write Leases & Authorization Ceilings: Direct write access to customer relational databases (PostgreSQL/Aurora) requires an active JIRA Change Reference ticket and mandatory sign-off from an L2 Engineering Director or VP. Elevated access leases are strictly ephemeral: TTL SHALL NOT EXCEED 4 HOURS (240 minutes).
+§ 3.0 Emergency Break-Glass Exception Protocol: In the extraordinary circumstance of an active Sev-1 / P0 outage where designated approvers are unreachable, an on-call SRE may trigger the automated Emergency Break-Glass procedure. Break-Glass tokens are hard-capped at 2 HOURS (7,200 SECONDS). A non-dismissible audit event is dispatched instantly to SIRT.`
       },
       cascadeTiers: [],
-      mermaidDag: '',
+      mermaidDag: `flowchart TD
+  A["👤 Employee Login"] --> B{"🔑 Hardware MFA Check"}
+  B -->|"FIDO2 Token OK"| C["📄 Portal Dashboard (/overview)"]
+  B -->|"Token Missing"| D["⚠️ Register Hardware Token (/mfa-setup)"]
+  C --> E{"Request Type"}
+  E -->|"Standard Access"| F["✅ Auto-Approved (/status)"]
+  E -->|"Production DB Root"| G["✍️ Director Approval Gate (/privilege-escalation)"]
+  G -->|"Approved"| H["🟢 4-Hour Temporary Lease"]
+  G -->|"Denied"| I["❌ Access Denied"]
+  E -->|"Break-Glass"| J["🚨 Emergency Break-Glass Form (/break-glass)"]
+  J --> K["🔒 2-Hour Auto-Revoke + SOC2 Alert"]
+  style B fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
+  style G fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+  style K fill:#fee2e2,stroke:#ef4444,stroke-width:2px`,
       radarChart: null,
       comparativeChart: null
     };
 
     // TEMPLATES FOR QUICK 1-CLICK POPULATION
-    const TEMPLATES = {
-      mpc: {
-        title: 'SOP-ENG-MPC-704: Distillation Column MPC & Safety Protocol',
-        url: 'https://process-control.refining.local/reflux-optimizer',
-        text: `§ 1.0 Actuator Slew Rate Limit: Reflux valve moves MUST NOT EXCEED 1.5% per minute to prevent liquid weeping shock.
-§ 2.0 Column Flooding Ceiling: Tray differential pressure MUST REMAIN BELOW 42.0 kPa. Exceeding 42 kPa for > 90 seconds trips reboiler steam by 20%.
-§ 3.0 Clean Air Flaring Prohibition: Flaring off-spec hydrocarbon vapor during economic optimization is STRICTLY PROHIBITED under Title V mandates. Product must route to slop tanks.`
+        const TEMPLATES = {
+      it_security: {
+        key: 'it_security',
+        title: 'SEC-POL-402_Rev4: Enterprise IT SSO & Privilege Escalation Policy',
+        url: 'https://internal.corp.local/overview',
+        text: `§ 1.0 Multi-Factor Authentication (MFA) Mandate: All engineers, contractor personnel, and automated system accounts accessing production VPCs, Kubernetes clusters, and database enclaves must authenticate using physical, hardware-backed FIDO2 WebAuthn cryptographic keys (e.g. YubiKey 5 Series). Legacy SMS OTP and voice-call telephone verifications are STRICTLY PROHIBITED.
+§ 2.0 Elevated Database Write Leases & Authorization Ceilings: Direct write access to customer relational databases (PostgreSQL/Aurora) requires an active JIRA Change Reference ticket and mandatory sign-off from an L2 Engineering Director or VP. Elevated access leases are strictly ephemeral: TTL SHALL NOT EXCEED 4 HOURS (240 minutes).
+§ 3.0 Emergency Break-Glass Exception Protocol: In the extraordinary circumstance of an active Sev-1 / P0 outage where designated approvers are unreachable, an on-call SRE may trigger the automated Emergency Break-Glass procedure. Break-Glass tokens are hard-capped at 2 HOURS (7,200 SECONDS). A non-dismissible audit event is dispatched instantly to SIRT.`,
+        dagMermaid: `flowchart TD
+  A["👤 Employee Login"] --> B{"🔑 Hardware MFA Check"}
+  B -->|"FIDO2 Token OK"| C["📄 Portal Dashboard (/overview)"]
+  B -->|"Token Missing"| D["⚠️ Register Hardware Token (/mfa-setup)"]
+  C --> E{"Request Type"}
+  E -->|"Standard Access"| F["✅ Auto-Approved (/status)"]
+  E -->|"Production DB Root"| G["✍️ Director Approval Gate (/privilege-escalation)"]
+  G -->|"Approved"| H["🟢 4-Hour Temporary Lease"]
+  G -->|"Denied"| I["❌ Access Denied"]
+  E -->|"Break-Glass"| J["🚨 Emergency Break-Glass Form (/break-glass)"]
+  J --> K["🔒 2-Hour Auto-Revoke + SOC2 Alert"]
+  style B fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
+  style G fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
+  style K fill:#fee2e2,stroke:#ef4444,stroke-width:2px`,
+        cascadeTiers: [
+          {
+            tier: 'Tier 0: Root Invariant',
+            desc: 'Constitutional Identity & Authentication Gate',
+            badge: 'root-invariant',
+            rules: [
+              'RULE_ROOT_MFA: Hardware FIDO2 WebAuthn cryptographic challenge required across all internal systems without exception.',
+              'STRICT NEGATION: Legacy SMS OTP and voice telephone MFA are STRICTLY PROHIBITED.'
+            ]
+          },
+          {
+            tier: 'Tier 1: Scoped Directive',
+            desc: 'Privileged Infrastructure Access Boundaries',
+            badge: 'directive',
+            rules: [
+              'DIRECTIVE (https://internal.corp.local/overview): Standard employee SSO grants read-only staging access.',
+              'DIRECTIVE: Any elevated write or production access requires passing the L2 Director Gate.'
+            ]
+          },
+          {
+            tier: 'Tier 2: Execution Rules',
+            desc: 'L2 Director Dual-Key Approval Gate',
+            badge: 'execution',
+            rules: [
+              'RULE: Production database lease requests must submit a valid JIRA ticket number (INFRA-XXXX).',
+              'RULE: Must obtain cryptographic co-signature from an active Engineering Director or VP.'
+            ]
+          },
+          {
+            tier: 'Tier 3: Parameter Bounds',
+            desc: 'Time-Bound Lease Constraint (Max 4 Hours)',
+            badge: 'param-bound',
+            rules: [
+              'BOUND: Lease expiration timestamp is hard-capped at now() + 4 HOURS (240 minutes).',
+              'BOUND: Break-Glass tokens are hard-capped at exactly 2 HOURS (7,200 seconds).'
+            ]
+          },
+          {
+            tier: 'Tier 4: Dead Ends & Aborts',
+            desc: 'Emergency Revocation & Audit Tripwires',
+            badge: 'dead-end',
+            rules: [
+              'DEAD END: If Break-Glass token expires -> Instant session termination and alert SIRT.',
+              'DEAD END: If SMS OTP attempted -> Immediate account lock.'
+            ]
+          }
+        ]
       },
-      sop: {
-        title: 'SOP-SCM-OP-2026: Multi-Echelon S&OP Mass-Balance Manual',
-        url: 'https://supply-chain.logistics.local/mass-balance-console',
-        text: `§ 1.0 Safety Stock Floor: Ending safety stock MUST NEVER FALL BELOW 21 days of supply (85% target buffer).
-§ 2.0 Plant Overtime Cap: Production overtime SHALL NOT EXCEED 12.0% per shift across tier-1 plants.
-§ 3.0 Mass-Balance Conservation: Supply and Demand plans MUST RECONCILE with less than 0.05% arithmetic gap.`
+      fintech_dispute: {
+        key: 'fintech_dispute',
+        title: 'POL-OPS-AML-2026-015: FinTech Dispute Intake & AML Hold',
+        url: 'https://internal.corp.local/disputes',
+        text: `§ 1.0 Tier-1 Instant Provisional Refund Guidelines: Cardholder disputes for unauthorized transactions with an aggregate claim amount EQUAL TO OR LESS THAN $150.00 and a machine risk score under 25 may be provisionally credited within 60 seconds without supervisor override.
+§ 2.0 AML Velocity & SAR Filing Mandatory Freeze: Automated rule processors detecting transaction velocities exceeding $5,000.00 within a 24-hour window on newly provisioned cards MUST IMMEDIATELY PLACE A 72-HOUR RESTRICTIVE HOLD. Under Federal Non-Tipping Invariants (31 U.S.C. § 5318(g)), agents and customer support are STRICTLY PROHIBITED from disclosing SAR investigations.
+§ 3.0 Merchant Evidence Rebuttal Protocol: Merchants have strictly 5 business days to submit signed carrier proof of delivery. Failure to supply valid carrier tracking results in automatic merchant forfeiture.`,
+        dagMermaid: `flowchart TD
+  A["📥 Dispute Ingest (/disputes)"] --> B{"Risk Scoring"}
+  B -->|"< $150 & Low Risk"| C["⚡ Instant Tier 1 Credit (/tier1-refund)"]
+  B -->|"Velocity Flag > $5k"| D["🚨 SAR / AML Freeze Gate (/aml-hold)"]
+  B -->|"Standard Dispute"| E["📄 Merchant Evidence Intake (/merchant-evidence)"]
+  E --> F{"Merchant Proof"}
+  F -->|"Valid Delivery"| G["❌ Chargeback Denied"]
+  F -->|"No Delivery in 5 Days"| H["✅ Merchant Forfeits / Refunded"]
+  style C fill:#d1fae5,stroke:#10b981,stroke-width:2px
+  style D fill:#fee2e2,stroke:#ef4444,stroke-width:2px`,
+        cascadeTiers: [
+          {
+            tier: 'Tier 0: Root Invariant',
+            desc: 'Federal AML Compliance & Non-Tipping Invariant',
+            badge: 'root-invariant',
+            rules: [
+              'RULE_ROOT_AML: Agents are strictly prohibited under federal regulations from disclosing SAR filings to customers.',
+              'STRICT NEGATION: Tipping off a customer regarding a 72-hour AML hold is STRICTLY PROHIBITED.'
+            ]
+          },
+          {
+            tier: 'Tier 1: Scoped Directive',
+            desc: 'Dispute Classification & Threshold Routing',
+            badge: 'directive',
+            rules: [
+              'DIRECTIVE (https://internal.corp.local/disputes): Disputes under $150 route to instant automated reversal.',
+              'DIRECTIVE: Disputes over $5,000 cross-check FinCEN anti-money laundering velocity thresholds.'
+            ]
+          },
+          {
+            tier: 'Tier 2: Execution Rules',
+            desc: 'Tier 1 Automated Credit Reversal Gate',
+            badge: 'execution',
+            rules: [
+              'RULE: Disputes meeting the $150 threshold and low risk score (< 25) disburse provisional credits within 60s.',
+              'RULE: Complex disputes require signed merchant delivery rebuttals within 5 business days.'
+            ]
+          },
+          {
+            tier: 'Tier 3: Parameter Bounds',
+            desc: 'Mandatory 72-Hour AML Compliance Hold',
+            badge: 'param-bound',
+            rules: [
+              'BOUND: Instant credit ceiling: EQUAL TO OR LESS THAN $150.00.',
+              'BOUND: High-velocity transactions are held for exactly 72 HOURS without exception.'
+            ]
+          },
+          {
+            tier: 'Tier 4: Dead Ends & Aborts',
+            desc: 'Forfeiture & Suspicious Activity Tripwires',
+            badge: 'dead-end',
+            rules: [
+              'DEAD END: If merchant fails to supply tracking proof in 5 days -> Automatic forfeiture.',
+              'DEAD END: If transaction velocity > $5,000 -> Immediate 72-hour freeze.'
+            ]
+          }
+        ]
       },
-      water: {
-        title: 'SOP-WTR-CT-409: Industrial Cooling Tower Legionella & Scale Standard',
-        url: 'https://utilities.cooling-tower.local/chemistry-monitor',
-        text: `§ 1.0 Conductivity Limit: Basin water electrical conductivity MUST NEVER EXCEED 2,400 uS/cm.
-§ 2.0 Langelier Saturation Index: Calculated LSI MUST DWELL STRICTLY BETWEEN +0.2 AND +0.8.
-§ 3.0 Biocide Soak Lockout: Automated blowdown bleed valve MUST BE LOCKED SHUT FOR EXACTLY 4.0 HOURS during biocide injection.`
+      cloud_devops: {
+        key: 'cloud_devops',
+        title: 'SRE-RUN-DB-MIG-2026: Cloud Canary Release & DB Lock Runbook',
+        url: 'https://internal.corp.local/release-console',
+        text: `§ 1.0 Production Canary Deployment Gate: New microservice artifact builds MUST FIRST route strictly 5% of live production traffic to isolated canary container pods. Canary evaluation duration MUST NOT BE LESS THAN 15 MINUTES (900 seconds) prior to promotion.
+§ 2.0 Database Schema Lock Mitigation: DDL migrations (ALTER TABLE, CREATE INDEX) executing against primary transactional relational tables MUST ACQUIRE EXCLUSIVE METADATA LOCKS IN LESS THAN 200 MILLISECONDS. If lock acquisition exceeds 200ms, the migration script MUST IMMEDIATELY ABORT and yield lock queues.
+§ 3.0 Automated SRE Rollback Tripwires: If Canary 5xx HTTP error rates exceed 0.05% or P99 request latency degrades by > 20%, automated deployment orchestrators MUST TRIGGER AN INSTANT ROLLBACK to previous stable image tags.`,
+        dagMermaid: `flowchart TD
+  A["🚀 Deploy Canary (/release-console)"] --> B["⚖️ Route 5% Traffic (/canary-traffic)"]
+  B --> C{"DDL Table Lock < 200ms?"}
+  C -->|"Lock Timeout Exceeded"| D["🚨 Abort Migration & Rollback (/rollback-trigger)"]
+  C -->|"Safe Lock"| E{"15-Min Error Rate"}
+  E -->|"5xx > 0.05%"| D
+  E -->|"Healthy"| F["🟢 Promote to 100% Production"]
+  style D fill:#fee2e2,stroke:#ef4444,stroke-width:2px
+  style F fill:#d1fae5,stroke:#10b981,stroke-width:2px`,
+        cascadeTiers: [
+          {
+            tier: 'Tier 0: Root Invariant',
+            desc: 'Production Availability & Error Budget Invariant',
+            badge: 'root-invariant',
+            rules: [
+              'RULE_ROOT_AVAILABILITY: Production service SLA requires 99.99% uptime.',
+              'STRICT NEGATION: Automated rollbacks supersede manual operator decisions whenever error budgets drain.'
+            ]
+          },
+          {
+            tier: 'Tier 1: Scoped Directive',
+            desc: 'Canary Progressive Rollout Protocol',
+            badge: 'directive',
+            rules: [
+              'DIRECTIVE (https://internal.corp.local/release-console): Releases must proceed in staged gates: 5% Canary ➔ 100% Production.',
+              'DIRECTIVE: Traffic must remain clamped at 5% for not less than 15 minutes.'
+            ]
+          },
+          {
+            tier: 'Tier 2: Execution Rules',
+            desc: '15-Minute Minimum Observation Interval',
+            badge: 'execution',
+            rules: [
+              'RULE: Monitor HTTP 5xx error rate and p99 response times throughout the 15-minute soak.',
+              'RULE: DDL migration must acquire locks safely or abort immediately.'
+            ]
+          },
+          {
+            tier: 'Tier 3: Parameter Bounds',
+            desc: 'Database DDL Table Lock Abort (200ms Max)',
+            badge: 'param-bound',
+            rules: [
+              'BOUND: Any database migration holding an exclusive table lock longer than 200ms is terminated.',
+              'BOUND: Canary traffic proportion: Strictly 5% (15-minute minimum soak).'
+            ]
+          },
+          {
+            tier: 'Tier 4: Dead Ends & Aborts',
+            desc: 'Automated Instant Rollback Tripwire',
+            badge: 'dead-end',
+            rules: [
+              'DEAD END: If 5xx error rate > 0.05% -> Automated instantaneous rollback to previous stable tag.',
+              'DEAD END: If DDL metadata lock wait > 200ms -> Abort migration and release lock queue.'
+            ]
+          }
+        ]
       }
     };
 
@@ -775,13 +966,20 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
     window.loadStarterTemplate = function(key) {
       const t = TEMPLATES[key];
       if (!t) return;
+      state.currentTemplateKey = key;
       document.getElementById('customDocTitleInput').value = t.title;
       document.getElementById('customDocTextInput').value = t.text;
       document.getElementById('customWebAddressInput').value = t.url;
       state.currentWebUrl = t.url;
       state.customDoc.title = t.title;
       state.customDoc.text = t.text;
-      synthesizeFromCustomInputs();
+      state.mermaidDag = t.dagMermaid;
+      state.cascadeTiers = t.cascadeTiers;
+      renderStep1Inputs();
+      renderCascadeTree();
+      if (state.activeStep === 2) {
+        renderMermaidDag();
+      }
       showToast(`Loaded ${t.title}`);
     };
 
@@ -802,63 +1000,72 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
       state.customDoc.text = text || 'No custom text entered.';
       state.currentWebUrl = webUrl;
 
-      // Extract numeric bounds and constraints from user text
-      const extractedBounds = extractRulesFromText(text);
-
-      // Build Cascade Tiers
-      state.cascadeTiers = [
-        {
-          tier: 'Tier 0: Root Invariants',
-          desc: 'Non-Negotiable System & Safety Bounds',
-          badge: 'root-invariant',
-          rules: extractedBounds.invariants.length > 0 ? extractedBounds.invariants : [
-            'INVARIANT: Critical system constraints must remain within hard upper and lower ceilings.',
-            'STRICT NEGATION: Actions causing unrecoverable tripwires are STRICTLY PROHIBITED.'
-          ]
-        },
-        {
-          tier: 'Tier 1: Scoped Directives',
-          desc: 'Target Web Routes & Intake Protocols',
-          badge: 'directive',
-          rules: [
-            `DIRECTIVE (${webUrl}): Continuously monitor active telemetry and incoming requests.`,
-            'DIRECTIVE (State Intake): Validate sensor freshness and input integrity before execution.',
-            'DIRECTIVE (Optimizer): Formulate execution trajectory adhering strictly to constraints.'
-          ]
-        },
-        {
-          tier: 'Tier 2: Execution Rules',
-          desc: 'Step-by-Step Gate Prerequisites',
-          badge: 'execution',
-          rules: extractedBounds.rules.length > 0 ? extractedBounds.rules : [
-            'RULE: Actuator and configuration move adjustments must respect slew-rate limits.',
-            'RULE: Secondary confirmation required prior to dispatching high-impact commands.',
-            'RULE: Log all state transitions to immutable audit ledger.'
-          ]
-        },
-        {
-          tier: 'Tier 3: Parameter Bounds',
-          desc: 'Extracted Numeric Guardrails',
-          badge: 'param-bound',
-          rules: extractedBounds.bounds.length > 0 ? extractedBounds.bounds : [
-            'BOUND: Operational safety margin: Strictly within specified tolerances.',
-            'BOUND: Timeout ceiling: Control loop deadline enforced.'
-          ]
-        },
-        {
-          tier: 'Tier 4: Dead Ends & Aborts',
-          desc: 'Automatic Circuit Breakers',
-          badge: 'dead-end',
-          rules: [
-            'DEAD END: If invariant threshold exceeded -> Abort automated execution and trigger emergency safety interlock.',
-            'DEAD END: If state sensor or web portal communication lost -> Hold safe state and alert supervisor.'
-          ]
+      // Check if text matches one of the 3 templates exactly
+      let matched = false;
+      for (const k of ['it_security', 'fintech_dispute', 'cloud_devops']) {
+        if (text.includes(TEMPLATES[k].text.slice(0, 40))) {
+          state.currentTemplateKey = k;
+          state.mermaidDag = TEMPLATES[k].dagMermaid;
+          state.cascadeTiers = TEMPLATES[k].cascadeTiers;
+          matched = true;
+          break;
         }
-      ];
+      }
 
-      // Build Mermaid DAG
-      const safeUrl = (webUrl || 'portal').replace(/[^a-zA-Z0-9_.-]/g, '_');
-      state.mermaidDag = `flowchart TD
+      if (!matched) {
+        // Dynamic custom synthesis for user-provided text
+        const extractedBounds = extractRulesFromText(text);
+        state.cascadeTiers = [
+          {
+            tier: 'Tier 0: Root Invariants',
+            desc: 'Non-Negotiable System & Safety Bounds',
+            badge: 'root-invariant',
+            rules: extractedBounds.invariants.length > 0 ? extractedBounds.invariants : [
+              'INVARIANT: Critical system constraints must remain within hard upper and lower ceilings.',
+              'STRICT NEGATION: Actions causing unrecoverable tripwires are STRICTLY PROHIBITED.'
+            ]
+          },
+          {
+            tier: 'Tier 1: Scoped Directives',
+            desc: 'Target Web Routes & Intake Protocols',
+            badge: 'directive',
+            rules: [
+              `DIRECTIVE (${webUrl}): Continuously monitor active telemetry and incoming requests.`,
+              'DIRECTIVE (State Intake): Validate sensor freshness and input integrity before execution.',
+              'DIRECTIVE (Optimizer): Formulate execution trajectory adhering strictly to constraints.'
+            ]
+          },
+          {
+            tier: 'Tier 2: Execution Rules',
+            desc: 'Step-by-Step Gate Prerequisites',
+            badge: 'execution',
+            rules: extractedBounds.rules.length > 0 ? extractedBounds.rules : [
+              'RULE: Actuator and configuration move adjustments must respect slew-rate limits.',
+              'RULE: Secondary confirmation required prior to dispatching high-impact commands.',
+              'RULE: Log all state transitions to immutable audit ledger.'
+            ]
+          },
+          {
+            tier: 'Tier 3: Parameter Bounds',
+            desc: 'Extracted Numeric Guardrails',
+            badge: 'param-bound',
+            rules: extractedBounds.bounds.length > 0 ? extractedBounds.bounds : [
+              'BOUND: Operational safety margin: Strictly within specified tolerances.',
+              'BOUND: Timeout ceiling: Control loop deadline enforced.'
+            ]
+          },
+          {
+            tier: 'Tier 4: Dead Ends & Aborts',
+            desc: 'Automatic Circuit Breakers',
+            badge: 'dead-end',
+            rules: [
+              'DEAD END: If invariant threshold exceeded -> Abort automated execution and trigger emergency safety interlock.',
+              'DEAD END: If state sensor or web portal communication lost -> Hold safe state and alert supervisor.'
+            ]
+          }
+        ];
+
+        state.mermaidDag = `flowchart TD
   A["Ingest User Inputs<br/>(Document + Web Portal)"] --> B{"Pre-flight Validation:<br/>Inputs Grounded & Clean?"}
   B -- "Stale or Invalid" --> C["DEAD END: Freeze Execution<br/>(Hold Safe Baseline)"]
   B -- "Valid Inputs" --> D["Evaluate Invariant Bounds<br/>(Target Endpoint)"]
@@ -868,23 +1075,18 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
   G --> H{"Telemetry Verified &<br/>Zero Invariant Breaches?"}
   H -- "Anomalies Detected" --> F
   H -- "Verified" --> I["Execution Successful<br/>(100% Policy Compliance)"]
-
-  classDef blue fill:#e0f2fe,stroke:#0284c7,stroke-width:2px,color:#0369a1;
-  classDef green fill:#ecfdf5,stroke:#10b981,stroke-width:2px,color:#065f46;
-  classDef red fill:#fef2f2,stroke:#ef4444,stroke-width:2px,color:#991b1b;
-  classDef amber fill:#fffbeb,stroke:#f59e0b,stroke-width:2px,color:#92400e;
-
-  class A,D,G blue;
-  class B,E,H amber;
-  class I green;
-  class C,F red;`;
+  style B fill:#e0f2fe,stroke:#0284c7,stroke-width:2px
+  style E fill:#fffbeb,stroke:#d97706,stroke-width:2px
+  style F fill:#fee2e2,stroke:#dc2626,stroke-width:2px
+  style I fill:#f0fdf4,stroke:#16a34a,stroke-width:2px`;
+      }
 
       renderStep1Inputs();
       renderCascadeTree();
       if (state.activeStep === 2) {
         renderMermaidDag();
       }
-      showToast('Synthesized Policy Cascade & Flowchart from your inputs!');
+      showToast('Synthesized Dual Policy Tree & Flowchart!');
     };
 
     function extractRulesFromText(rawText) {
