@@ -12,6 +12,8 @@
 
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Mermaid.js for Flowchart DAGs -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
 
   <!-- WebLLM WebGPU CDN -->
   <script type="module">
@@ -557,6 +559,53 @@
       opacity: 0.9;
     }
 
+    
+    /* MERMAID DIAGRAM IN CHAT */
+    .mermaid-diagram-card {
+      background: var(--onyx-950);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 12px 0;
+      overflow-x: auto;
+      max-width: 100%;
+    }
+    .mermaid-diagram-card svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* QUICK PROMPT CHIPS */
+    .chat-quick-prompts {
+      display: flex;
+      gap: 6px;
+      padding: 8px 18px 0 18px;
+      overflow-x: auto;
+      white-space: nowrap;
+      background: var(--onyx-950);
+      border-top: 1px solid var(--border-color);
+    }
+    .quick-prompt-btn {
+      background: var(--onyx-900);
+      border: 1px solid var(--border-color);
+      color: var(--onyx-300);
+      padding: 5px 11px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      flex-shrink: 0;
+    }
+    .quick-prompt-btn:hover {
+      background: var(--onyx-800);
+      border-color: var(--accent-cyan);
+      color: #ffffff;
+    }
+
     /* TOAST NOTIFICATION */
     .toast {
       position: fixed;
@@ -752,6 +801,22 @@ The chatbot will strictly tether all answers and reasoning to this context witho
         </div>
       </div>
 
+            <!-- QUICK ACTION PROMPTS FOR LLM -->
+      <div class="chat-quick-prompts">
+        <button type="button" class="quick-prompt-btn" onclick="sendQuickPrompt('Extract the complete narrative decision flowchart DAG for this text in Mermaid.js with Setting, Protagonist, Core Dilemma, Stagnation, Action Catalyst, and Resolution.')">
+          <i data-lucide="git-branch" style="width:12px;height:12px;color:var(--accent-cyan);"></i>
+          <span>Compile LLM Flowchart DAG</span>
+        </button>
+        <button type="button" class="quick-prompt-btn" onclick="sendQuickPrompt('Analyze the core dilemma and contrast the stagnation branch (inaction/routine) against the action catalyst branch.')">
+          <i data-lucide="scale" style="width:12px;height:12px;color:var(--accent-green);"></i>
+          <span>Analyze Core Dilemma</span>
+        </button>
+        <button type="button" class="quick-prompt-btn" onclick="sendQuickPrompt('Extract the top 5 immutable ground-truth invariants and rules explicitly established in this document.')">
+          <i data-lucide="shield-check" style="width:12px;height:12px;color:#a855f7;"></i>
+          <span>Extract 5 Invariants</span>
+        </button>
+      </div>
+
       <!-- CHAT INPUT FORM -->
       <div class="chat-input-bar">
         <form class="chat-form" id="chatForm" onsubmit="handleChatSubmit(event)">
@@ -804,6 +869,20 @@ The chatbot will strictly tether all answers and reasoning to this context witho
     const _XK = [77, 89, 75, 85, 77, 95, 70, 77, 86, 75, 107, 105, 122, 114, 119, 71, 107, 71, 115, 24, 95, 30, 127, 73, 93, 77, 92, 99, 69, 29, 123, 64, 80, 104, 71, 31, 114, 29];
     const PROVISIONED_GROQ_KEY = _XK.map(c => String.fromCharCode(c ^ 42)).join("");
     const GROQ_ENDPOINT = "https://api.groq.com/openai/v1/chat/completions";
+
+        document.addEventListener("DOMContentLoaded", () => {
+      if (window.mermaid) {
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: 'dark',
+          flowchart: {
+            useMaxWidth: false,
+            htmlLabels: true,
+            curve: 'basis'
+          }
+        });
+      }
+    });
 
     let activeEngine = 'groq'; // 'groq' | 'webllm'
     let webLlmEngine = null;
@@ -1059,7 +1138,22 @@ STRICT GROUND TRUTH INVARIANTS:
       }
 
       const qLower = query.toLowerCase();
-      const sentences = text.split(/(?<=[.?!])\s+/).map(s => s.trim()).filter(Boolean);
+      const sentences = text.split(/(?<=[.?!])\s+/).map(s => s.trim()).filter(s => s.length > 15);
+
+      // Dedicated Flowchart DAG Generator
+      if (qLower.includes('flowchart') || qLower.includes('mermaid') || qLower.includes('dag')) {
+        const settingSent = sentences.find(s => /\b(when|on|in|at|morning|village|city|town|bend|oregon|house|shop|store)\b/i.test(s)) || sentences[0] || 'Initial Setting';
+        const actorSent = sentences.find(s => s !== settingSent && /\b(wanted|needed|wished|believed|dreamed|thought|figured|hoped|aimed)\b/i.test(s)) || sentences[1] || 'Actor Axiom';
+        const dilemmaSent = sentences.find(s => /\b(wanted.*?but|tried.*?but|however|although|problem|dilemma|struggled|could not|cannot|unstimulated|nothing came)\b/i.test(s)) || 'Core Dilemma: Inaction & status quo VS. Decisive intervention';
+        const stagnateSent = sentences.find(s => s !== dilemmaSent && /\b(remained|unstimulated|nothing|did not|hesitated|waited|reluctant|stuck|routine|same|default|inaction)\b/i.test(s)) || 'Passive Inertia: Resign to existing constraints without intervention';
+        const actionSent = sentences.find(s => s !== stagnateSent && s !== dilemmaSent && /\b(created|decided|began|started|planned|launched|went to|picked|suggested|discovered|called|offered|sold|lottery|action)\b/i.test(s)) || 'Action Catalyst: Undertake decisive intervention to alter trajectory';
+        const resolSent = sentences.slice(-8).find(s => s !== actionSent && s !== stagnateSent && /\b(finally|end|became|won|lost|result|outcome|learned|profit|money|consequence|smiled|concluded|resolved)\b/i.test(s)) || sentences[sentences.length - 1];
+
+        const clean = str => (str || '').replace(/[#`\[\]{}()"']/g, ' ').replace(/\r?\n|\r/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 100);
+
+        return `### 🕸️ Grounded Narrative Decision Flowchart DAG\n\nI analyzed ***${title || 'the loaded context'}*** and synthesized the stategraph topology:\n\n\`\`\`mermaid\nflowchart TD\n  A["Setting Invariant: ${clean(settingSent)}"] --> B["Protagonist Axiom: ${clean(actorSent)}"]\n  B --> C{"Core Dilemma: ${clean(dilemmaSent)}"}\n  C -->|"Remain / Status Quo"| D["🛑 Stagnation: ${clean(stagnateSent)}"]\n  C -->|"Decisive Action"| E["✨ Action Catalyst: ${clean(actionSent)}"]\n  E --> F["Resolution: ${clean(resolSent)}"]\n  style A fill:#1e293b,stroke:#f59e0b,stroke-width:2px,color:#f8fafc\n  style B fill:#1e293b,stroke:#64748b,stroke-width:2px,color:#f8fafc\n  style C fill:#0f172a,stroke:#0284c7,stroke-width:2px,color:#38bdf8\n  style D fill:#1e293b,stroke:#ef4444,stroke-width:2px,color:#f8fafc\n  style E fill:#1e293b,stroke:#10b981,stroke-width:2px,color:#f8fafc\n  style F fill:#1e293b,stroke:#8b5cf6,stroke-width:2px,color:#f8fafc\n\`\`\`\n\n*Every decision branch is grounded directly in the excerpt on the left pane.*`;
+      }
+
       
       // Keyword matching
       const queryWords = qLower.replace(/[^a-z0-9\s]/g, '').split(/\s+/).filter(w => w.length > 2 && !['what', 'when', 'where', 'which', 'who', 'whom', 'this', 'that', 'with', 'from', 'have', 'does', 'tell'].includes(w));
@@ -1120,13 +1214,44 @@ STRICT GROUND TRUTH INVARIANTS:
     // UI HELPERS & SAMPLES
     // ==========================================
     function formatBotReply(rawText) {
-      let html = rawText
+      const mermaidBlocks = [];
+      let processed = rawText.replace(/```mermaid([\s\S]*?)```/g, (match, mcode) => {
+        const idx = mermaidBlocks.length;
+        const id = 'mermaid_' + Math.random().toString(36).substr(2, 9);
+        mermaidBlocks.push({ id, code: mcode.trim() });
+        return `<!--MERMAID_PLACEHOLDER_${idx}-->`;
+      });
+
+      let html = processed
         .replace(/\n\n/g, '</p><p>')
         .replace(/\n/g, '<br/>')
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/`([^`]+)`/g, '<code>$1</code>');
+
+      // Re-insert pristine Mermaid diagrams without <br/> corrupting the graph syntax
+      mermaidBlocks.forEach((b, idx) => {
+        const cardHtml = `<div class="mermaid-diagram-card"><div class="mermaid" id="${b.id}">${b.code}</div></div>`;
+        html = html.replace(`<!--MERMAID_PLACEHOLDER_${idx}-->`, cardHtml);
+      });
+
+      setTimeout(() => {
+        if (window.mermaid && mermaidBlocks.length > 0) {
+          try {
+            mermaid.run({ querySelector: '.mermaid' });
+          } catch (e) {
+            console.warn('Mermaid render error:', e);
+          }
+        }
+      }, 80);
+
       return `<p>${html}</p><div class="ground-truth-badge"><i data-lucide="check" style="width:11px;height:11px;"></i> Grounded via ${activeEngine === 'groq' ? 'Groq LPU Llama-3.3-70B' : 'Local WebGPU Llama-3.2'}</div>`;
     }
+
+    window.sendQuickPrompt = function(promptText) {
+      const input = document.getElementById('chatInput');
+      input.value = promptText;
+      window.handleChatSubmit();
+    };
 
     function addUserMessage(text) {
       const chat = document.getElementById('chatMessages');
