@@ -928,6 +928,28 @@ Ready to execute Step 1: IngestInputs...
       const val = document.getElementById('customWebAddressInput').value.trim();
       if (!val) return;
       state.currentWebUrl = val;
+
+      const lower = val.toLowerCase();
+      if (lower.includes('mpc') || lower.includes('model_predictive_control')) {
+        const docTitle = document.getElementById('customDocTitleInput');
+        const docText = document.getElementById('customDocTextInput');
+        
+        docTitle.value = 'Wikipedia: Model Predictive Control (MPC) Receding Horizon Standard';
+        docText.value = `§ 1.0 Dynamic Process Model: Discrete-time state prediction x(k+1) = A*x(k) + B*u(k) over finite prediction horizon N_p.
+§ 2.0 Actuator Slew Rate Limit: Control move adjustments |Delta u(k)| MUST NOT EXCEED 1.5% per minute to eliminate valve fatigue and mechanical shock.
+§ 3.0 Operational Safety Envelope: System state outputs y(k) MUST REMAIN STRICTLY BELOW 42.0 kPa ceiling at all intermediate prediction steps.
+§ 4.0 Cost Optimization Horizon: Solves convex Quadratic Program min J = sum(||w_x * e(k+i)||^2) + sum(||w_u * Delta u(k+j)||^2) subject to inequality constraints.
+§ 5.0 Terminal Stability Invariant: Projected state at terminal step k + N_p MUST DWELL in the invariant positive control set X_terminal.
+§ 6.0 Emergency Tripwire: Infeasible QP solutions or sensor loss MUST IMMEDIATELY trigger safe fallback interlock (u_safe).
+§ 7.0 Unconstrained Flaring: Flaring off-spec hydrocarbon vapor during economic optimization is STRICTLY PROHIBITED.`;
+
+        state.customDoc.title = docTitle.value;
+        state.customDoc.text = docText.value;
+        synthesizeFromCustomInputs();
+        showToast('🌐 Navigated Wikipedia MPC: Extracted structured constraints & compiled LangGraph DAG!');
+        return;
+      }
+
       renderStep1Inputs();
       showToast(`Connected web address: ${val}`);
     };
