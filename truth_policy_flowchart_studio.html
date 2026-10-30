@@ -473,6 +473,43 @@
       align-items: center;
       gap: 8px;
     }
+      .mermaid-svg-container {
+      flex: 1;
+      min-height: 580px;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: auto;
+      padding: 16px;
+    }
+    #mermaidGraphEl {
+      width: 100% !important;
+      height: 100% !important;
+      min-height: 540px !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #mermaidGraphEl svg {
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100% !important;
+      min-height: 520px !important;
+      max-height: 720px !important;
+    }
+    #mermaidGraphEl .node text,
+    #mermaidGraphEl .label text,
+    #mermaidGraphEl text {
+      font-size: 13.5px !important;
+      font-weight: 600 !important;
+    }
+    #mermaidGraphEl .edgeLabel text {
+      font-size: 12px !important;
+      font-weight: 500 !important;
+    }
   </style>
 </head>
 <body>
@@ -1646,7 +1683,7 @@ Minli was not brown and dull like the rest of the village. She had glossy black 
       `).join('');
     };
 
-    window.renderMermaidDag = function() {
+        window.renderMermaidDag = function() {
       const el = document.getElementById('mermaidGraphEl');
       if (!el) return;
 
@@ -1654,6 +1691,13 @@ Minli was not brown and dull like the rest of the village. She had glossy black 
       el.innerHTML = state.mermaidDag;
       try {
         mermaid.init(undefined, el);
+        const svg = el.querySelector('svg');
+        if (svg) {
+          svg.style.width = '100%';
+          svg.style.height = '100%';
+          svg.style.maxWidth = '100%';
+          svg.style.minHeight = '520px';
+        }
       } catch (err) {
         console.warn('Mermaid render error:', err);
       }
@@ -1778,7 +1822,18 @@ Minli was not brown and dull like the rest of the village. She had glossy black 
     };
 
     window.addEventListener('DOMContentLoaded', () => {
-      mermaid.initialize({ startOnLoad: false, theme: 'default' });
+          mermaid.initialize({
+      startOnLoad: false,
+      theme: 'default',
+      flowchart: {
+        useMaxWidth: false,
+        htmlLabels: true,
+        curve: 'basis',
+        nodeSpacing: 45,
+        rankSpacing: 55,
+        padding: 15
+      }
+    });
       synthesizeFromCustomInputs();
     });
   </script>
