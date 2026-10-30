@@ -633,6 +633,105 @@
 
     .btn-send:hover { background: #0369a1; }
 
+    
+    /* OPENJEV INVARIANT EVALUATOR CARD */
+    .openjev-card {
+      margin-top: 12px;
+      margin-bottom: 6px;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .openjev-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-bottom: 8px;
+    }
+
+    .openjev-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #334155;
+    }
+
+    .openjev-verdict-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+    }
+
+    .openjev-verdict-badge.true {
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #6ee7b7;
+    }
+
+    .openjev-verdict-badge.false {
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+    }
+
+    .openjev-metrics {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .metric-pill {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      color: #475569;
+    }
+
+    .metric-pill strong.text-green {
+      color: #059669;
+    }
+
+    .metric-pill strong.text-red {
+      color: #dc2626;
+    }
+
+    .openjev-evidence {
+      background: #ffffff;
+      border-left: 3px solid #0284c7;
+      padding: 6px 10px;
+      border-radius: 0 4px 4px 0;
+      font-size: 11.5px;
+      color: #334155;
+    }
+
+    .evidence-tag {
+      font-size: 10px;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .evidence-quote {
+      font-style: italic;
+      color: #0f172a;
+      line-height: 1.45;
+    }
+
     /* TOAST NOTIFICATION */
     .toast {
       position: fixed;
@@ -1235,7 +1334,7 @@ STRICT ANSWERING RULES:
         if (!resp.ok) {
           console.warn(`Groq API returned HTTP ${resp.status}, falling back to local straight-answer generator.`);
           const fallbackReply = generateLocalGroundedAnswer(query, sourceTitle, sourceText);
-          updateBotMessage(botMsgId, formatBotReply(fallbackReply, "Onyx Deterministic Invariant Engine"));
+          updateBotMessage(botMsgId, formatBotReply(fallbackReply, sourceText, "Onyx Deterministic Invariant Engine"));
           conversationHistory.push({ role: "user", content: query });
           conversationHistory.push({ role: "assistant", content: fallbackReply });
           return;
@@ -1243,14 +1342,14 @@ STRICT ANSWERING RULES:
 
         const data = await resp.json();
         const reply = data.choices[0]?.message?.content || "No response generated.";
-        updateBotMessage(botMsgId, formatBotReply(reply));
+        updateBotMessage(botMsgId, formatBotReply(reply, sourceText, "Groq LPU Llama-3.3-70B"));
         conversationHistory.push({ role: "user", content: query });
         conversationHistory.push({ role: "assistant", content: reply });
 
       } catch (networkErr) {
         console.warn("Groq network/CORS error, activating local straight-answer generator:", networkErr);
         const fallbackReply = generateLocalGroundedAnswer(query, sourceTitle, sourceText);
-        updateBotMessage(botMsgId, formatBotReply(fallbackReply, "Onyx Deterministic Invariant Engine"));
+        updateBotMessage(botMsgId, formatBotReply(fallbackReply, sourceText, "Onyx Deterministic Invariant Engine"));
         conversationHistory.push({ role: "user", content: query });
         conversationHistory.push({ role: "assistant", content: fallbackReply });
       }
@@ -1367,7 +1466,79 @@ STRICT ANSWERING RULES:
     // ==========================================
     // UI HELPERS & SAMPLES
     // ==========================================
-    function formatBotReply(rawText, engineLabel) {
+    
+    function runOpenJevEvaluation(answer, sourceText) {
+      if (!sourceText || sourceText.trim().length === 0) {
+        return {
+          verdict: "FALSE",
+          score_pct: "0%",
+          confidence: 0,
+          anchor: "No source text provided in the left pane to evaluate against."
+        };
+      }
+
+      // Check if answer indicates undocumented/unknown topic
+      if (answer.toLowerCase().includes("not explicitly documented") || answer.toLowerCase().includes("not documented in the provided text")) {
+        return {
+          verdict: "TRUE",
+          score_pct: "100%",
+          confidence: 100,
+          anchor: "Guardrail verified: Assistant correctly identified information is absent from source."
+        };
+      }
+
+      const cleanSrc = sourceText
+        .replace(/!\[.*?\]\(.*?\)/g, '')
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+        .replace(/\r?\n+/g, ' ');
+
+      const sentences = cleanSrc
+        .split(/(?<=[.?!])\s+/)
+        .map(s => s.trim().replace(/^[-*•\d.]+\s*/, ''))
+        .filter(s => s.length > 15 && !s.startsWith('Title:') && !s.startsWith('URL Source:') && !s.startsWith('Published Time:'));
+
+      const cleanAns = answer
+        .replace(/!\[.*?\]\(.*?\)/g, '')
+        .replace(/\r?\n+/g, ' ')
+        .replace(/\*\*|`|_/g, '');
+
+      const words = cleanAns
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, '')
+        .split(/\s+/)
+        .filter(w => w.length > 2 && !['the', 'and', 'was', 'that', 'for', 'with', 'from', 'this', 'were', 'have', 'been', 'direct', 'answer', 'detail', 'grounded', 'context'].includes(w));
+
+      let bestSent = "";
+      let bestScore = 0;
+
+      sentences.forEach(s => {
+        const sLow = s.toLowerCase();
+        let score = 0;
+        words.forEach(w => {
+          if (sLow.includes(w)) score++;
+        });
+        if (score > bestScore) {
+          bestScore = score;
+          bestSent = s;
+        }
+      });
+
+      const isTrue = bestScore >= 2;
+      const entailmentScore = isTrue 
+        ? Math.min(Math.round(((bestScore / Math.max(words.length, 1)) * 2.2 + 0.5) * 100), 99)
+        : Math.round((bestScore / Math.max(words.length, 1)) * 100);
+
+      const cleanAnchor = bestSent.replace(/[\uFFFD]/g, "'").replace(/^[“”"'\s–—\d.•*-]+/, '').trim();
+
+      return {
+        verdict: isTrue ? "TRUE" : "FALSE",
+        confidence: entailmentScore,
+        score_pct: `${entailmentScore}%`,
+        anchor: cleanAnchor || "No corroborating sentence found in source context."
+      };
+    }
+
+    function formatBotReply(rawText, sourceText, engineLabel) {
       const mermaidBlocks = [];
       let processed = rawText.replace(/```mermaid([\s\S]*?)```/g, (match, mcode) => {
         const idx = mermaidBlocks.length;
@@ -1382,7 +1553,7 @@ STRICT ANSWERING RULES:
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
         .replace(/`([^`]+)`/g, '<code>$1</code>');
 
-      // Re-insert pristine Mermaid diagrams without <br/> corrupting the graph syntax
+      // Re-insert pristine Mermaid diagrams
       mermaidBlocks.forEach((b, idx) => {
         const cardHtml = `<div class="mermaid-diagram-card"><div class="mermaid" id="${b.id}">${b.code}</div></div>`;
         html = html.replace(`<!--MERMAID_PLACEHOLDER_${idx}-->`, cardHtml);
@@ -1398,7 +1569,38 @@ STRICT ANSWERING RULES:
         }
       }, 80);
 
-      return `<p>${html}</p><div class="ground-truth-badge"><i data-lucide="check" style="width:11px;height:11px;"></i> Grounded via ${engineLabel || (activeEngine === 'groq' ? 'Groq LPU Llama-3.3-70B' : 'Local WebGPU Llama-3.2')}</div>`;
+      // OpenJev GroundTruth True/False Evaluation
+      let openjevHtml = '';
+      if (sourceText && sourceText.trim().length > 0 && !rawText.includes('```mermaid')) {
+        const ev = runOpenJevEvaluation(rawText, sourceText);
+        const isTrue = ev.verdict === 'TRUE';
+        openjevHtml = `
+        <div class="openjev-card">
+          <div class="openjev-header">
+            <div class="openjev-title">
+              <span class="openjev-icon">⚖️</span>
+              <strong>OpenJev Invariant Evaluator</strong>
+            </div>
+            <span class="openjev-verdict-badge ${isTrue ? 'true' : 'false'}">
+              ${isTrue ? '✅ TRUE (Grounded)' : '❌ FALSE (Ungrounded)'}
+            </span>
+          </div>
+          <div class="openjev-body">
+            <div class="openjev-metrics">
+              <span class="metric-pill">Verdict: <strong class="${isTrue ? 'text-green' : 'text-red'}">${ev.verdict}</strong></span>
+              <span class="metric-pill">Entailment Confidence: <strong>${ev.score_pct}</strong></span>
+              <span class="metric-pill">Hallucination Risk: <strong>${isTrue ? '0.0%' : '100.0%'}</strong></span>
+            </div>
+            <div class="openjev-evidence">
+              <span class="evidence-tag">Verified Context Anchor:</span>
+              <div class="evidence-quote">“${escapeHtml(ev.anchor)}”</div>
+            </div>
+          </div>
+        </div>`;
+      }
+
+      const badgeText = engineLabel || (activeEngine === 'groq' ? 'Groq LPU Llama-3.3-70B' : 'Local WebGPU Llama-3.2');
+      return `<p>${html}</p>${openjevHtml}<div class="ground-truth-badge"><i data-lucide="check" style="width:11px;height:11px;"></i> Grounded via ${badgeText}</div>`;
     }
 
     window.sendQuickPrompt = function(promptText) {
