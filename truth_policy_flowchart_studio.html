@@ -1018,6 +1018,13 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
 
     // Asynchronously fetch and extract clean markdown/text from any public URL
     async function fetchWebUrlContent(url) {
+      if (url) {
+        url = url.trim();
+        const secondHttp = url.indexOf('http', 4);
+        if (secondHttp !== -1) {
+          url = url.substring(0, secondHttp).trim();
+        }
+      }
       if (!url || !url.startsWith('http')) return null;
       try {
         // Use clean CORS-enabled markdown reader endpoint
@@ -1319,7 +1326,14 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
     // Connect Button Handler: Fetch live URL dynamically
     window.connectWebUrl = async function() {
       const urlInput = document.getElementById('customWebAddressInput');
-      const url = urlInput ? urlInput.value.trim() : '';
+      let url = urlInput ? urlInput.value.trim() : '';
+      if (url) {
+        const secondHttp = url.indexOf('http', 4);
+        if (secondHttp !== -1) {
+          url = url.substring(0, secondHttp).trim();
+          if (urlInput) urlInput.value = url;
+        }
+      }
       if (!url) {
         alert('Please enter a valid web address (http:// or https://)');
         return;
@@ -1417,6 +1431,9 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
         ? `Synthesized Narrative Invariants & Story Flowchart for "${extracted.title}"!`
         : `Synthesized Ground Truth Policy Tree & Flowchart for "${extracted.title}"!`;
       showToast(toastMsg);
+      renderCascadeTree();
+      renderMermaidDag();
+      switchStep(2);
     };
 
     applyCustomWebUrl = async function() {
@@ -1483,7 +1500,16 @@ Include numbers (e.g., 42.0 kPa, 1.5%/min) and strict constraints (STRICTLY PROH
       showToast(state.highlightDocInvariants ? 'Highlighted numeric invariants & negations' : 'Highlights dimmed');
     };
 
-    window.renderStep1Inputs = function() {
+    window.
+    window.highlightInvariantsInText = function(escapedText) {
+      if (!escapedText) return '';
+      if (!state.highlightDocInvariants) return escapedText;
+      return escapedText
+        .replace(/\b(STRICTLY PROHIBITED|MUST NEVER|PROHIBITED|FORBIDDEN|CANNOT|SHALL NOT|MUST|REQUIRED|EXEMPT)\b/g, '<mark style="background:#fee2e2; color:#b91c1c; font-weight:800; padding:1px 4px; border-radius:3px;">$1</mark>')
+        .replace(/(\$\d[\d,]*(\.\d{2})?|\b\d+(\.\d+)?\s*(hours?|minutes?|seconds?|ms|%|percent|kPa|days?|years?)\b)/gi, '<mark style="background:#fef3c7; color:#92400e; font-weight:800; padding:1px 4px; border-radius:3px;">$1</mark>');
+    };
+
+    renderStep1Inputs = function() {
       const container = document.getElementById('step1InputsContainer');
       if (!container) return;
 
