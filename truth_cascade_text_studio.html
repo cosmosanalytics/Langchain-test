@@ -1,0 +1,2961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GroundTruth 📘📑 — Cascading Policies, Not Flowcharts (Approved Truth In, Reliable Agent Out)</title>
+  <meta name="description" content="Text Cascades replace workflow diagrams. Documents and web pages distill into hierarchical, multi-tiered cascading rulebooks that teach and grade AI agents.">
+  
+  <!-- CDNs -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f1f5f9;
+      --border-color: #e2e8f0;
+      --border-strong: #cbd5e1;
+      
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+      
+      --primary: #0284c7;
+      --primary-dark: #0369a1;
+      --primary-light: #e0f2fe;
+      
+      --indigo: #6366f1;
+      --indigo-light: #e0e7ff;
+      --emerald: #10b981;
+      --emerald-light: #d1fae5;
+      --amber: #f59e0b;
+      --amber-light: #fef3c7;
+      --rose: #ef4444;
+      --rose-light: #ffe4e6;
+      
+      --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+      --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    .app-header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+    .header-content {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, #0284c7, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: white;
+      box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    }
+    .brand-text h1 {
+      font-size: 16.5px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .brand-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .header-pills {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .pill {
+      font-size: 11.5px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-color);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .pill.cascade { background: #eff6ff; border-color: #bfdbfe; color: #1d4ed8; }
+    .pill.engine { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+
+    /* BUTTONS */
+    .btn {
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.15s ease;
+      text-decoration: none;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-dark); }
+    .btn-secondary { background: var(--bg-surface); border-color: var(--border-strong); color: var(--text-main); }
+    .btn-secondary:hover { background: var(--bg-subtle); }
+    .btn-magic {
+      background: linear-gradient(135deg, #0284c7, #6366f1);
+      color: white;
+      border: none;
+      box-shadow: 0 2px 6px rgba(99, 102, 241, 0.25);
+    }
+    .btn-magic:hover { opacity: 0.95; transform: translateY(-1px); }
+    .btn-sm { font-size: 11.5px; padding: 4px 10px; border-radius: 6px; }
+
+    /* MAIN CONTAINER */
+    .main-container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px 24px 60px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* HERO CARD: HEAVY CASCADE TEXT */
+    .hero-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 22px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .hero-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .hero-tag {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #0284c7;
+      margin-bottom: 4px;
+    }
+    .hero-heading {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-sub {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+      max-width: 880px;
+      line-height: 1.5;
+    }
+
+    /* CASCADE TEXT HIGHLIGHT BAR */
+    .cascade-principle-banner {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin: 14px 0;
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+    }
+    @media (max-width: 900px) { .cascade-principle-banner { grid-template-columns: 1fr; } }
+    
+    .cascade-principle-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .cascade-icon { font-size: 20px; }
+    .cascade-principle-title { font-size: 12.5px; font-weight: 800; color: #0f172a; }
+    .cascade-principle-desc { font-size: 11.5px; color: #64748b; line-height: 1.4; margin-top: 2px; }
+
+    /* 4-PHASE TABS */
+    .step-tabs-bar {
+      display: flex;
+      border-bottom: 2px solid var(--border-color);
+      margin-bottom: 20px;
+      gap: 8px;
+      overflow-x: auto;
+    }
+    .step-tab-btn {
+      padding: 12px 18px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .step-tab-btn:hover { color: var(--text-main); }
+    .step-tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .step-badge-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 9999px;
+      background: #e2e8f0;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #475569;
+    }
+    .step-tab-btn.active .step-badge-indicator { background: var(--primary); color: white; }
+
+    /* PANELS */
+    .step-content-panel { display: none; }
+    .step-content-panel.active { display: block; }
+
+    /* GENERAL PANEL CARD */
+    .panel-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: var(--shadow-sm);
+    }
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .panel-title { font-size: 14px; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
+
+    /* STEP 1: TWO INPUTS, EMBEDDED SITE */
+    .step1-grid {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 1024px) { .step1-grid { grid-template-columns: 1fr; } }
+
+    .preset-chip-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+    .preset-chip {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      background: #fafafa;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+    }
+    .preset-chip:hover { background: #f1f5f9; border-color: var(--border-strong); }
+    .preset-chip.active { background: #f0f9ff; border-color: #0284c7; }
+    .preset-name { font-size: 12.5px; font-weight: 700; color: var(--text-main); }
+    .preset-detail { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* EMBEDDED LIGHT MODE BROWSER */
+    .browser-frame {
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      flex-direction: column;
+      height: 640px;
+    }
+    .browser-toolbar {
+      background: #f1f5f9;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .window-controls { display: flex; align-items: center; gap: 6px; }
+    .window-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .window-dot.close { background: #ef4444; }
+    .window-dot.min { background: #f59e0b; }
+    .window-dot.max { background: #10b981; }
+
+    .browser-address-bar {
+      flex: 1;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .browser-actions { display: flex; align-items: center; gap: 6px; }
+    .browser-btn {
+      background: none;
+      border: 1px solid transparent;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      color: #475569;
+    }
+    .browser-btn:hover { background: #e2e8f0; }
+    .browser-btn.active { background: #0284c7; color: white; }
+
+    .embedded-viewport {
+      flex: 1;
+      overflow-y: auto;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+    }
+    .site-nav {
+      background: #ffffff;
+      color: #0f172a;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .site-brand { font-weight: 800; font-size: 13.5px; display: flex; align-items: center; gap: 6px; color: #0284c7; }
+    .site-links { display: flex; gap: 8px; }
+    .site-nav-link {
+      font-size: 11.5px;
+      color: #64748b;
+      text-decoration: none;
+      padding: 4px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+    .site-nav-link.active, .site-nav-link:hover { color: #0284c7; background: #e0f2fe; font-weight: 700; }
+    .site-content { padding: 20px; flex: 1; }
+    .site-page-header {
+      margin-bottom: 16px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .site-page-title { font-size: 18px; font-weight: 800; color: #0f172a; }
+    .site-tag { font-size: 10.5px; background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #475569; font-family: var(--font-mono); }
+    .site-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 12px; }
+    .site-alert { padding: 8px 12px; border-radius: 6px; font-size: 12px; margin-bottom: 12px; }
+    .site-alert.info { background: #eff6ff; border: 1px solid #dbeafe; color: #1e40af; }
+    .site-alert.warn { background: #fffbeb; border: 1px solid #fef3c7; color: #92400e; }
+    .site-alert.success { background: #ecfdf5; border: 1px solid #d1fae5; color: #065f46; }
+
+    /* ========================================================= */
+    /* HEAVY CASCADE TEXT ARCHITECTURE STYLES (NO WORKFLOW)      */
+    /* ========================================================= */
+    .step2-cascade-layout {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 20px;
+    }
+    /* Step 2 always side by side */
+    .step2-cascade-layout { display: grid !important; grid-template-columns: minmax(420px, 1fr) 1fr !important; gap: 20px; }
+
+    /* CASCADE TEXT CONTAINER */
+    .cascade-tree-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 18px;
+      min-height: 580px;
+      display: flex;
+      flex-direction: column;
+    }
+    .cascade-tree-scroll {
+      flex: 1;
+      overflow-y: auto;
+      max-height: 520px;
+      padding-right: 8px;
+    }
+
+    /* NESTED CASCADE TEXT BLOCKS */
+    .cascade-node {
+      position: relative;
+      margin-left: 20px;
+      padding-left: 14px;
+      border-left: 2px solid #cbd5e1;
+      margin-bottom: 10px;
+    }
+    .cascade-node.tier-1 {
+      margin-left: 0;
+      padding-left: 12px;
+      border-left: 3px solid #0284c7;
+      margin-bottom: 16px;
+    }
+    .cascade-node.tier-2 {
+      border-left-color: #6366f1;
+    }
+    .cascade-node.tier-3 {
+      border-left-color: #10b981;
+    }
+    .cascade-node.tier-4 {
+      border-left-color: #f59e0b;
+    }
+    .cascade-node.tier-deadend {
+      border-left-color: #ef4444;
+      background: #fff5f5;
+      padding: 8px 12px;
+      border-radius: 6px;
+    }
+
+    .cascade-header-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+    .cascade-tier-badge {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .tier-badge-1 { background: #e0f2fe; color: #0369a1; }
+    .tier-badge-2 { background: #e0e7ff; color: #4338ca; }
+    .tier-badge-3 { background: #d1fae5; color: #065f46; }
+    .tier-badge-4 { background: #fef3c7; color: #92400e; }
+    .tier-badge-dead { background: #fee2e2; color: #991b1b; }
+
+    .cascade-title-text {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .cascade-body-text {
+      font-size: 12px;
+      color: #334155;
+      line-height: 1.5;
+      font-family: var(--font-sans);
+    }
+    .cascade-rule-code {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: #f1f5f9;
+      color: #0369a1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-top: 3px;
+    }
+
+    /* FILTER BAR FOR CASCADE TEXT */
+    .cascade-filter-bar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* STEP 3 & 4 CHAT & BENCHMARK */
+    .step3-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    @media (max-width: 900px) { .step3-grid { grid-template-columns: 1fr; } }
+
+    .chat-container {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      background: #ffffff;
+      height: 460px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .chat-messages {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .chat-bubble { max-width: 85%; padding: 10px 14px; border-radius: 10px; font-size: 12.5px; line-height: 1.5; }
+    .chat-bubble.user { align-self: flex-end; background: #0284c7; color: white; border-bottom-right-radius: 2px; }
+    .chat-bubble.bot { align-self: flex-start; background: #f1f5f9; color: #0f172a; border: 1px solid #e2e8f0; border-bottom-left-radius: 2px; }
+    .chat-bubble.bot.hallucinating { border-color: #fca5a5; background: #fff5f5; }
+
+    .hallucination-tag { display: inline-block; font-size: 10.5px; font-weight: 700; background: #ef4444; color: white; padding: 2px 6px; border-radius: 4px; margin-top: 6px; }
+    .verified-tag { display: inline-block; font-size: 10.5px; font-weight: 700; background: #10b981; color: white; padding: 2px 6px; border-radius: 4px; margin-top: 6px; }
+
+    .chat-input-bar { border-top: 1px solid #e2e8f0; padding: 10px; display: flex; gap: 8px; background: #f8fafc; }
+    .chat-input { flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 13px; }
+
+    .levers-toolbar {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .lever-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      background: #f1f5f9;
+      cursor: pointer;
+      user-select: none;
+      border: 1px solid transparent;
+    }
+    .lever-switch.active { background: #ecfdf5; border-color: #a7f3d0; color: #065f46; }
+
+    .dual-chat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    @media (max-width: 900px) { .dual-chat-grid { grid-template-columns: 1fr; } }
+
+    .score-metric-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 14px 0; }
+    @media (max-width: 768px) { .score-metric-grid { grid-template-columns: repeat(2, 1fr); } }
+    .score-card { background: #fafafa; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; text-align: center; }
+    .score-card.good { border-color: #a7f3d0; background: #f0fdf4; }
+    .score-num { font-size: 24px; font-weight: 800; color: #0f172a; }
+    .score-label { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .score-delta { font-size: 11px; font-weight: 700; color: #059669; margin-top: 4px; }
+
+    .trace-back-box { background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 14px; margin-top: 14px; font-size: 12px; }
+    .trace-step-flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+    .trace-node { background: #ffffff; border: 1px solid #cbd5e1; padding: 6px 10px; border-radius: 6px; font-weight: 600; }
+    .trace-arrow { color: #94a3b8; font-weight: bold; }
+
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 100; display: flex; flex-direction: column; gap: 8px; }
+    .toast { background: #ffffff; color: #0f172a; border: 1px solid #cbd5e1; padding: 10px 16px; border-radius: 8px; font-size: 12.5px; font-weight: 600; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px; animation: slideIn 0.2s ease-out; }
+    @keyframes slideIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  
+/* DOCUMENT VIEWER & DUAL VIEW (TWO INPUTS, ONE PATH) */
+    .input-source-card {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px;
+      background: #fafafa;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+    .input-source-card:hover {
+      border-color: #94a3b8;
+      background: #f8fafc;
+    }
+    .input-source-card.active {
+      border-color: #0284c7;
+      background: #f0f9ff;
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.18);
+    }
+    .input-source-card.active .input-source-title {
+      color: #0369a1;
+    }
+
+    /* RIGHT CONTAINER SEGMENTED TOGGLE */
+    .two-inputs-view-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .view-segmented-group {
+      display: inline-flex;
+      background: #e2e8f0;
+      padding: 2px;
+      border-radius: 6px;
+      gap: 2px;
+    }
+    .view-seg-btn {
+      border: none;
+      background: transparent;
+      padding: 4px 10px;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #475569;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .view-seg-btn:hover {
+      color: #0f172a;
+    }
+    .view-seg-btn.active {
+      background: #ffffff;
+      color: #0284c7;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+    }
+
+    /* DOCUMENT VIEWER FRAME */
+    .doc-viewer-frame {
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+    .doc-viewer-toolbar {
+      background: #f1f5f9;
+      border-bottom: 1px solid #cbd5e1;
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11.5px;
+    }
+    .doc-file-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: #1e293b;
+    }
+    .doc-viewport {
+      flex: 1;
+      overflow-y: auto;
+      background: #f8fafc;
+      padding: 16px;
+    }
+    .doc-page {
+      max-width: 680px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      border-radius: 6px;
+      padding: 24px;
+      color: #1e293b;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    .doc-header-banner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .doc-logo-title {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .doc-company {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .doc-subtitle {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .doc-stamp {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1.5px solid;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .doc-stamp.approved {
+      color: #059669;
+      border-color: #10b981;
+      background: #ecfdf5;
+    }
+    .doc-meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 11px;
+      color: #475569;
+      margin-bottom: 16px;
+    }
+    .doc-toc {
+      background: #f0fdf4;
+      border: 1px dashed #86efac;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 14px;
+    }
+    .doc-section {
+      margin-bottom: 14px;
+    }
+    .doc-section-heading {
+      font-size: 12.5px;
+      font-weight: 800;
+      color: #0f172a;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+    .doc-paragraph {
+      font-size: 12px;
+      line-height: 1.6;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    .doc-callout {
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 11.5px;
+      line-height: 1.5;
+      margin: 8px 0;
+      border-left: 4px solid;
+    }
+    .doc-callout.warn {
+      background: #fffbeb;
+      border-color: #f59e0b;
+      color: #92400e;
+    }
+    .doc-callout.alert {
+      background: #fef2f2;
+      border-color: #ef4444;
+      color: #991b1b;
+    }
+    .doc-highlight {
+      background: #fef08a;
+      color: #713f12;
+      padding: 1px 4px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    .doc-highlight.off {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+    .doc-signature-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 12px;
+      margin-top: 16px;
+    }
+
+    /* DUAL VIEW GRID (SIDE-BY-SIDE) */
+    .dual-inputs-grid {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      height: 620px;
+      background: #cbd5e1;
+      gap: 1px;
+    }
+    .dual-inputs-col {
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 0;
+    }
+    @media (max-width: 1200px) {
+      .dual-inputs-grid {
+        grid-template-columns: 1fr 1fr !important;
+      }
+    }
+
+    
+  </style>
+</head>
+<body>
+
+  <!-- APP HEADER -->
+  <header class="app-header">
+    <div class="header-content">
+      <div class="brand-title">
+        <div class="brand-logo">📑</div>
+        <div class="brand-text">
+          <h1>GroundTruth 📘📑 — Cascading Policies Studio</h1>
+          <p>Text Cascades Over Flowcharts • Approved Markdown ➔ Cascading Policy Tree ➔ Diagnostic Verification</p>
+        </div>
+      </div>
+
+      <div class="header-pills">
+        <span class="pill cascade">📑 Pure Cascade Text Architecture (No Diagrams)</span>
+        <span class="pill engine" id="engineStatusBadge">🟢 Engine: Groq LPU (Ready)</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+
+    <!-- HERO CARD: HEAVY CASCADE TEXT -->
+    <div class="hero-card">
+      <div class="hero-title-row">
+        <div>
+          <div class="hero-tag">Ground Truth × Agent Education · Cascade Text Edition</div>
+          <h2 class="hero-heading">Cascading Policies, Not Flowcharts</h2>
+          <p class="hero-sub">
+            Real software policies and agent contracts are governed by <strong>hierarchical cascading text</strong> — root invariants, scoped directives, conditional overrides, parameter constraints, and fallback branches. Instead of brittle box-and-arrow flowcharts, the agent is trained and verified on rigorous cascading prose.
+          </p>
+        </div>
+        <div>
+          <button class="btn btn-magic" onclick="runCompleteStudioPipeline()">
+            <span>⚡</span> Run Full Cascade Pipeline
+          </button>
+        </div>
+      </div>
+
+      <!-- CASCADE HIGHLIGHT BANNER -->
+      <div class="cascade-principle-banner">
+        <div class="cascade-principle-item">
+          <div class="cascade-icon">📑</div>
+          <div>
+            <div class="cascade-principle-title">Hierarchical Cascade Overrides</div>
+            <div class="cascade-principle-desc">Root Constitutional Invariants cascade down to Domain Directives, Process Rules, and Edge Exceptions. Specificity overrides generality.</div>
+          </div>
+        </div>
+        <div class="cascade-principle-item">
+          <div class="cascade-icon">📘➔🔑</div>
+          <div>
+            <div class="cascade-principle-title">One Approval, Dual Artifacts</div>
+            <div class="cascade-principle-desc">The approved markdown produces both The Book (cascading instruction stack) and The Test (cascading verification rubric) from a single sign-off.</div>
+          </div>
+        </div>
+        <div class="cascade-principle-item">
+          <div class="cascade-icon">⚖️</div>
+          <div>
+            <div class="cascade-principle-title">Invariant Preservation Audit</div>
+            <div class="cascade-principle-desc">Every cascade level is checked to guarantee numbers, counts ($150, 72h, 200ms), and "NOT" statements survive without semantic inversion.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="step-tabs-bar">
+      <button class="step-tab-btn active" id="tabBtn1" onclick="switchStep(1)">
+        <span class="step-badge-indicator">1</span>
+        <span>Two Inputs ➔ Clean Markdown</span>
+      </button>
+      <button class="step-tab-btn" id="tabBtn2" onclick="switchStep(2)">
+        <span class="step-badge-indicator">2</span>
+        <span>Cascading Policy Tree (The Book &amp; The Test)</span>
+      </button>
+      <button class="step-tab-btn" id="tabBtn3" onclick="switchStep(3)">
+        <span class="step-badge-indicator">3</span>
+        <span>Cascade Knowledge Gap Diagnosis</span>
+      </button>
+      <button class="step-tab-btn" id="tabBtn4" onclick="switchStep(4)">
+        <span class="step-badge-indicator">4</span>
+        <span>Cascade Education &amp; Verification</span>
+      </button>
+    </div>
+
+    <!-- STEP 1: TWO INPUTS & EMBEDDED SITE -->
+    <div id="stepPanel1" class="step-content-panel active">
+      <div class="step1-grid">
+        
+        <!-- LEFT: SELECTION & INVARIANT AUDIT -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title"><span>🔀</span> Step 1: Two Inputs, One Path (Documents &amp; Portals)</div>
+            <span class="pill" style="background:#ecfdf5; color:#065f46;">HTML ➔ Markdown</span>
+          </div>
+
+          <!-- TWO INPUTS BOX -->
+          <div class="inputs-split-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px;">
+            <div class="input-source-card active" id="inputCardDocs" onclick="setInputViewMode('documents')" style="cursor: pointer;">
+              <div class="input-source-title"><span>📄</span> Documents (Click)</div>
+              <div class="input-source-sub" style="font-size: 10.5px; color: #64748b;">SOP PDFs, policies &amp; wikis with links preserved.</div>
+            </div>
+            <div class="input-source-card active" id="inputCardWeb" onclick="setInputViewMode('web_pages')" style="cursor: pointer;">
+              <div class="input-source-title"><span>🌐</span> Web Pages (Click)</div>
+              <div class="input-source-sub" style="font-size: 10.5px; color: #64748b;">Internal portals &amp; consoles behind SSO.</div>
+            </div>
+          </div>
+
+          <label style="font-size: 11.5px; font-weight: 700; color: #475569; margin-bottom: 6px; display: block;">Select Enterprise Policy Domain:</label>
+          <div class="preset-chip-list">
+            <div class="preset-chip active" id="chipPreset1" onclick="selectPreset('it_security')">
+              <div class="preset-name">🔐 Enterprise IT SSO &amp; Privilege Escalation</div>
+              <div class="preset-detail">Multi-Tier Access Cascade: Hardware MFA, L2 Director Gate, Break-Glass 2h</div>
+            </div>
+            <div class="preset-chip" id="chipPreset2" onclick="selectPreset('fintech_dispute')">
+              <div class="preset-name">💳 FinTech Dispute Intake &amp; AML Hold</div>
+              <div class="preset-detail">Financial Cascade: $150 Instant Credit, $5k Velocity SAR Freeze, 5-Day Proof</div>
+            </div>
+            <div class="preset-chip" id="chipPreset3" onclick="selectPreset('cloud_devops')">
+              <div class="preset-name">🚀 Cloud Canary Release &amp; DB Lock Runbook</div>
+              <div class="preset-detail">Operational Cascade: 5% Canary 15-min, 200ms DDL Lock Abort, Rollback 5xx</div>
+            </div>
+          </div>
+
+          <!-- INVARIANT CHECKER -->
+          <div class="panel-card" style="background: #fffbeb; border-color: #fef3c7; padding: 12px; margin-top: 14px;">
+            <div style="font-size: 12px; font-weight: 800; color: #92400e; margin-bottom: 4px;">
+              ⚖️ Two Checks Keep It Honest (Survival &amp; Reality Grounding):
+            </div>
+            <div style="font-size: 11.5px; color: #78350f; line-height: 1.5;" id="invariantAuditText">
+              <strong>1. Conversion Check:</strong> Numbers ($150, 72h, 200ms, 5%) and "NOT" / "PROHIBITED" statements confirmed survived into Markdown.<br/>
+              <strong>2. Reality Grounding Check:</strong> Cross-reference cascade tiers against the live document PDF and web portal.
+            </div>
+            <button class="btn btn-secondary btn-sm" style="margin-top: 8px; width: 100%;" onclick="runInvariantAudit()">
+              <span>🔍</span> Run Conversion Invariant Check
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT: EMBEDDED LIGHT MODE SITE -->
+        <div class="panel-card" style="padding: 0; overflow: hidden;">
+          <!-- SOURCE SELECTION TOP BAR -->
+          <div class="two-inputs-view-bar">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 12px; font-weight: 700; color: #1e293b;">Input Inspector:</span>
+              <div class="view-segmented-group">
+                <button class="view-seg-btn" id="btnModeDocs" onclick="setInputViewMode('documents')">
+                  <span>📄</span> Raw Document (PDF/Wiki)
+                </button>
+                <button class="view-seg-btn" id="btnModeWeb" onclick="setInputViewMode('web_pages')">
+                  <span>🌐</span> Web Portal (Behind SSO)
+                </button>
+                <button class="view-seg-btn active" id="btnModeDual" onclick="setInputViewMode('side_by_side')">
+                  <span>👥</span> Dual View (Two Inputs Side-by-Side)
+                </button>
+              </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <button class="btn btn-secondary btn-sm" id="btnToggleInvariants" onclick="toggleDocInvariants()" title="Toggle invariant yellow highlights">
+                <span>✨</span> Highlight Invariants
+              </button>
+            </div>
+          </div>
+
+          <!-- CONTAINER HOLDING BOTH VIEWERS -->
+          <div id="step1InputsContainer">
+            <!-- Dynamic layout injected by renderStep1Inputs() -->
+          </div>
+        </div>
+
+        <!-- HIDDEN TEMPLATES FOR VIEWERS -->
+        <div style="display: none;">
+          <div id="templateBrowserFrame">
+            <div class="browser-frame" style="height: 100%;">
+              <div class="browser-toolbar">
+                <div class="window-controls">
+                  <div class="window-dot close"></div>
+                  <div class="window-dot min"></div>
+                  <div class="window-dot max"></div>
+                </div>
+                <div class="browser-address-bar">
+                  <span>🔒</span>
+                  <span id="browserUrlDisplay">https://internal.corp.local/overview</span>
+                </div>
+                <div class="browser-actions">
+                  <button class="browser-btn active" id="btnViewDesktop" onclick="setBrowserViewport('desktop')">🖥️ Desktop</button>
+                  <button class="browser-btn" id="btnViewMobile" onclick="setBrowserViewport('mobile')">📱 Mobile</button>
+                  <button class="browser-btn" onclick="refreshEmbeddedSite()">🔄 Refresh</button>
+                </div>
+              </div>
+              <div class="embedded-viewport" id="embeddedViewport" style="flex: 1; overflow-y: auto;">
+                <nav class="site-nav">
+                  <div class="site-brand">
+                    <span id="siteLogoIcon">🛡️</span>
+                    <span id="siteBrandText">CorpSecure Access Portal</span>
+                  </div>
+                  <div class="site-links" id="siteNavLinks"></div>
+                </nav>
+                <div class="site-content" id="sitePageBody"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="templateDocFrame">
+            <div class="doc-viewer-frame" style="height: 100%;">
+              <div class="doc-viewer-toolbar">
+                <div class="doc-file-info">
+                  <span>📄</span>
+                  <span id="docFileNameDisplay">SEC-POL-402_Rev4.pdf</span>
+                  <span class="site-tag" id="docBadgeDisplay">CONFIDENTIAL</span>
+                </div>
+                <div style="display: flex; gap: 8px; align-items: center; font-size: 11px; color: #64748b;">
+                  <span id="docPagesDisplay">6 pages</span>
+                  <span>•</span>
+                  <span>AcroForm PDF v1.7</span>
+                </div>
+              </div>
+              <div class="doc-viewport" id="docViewportContent"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- STEP 2: HEAVY CASCADE TEXT TREE (NO WORKFLOW DIAGRAMS)     -->
+    <!-- ========================================================= -->
+    <div id="stepPanel2" class="step-content-panel">
+      <div class="step2-cascade-layout">
+        
+        <!-- LEFT: THE BOOK & RAW INPUTS COMPARATOR (SIDE-BY-SIDE) -->
+        <div class="panel-card">
+          <div class="panel-header" style="flex-wrap: wrap; gap: 8px;">
+            <div class="panel-title"><span>📘</span> Step 2 Sources: Approved Book &amp; Raw Inputs</div>
+            <div class="view-segmented-group" style="font-size: 11px;">
+              <button class="view-seg-btn active" id="btnStep2ViewBook" onclick="setStep2LeftView('book')">📘 Approved Markdown</button>
+              <button class="view-seg-btn" id="btnStep2ViewDual" onclick="setStep2LeftView('dual')">👥 Raw &amp; Web (Side-by-Side)</button>
+              <button class="view-seg-btn" id="btnStep2ViewDoc" onclick="setStep2LeftView('doc')">📄 Raw Doc</button>
+              <button class="view-seg-btn" id="btnStep2ViewWeb" onclick="setStep2LeftView('web')">🌐 Web Portal</button>
+            </div>
+          </div>
+          <div id="step2LeftContainer">
+            <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px;">
+              Clean human-approved markdown with strict YAML headers. One page per process.
+            </p>
+            <pre class="markdown-page-box" id="approvedMarkdownBox" style="background: #f8fafc; color: #1e293b; border: 1px solid #cbd5e1; font-family: var(--font-mono); font-size: 11px; padding: 12px; border-radius: 8px; height: 380px; overflow-y: auto; line-height: 1.5; white-space: pre-wrap;"></pre>
+          </div>
+          <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px;">
+            Clean human-approved markdown with strict YAML headers. One page per process.
+          </p>
+
+          <pre class="markdown-page-box" id="approvedMarkdownBox" style="background: #f8fafc; color: #1e293b; border: 1px solid #cbd5e1; font-family: var(--font-mono); font-size: 11px; padding: 12px; border-radius: 8px; height: 320px; overflow-y: auto; line-height: 1.5; white-space: pre-wrap;"></pre>
+
+          <div style="margin-top: 14px; display: flex; gap: 8px;">
+            <button class="btn btn-secondary btn-sm" style="flex: 1;" onclick="copyApprovedMarkdown()">📋 Copy Markdown</button>
+            <button class="btn btn-primary btn-sm" style="flex: 1;" onclick="compileTextCascade()">📑 Re-compile Cascade</button>
+          </div>
+        </div>
+
+        <!-- RIGHT: HEAVY CASCADE TEXT TREE (THE TEST & SPECIFICATION) -->
+        <div class="cascade-tree-card">
+          <div class="panel-header" style="margin-bottom: 8px;">
+            <div>
+              <div class="panel-title"><span>📑</span> Cascading Policy Specification (The Test)</div>
+              <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+                Multi-tiered cascading rulebook: Root Invariants ➔ Scoped Directives ➔ Action Criteria ➔ Dead Ends.
+              </p>
+            </div>
+            <span class="pill" style="background:#fef3c7; color:#92400e;">4 Cascade Tiers</span>
+          </div>
+
+          <!-- TIER FILTER PILLS -->
+          <div class="cascade-filter-bar">
+            <button class="btn btn-secondary btn-sm active" id="btnFilterAll" onclick="filterCascade('all')">All Tiers (1-4)</button>
+            <button class="btn btn-secondary btn-sm" id="btnFilterT1" onclick="filterCascade('tier-1')">Tier 1: Invariants</button>
+            <button class="btn btn-secondary btn-sm" id="btnFilterT2" onclick="filterCascade('tier-2')">Tier 2: Policies</button>
+            <button class="btn btn-secondary btn-sm" id="btnFilterT3" onclick="filterCascade('tier-3')">Tier 3: Form Rules</button>
+            <button class="btn btn-secondary btn-sm" id="btnFilterT4" onclick="filterCascade('tier-deadend')">Dead Ends &amp; Blockers</button>
+          </div>
+
+          <!-- CASCADE TREE RENDER AREA -->
+          <div class="cascade-tree-scroll" id="cascadeTreeContainer">
+            <!-- Injected dynamically with heavy cascading text -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- STEP 3: CASCADE KNOWLEDGE GAP DIAGNOSIS                   -->
+    <!-- ========================================================= -->
+    <div id="stepPanel3" class="step-content-panel">
+      <div class="step3-grid">
+        
+        <!-- LEFT: TEST UNAIDED BASELINE MODEL -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title"><span>🩺</span> Test Unaided Baseline Model</div>
+            <span class="pill" style="background:#fee2e2; color:#991b1b;">Student (No Cascade)</span>
+          </div>
+
+          <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px;">
+            Test the frozen baseline agent against synthetic questions to diagnose which cascade tiers collapse.
+          </p>
+
+          <label style="font-size: 11.5px; font-weight: 700; color: #475569; margin-bottom: 4px; display: block;">Quick Test Question Bench (Click to Send):</label>
+          <div style="max-height: 180px; overflow-y: auto; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 12px;" id="testQuestionsList"></div>
+
+          <!-- INTERACTIVE CHAT -->
+          <div class="chat-container" style="height: 280px;">
+            <div class="chat-messages" id="baselineChatMessages">
+              <div class="chat-bubble bot">
+                Hello! I am the baseline support assistant. Ask me anything about our enterprise policies.
+              </div>
+            </div>
+            <div class="chat-input-bar">
+              <input type="text" class="chat-input" id="baselineChatInput" placeholder="Ask baseline agent a policy question..." onkeydown="if(event.key==='Enter') sendBaselineQuery()">
+              <button class="btn btn-primary btn-sm" onclick="sendBaselineQuery()">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: CASCADE TIER BREAKDOWN & RADAR -->
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title"><span>📉</span> Cascade Knowledge Gap Matrix</div>
+            <button class="btn btn-secondary btn-sm" onclick="recalculateDiagnosticGaps()">🔄 Re-diagnose</button>
+          </div>
+
+          <div style="height: 260px; position: relative;">
+            <canvas id="knowledgeGapRadar"></canvas>
+          </div>
+
+          <div style="margin-top: 14px;">
+            <h4 style="font-size: 12px; font-weight: 700; color: #334155; margin-bottom: 6px;">
+              Cascade Tier Error Ranking (Lowest Score = Highest Need):
+            </h4>
+            <div id="topicRankingContainer" style="display: flex; flex-direction: column; gap: 6px;"></div>
+          </div>
+
+          <div class="site-alert info" style="margin-top: 12px; margin-bottom: 0;">
+            <strong>📉 Gain Follows the Gap:</strong> The model reliably handles general Tier 1 prose, but collapses on Tier 3 &amp; 4 specific parameter bounds (e.g. 2-hour break-glass limit, 200ms lock abort).
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- STEP 4: CASCADE EDUCATION & VERIFICATION                  -->
+    <!-- ========================================================= -->
+    <div id="stepPanel4" class="step-content-panel">
+      
+      <!-- 5 LEVERS TOOLBAR -->
+      <div class="levers-toolbar">
+        <div>
+          <div style="font-size: 13px; font-weight: 800; color: #0f172a;">🎓 Five Levers of Education:</div>
+          <div style="font-size: 11.5px; color: var(--text-muted);">The approved markdown feeds the Sources lever: The Cascading Text Book.</div>
+        </div>
+
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <div class="lever-switch active" id="leverSources" onclick="toggleLever('Sources')">
+            <span>📘 Sources (Cascade Book)</span>
+          </div>
+          <div class="lever-switch active" id="leverPractice" onclick="toggleLever('Practice')">
+            <span>🎯 Practice (Few-Shot)</span>
+          </div>
+          <div class="lever-switch active" id="leverTools" onclick="toggleLever('Tools')">
+            <span>🛠️ Tools (Grounding)</span>
+          </div>
+          <div class="lever-switch active" id="leverReview" onclick="toggleLever('Review')">
+            <span>🔍 Review (Self-Audit)</span>
+          </div>
+          <div class="lever-switch active" id="leverRetry" onclick="toggleLever('Retry')">
+            <span>🔁 Retry (Loop)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- DUAL CHAT ARENA -->
+      <div class="dual-chat-grid">
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title" style="color: #ef4444;">
+              <span>🤖</span> Baseline Agent (Without Cascade)
+            </div>
+            <span class="pill" style="background:#fee2e2; color:#991b1b;">Score: 48%</span>
+          </div>
+          <div class="chat-container" style="height: 320px;">
+            <div class="chat-messages" id="dualBaselineChat">
+              <div class="chat-bubble bot">Ask me to resolve an access request or run a break-glass incident.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-card">
+          <div class="panel-header">
+            <div class="panel-title" style="color: #059669;">
+              <span>🎓</span> Educated Agent (Uses Text Cascade)
+            </div>
+            <span class="pill" style="background:#ecfdf5; color:#065f46;">Score: 99.4%</span>
+          </div>
+          <div class="chat-container" style="height: 320px;">
+            <div class="chat-messages" id="dualEducatedChat">
+              <div class="chat-bubble bot">I am grounded in the 4-tier cascading policy text. All invariants and parameter bounds strictly verified.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+        <input type="text" class="chat-input" id="dualChatInput" placeholder="Enter query for side-by-side comparison (or click a test prompt)..." onkeydown="if(event.key==='Enter') dispatchDualChat()">
+        <button class="btn btn-magic" onclick="dispatchDualChat()"><span>⚡</span> Compare Side-by-Side</button>
+      </div>
+
+      <!-- TEST AGAINST THE HIDDEN CASCADE (500+ QUESTIONS) -->
+      <div class="panel-card" style="margin-top: 14px;">
+        <div class="panel-header">
+          <div>
+            <h3 style="font-size: 15px; font-weight: 800; color: #0f172a;">
+              🧪 Step 4 Verification: Test Against the Hidden Cascade (500+ Synthetic Questions)
+            </h3>
+            <p style="font-size: 12px; color: var(--text-muted);">
+              Deterministic grading against the multi-tier cascade text. Hallucination guard flags invented forms, numbers, and links.
+            </p>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="runBatchHiddenExam()">
+            <span>▶️</span> Run 500-Query Benchmark
+          </button>
+        </div>
+
+        <div class="score-metric-grid">
+          <div class="score-card">
+            <div class="score-num" id="metricAccuracy">99.4%</div>
+            <div class="score-label">Cascade Text Match</div>
+            <div class="score-delta">▲ +51.4% vs Baseline</div>
+          </div>
+          <div class="score-card good">
+            <div class="score-num" id="metricHallucination">0.0%</div>
+            <div class="score-label">Hallucination Guard</div>
+            <div class="score-delta">▼ Zero Inverted Rules</div>
+          </div>
+          <div class="score-card">
+            <div class="score-num" id="metricApproval">100%</div>
+            <div class="score-label">Approval Gate Adherence</div>
+            <div class="score-delta">▲ Zero Skipped Gates</div>
+          </div>
+          <div class="score-card good">
+            <div class="score-num" id="metricDeadEnd">0</div>
+            <div class="score-label">Dead Ends Encountered</div>
+            <div class="score-delta">100% Traceable</div>
+          </div>
+        </div>
+
+        <div style="height: 200px; margin-top: 12px;">
+          <canvas id="comparativeScoreChart"></canvas>
+        </div>
+
+        <!-- TRACE BACK BOX -->
+        <div class="trace-back-box" id="traceBackInspector">
+          <div style="font-weight: 700; color: #0f172a; margin-bottom: 4px;">
+            ↺ Trace-Back-to-Fix Audit:
+          </div>
+          <div style="color: #64748b; font-size: 11.5px;">
+            <em>"Every wrong answer traces back to a fix in the markdown, the text cascade, or the rule that taught it."</em>
+          </div>
+          <div class="trace-step-flow">
+            <div class="trace-node" style="border-color:#38bdf8;">1. Approved Markdown (Break-Glass SOP)</div>
+            <span class="trace-arrow">➔</span>
+            <div class="trace-node" style="border-color:#6366f1;">2. Cascade Tier 3.2 (2-Hour Auto-Revocation)</div>
+            <span class="trace-arrow">➔</span>
+            <div class="trace-node" style="border-color:#10b981;">3. Rule Injected (Lever 1: Strict Invariant)</div>
+            <span class="trace-arrow">➔</span>
+            <div class="trace-node" style="border-color:#f59e0b;">4. Hidden Test Passed (100% Deterministic Match)</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    const state = {
+      activeStep: 1,
+      inputViewMode: 'side_by_side',
+      highlightDocInvariants: true,
+      selectedPreset: 'it_security',
+      currentRoute: '/overview',
+      viewport: 'desktop',
+      activeFilter: 'all',
+      activeLevers: { Sources: true, Practice: true, Tools: true, Review: true, Retry: true },
+      radarChart: null,
+      comparativeChart: null
+    };
+
+    const PRESETS = {
+      it_security: {
+        document: {
+          id: 'SEC-POL-402_Rev4.pdf',
+          title: 'Global Enterprise Security Policy 402: Production Access, Hardware MFA & Break-Glass Runbook',
+          badge: 'CONFIDENTIAL // SOC2 TYPE-II CONTROL',
+          version: 'v4.2.1-PROD',
+          effectiveDate: 'January 15, 2026',
+          pages: '6 pages (AcroForm v1.7)',
+          owner: 'CISO Governance & Identity Architecture Guild',
+          html: `
+          <div class="doc-page">
+            <div class="doc-header-banner">
+              <div class="doc-logo-title">
+                <span style="font-size: 26px;">🛡️</span>
+                <div>
+                  <div class="doc-company">Acme Global Technologies Inc.</div>
+                  <div class="doc-subtitle">Information Security Management System (ISMS) — Control Policy SEC-402</div>
+                </div>
+              </div>
+              <div class="doc-stamp approved">APPROVED &amp; AUDITED</div>
+            </div>
+
+            <div class="doc-meta-grid">
+              <div><strong>Document ID:</strong> SEC-POL-2026-402-v4.2</div>
+              <div><strong>Classification:</strong> RESTRICTED // INTERNAL USE ONLY</div>
+              <div><strong>Effective Date:</strong> Jan 15, 2026 (Annual Review Cycle)</div>
+              <div><strong>Audit Standard:</strong> SOC2 Type II (CC6.1, CC6.3) &amp; ISO 27001</div>
+            </div>
+
+            <div class="doc-body">
+              <div class="doc-toc">
+                <div style="font-weight: 700; margin-bottom: 4px; color: #1e293b;">Table of Contents:</div>
+                <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 11.5px; color: #0284c7;">
+                  <span>§ 1.0 Multi-Factor Authentication</span>
+                  <span>§ 2.0 Database Write Leases</span>
+                  <span>§ 3.0 Emergency Break-Glass</span>
+                </div>
+              </div>
+
+              <div class="doc-section">
+                <div class="doc-section-heading">§ 1.0 Multi-Factor Authentication (MFA) Mandate</div>
+                <p class="doc-paragraph">
+                  1.1. All engineers, contractor personnel, and automated system accounts accessing production VPCs, Kubernetes clusters, and database enclaves must authenticate using physical, hardware-backed <strong>FIDO2 WebAuthn cryptographic keys</strong> (e.g. YubiKey 5 Series).
+                </p>
+                <div class="doc-callout warn">
+                  <strong>CRITICAL INVARIANT 1.2:</strong> Legacy SMS OTP and voice-call telephone verifications are <span class="doc-highlight">STRICTLY PROHIBITED</span> and permanently revoked across all corporate IAM gateways due to SIM-swapping vulnerabilities.
+                </div>
+              </div>
+
+              <div class="doc-section">
+                <div class="doc-section-heading">§ 2.0 Elevated Database Write Leases &amp; Authorization Ceilings</div>
+                <p class="doc-paragraph">
+                  2.1. Direct write access to customer relational databases (PostgreSQL/Aurora) requires an active JIRA Change Reference ticket and mandatory second-factor sign-off from an <strong>L2 Engineering Director or VP</strong>.
+                </p>
+                <p class="doc-paragraph">
+                  2.2. Elevated access leases are strictly ephemeral. The time-to-live (TTL) for any write lease shall <span class="doc-highlight">NOT EXCEED 4 HOURS (240 minutes)</span>. All access tokens automatically self-terminate upon expiration.
+                </p>
+              </div>
+
+              <div class="doc-section">
+                <div class="doc-section-heading">§ 3.0 Emergency 'Break-Glass' Exception Protocol</div>
+                <p class="doc-paragraph">
+                  3.1. In the extraordinary circumstance of an active Sev-1 / P0 outage affecting payment processing or user authentication where designated approvers are unreachable, an on-call SRE may trigger the automated <strong>Emergency Break-Glass</strong> procedure.
+                </p>
+                <div class="doc-callout alert">
+                  <strong>STRICT SAFETY BOUND 3.2:</strong> Break-Glass tokens are hard-capped at <span class="doc-highlight">2 HOURS (7,200 SECONDS)</span>. A non-dismissible audit event is dispatched instantly to SIRT, and post-incident justification is mandatory within 24 hours.
+                </div>
+              </div>
+
+              <div class="doc-signature-row">
+                <div>
+                  <div style="font-size: 11px; color: #64748b;">AUTHORIZING CISO</div>
+                  <div style="font-weight: 700; color: #0f172a; margin-top: 2px;">Dr. Evelyn Vance</div>
+                  <div style="font-size: 10.5px; color: #64748b;">Chief Information Security Officer</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-size: 11px; color: #64748b;">CRYPTOGRAPHIC FINGERPRINT</div>
+                  <code style="font-size: 10.5px; color: #0284c7; background: #f0f9ff; padding: 2px 6px; border-radius: 4px;">SHA256: 9f8e4a7b2c01d3e5f6a8b9c0d1e2f3a4</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+        },
+        
+        id: 'it_security',
+        title: 'Enterprise IT SSO & Privilege Escalation',
+        brand: 'CorpSecure Access Portal',
+        icon: '🔐',
+        routes: [
+          { path: '/overview', label: 'Overview' },
+          { path: '/mfa-setup', label: 'Hardware MFA' },
+          { path: '/privilege-escalation', label: 'Escalation Form' },
+          { path: '/break-glass', label: 'Break-Glass Emergency' },
+          { path: '/status', label: 'Audit Tracker' }
+        ],
+        markdownContent: `---
+owner: sec-ops@corp.internal
+status: approved
+source: Policy-402, Break-Glass-SOP
+applies-to: all-employees, contractors
+---
+
+# Enterprise SSO & Privilege Escalation Policy
+
+## 1. Authentication Invariants
+- Hardware FIDO2 WebAuthn is strictly required for all internal SSO access.
+- SMS OTP and voice verification are DEPRECATED and CANNOT be used as fallbacks.
+- Hardware tokens must be registered via /mfa-setup prior to accessing internal tools.
+
+## 2. Production Database Privilege Escalation
+- Access to production database clusters requires explicit L2 Director approval.
+- Justification MUST reference a valid JIRA ticket (e.g. INFRA-xxxx).
+- Peer or contractor approvals are PROHIBITED under any circumstances.
+- Maximum granted lease duration is NOT to exceed 4 hours.
+
+## 3. Break-Glass Emergency Incidents
+- Used ONLY for active P0 production outages.
+- Automatically expires after exactly 2 hours.
+- Triggers immutable SOC2 audit logs dispatched to security-alert@corp.internal.`,
+        invariants: [
+          { name: "Duration: 2 hours (Break-Glass auto-revoke)", status: "Survived intact" },
+          { name: "Duration: 4 hours (Lease maximum)", status: "Survived intact" },
+          { name: "NOT statement: CANNOT use SMS fallback", status: "Survived intact" },
+          { name: "NOT statement: PROHIBITED peer sign-off", status: "Survived intact" }
+        ],
+        cascadeNodes: [
+          {
+            tier: 1,
+            badge: "Tier 1: Root Invariant",
+            title: "Constitutional Identity & Authentication Gate",
+            body: "Hardware FIDO2 WebAuthn cryptographic challenge required across all internal systems without exception.",
+            code: "RULE_ROOT_101: WebAuthn.enforce() == STRICT_TRUE && SMS_OTP.isAllowed() == FALSE"
+          },
+          {
+            tier: 2,
+            badge: "Tier 2: Scoped Policy",
+            title: "Privileged Infrastructure Access Boundaries",
+            body: "Standard employee SSO grants read-only staging access. Any elevated write or production access must branch into approval hierarchies.",
+            code: "SCOPE_L1: Standard_Access -> Allowed; SCOPE_PROD: DB_Cluster_Write -> Requires_Dual_Key"
+          },
+          {
+            tier: 3,
+            badge: "Tier 3: Execution Rule",
+            title: "L2 Director Dual-Key Approval Gate",
+            body: "Production database lease requests must submit a valid JIRA ticket number (INFRA-*) and receive cryptographic sign-off from an L2 Director.",
+            code: "VALIDATE: Form.hasField('jira_ticket') && Approver.role >= 'L2_DIRECTOR'"
+          },
+          {
+            tier: 4,
+            badge: "Tier 4: Parameter Bound",
+            title: "Time-Bound Lease Constraint (Max 4 Hours)",
+            body: "Lease expiration timestamp is hard-capped at now() + 4h. Renewal requires complete re-authorization.",
+            code: "CONSTRAINT: lease_duration_seconds <= 14400 && auto_revoke == TRUE"
+          },
+          {
+            tier: 2,
+            badge: "Tier 2: Scoped Policy",
+            title: "Emergency Break-Glass Incident Protocol",
+            body: "In severe P0 outages where normal L2 Director approvals are blocked, engineers may trigger emergency break-glass credentials.",
+            code: "TRIGGER: Incident_Severity == 'P0_OUTAGE' && BreakGlass.bypassApproved() == TRUE"
+          },
+          {
+            tier: 4,
+            badge: "Tier 4: Parameter Bound",
+            title: "Break-Glass Strict 2-Hour Expiration",
+            body: "Emergency tokens automatically expire after exactly 2 hours (7200s). Dispatches instant immutable alerts to security-alert@corp.internal.",
+            code: "ENFORCE: token_ttl == 7200 && log_destination == 'SOC2_IMMUTABLE_AUDIT'"
+          },
+          {
+            tier: 'deadend',
+            badge: "Dead End / Blocker",
+            title: "Blocked Path: Contractor Self-Escalation Attempt",
+            body: "Contractor or intern accounts attempting to self-approve or request root access without an internal employee sponsor are immediately terminated.",
+            code: "DEAD_END: if (requester.type == 'CONTRACTOR' && !sponsor) -> HALT_AND_FLAG_SECURITY"
+          }
+        ],
+        syntheticQuestions: [
+          "How do I request production database write access for hotfix deployment?",
+          "Can I use SMS OTP if my hardware key is left at home?",
+          "What is the maximum duration for an emergency break-glass token?",
+          "Who must sign off on production root access?",
+          "Can an intern approve their own SSH key escalation?"
+        ],
+        baselineAnswers: {
+          q0: "You can just ask your team lead in Slack or submit form 101-B on the intranet to get instant database write access without extra approvals.",
+          q1: "Yes, you can select SMS verification as a fallback if you forgot your hardware token.",
+          q2: "Emergency tokens last for 24 to 48 hours until you manually log out.",
+          q3: "Any manager or senior engineer on call can approve root access."
+        },
+        educatedAnswers: {
+          q0: "Under Cascade Tier 3, production DB write access requires submitting form /privilege-escalation with a valid JIRA ticket (INFRA-*) and explicit L2 Director sign-off, capped at 4 hours (Tier 4).",
+          q1: "No. Cascade Tier 1 constitutionally mandates hardware FIDO2 WebAuthn. SMS OTP is deprecated and prohibited from fallback use.",
+          q2: "Under Cascade Tier 4, emergency break-glass tokens expire automatically after exactly 2 hours (7200s) and emit immutable SOC2 audit records.",
+          q3: "Explicit L2 Director approval is required; peer or contractor sign-offs are strictly blocked at Tier 2."
+        }
+      },
+
+      fintech_dispute: {
+        document: {
+          id: 'POL-OPS-AML-019.pdf',
+          title: 'Dispute Adjudication Operating Procedure & Federal Anti-Money Laundering (AML) Compliance Manual',
+          badge: 'RESTRICTED REGULATORY // FINCEN & OCC COMPLIANCE',
+          version: 'v3.8.0-AUDIT',
+          effectiveDate: 'February 1, 2026',
+          pages: '9 pages (Form SAR-1020)',
+          owner: 'FinTech Risk & Bank Secrecy Act Compliance Bureau',
+          html: `
+          <div class="doc-page">
+            <div class="doc-header-banner">
+              <div class="doc-logo-title">
+                <span style="font-size: 26px;">💳</span>
+                <div>
+                  <div class="doc-company">Apex Global Settlement Corp.</div>
+                  <div class="doc-subtitle">Risk Operations Standard — Bank Secrecy Act / 31 CFR § 1020.320 Compliance</div>
+                </div>
+              </div>
+              <div class="doc-stamp approved">FINCEN CERTIFIED</div>
+            </div>
+
+            <div class="doc-meta-grid">
+              <div><strong>Document ID:</strong> POL-OPS-AML-2026-019</div>
+              <div><strong>Classification:</strong> REGULATORY RESTRICTED // PRIVILEGED</div>
+              <div><strong>Effective Date:</strong> Feb 1, 2026 (Semi-Annual Audit)</div>
+              <div><strong>Statutory Code:</strong> 31 U.S.C. 5318(g) &amp; FinCEN SAR Regulations</div>
+            </div>
+
+            <div class="doc-body">
+              <div class="doc-toc">
+                <div style="font-weight: 700; margin-bottom: 4px; color: #1e293b;">Table of Contents:</div>
+                <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 11.5px; color: #0284c7;">
+                  <span>§ 1.0 Tier-1 Provisional Refunds</span>
+                  <span>§ 2.0 AML Velocity Freeze</span>
+                  <span>§ 3.0 Federal Non-Tipping Invariant</span>
+                  <span>§ 4.0 Merchant Proof SLA</span>
+                </div>
+              </div>
+
+              <div class="doc-section">
+                <div class="doc-section-heading">§ 1.0 Tier-1 Instant Provisional Refund Guidelines</div>
+                <p class="doc-paragraph">
+                  1.1. Cardholder disputes for unauthorized transactions with an aggregate claim amount <span class="doc-highlight">EQUAL TO OR LESS THAN $150.00</span> and a machine risk score under 25 may be provisionally credited within 60 seconds without supervisor override.
+                </p>
+              </div>
+
+              <div class="doc-section">
+                <div class="doc-section-heading">§ 2.0 AML Velocity Hold &amp; Suspicious Activity Thresholds</div>
+                <p class="doc-paragraph">
+                  2.1. Any single transaction dispute or 24-hour aggregate cardholder dispute volume <span class="doc-highlight">EXCEEDING $5,000.00</span> triggers an automated compliance lock.
+                </p>
+                <div class="doc-callout warn">
+                  <strong>STATUTORY HOLD REQUIREMENT 2.2:</strong> All flagged transactions must be placed under an unalterable <span class="doc-highlight">MANDATORY 72-HOUR INVESTIGATIVE HOLD</span>. No provisional credit or ledger settlement may execute prior to BSA Officer clearance.
+                </div>
+              </div>
+
+              <div class="doc-section">
+                <div class="doc-section-heading">§ 3.0 Federal Non-Tipping Invariant</div>
+                <div class="doc-callout alert">
+                  <strong>CRITICAL FEDERAL STATUTE 3.1:</strong> Under 31 U.S.C. 5318(g)(2), all customer support representatives and automated agent models are <span class="doc-highlight">STRICTLY PROHIBITED FROM NOTIFYING OR TIPPING OFF</span> any customer or merchant regarding SAR reviews or AML investigations. Violations carry federal felony penalties.
+                </div>
+              </div>
+
+              <div class="doc-section">
+                <div class="doc-section-heading">§ 4.0 Merchant Evidence Collection SLA</div>
+                <p class="doc-paragraph">
+                  4.1. Merchants contesting chargeback disputes are granted a strict window of <span class="doc-highlight">EXACTLY 5 BUSINESS DAYS</span> to upload carrier-verified proof of delivery and signed billing authorization.
+                </p>
+              </div>
+
+              <div class="doc-signature-row">
+                <div>
+                  <div style="font-size: 11px; color: #64748b;">BSA / AML COMPLIANCE OFFICER</div>
+                  <div style="font-weight: 700; color: #0f172a; margin-top: 2px;">Marcus Chen, CAMS</div>
+                  <div style="font-size: 10.5px; color: #64748b;">VP of Risk Operations &amp; Regulatory Compliance</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-size: 11px; color: #64748b;">FINCEN FILING GATEWAY</div>
+                  <code style="font-size: 10.5px; color: #0284c7; background: #f0f9ff; padding: 2px 6px; border-radius: 4px;">FINCEN-BSA-SECURE: 77a1-89bc-0042-ef91</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+        },
+        
+        id: 'fintech_dispute',
+        title: 'FinTech Dispute Intake & AML Hold',
+        brand: 'ApexPay Settlement Terminal',
+        icon: '💳',
+        routes: [
+          { path: '/disputes', label: 'Dispute Intake' },
+          { path: '/tier1-refund', label: 'Tier 1 Reversal' },
+          { path: '/aml-hold', label: 'AML Hold Protocol' },
+          { path: '/merchant-evidence', label: 'Evidence Portal' },
+          { path: '/arbitration', label: 'Arbitration Log' }
+        ],
+        markdownContent: `---
+owner: compliance@apexpay.internal
+status: approved
+source: Dispute-SLA-2026, AML-Manual-v4
+applies-to: customer-ops, risk-team
+---
+
+# Dispute Resolution & Anti-Money Laundering (AML) Rules
+
+## 1. Instant Tier 1 Refunds
+- Transactions under $150 with clean risk history qualify for instant provisional refund.
+- Agent CANNOT override customer risk score manually.
+
+## 2. AML Velocity & SAR Triggers
+- Any cross-border dispute exceeding $5,000 velocity spikes mandates an immediate 72-hour AML hold.
+- Agents are legally PROHIBITED from tipping off cardholders about AML SAR flags.
+
+## 3. Merchant Evidence Invariants
+- Merchants must submit signed proof of delivery within strictly 5 business days.`,
+        invariants: [
+          { name: "Amount threshold: $150 (Instant credit limit)", status: "Survived intact" },
+          { name: "Time window: 72 hours (AML freeze duration)", status: "Survived intact" },
+          { name: "NOT statement: CANNOT override risk score", status: "Survived intact" },
+          { name: "NOT statement: PROHIBITED tipping off", status: "Survived intact" }
+        ],
+        cascadeNodes: [
+          {
+            tier: 1,
+            badge: "Tier 1: Root Invariant",
+            title: "Federal AML Compliance & Non-Tipping Invariant",
+            body: "Agents are strictly prohibited under federal regulations from disclosing Suspicious Activity Report (SAR) filings or AML freezes to customers.",
+            code: "CONSTITUTIONAL: if (account.isUnderSARReview) -> reveal_status = FALSE"
+          },
+          {
+            tier: 2,
+            badge: "Tier 2: Scoped Policy",
+            title: "Dispute Classification & Threshold Routing",
+            body: "Disputes under $150 route to instant automated reversal; disputes over $5,000 cross-border route to mandatory compliance holds.",
+            code: "BRANCH: if (amount <= 150) -> Tier1_Instant; if (amount > 5000 && cross_border) -> AML_Hold"
+          },
+          {
+            tier: 3,
+            badge: "Tier 3: Execution Rule",
+            title: "Tier 1 Automated Credit Reversal",
+            body: "Disputes meeting the $150 threshold and low risk score disburse provisional credit to the cardholder within 60 seconds.",
+            code: "ACTION: disburse_provisional_credit(account_id, amount) -> Route: /tier1-refund"
+          },
+          {
+            tier: 4,
+            badge: "Tier 4: Parameter Bound",
+            title: "Mandatory 72-Hour AML Compliance Hold",
+            body: "High-velocity transactions are held for exactly 72 hours without exception while the fraud compliance unit audits ledger hops.",
+            code: "HOLD_DURATION: 72_HOURS && agent_manual_override_allowed = FALSE"
+          },
+          {
+            tier: 'deadend',
+            badge: "Dead End / Blocker",
+            title: "Merchant Forfeiture on Exceeded SLA (5 Days)",
+            body: "If merchant fails to submit signed proof of delivery within 5 business days, chargeback is automatically awarded to cardholder.",
+            code: "DEAD_END: if (now() - dispute_opened > 5_DAYS && !merchant_proof) -> AUTO_AWARD"
+          }
+        ],
+        syntheticQuestions: [
+          "Can an agent issue an instant refund for a $120 unauthorized charge?",
+          "What should I tell the customer if an AML compliance freeze is triggered?",
+          "How long does a merchant have to submit shipping proof?"
+        ],
+        baselineAnswers: {
+          q0: "Yes, you can issue refunds for any amount up to $500 if the customer complains.",
+          q1: "You should inform the customer that their account was flagged for AML suspicious activity.",
+          q2: "Merchants usually have 30 days to reply by email."
+        },
+        educatedAnswers: {
+          q0: "Yes. Under Cascade Tier 3, transactions under $150 with a clean risk score qualify for instant Tier 1 provisional credit at /tier1-refund.",
+          q1: "Under Cascade Tier 1, agents are legally prohibited from revealing AML SAR flags. Inform the customer that the transaction is in standard security verification.",
+          q2: "Under Cascade Tier 4, merchants have strictly 5 business days to upload proof of delivery via /merchant-evidence before automatic forfeiture."
+        }
+      },
+
+      cloud_devops: {
+        document: {
+          id: 'RUNBOOK-SRE-2026-08.pdf',
+          title: 'Production Canary Deployment Gateways & PostgreSQL DDL Lock Mitigation Standard',
+          badge: 'MISSION CRITICAL // PROD RELIABILITY GUARDRAIL',
+          version: 'v2.4.0-STABLE',
+          effectiveDate: 'March 10, 2026',
+          pages: '5 pages (Runbook Markdown Export)',
+          owner: 'SRE Production Excellence & Platform Engineering Guild',
+          html: `
+          <div class="doc-page">
+            <div class="doc-header-banner">
+              <div class="doc-logo-title">
+                <span style="font-size: 26px;">🚀</span>
+                <div>
+                  <div class="doc-company">CloudPlatform Infrastructure Engineering</div>
+                  <div class="doc-subtitle">SRE Operating Standard — Zero-Downtime Releases &amp; DDL Lock Boundaries</div>
+                </div>
+              </div>
+              <div class="doc-stamp approved">PRODUCTION GOLD STANDARD</div>
+            </div>
+
+            <div class="doc-meta-grid">
+              <div><strong>Document ID:</strong> SRE-RB-2026-08-CANARY</div>
+              <div><strong>Classification:</strong> ENGINEERING STANDARD // MANDATORY</div>
+              <div><strong>Effective Date:</strong> Mar 10, 2026 (Quarterly Review)</div>
+              <div><strong>Scope:</strong> All Production Microservices &amp; Databases</div>
+            </div>
+
+            <div class="doc-body">
+              <div class="doc-toc">
+                <div style="font-weight: 700; margin-bottom: 4px; color: #1e293b;">Table of Contents:</div>
+                <div style="display: flex; gap: 16px; flex-wrap: wrap; font-size: 11.5px; color: #0284c7;">
+                  <span>§ 1.0 Canary Staging Protocol</span>
+                  <span>§ 2.0 DDL Lock Timeout Ceiling</span>
+                  <span>§ 3.0 Automated Rollback Tripwire</span>
+                  <span>§ 4.0 Postmortem SLA</span>
+                </div>
+              </div>
+
+              <div class="doc-section">
+                <div class="doc-section-heading">§ 1.0 Progressive Canary Staging Protocol</div>
+                <p class="doc-paragraph">
+                  1.1. All production deployments must first route a maximum of <strong>5% of live traffic</strong> to the Canary cluster while maintaining 95% on the stable Blue baseline.
+                </p>
+                <div class="doc-callout warn">
+                  <strong>MANDATORY SOAK TIME 1.2:</strong> The Canary stage must remain active for a <span class="doc-highlight">MINIMUM SOAK PERIOD OF 15 MINUTES</span> without anomalies before automated promotion to 50% traffic can proceed.
+                </div>
+              </div>
+
+              <div class="doc-section">
+                <div class="doc-section-heading">§ 2.0 PostgreSQL DDL Table Lock Limits &amp; Mitigation</div>
+                <p class="doc-paragraph">
+                  2.1. Any database schema migration requiring an <code>AccessExclusiveLock</code> on production tables must execute with strict timeout ceilings.
+                </p>
+                <div class="doc-callout alert">
+                  <strong>HARD CEILING INVARIANT 2.2:</strong> Any DDL migration holding an exclusive table lock for <span class="doc-highlight">LONGER THAN 200 MILLISECONDS (200ms) MUST BE ABORTED IMMEDIATELY</span> to prevent catastrophic connection pool exhaustion. Peak hours strictly prohibit locking customer tables.
+                </div>
+              </div>
+
+              <div class="doc-section">
+                <div class="doc-section-heading">§ 3.0 Automated Blue-Green Rollback Circuit Breaker</div>
+                <p class="doc-paragraph">
+                  3.1. Automated monitoring monitors the HTTP error telemetry during the 15-minute soak. If the Canary HTTP 5xx error rate <span class="doc-highlight">EXCEEDS 0.05% (5 errors per 10,000 requests)</span>, the traffic router will instantly abort the deployment and flip 100% of traffic back to Blue.
+                </p>
+              </div>
+
+              <div class="doc-section">
+                <div class="doc-section-heading">§ 4.0 Incident Postmortem SLA</div>
+                <p class="doc-paragraph">
+                  4.1. In the event of an automated or manual rollback of a production release, an SRE Postmortem ticket must be formally filed and reviewed <span class="doc-highlight">WITHIN 24 HOURS</span>.
+                </p>
+              </div>
+
+              <div class="doc-signature-row">
+                <div>
+                  <div style="font-size: 11px; color: #64748b;">PLATFORM SRE ARCHITECT</div>
+                  <div style="font-weight: 700; color: #0f172a; margin-top: 2px;">Alex Rivera</div>
+                  <div style="font-size: 10.5px; color: #64748b;">Principal Site Reliability Engineer</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-size: 11px; color: #64748b;">AUTOMATED DEPLOY DAEMON</div>
+                  <code style="font-size: 10.5px; color: #0284c7; background: #f0f9ff; padding: 2px 6px; border-radius: 4px;">K8S-CANARY-WATCHDOG: v3.11.2</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        `
+        },
+        
+        id: 'cloud_devops',
+        title: 'Cloud Canary Release & DB Lock Runbook',
+        brand: 'CloudOps Release Center',
+        icon: '🚀',
+        routes: [
+          { path: '/release-console', label: 'Release Console' },
+          { path: '/canary-traffic', label: 'Canary Traffic 5%' },
+          { path: '/ddl-lock-check', label: 'DB Lock Check' },
+          { path: '/rollback-trigger', label: 'Rollback Gates' },
+          { path: '/sre-postmortem', label: 'SRE Postmortem' }
+        ],
+        markdownContent: `---
+owner: sre-leads@corp.internal
+status: approved
+source: Release-SOP-80, Database-Guardrails
+applies-to: devops, platform-engineering
+---
+
+# Production Canary Release & Database Lock Guardrails
+
+## 1. Canary Traffic Gates
+- Canary deployments must run at 5% traffic for NOT less than 15 minutes before 50% ramp.
+
+## 2. Table Lock Limitations
+- DDL schema migrations with exclusive table lock exceeding 200ms must be aborted IMMEDIATELY.
+- Operations during peak hours CANNOT lock critical customer tables.
+
+## 3. Rollback & Postmortem
+- HTTP 5xx error rate exceeding 0.05% triggers automated instant blue-green rollback.
+- Postmortem is mandatory within 24 hours of any P0 rollback.`,
+        invariants: [
+          { name: "Canary traffic: 5% (15-min min duration)", status: "Survived intact" },
+          { name: "Lock timeout: 200ms maximum", status: "Survived intact" },
+          { name: "NOT statement: NOT less than 15 minutes", status: "Survived intact" },
+          { name: "NOT statement: CANNOT lock peak tables", status: "Survived intact" }
+        ],
+        cascadeNodes: [
+          {
+            tier: 1,
+            badge: "Tier 1: Root Invariant",
+            title: "Production Availability & Error Budget Invariant",
+            body: "Production service SLA requires 99.99% uptime. Automated rollbacks supersede manual operator decisions whenever error budgets drain.",
+            code: "SLA_TARGET: 0.9999 && AUTOMATED_ROLLBACK_PRIORITY = MAXIMUM"
+          },
+          {
+            tier: 2,
+            badge: "Tier 2: Scoped Policy",
+            title: "Canary Progressive Rollout Protocol",
+            body: "Releases must proceed in staged percentage gates: 5% Canary ➔ 50% Staged ➔ 100% Production, gated by telemetry health metrics.",
+            code: "STAGE_1: 5% -> STAGE_2: 50% -> STAGE_3: 100%"
+          },
+          {
+            tier: 3,
+            badge: "Tier 3: Execution Rule",
+            title: "15-Minute Minimum Observation Interval",
+            body: "Traffic must remain clamped at 5% for not less than 15 minutes (900s) while p99 latency and error rates are observed.",
+            code: "GATE_RULE: if (observation_duration < 900s) -> PREVENT_SCALE_UP"
+          },
+          {
+            tier: 4,
+            badge: "Tier 4: Parameter Bound",
+            title: "Database DDL Table Lock Abort (200ms Max)",
+            body: "Any database migration holding an exclusive table lock longer than 200ms is terminated immediately by the pre-flight daemon.",
+            code: "ABORT_TRIGGER: if (pg_stat_activity.lock_duration > 200ms) -> TERMINATE_PID"
+          },
+          {
+            tier: 'deadend',
+            badge: "Dead End / Blocker",
+            title: "Automated Instant Rollback on 5xx Spikes (> 0.05%)",
+            body: "When HTTP 5xx error rate exceeds 0.05% during any stage, traffic is instantly flipped back to Blue and release is aborted.",
+            code: "DEAD_END: if (http_5xx_rate > 0.0005) -> FLIP_TRAFFIC_TO_BLUE && LOG_P0"
+          }
+        ],
+        syntheticQuestions: [
+          "How long must canary traffic stay at 5% before scaling up?",
+          "What is the maximum allowed table lock time for database migrations?",
+          "What error rate triggers an automated blue-green rollback?"
+        ],
+        baselineAnswers: {
+          q0: "You can ramp to 100% immediately if health checks pass for 1 minute.",
+          q1: "Locks can stay open for up to 30 seconds during scheduled maintenance.",
+          q2: "Rollback happens when error rate exceeds 5%."
+        },
+        educatedAnswers: {
+          q0: "Under Cascade Tier 3, canary traffic must remain strictly at 5% for not less than 15 minutes (900 seconds) before further ramp.",
+          q1: "Cascade Tier 4 specifies that any exclusive table lock exceeding 200ms must be aborted immediately to protect concurrent throughput.",
+          q2: "Under Cascade Tier 4/Dead-End rules, an HTTP 5xx error rate exceeding 0.05% (0.0005) immediately triggers an automated rollback."
+        }
+      }
+    };
+
+    window.switchStep = function(stepNum) {
+      state.activeStep = stepNum;
+      for (let i = 1; i <= 4; i++) {
+        document.getElementById(`stepPanel${i}`).classList.toggle('active', i === stepNum);
+        document.getElementById(`tabBtn${i}`).classList.toggle('active', i === stepNum);
+      }
+      if (stepNum === 2) compileTextCascade();
+      if (stepNum === 3) initDiagnosticRadar();
+      if (stepNum === 4) initComparativeChart();
+    };
+
+    window.selectPreset = function(presetId) {
+      state.selectedPreset = presetId;
+      document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
+      const chip = document.getElementById(`chipPreset${presetId === 'it_security' ? 1 : presetId === 'fintech_dispute' ? 2 : 3}`);
+      if (chip) chip.classList.add('active');
+
+      compileAndRenderWebsite();
+      compileTextCascade();
+      showToast(`Loaded ${PRESETS[presetId].title}`);
+    };
+
+    
+    // ==========================================
+    // STEP 1: TWO INPUTS (DOCUMENTS & WEB PAGES) LOGIC
+    // ==========================================
+    window.setInputViewMode = function(mode) {
+      state.inputViewMode = mode;
+      
+      // Update top segmented buttons
+      const btnDocs = document.getElementById('btnModeDocs');
+      const btnWeb = document.getElementById('btnModeWeb');
+      const btnDual = document.getElementById('btnModeDual');
+      if (btnDocs) btnDocs.classList.toggle('active', mode === 'documents');
+      if (btnWeb) btnWeb.classList.toggle('active', mode === 'web_pages');
+      if (btnDual) btnDual.classList.toggle('active', mode === 'side_by_side');
+
+      // Update left side Two-Inputs cards
+      const cardDocs = document.getElementById('inputCardDocs');
+      const cardWeb = document.getElementById('inputCardWeb');
+      if (cardDocs) cardDocs.classList.toggle('active', mode === 'documents' || mode === 'side_by_side');
+      if (cardWeb) cardWeb.classList.toggle('active', mode === 'web_pages' || mode === 'side_by_side');
+
+      renderStep1Inputs();
+      showToast(`Switched view: ${mode === 'documents' ? 'Raw Corporate Document' : mode === 'web_pages' ? 'Internal Web Portal' : 'Dual View (Two Inputs Side-by-Side)'}`);
+    };
+
+    window.toggleDocInvariants = function() {
+      state.highlightDocInvariants = !state.highlightDocInvariants;
+      const btn = document.getElementById('btnToggleInvariants');
+      if (btn) {
+        btn.classList.toggle('btn-primary', state.highlightDocInvariants);
+        btn.classList.toggle('btn-secondary', !state.highlightDocInvariants);
+        btn.innerHTML = state.highlightDocInvariants ? '<span>✨</span> Invariants Highlighted' : '<span>✨</span> Highlight Invariants';
+      }
+      const highlights = document.querySelectorAll('.doc-highlight');
+      highlights.forEach(el => {
+        el.classList.toggle('off', !state.highlightDocInvariants);
+      });
+      showToast(state.highlightDocInvariants ? 'Highlighted critical numeric invariants & negations' : 'Highlights dimmed');
+    };
+
+    window.renderStep1Inputs = function() {
+      const container = document.getElementById('step1InputsContainer');
+      if (!container) return;
+
+      const p = PRESETS[state.selectedPreset];
+      if (!p || !p.document) return;
+      const doc = p.document;
+
+      if (state.inputViewMode === 'documents') {
+        container.innerHTML = `
+          <div class="doc-viewer-frame" style="height: 620px;">
+            <div class="doc-viewer-toolbar">
+              <div class="doc-file-info">
+                <span>📄</span>
+                <span>${doc.id}</span>
+                <span class="site-tag" style="background:#fef3c7; color:#92400e;">${doc.badge}</span>
+              </div>
+              <div style="display: flex; gap: 8px; align-items: center; font-size: 11px; color: #64748b;">
+                <span>${doc.pages}</span>
+                <span>•</span>
+                <span>${doc.version}</span>
+                <span>•</span>
+                <span>${doc.effectiveDate}</span>
+              </div>
+            </div>
+            <div class="doc-viewport">${doc.html}</div>
+          </div>
+        `;
+      } else if (state.inputViewMode === 'web_pages') {
+        container.innerHTML = `
+          <div class="browser-frame" style="height: 620px;">
+            <div class="browser-toolbar">
+              <div class="window-controls">
+                <div class="window-dot close"></div>
+                <div class="window-dot min"></div>
+                <div class="window-dot max"></div>
+              </div>
+              <div class="browser-address-bar">
+                <span>🔒</span>
+                <span id="browserUrlDisplay">https://internal.corp.local${state.currentRoute}</span>
+              </div>
+              <div class="browser-actions">
+                <button class="browser-btn active" id="btnViewDesktop" onclick="setBrowserViewport('desktop')">🖥️ Desktop</button>
+                <button class="browser-btn" id="btnViewMobile" onclick="setBrowserViewport('mobile')">📱 Mobile</button>
+                <button class="browser-btn" onclick="refreshEmbeddedSite()">🔄 Refresh</button>
+              </div>
+            </div>
+            <div class="embedded-viewport" id="embeddedViewport" style="flex: 1; overflow-y: auto;">
+              <nav class="site-nav">
+                <div class="site-brand">
+                  <span id="siteLogoIcon">${p.icon}</span>
+                  <span id="siteBrandText">${p.brand}</span>
+                </div>
+                <div class="site-links" id="siteNavLinks"></div>
+              </nav>
+              <div class="site-content" id="sitePageBody"></div>
+            </div>
+          </div>
+        `;
+        renderSiteNavLinks();
+        renderRouteContent(state.currentRoute);
+      } else {
+        // SIDE BY SIDE DUAL VIEW (THE CORE ONE-PAGER ARCHITECTURE)
+        container.innerHTML = `
+          <div class="dual-inputs-grid">
+            <!-- LEFT HALF: RAW CORPORATE DOCUMENT (INPUT 1) -->
+            <div class="dual-inputs-col" style="border-right: 1px solid #cbd5e1;">
+              <div class="doc-viewer-toolbar" style="background: #f8fafc; padding: 6px 10px;">
+                <div class="doc-file-info" style="font-size: 11px;">
+                  <span>📄</span>
+                  <span style="max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${doc.id}">${doc.id}</span>
+                </div>
+                <span class="site-tag" style="font-size: 9px; padding: 2px 6px; background:#fef3c7; color:#92400e;">Input 1: Document</span>
+              </div>
+              <div class="doc-viewport" style="flex: 1; padding: 12px;">${doc.html}</div>
+            </div>
+
+            <!-- RIGHT HALF: EMBEDDED INTERNAL WEB PORTAL (INPUT 2) -->
+            <div class="dual-inputs-col">
+              <div class="browser-toolbar" style="padding: 6px 8px;">
+                <div class="browser-address-bar" style="font-size: 11px;">
+                  <span>🔒</span>
+                  <span id="browserUrlDisplay">https://internal.corp.local${state.currentRoute}</span>
+                </div>
+                <span class="site-tag" style="font-size: 9px; padding: 2px 6px; background:#dbeafe; color:#1e40af;">Input 2: Web Portal</span>
+              </div>
+              <div class="embedded-viewport" id="embeddedViewport" style="flex: 1; overflow-y: auto;">
+                <nav class="site-nav" style="padding: 6px 10px;">
+                  <div class="site-brand" style="font-size: 11px;">
+                    <span id="siteLogoIcon">${p.icon}</span>
+                    <span id="siteBrandText">${p.brand}</span>
+                  </div>
+                  <div class="site-links" id="siteNavLinks"></div>
+                </nav>
+                <div class="site-content" id="sitePageBody"></div>
+              </div>
+            </div>
+          </div>
+        `;
+        renderSiteNavLinks();
+        renderRouteContent(state.currentRoute);
+      }
+
+      // Sync invariant highlight classes
+      const highlights = document.querySelectorAll('.doc-highlight');
+      highlights.forEach(el => {
+        el.classList.toggle('off', !state.highlightDocInvariants);
+      });
+    };
+
+    function renderSiteNavLinks() {
+      const p = PRESETS[state.selectedPreset];
+      const navLinksEl = document.getElementById('siteNavLinks');
+      if (navLinksEl && p && p.routes) {
+        navLinksEl.innerHTML = p.routes.map(r => `
+          <span class="site-nav-link ${r.path === state.currentRoute ? 'active' : ''}" onclick="navigateToRoute('${r.path}')">${r.label}</span>
+        `).join('');
+      }
+    }
+
+    
+    // ==========================================
+    // STEP 2: LEFT VIEW SWITCHER (MARKDOWN vs RAW & WEB SIDE-BY-SIDE)
+    // ==========================================
+    window.setStep2LeftView = function(mode) {
+      const container = document.getElementById('step2LeftContainer');
+      const p = PRESETS[state.selectedPreset];
+      if (!container || !p) return;
+
+      // Update button active classes
+      ['book', 'dual', 'doc', 'web'].forEach(m => {
+        const btn = document.getElementById(`btnStep2View${m.charAt(0).toUpperCase() + m.slice(1)}`);
+        if (btn) btn.classList.toggle('active', mode === m);
+      });
+
+      if (mode === 'book') {
+        container.innerHTML = `
+          <p style="font-size: 11.5px; color: var(--text-muted); margin-bottom: 8px;">
+            Clean human-approved markdown with strict YAML headers. One page per process.
+          </p>
+          <pre class="markdown-page-box" id="approvedMarkdownBox" style="background: #f8fafc; color: #1e293b; border: 1px solid #cbd5e1; font-family: var(--font-mono); font-size: 11px; padding: 12px; border-radius: 8px; height: 380px; overflow-y: auto; line-height: 1.5; white-space: pre-wrap;">${p.markdownContent}</pre>
+        `;
+      } else if (mode === 'dual') {
+        // RAW & WEB SIDE-BY-SIDE INSIDE STEP 2
+        container.innerHTML = `
+          <div style="font-size: 11.5px; color: #475569; margin-bottom: 6px; font-weight: 600;">
+            ⚖️ Raw Document &amp; Web Portal (Side-by-Side Inputs Grounding the Cascade):
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; height: 380px; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden; background: #cbd5e1;">
+            <div style="background: #ffffff; display: flex; flex-direction: column; overflow: hidden;">
+              <div style="background: #f8fafc; padding: 4px 8px; font-size: 10.5px; font-weight: 700; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
+                <span>📄 ${p.document.id}</span>
+                <span style="color: #0284c7;">Input 1</span>
+              </div>
+              <div style="flex: 1; overflow-y: auto; padding: 8px; font-size: 11px;">
+                ${p.document.html}
+              </div>
+            </div>
+            <div style="background: #ffffff; display: flex; flex-direction: column; overflow: hidden;">
+              <div style="background: #f8fafc; padding: 4px 8px; font-size: 10.5px; font-weight: 700; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between;">
+                <span>🌐 ${p.brand}</span>
+                <span style="color: #059669;">Input 2</span>
+              </div>
+              <div style="flex: 1; overflow-y: auto; padding: 8px; font-size: 11px;">
+                <div style="background: #f1f5f9; padding: 6px; border-radius: 4px; font-family: var(--font-mono); font-size: 10px; margin-bottom: 6px;">
+                  Active Route: ${state.currentRoute}
+                </div>
+                <div id="step2WebMiniBody"></div>
+              </div>
+            </div>
+          </div>
+        `;
+        // Populate mini web body
+        const miniBody = document.getElementById('step2WebMiniBody');
+        if (miniBody) miniBody.innerHTML = p.routes.map(r => `
+          <div style="padding: 6px; border: 1px solid #e2e8f0; border-radius: 4px; margin-bottom: 4px; background: #fafafa;">
+            <strong>${r.label}</strong> (<code>${r.path}</code>)
+          </div>
+        `).join('');
+      } else if (mode === 'doc') {
+        container.innerHTML = `
+          <div style="height: 380px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; background: #ffffff;">
+            ${p.document.html}
+          </div>
+        `;
+      } else if (mode === 'web') {
+        container.innerHTML = `
+          <div style="height: 380px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; background: #ffffff;">
+            <div style="font-size: 12px; font-weight: 700; margin-bottom: 8px;">${p.brand} (Routes)</div>
+            ${p.routes.map(r => `
+              <div style="padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 6px; background: #f8fafc;">
+                <div style="font-weight: 700; color: #1e293b;">${r.label}</div>
+                <div style="font-family: var(--font-mono); font-size: 11px; color: #0284c7;">https://internal.corp.local${r.path}</div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    };
+    
+    window.compileAndRenderWebsite = function() {
+      const p = PRESETS[state.selectedPreset];
+      state.currentRoute = p.routes[0].path;
+
+      document.getElementById('approvedMarkdownBox').textContent = p.markdownContent;
+      document.getElementById('siteBrandText').innerText = p.brand;
+      document.getElementById('siteLogoIcon').innerText = p.icon;
+      document.getElementById('browserUrlDisplay').innerText = `https://internal.corp.local${state.currentRoute}`;
+
+      const navLinksEl = document.getElementById('siteNavLinks');
+      navLinksEl.innerHTML = p.routes.map(r => `
+        <span class="site-nav-link ${r.path === state.currentRoute ? 'active' : ''}" onclick="navigateToRoute('${r.path}')">${r.label}</span>
+      `).join('');
+
+      renderRouteContent(state.currentRoute);
+      renderStep1Inputs();
+      updateQuestionsList();
+    };
+
+    window.navigateToRoute = function(route) {
+      state.currentRoute = route;
+      const p = PRESETS[state.selectedPreset];
+      document.getElementById('browserUrlDisplay').innerText = `https://internal.corp.local${route}`;
+      document.querySelectorAll('.site-nav-link').forEach(l => {
+        l.classList.toggle('active', l.innerText === p.routes.find(r => r.path === route)?.label);
+      });
+      renderRouteContent(route);
+    };
+
+    function renderRouteContent(route) {
+      const body = document.getElementById('sitePageBody');
+      const p = PRESETS[state.selectedPreset];
+
+      // ==========================================
+      // PRESET 1: ENTERPRISE IT SSO & PRIVILEGE ESCALATION
+      // ==========================================
+      if (state.selectedPreset === 'it_security') {
+        if (route === '/overview') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Enterprise SSO & Access Gateway</div>
+                <p style="font-size: 12px; color: #64748b;">Centralized identity, MFA token security, and privilege audit.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: sec-ops@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert info">
+              <strong>📢 Policy 402 Active:</strong> Hardware FIDO2 WebAuthn is strictly required. Legacy SMS and voice OTP are revoked.
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+              <div class="site-card">
+                <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 4px;">Hardware Key Inventory</h4>
+                <p style="font-size: 12px; color: #059669;">✅ YubiKey 5C NFC Registered (WebAuthn)</p>
+                <div style="font-size: 11px; color: #64748b; margin-top: 4px;">Last authenticated: Today at 09:14 AM</div>
+                <button class="btn btn-secondary btn-sm" style="margin-top: 8px;" onclick="navigateToRoute('/mfa-setup')">Manage Tokens</button>
+              </div>
+              <div class="site-card">
+                <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 4px;">Elevated Database Leases</h4>
+                <p style="font-size: 12px; color: #64748b;">No active root leases. Max duration capped at 4 hours.</p>
+                <button class="btn btn-primary btn-sm" style="margin-top: 8px;" onclick="navigateToRoute('/privilege-escalation')">Request DB Lease</button>
+              </div>
+            </div>
+            <div class="site-card">
+              <h4 style="font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">P0 Emergency Protocol</h4>
+              <p style="font-size: 11.5px; color: #64748b;">In case of Sev-1/P0 outages where normal approvals are blocked:</p>
+              <button class="btn btn-secondary btn-sm" style="margin-top: 6px; color: #ef4444; border-color: #fca5a5;" onclick="navigateToRoute('/break-glass')">🚨 Emergency Break-Glass (2-Hour Token)</button>
+            </div>
+          `;
+        } else if (route === '/mfa-setup') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Hardware MFA Registration & Compliance</div>
+                <p style="font-size: 12px; color: #64748b;">Enroll WebAuthn cryptographic hardware keys. SMS OTP is prohibited.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: identity-team@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert warn">
+              <strong>⚠️ Rule 101 Invariant:</strong> SMS OTP and phone call verifications CANNOT be used as fallback under any circumstances.
+            </div>
+            <div class="site-card">
+              <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Registered Security Keys</h4>
+              <table style="width: 100%; font-size: 11.5px; border-collapse: collapse; margin-bottom: 10px;">
+                <tr style="border-bottom: 1px solid #e2e8f0; color: #64748b; text-align: left;">
+                  <th style="padding: 4px;">Key Model</th><th>Type</th><th>Enrolled</th><th>Status</th>
+                </tr>
+                <tr style="border-bottom: 1px solid #f1f5f9;">
+                  <td style="padding: 6px 4px; font-weight: 600;">YubiKey 5C NFC #8921</td><td>FIDO2 / WebAuthn</td><td>2026-03-12</td><td><span class="pill" style="background:#d1fae5; color:#065f46; font-size:10px;">Active</span></td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 4px; font-weight: 600;">TouchID Platform Key</td><td>Biometric</td><td>2026-01-08</td><td><span class="pill" style="background:#d1fae5; color:#065f46; font-size:10px;">Active</span></td>
+                </tr>
+              </table>
+              <button class="btn btn-primary btn-sm" onclick="submitSiteForm('Hardware WebAuthn challenge passed! Key verified.')">
+                <span>➕</span> Register Additional FIDO2 Key
+              </button>
+            </div>
+          `;
+        } else if (route === '/privilege-escalation') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Production Privilege Escalation Request</div>
+                <p style="font-size: 12px; color: #64748b;">Requires Director dual-key authorization and valid JIRA ticket.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: iam-audit@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert info">
+              <strong>✍️ Rule 102 Requirement:</strong> Peer or contractor approvals are PROHIBITED. Maximum duration NOT to exceed 4 hours.
+            </div>
+            <div class="site-form-group">
+              <label>Target Production Resource</label>
+              <select class="site-select" id="inputResource">
+                <option>Production PostgreSQL Main Cluster (rw) - us-east-2</option>
+                <option>Kubernetes Production Control Plane (Cluster-Admin)</option>
+                <option>Payment Gateway Key Management Service (KMS)</option>
+              </select>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <div class="site-form-group">
+                <label>JIRA Change Ticket Number</label>
+                <input type="text" class="site-input" id="jiraInput" placeholder="e.g. INFRA-9842" value="INFRA-9842">
+              </div>
+              <div class="site-form-group">
+                <label>Requested Duration (Max 4h)</label>
+                <select class="site-select">
+                  <option>2 Hours (Standard Maintenance)</option>
+                  <option selected>4 Hours (Maximum Lease Allowed)</option>
+                </select>
+              </div>
+            </div>
+            <div class="site-form-group">
+              <label>Designated L2 Director Approver</label>
+              <input type="text" class="site-input" value="eng-director@corp.internal" readonly style="background:#f8fafc;">
+            </div>
+            <button class="btn btn-magic" onclick="submitSiteForm('Escalation Request Dispatched to L2 Director Gate!')">
+              <span>✍️</span> Submit Escalation Request
+            </button>
+          `;
+        } else if (route === '/break-glass') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title" style="color: #ef4444;">🚨 Emergency Break-Glass Console</div>
+                <p style="font-size: 12px; color: #64748b;">For active P0 outage mitigation when approval chains are offline.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag" style="background:#fee2e2; color:#991b1b;">owner: ciso-incident@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert warn">
+              <strong>🚨 Rule 103 Strict Invariant:</strong> Break-glass credentials automatically expire after exactly <strong>2 hours (7200s)</strong> and trigger immutable SOC2 audit notifications.
+            </div>
+            <div class="site-form-group">
+              <label>Active P0 Outage Incident ID</label>
+              <input type="text" class="site-input" value="INC-2026-P0-4081" placeholder="e.g. INC-P0-XXXX">
+            </div>
+            <div class="site-form-group">
+              <label>Technical Root Cause Justification</label>
+              <textarea class="site-input" style="height: 60px; font-family: var(--font-sans);" placeholder="Describe why standard director approval is bypassed...">Payment settlement database deadlock causing customer transaction timeouts. Standard director approval queue unreachable.</textarea>
+            </div>
+            <div style="background:#fef2f2; border:1px solid #fecaca; border-radius:6px; padding:10px; margin-bottom:12px; font-size:11.5px; color:#991b1b;">
+              ⚠️ By activating, your session will be recorded and an immutable audit alert dispatched to security-alert@corp.internal.
+            </div>
+            <button class="btn btn-primary" style="background:#ef4444; border-color:#dc2626;" onclick="submitSiteForm('Emergency 2-Hour Break-Glass Active! SOC2 Incident Logged.')">
+              <span>🚨</span> Activate 2-Hour Break-Glass Token
+            </button>
+          `;
+        } else if (route === '/status') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Audit Tracker & Request Timeline</div>
+                <p style="font-size: 12px; color: #64748b;">Track active privilege leases and verification history.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: sec-audit@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-card">
+              <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 8px;">Active Lease Status: INFRA-9842</h4>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                <span>Resource: PostgreSQL Main Cluster</span>
+                <span class="pill" style="background:#d1fae5; color:#065f46;">Approved by Director</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                <span>Remaining Time:</span>
+                <strong style="color: #0284c7;">3 hours, 48 minutes</strong>
+              </div>
+              <div style="background:#e2e8f0; height:6px; border-radius:3px; overflow:hidden; margin: 8px 0;">
+                <div style="background:#0284c7; width:95%; height:100%;"></div>
+              </div>
+              <button class="btn btn-secondary btn-sm" style="margin-top: 6px;" onclick="submitSiteForm('Lease revoked voluntarily. Audit recorded.')">Voluntarily Revoke Lease Now</button>
+            </div>
+          `;
+        }
+      }
+
+      // ==========================================
+      // PRESET 2: FINTECH INSTANT DISPUTE & AML HOLD
+      // ==========================================
+      else if (state.selectedPreset === 'fintech_dispute') {
+        if (route === '/disputes') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Dispute Intake & Risk Classification</div>
+                <p style="font-size: 12px; color: #64748b;">Cardholder chargeback triage, automated risk scoring, and routing.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: dispute-ops@apexpay.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert info">
+              <strong>💳 Routing SLA:</strong> Transactions &lt; $150 route to instant Tier 1 refund. Transactions &gt; $5,000 velocity spikes route to mandatory AML hold.
+            </div>
+            <table style="width: 100%; font-size: 11.5px; border-collapse: collapse; margin-bottom: 12px;">
+              <tr style="border-bottom: 1px solid #cbd5e1; color: #475569; text-align: left; background:#f8fafc;">
+                <th style="padding: 6px;">Dispute ID</th><th>Cardholder</th><th>Amount</th><th>Risk Score</th><th>Action Route</th>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 6px; font-weight:700;">#DISP-8921</td><td>Sarah Jenkins</td><td>$120.00</td><td><span class="pill" style="background:#d1fae5; color:#065f46; font-size:10px;">Low (12)</span></td>
+                <td><button class="btn btn-secondary btn-sm" onclick="navigateToRoute('/tier1-refund')">Process $120 Refund ➔</button></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #e2e8f0;">
+                <td style="padding: 6px; font-weight:700;">#DISP-9104</td><td>Global Imports LLC</td><td>$8,450.00</td><td><span class="pill" style="background:#fee2e2; color:#991b1b; font-size:10px;">Velocity Spike (94)</span></td>
+                <td><button class="btn btn-secondary btn-sm" style="color:#ef4444; border-color:#fca5a5;" onclick="navigateToRoute('/aml-hold')">SAR Hold ➔</button></td>
+              </tr>
+            </table>
+          `;
+        } else if (route === '/tier1-refund') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Tier 1 Instant Provisional Reversal</div>
+                <p style="font-size: 12px; color: #64748b;">Instant credit disbursement for low-risk dispute claims.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: settlement@apexpay.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert success">
+              <strong>✅ Rule 201 Threshold:</strong> Transactions under $150 with clean risk history qualify for instant provisional credit.
+            </div>
+            <div class="site-card">
+              <h4 style="font-size: 13px; font-weight:700; margin-bottom: 6px;">Target Dispute: #DISP-8921</h4>
+              <div style="font-size: 12px; line-height: 1.6; margin-bottom: 10px;">
+                <div><strong>Merchant:</strong> Digital Goods Online (MID: #4409)</div>
+                <div><strong>Amount:</strong> $120.00 USD (Under $150 limit)</div>
+                <div><strong>Reason:</strong> Unauthorized Digital Transaction</div>
+                <div><strong>Automated Decision:</strong> Eligible for instant automated reversal</div>
+              </div>
+              <button class="btn btn-magic" onclick="submitSiteForm('Instant Provisional Credit of $120.00 Disbursed to Cardholder!')">
+                <span>⚡</span> Disburse $120.00 Instant Refund
+              </button>
+            </div>
+          `;
+        } else if (route === '/aml-hold') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title" style="color: #ef4444;">🚨 Anti-Money Laundering (AML) 72-Hour Hold</div>
+                <p style="font-size: 12px; color: #64748b;">Mandatory compliance freeze for high-velocity cross-border transactions.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag" style="background:#fee2e2; color:#991b1b;">owner: aml-compliance@apexpay.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert warn">
+              <strong>⚖️ Rule 204 Non-Tipping Invariant:</strong> Agents are legally PROHIBITED from revealing AML SAR freeze status to the cardholder. Inform them it is in standard review.
+            </div>
+            <div class="site-card">
+              <h4 style="font-size: 13px; font-weight:700; color:#991b1b; margin-bottom: 4px;">Target Transaction: #DISP-9104 ($8,450.00)</h4>
+              <p style="font-size: 11.5px; color:#475569; margin-bottom: 8px;">Trigger: Cross-border velocity spike exceeding $5,000 threshold (Rule 202).</p>
+              <div style="background:#fffbeb; border:1px solid #fef3c7; border-radius:6px; padding:10px; margin-bottom: 10px; font-size:12px;">
+                <strong>Compliance Hold Countdown:</strong> <span style="font-family:var(--font-mono); color:#92400e; font-weight:700;">71 hours, 54 minutes remaining</span> (Mandatory 72h window)
+              </div>
+              <button class="btn btn-secondary btn-sm" onclick="submitSiteForm('SAR compliance dossier logged. Hold maintained.')">Log Compliance Dossier</button>
+            </div>
+          `;
+        } else if (route === '/merchant-evidence') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Merchant Evidence & Fulfillment Portal</div>
+                <p style="font-size: 12px; color: #64748b;">Upload signed delivery proof and dispute rebuttal documentation.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: merchant-ops@apexpay.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert info">
+              <strong>📅 Rule 203 Strict SLA:</strong> Merchants have strictly <strong>5 business days</strong> to submit signed carrier proof before automatic forfeiture.
+            </div>
+            <div class="site-form-group">
+              <label>Carrier Tracking & Signed Bill of Lading</label>
+              <input type="text" class="site-input" placeholder="e.g. 1Z9999999999999999" value="FEDEX-EXPRESS-9921">
+            </div>
+            <div style="border: 2px dashed #cbd5e1; border-radius: 8px; padding: 20px; text-align: center; background:#f8fafc; margin-bottom: 12px;">
+              <span style="font-size: 24px;">📄</span>
+              <div style="font-size: 12px; font-weight:600; color:#334155; margin-top: 4px;">Drag and drop signed proof of delivery (PDF, PNG)</div>
+              <div style="font-size: 11px; color:#94a3b8;">SLA expires in 3 business days</div>
+            </div>
+            <button class="btn btn-primary" onclick="submitSiteForm('Merchant delivery evidence accepted and verified!')">
+              <span>📤</span> Upload & Verify Evidence
+            </button>
+          `;
+        } else if (route === '/arbitration') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Arbitration & Settlement Ledger</div>
+                <p style="font-size: 12px; color: #64748b;">Final dispute resolutions, fee recoveries, and ledger postings.</p>
+              </div>
+              <div class="site-page-meta"><span class="site-tag">status: approved</span></div>
+            </div>
+            <div class="site-card">
+              <p style="font-size: 12px; color: #334155;">All chargeback resolutions recorded with immutable cryptographic receipts.</p>
+            </div>
+          `;
+        }
+      }
+
+      // ==========================================
+      // PRESET 3: CLOUD CANARY RELEASE & DB LOCK RUNBOOK
+      // ==========================================
+      else if (state.selectedPreset === 'cloud_devops') {
+        if (route === '/release-console') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Cloud Canary Release Console</div>
+                <p style="font-size: 12px; color: #64748b;">Zero-downtime blue/green deployment orchestration and verification.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: sre-leads@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert info">
+              <strong>🚀 Release SOP-80:</strong> Canary deployment must route at 5% traffic for not less than 15 minutes before 50% ramp.
+            </div>
+            <div class="site-card" style="margin-bottom: 12px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+                <h4 style="font-size: 13px; font-weight: 700;">Release Candidate: svc-orders:v2.4.1</h4>
+                <span class="pill" style="background:#e0f2fe; color:#0369a1;">Canary Staged</span>
+              </div>
+              <div style="font-size: 12px; color:#475569; line-height: 1.6; margin-bottom: 10px;">
+                <div><strong>Commit:</strong> <code>git@e4a89bc</code> (Feature: instant checkout queue)</div>
+                <div><strong>Target Cluster:</strong> Kubernetes us-east-2 (Production)</div>
+                <div><strong>Active Traffic Gate:</strong> Stage 1 (5% Canary)</div>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="navigateToRoute('/canary-traffic')">Inspect 5% Traffic Gate ➔</button>
+            </div>
+          `;
+        } else if (route === '/canary-traffic') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Canary Traffic Split & Observation Gate</div>
+                <p style="font-size: 12px; color: #64748b;">5% traffic split telemetry and error rate monitoring.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: platform@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert warn">
+              <strong>⏱️ Rule 301 Gate:</strong> Canary traffic must remain clamped at 5% for NOT less than 15 minutes (900 seconds).
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+              <div class="site-card">
+                <div style="font-size: 11px; color:#64748b;">Traffic Split</div>
+                <div style="font-size: 20px; font-weight:800; color:#0284c7; margin-top:2px;">95% Blue / 5% Green</div>
+                <div style="font-size: 11px; color:#059669; margin-top: 4px;">Canary pod replica: 2 / 40</div>
+              </div>
+              <div class="site-card">
+                <div style="font-size: 11px; color:#64748b;">Mandatory 15-Min Observation</div>
+                <div style="font-size: 20px; font-weight:800; color:#f59e0b; margin-top:2px;">14:48 Remaining</div>
+                <div style="font-size: 11px; color:#64748b; margin-top: 4px;">Scale-up blocked until 00:00</div>
+              </div>
+            </div>
+            <div class="site-card">
+              <h4 style="font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">Live Telemetry Thresholds:</h4>
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                <span>HTTP 5xx Error Rate:</span>
+                <strong style="color: #059669;">0.012% (Healthy, threshold 0.05%)</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px;">
+                <span>p99 Latency:</span>
+                <strong style="color: #059669;">142ms (Healthy, budget 300ms)</strong>
+              </div>
+              <button class="btn btn-secondary btn-sm" style="margin-top: 10px;" onclick="navigateToRoute('/ddl-lock-check')">Pre-Flight DB DDL Lock Check ➔</button>
+            </div>
+          `;
+        } else if (route === '/ddl-lock-check') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">Database DDL Table Lock Monitor</div>
+                <p style="font-size: 12px; color: #64748b;">Exclusive lock timeout inspection and migration guardrails.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag">owner: dba@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert warn">
+              <strong>🛑 Rule 302 Strict Invariant:</strong> Any DDL migration holding exclusive table lock exceeding <strong>200ms</strong> must be aborted IMMEDIATELY.
+            </div>
+            <div class="site-card" style="margin-bottom: 12px;">
+              <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 6px;">Active Migration Query</h4>
+              <pre style="background:#f1f5f9; padding:8px; border-radius:6px; font-family:var(--font-mono); font-size:11px; color:#0369a1; margin-bottom:8px;">ALTER TABLE customer_orders ADD COLUMN fulfillment_channel VARCHAR(32);</pre>
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                <span>Target Table:</span>
+                <strong>customer_orders (54M rows)</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                <span>Acquired Lock Type:</span>
+                <strong>AccessExclusiveLock</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px;">
+                <span>Current Lock Hold Time:</span>
+                <strong style="color: #059669;">118ms (Within 200ms safe margin)</strong>
+              </div>
+              <div style="background:#ecfdf5; border:1px solid #a7f3d0; border-radius:6px; padding:8px; font-size:11.5px; color:#065f46; margin-bottom:10px;">
+                ✅ <strong>Lock Safety Daemon Active:</strong> Auto-abort PID will execute if duration hits 200ms.
+              </div>
+              <button class="btn btn-primary" onclick="submitSiteForm('Pre-flight DDL dry-run completed in 118ms! Ready for migration.')">
+                <span>⚡</span> Run Pre-Flight Lock Dry-Run
+              </button>
+            </div>
+          `;
+        } else if (route === '/rollback-trigger') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title" style="color: #ef4444;">Automated Rollback & Circuit Breaker</div>
+                <p style="font-size: 12px; color: #64748b;">Instant traffic reversion gates for canary regressions.</p>
+              </div>
+              <div class="site-page-meta">
+                <span class="site-tag" style="background:#fee2e2; color:#991b1b;">owner: sre-oncall@corp.internal</span>
+                <span class="site-tag">status: approved</span>
+              </div>
+            </div>
+            <div class="site-alert warn">
+              <strong>🚨 Rule 303 Invariant:</strong> HTTP 5xx error rate exceeding <strong>0.05%</strong> triggers instant automated rollback to Blue.
+            </div>
+            <div class="site-card">
+              <div style="font-size: 12px; line-height: 1.6; margin-bottom: 10px;">
+                <div><strong>Current 5xx Rate:</strong> 0.012% (Safe)</div>
+                <div><strong>Rollback Trigger Threshold:</strong> 0.05% (5 errors per 10,000 requests)</div>
+                <div><strong>Circuit Breaker Action:</strong> Immediate DNS switch back to Blue pods (0s delay)</div>
+              </div>
+              <button class="btn btn-primary" style="background:#ef4444; border-color:#dc2626;" onclick="submitSiteForm('Emergency Rollback Activated! 100% Traffic Flipped to Blue.')">
+                <span>🚨</span> Trigger Emergency Rollback to Blue
+              </button>
+            </div>
+          `;
+        } else if (route === '/sre-postmortem') {
+          body.innerHTML = `
+            <div class="site-page-header">
+              <div>
+                <div class="site-page-title">SRE Incident Postmortem Registry</div>
+                <p style="font-size: 12px; color: #64748b;">Mandatory post-incident analysis within 24 hours.</p>
+              </div>
+              <div class="site-page-meta"><span class="site-tag">status: approved</span></div>
+            </div>
+            <div class="site-alert info">
+              <strong>📝 Rule 304 SLA:</strong> Postmortem documentation is mandatory within <strong>24 hours</strong> of any P0/P1 emergency rollback.
+            </div>
+            <div class="site-card">
+              <p style="font-size: 12px; color: #334155;">No P0 rollbacks active in the last 72 hours. All deployments clean.</p>
+            </div>
+          `;
+        }
+      }
+    }
+
+    window.setBrowserViewport = function(mode) {
+      state.viewport = mode;
+      document.getElementById('btnViewDesktop').classList.toggle('active', mode === 'desktop');
+      document.getElementById('btnViewMobile').classList.toggle('active', mode === 'mobile');
+      document.getElementById('embeddedViewport').style.maxWidth = mode === 'mobile' ? '375px' : '100%';
+      document.getElementById('embeddedViewport').style.margin = mode === 'mobile' ? '0 auto' : '0';
+    };
+
+    window.refreshEmbeddedSite = function() {
+      renderRouteContent(state.currentRoute);
+      renderStep1Inputs();
+      showToast('Embedded portal reloaded');
+    };
+
+    window.runInvariantAudit = function() {
+      const p = PRESETS[state.selectedPreset];
+      const invList = p.invariants.map(i => `✅ ${i.name} -> ${i.status}`).join('\n');
+      alert(`CONVERSION INVARIANT AUDIT:\n\n${invList}\n\nAll critical numbers and NOT statements confirmed survived into Markdown!`);
+      showToast('Conversion Invariant Audit Passed! 100% Intact', '⚖️');
+    };
+
+    window.copyApprovedMarkdown = function() {
+      const text = document.getElementById('approvedMarkdownBox').textContent;
+      navigator.clipboard.writeText(text);
+      showToast('Approved Markdown copied to clipboard!', '📋');
+    };
+
+    // HEAVY CASCADE TEXT COMPILER (NO WORKFLOW DIAGRAM)
+    window.compileTextCascade = function() {
+      const p = PRESETS[state.selectedPreset];
+      const container = document.getElementById('cascadeTreeContainer');
+      container.innerHTML = '';
+
+      p.cascadeNodes.forEach(node => {
+        const isDead = node.tier === 'deadend';
+        const tierClass = isDead ? 'tier-deadend' : `tier-${node.tier}`;
+        const badgeClass = isDead ? 'tier-badge-dead' : `tier-badge-${node.tier}`;
+
+        const el = document.createElement('div');
+        el.className = `cascade-node ${tierClass}`;
+        el.setAttribute('data-tier', tierClass);
+
+        el.innerHTML = `
+          <div class="cascade-header-row">
+            <span class="cascade-tier-badge ${badgeClass}">${node.badge}</span>
+            <span class="cascade-title-text">${node.title}</span>
+          </div>
+          <div class="cascade-body-text">${node.body}</div>
+          <div class="cascade-rule-code">${node.code}</div>
+        `;
+        container.appendChild(el);
+      });
+    };
+
+    window.filterCascade = function(tier) {
+      state.activeFilter = tier;
+      document.querySelectorAll('.cascade-filter-bar .btn').forEach(b => b.classList.remove('active'));
+      
+      const nodes = document.querySelectorAll('.cascade-node');
+      nodes.forEach(n => {
+        if (tier === 'all') {
+          n.style.display = 'block';
+        } else {
+          n.style.display = n.classList.contains(tier) ? 'block' : 'none';
+        }
+      });
+      showToast(`Showing ${tier.replace('-', ' ').toUpperCase()}`);
+    };
+
+    function updateQuestionsList() {
+      const p = PRESETS[state.selectedPreset];
+      const list = document.getElementById('testQuestionsList');
+      list.innerHTML = p.syntheticQuestions.map((q, idx) => `
+        <div style="padding: 7px 10px; border-bottom: 1px solid #e2e8f0; font-size: 11.5px; cursor: pointer; display: flex; justify-content: space-between;" onclick="selectQuestionToChat('${q.replace(/'/g, "\\'")}')">
+          <span>${q}</span>
+          <span style="color: #0284c7; font-weight: 700;">Test ➔</span>
+        </div>
+      `).join('');
+    }
+
+    window.selectQuestionToChat = function(q) {
+      document.getElementById('baselineChatInput').value = q;
+      document.getElementById('dualChatInput').value = q;
+      sendBaselineQuery();
+    };
+
+    window.sendBaselineQuery = function() {
+      const input = document.getElementById('baselineChatInput');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+
+      const p = PRESETS[state.selectedPreset];
+      const wrap = document.getElementById('baselineChatMessages');
+      
+      wrap.innerHTML += `<div class="chat-bubble user">${text}</div>`;
+      wrap.scrollTop = wrap.scrollHeight;
+
+      setTimeout(() => {
+        let answer = p.baselineAnswers.q0;
+        if (text.toLowerCase().includes('mfa') || text.toLowerCase().includes('sms')) answer = p.baselineAnswers.q1 || answer;
+        else if (text.toLowerCase().includes('duration') || text.toLowerCase().includes('expire') || text.toLowerCase().includes('time')) answer = p.baselineAnswers.q2 || answer;
+        else if (text.toLowerCase().includes('who') || text.toLowerCase().includes('approve') || text.toLowerCase().includes('sign')) answer = p.baselineAnswers.q3 || answer;
+
+        wrap.innerHTML += `
+          <div class="chat-bubble bot hallucinating">
+            ${answer}
+            <br>
+            <span class="hallucination-tag">⚠️ Hallucination (Contradicts Cascade Rule)</span>
+          </div>
+        `;
+        wrap.scrollTop = wrap.scrollHeight;
+      }, 350);
+    };
+
+    function initDiagnosticRadar() {
+      const ctx = document.getElementById('knowledgeGapRadar');
+      if (!ctx) return;
+      if (state.radarChart) state.radarChart.destroy();
+
+      state.radarChart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ['Tier 1: Root Invariants', 'Tier 2: Scoped Policies', 'Tier 3: Execution Rules', 'Tier 4: Parameter Bounds', 'Dead End Checks', 'Audit Trails'],
+          datasets: [
+            {
+              label: 'Baseline Model (Without Cascade)',
+              data: [85, 45, 30, 20, 15, 35],
+              backgroundColor: 'rgba(239, 68, 68, 0.2)',
+              borderColor: '#ef4444',
+              borderWidth: 2
+            },
+            {
+              label: 'Educated Model (With Text Cascade)',
+              data: [100, 98, 99, 100, 100, 98],
+              backgroundColor: 'rgba(16, 185, 129, 0.2)',
+              borderColor: '#10b981',
+              borderWidth: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { r: { beginAtZero: true, max: 100 } }
+        }
+      });
+
+      const rankBox = document.getElementById('topicRankingContainer');
+      rankBox.innerHTML = `
+        <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 4px 8px; background: #fee2e2; border-radius: 4px;">
+          <span>1. Tier 4: Exact Parameter Bounds (2h, 200ms)</span>
+          <strong>20% (Critical Knowledge Gap)</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 4px 8px; background: #fee2e2; border-radius: 4px;">
+          <span>2. Dead End: Contractor Self-Escalation Blocker</span>
+          <strong>15% (Critical Knowledge Gap)</strong>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px; padding: 4px 8px; background: #fef3c7; border-radius: 4px;">
+          <span>3. Tier 3: Form Schemas & JIRA Ticket Validation</span>
+          <strong>30% (Moderate Knowledge Gap)</strong>
+        </div>
+      `;
+    }
+
+    window.recalculateDiagnosticGaps = function() {
+      initDiagnosticRadar();
+      showToast('Diagnostic knowledge gaps updated', '🩺');
+    };
+
+    window.toggleLever = function(leverName) {
+      state.activeLevers[leverName] = !state.activeLevers[leverName];
+      const el = document.getElementById(`lever${leverName}`);
+      if (el) el.classList.toggle('active', state.activeLevers[leverName]);
+      showToast(`Lever "${leverName}" is now ${state.activeLevers[leverName] ? 'ON' : 'OFF'}`);
+    };
+
+    window.dispatchDualChat = function() {
+      const input = document.getElementById('dualChatInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      const p = PRESETS[state.selectedPreset];
+      const leftChat = document.getElementById('dualBaselineChat');
+      const rightChat = document.getElementById('dualEducatedChat');
+
+      leftChat.innerHTML += `<div class="chat-bubble user">${text}</div>`;
+      rightChat.innerHTML += `<div class="chat-bubble user">${text}</div>`;
+      leftChat.scrollTop = leftChat.scrollHeight;
+      rightChat.scrollTop = rightChat.scrollHeight;
+
+      setTimeout(() => {
+        let baseAns = p.baselineAnswers.q0;
+        let eduAns = p.educatedAnswers.q0;
+
+        if (text.toLowerCase().includes('mfa') || text.toLowerCase().includes('sms')) {
+          baseAns = p.baselineAnswers.q1 || baseAns;
+          eduAns = p.educatedAnswers.q1 || eduAns;
+        } else if (text.toLowerCase().includes('duration') || text.toLowerCase().includes('expire') || text.toLowerCase().includes('time')) {
+          baseAns = p.baselineAnswers.q2 || baseAns;
+          eduAns = p.educatedAnswers.q2 || eduAns;
+        } else if (text.toLowerCase().includes('who') || text.toLowerCase().includes('approve') || text.toLowerCase().includes('sign')) {
+          baseAns = p.baselineAnswers.q3 || baseAns;
+          eduAns = p.educatedAnswers.q3 || eduAns;
+        }
+
+        leftChat.innerHTML += `
+          <div class="chat-bubble bot hallucinating">
+            ${baseAns}
+            <br>
+            <span class="hallucination-tag">❌ Failed Cascade Test</span>
+          </div>
+        `;
+        rightChat.innerHTML += `
+          <div class="chat-bubble bot">
+            ${eduAns}
+            <br>
+            <span class="verified-tag">✅ Grounded in Cascade Text</span>
+          </div>
+        `;
+        leftChat.scrollTop = leftChat.scrollHeight;
+        rightChat.scrollTop = rightChat.scrollHeight;
+      }, 400);
+    };
+
+    function initComparativeChart() {
+      const ctx = document.getElementById('comparativeScoreChart');
+      if (!ctx) return;
+      if (state.comparativeChart) state.comparativeChart.destroy();
+
+      state.comparativeChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Cascade Tier Match', 'Zero Hallucinations', 'Parameter Accuracy', 'Compliance Sign-off'],
+          datasets: [
+            { label: 'Baseline Agent (Without Cascade)', data: [48, 12, 28, 25], backgroundColor: '#f87171' },
+            { label: 'Educated Agent (Cascading Text Book)', data: [99.4, 100, 100, 100], backgroundColor: '#10b981' }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { beginAtZero: true, max: 100 } }
+        }
+      });
+    }
+
+    window.runBatchHiddenExam = function() {
+      showToast('Running 500 synthetic queries through hidden Cascade Test...', '⏳');
+      setTimeout(() => {
+        initComparativeChart();
+        document.getElementById('metricAccuracy').innerText = '99.4%';
+        document.getElementById('metricHallucination').innerText = '0.0%';
+        document.getElementById('metricApproval').innerText = '100%';
+        if (window.confetti) window.confetti({ particleCount: 70, spread: 60 });
+        showToast('500/500 Questions verified against Hidden Cascade! Zero Hallucinations.', '🎉');
+      }, 1100);
+    };
+
+    window.runCompleteStudioPipeline = async function() {
+      showToast('Running full Cascade Pipeline...', '⚡');
+      switchStep(1);
+      compileAndRenderWebsite();
+      await new Promise(r => setTimeout(r, 600));
+
+      switchStep(2);
+      compileTextCascade();
+      await new Promise(r => setTimeout(r, 600));
+
+      switchStep(3);
+      initDiagnosticRadar();
+      await new Promise(r => setTimeout(r, 600));
+
+      switchStep(4);
+      runBatchHiddenExam();
+    };
+
+    function showToast(msg, icon = 'ℹ️') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span>${icon}</span><span>${msg}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      compileAndRenderWebsite();
+      compileTextCascade();
+    });
+  </script>
+</body>
+</html>
