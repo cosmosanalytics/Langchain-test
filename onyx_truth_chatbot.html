@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Onyx Truth Chatbot — Side-by-Side Dual Inference (WebGPU & Groq LPU)</title>
+  <title>Onyx Truth Chatbot 💎✨ — Side-by-Side Dual Inference (Light Mode)</title>
 
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,31 +29,31 @@
 
   <style>
     :root {
-      /* Onyx Slate & Obsidian Theme */
-      --onyx-950: #090d16;
-      --onyx-900: #0f172a;
-      --onyx-850: #131c31;
-      --onyx-800: #1e293b;
-      --onyx-700: #334155;
-      --onyx-600: #475569;
-      --onyx-500: #64748b;
-      --onyx-400: #94a3b8;
-      --onyx-300: #cbd5e1;
-      --onyx-200: #e2e8f0;
-      --onyx-100: #f1f5f9;
-      --onyx-50:  #f8fafc;
+      /* Crisp Light Mode Theme */
+      --onyx-950: #f8fafc; /* page background */
+      --onyx-900: #ffffff; /* cards / headers */
+      --onyx-850: #f1f5f9; /* inner panels */
+      --onyx-800: #e2e8f0; /* button hover / borders */
+      --onyx-700: #cbd5e1; /* borders */
+      --onyx-600: #94a3b8; /* placeholder */
+      --onyx-500: #64748b; /* muted text */
+      --onyx-400: #475569; /* secondary text */
+      --onyx-300: #334155; /* body text */
+      --onyx-200: #1e293b; /* headings */
+      --onyx-100: #0f172a; /* text primary */
+      --onyx-50:  #020617; /* high emphasis */
 
-      --accent-cyan: #06b6d4;
-      --accent-cyan-glow: rgba(6, 182, 212, 0.15);
-      --accent-blue: #3b82f6;
-      --accent-emerald: #10b981;
-      --accent-amber: #f59e0b;
-      --accent-rose: #f43f5e;
+      --accent-cyan: #0284c7;
+      --accent-cyan-glow: rgba(2, 132, 199, 0.12);
+      --accent-blue: #2563eb;
+      --accent-emerald: #059669;
+      --accent-amber: #d97706;
+      --accent-rose: #e11d48;
 
       --sidebar-w: 240px;
-      --border-color: #1e293b;
-      --card-bg: #0f172a;
-      --card-inner: #131c31;
+      --border-color: #e2e8f0;
+      --card-bg: #ffffff;
+      --card-inner: #f8fafc;
     }
 
     * {
@@ -66,7 +66,7 @@
 
     body {
       background: var(--onyx-950);
-      color: #f8fafc;
+      color: #0f172a;
       height: 100vh;
       overflow: hidden;
       display: flex;
@@ -149,7 +149,7 @@
 
     .engine-btn.active {
       background: var(--onyx-800);
-      color: #ffffff;
+      color: #0f172a;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     }
 
@@ -188,7 +188,7 @@
 
     .btn-ghost:hover {
       background: var(--onyx-800);
-      color: #ffffff;
+      color: #0f172a;
       border-color: var(--onyx-700);
     }
 
@@ -244,7 +244,7 @@
 
     .pane-tab.active {
       background: var(--onyx-800);
-      color: #ffffff;
+      color: #0f172a;
     }
 
     /* URL INTAKE BAR */
@@ -278,7 +278,7 @@
       border: 1px solid var(--border-color);
       padding: 7px 10px 7px 32px;
       border-radius: 6px;
-      color: #ffffff;
+      color: #0f172a;
       font-size: 12.5px;
       font-family: 'JetBrains Mono', monospace;
     }
@@ -323,7 +323,7 @@
       border: 1px solid var(--border-color);
       padding: 8px 12px;
       border-radius: 6px;
-      color: #ffffff;
+      color: #0f172a;
       font-size: 13.5px;
       font-weight: 600;
     }
@@ -436,7 +436,7 @@
 
     .msg-group.bot .msg-avatar {
       background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-      color: #ffffff;
+      color: #0f172a;
       box-shadow: 0 0 10px rgba(6, 182, 212, 0.25);
     }
 
@@ -454,7 +454,7 @@
     }
 
     .msg-group.bot .msg-bubble {
-      background: var(--onyx-900);
+      background: #ffffff; border: 1px solid var(--border-color); box-shadow: 0 1px 3px rgba(0,0,0,0.05);
       border: 1px solid var(--border-color);
       color: var(--onyx-100);
     }
@@ -462,7 +462,7 @@
     .msg-group.user .msg-bubble {
       background: var(--onyx-800);
       border: 1px solid var(--onyx-700);
-      color: #ffffff;
+      color: #0f172a;
     }
 
     .msg-bubble p {
@@ -528,7 +528,7 @@
       flex: 1;
       background: transparent;
       border: none;
-      color: #ffffff;
+      color: #0f172a;
       font-size: 13px;
       resize: none;
       max-height: 120px;
@@ -562,7 +562,7 @@
     
     /* MERMAID DIAGRAM IN CHAT */
     .mermaid-diagram-card {
-      background: var(--onyx-950);
+      background: #ffffff; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
       border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 16px;
@@ -603,7 +603,7 @@
     .quick-prompt-btn:hover {
       background: var(--onyx-800);
       border-color: var(--accent-cyan);
-      color: #ffffff;
+      color: #0f172a;
     }
 
     /* TOAST NOTIFICATION */
@@ -613,7 +613,7 @@
       right: 24px;
       background: var(--onyx-800);
       border: 1px solid var(--border-color);
-      color: #ffffff;
+      color: #0f172a;
       padding: 8px 14px;
       border-radius: 6px;
       font-size: 12px;
@@ -678,7 +678,7 @@
       border: 1px solid var(--border-color);
       padding: 8px 10px;
       border-radius: 6px;
-      color: #ffffff;
+      color: #0f172a;
       font-family: 'JetBrains Mono', monospace;
       font-size: 12px;
     }
@@ -744,7 +744,7 @@
     <div class="pane-source">
       <div class="pane-toolbar">
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 12px; font-weight: 700; color: #ffffff;">📄 Context Grounding Source</span>
+          <span style="font-size: 12px; font-weight: 700; color: #0f172a;">📄 Context Grounding Source</span>
           <span style="font-size: 10px; color: var(--accent-cyan); background: var(--accent-cyan-glow); padding: 2px 6px; border-radius: 4px; font-weight: 700;">Ground Truth Anchor</span>
         </div>
         <div class="pane-tabs">
@@ -874,7 +874,7 @@ The chatbot will strictly tether all answers and reasoning to this context witho
       if (window.mermaid) {
         mermaid.initialize({
           startOnLoad: false,
-          theme: 'dark',
+          theme: 'default',
           flowchart: {
             useMaxWidth: false,
             htmlLabels: true,
