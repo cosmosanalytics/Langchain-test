@@ -526,500 +526,55 @@
         <a href="truth_langgraph_langsmith_studio.html" class="btn" style="background:#7c3aed;"><span>🚀</span> Launch App 9</a>
         <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">truth_langgraph_langsmith_studio.html</span>
       </div>
-    </div>
-TYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LangChain Test Suite Hub 🦜✨ (Light Mode)</title>
-  <meta name="description" content="A suite of 4 standalone, client-side HTML web apps in crisp Light Mode powered by Groq LPU and WebGPU WebLLM.">
-  <style>
-    :root {
-      --bg: #f8fafc;
-      --card-bg: #ffffff;
-      --card-hover: #f1f5f9;
-      --border: #e2e8f0;
-      --border-dark: #cbd5e1;
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --accent: #059669;
-      --text: #0f172a;
-      --text-muted: #64748b;
-      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: var(--font);
-      background-color: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 36px 20px 80px 20px;
-      line-height: 1.5;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 40px;
-      padding-bottom: 24px;
-      border-bottom: 1.5px solid var(--border);
-    }
-
-    .logo-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 38px;
-      background: linear-gradient(135deg, #4f46e5, #059669);
-      width: 64px;
-      height: 64px;
-      border-radius: 18px;
-      margin-bottom: 14px;
-      box-shadow: 0 8px 24px rgba(79, 70, 229, 0.25);
-    }
-
-    h1 {
-      font-size: 32px;
-      font-weight: 900;
-      letter-spacing: -0.6px;
-      color: var(--text);
-      margin-bottom: 8px;
-    }
-
-    .subtitle {
-      font-size: 15px;
-      color: var(--text-muted);
-      max-width: 680px;
-      margin: 0 auto 16px auto;
-    }
-
-    .meta-pills {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .pill {
-      font-size: 11.5px;
-      font-weight: 700;
-      padding: 4px 12px;
-      border-radius: 999px;
-      background: #ffffff;
-      border: 1px solid var(--border-dark);
-      color: var(--text);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-    }
-    .pill.green { background: #ecfdf5; border-color: #a7f3d0; color: #047857; }
-    .pill.purple { background: #eef2ff; border-color: #c7d2fe; color: #4338ca; }
-
-    /* APPS GRID */
-    .apps-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
-      gap: 24px;
-      margin-bottom: 40px;
-    }
-
-    @media (max-width: 640px) {
-      .apps-grid { grid-template-columns: 1fr; }
-    }
-
-    .app-card {
-      background: var(--card-bg);
-      border: 1.5px solid var(--border);
-      border-radius: 18px;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .app-card:hover {
-      transform: translateY(-4px);
-      border-color: #818cf8;
-      box-shadow: 0 16px 36px rgba(79, 70, 229, 0.12);
-    }
-
-    .app-img-wrap {
-      width: 100%;
-      height: 240px;
-      overflow: hidden;
-      background: #f1f5f9;
-      border-bottom: 1px solid var(--border);
-      position: relative;
-    }
-
-    .app-img-wrap img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: top;
-      transition: transform 0.3s ease;
-    }
-
-    .app-card:hover .app-img-wrap img {
-      transform: scale(1.02);
-    }
-
-    .app-body {
-      padding: 22px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      flex: 1;
-    }
-
-    .app-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
-    }
-
-    .app-num {
-      font-size: 11px;
-      font-weight: 800;
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-
-    .app-title {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--text);
-    }
-
-    .app-desc {
-      font-size: 13.5px;
-      color: var(--text-muted);
-      line-height: 1.45;
-    }
-
-    .feature-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin: 4px 0;
-    }
-
-    .feature-tag {
-      font-size: 11px;
-      font-weight: 700;
-      background: #f1f5f9;
-      border: 1px solid var(--border);
-      padding: 3px 8px;
-      border-radius: 6px;
-      color: #334155;
-    }
-
-    .app-footer {
-      padding: 16px 22px;
-      background: #f8fafc;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .btn {
-      background: var(--primary);
-      color: #ffffff;
-      text-decoration: none;
-      padding: 9px 20px;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 700;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
-      transition: all 0.2s;
-    }
-
-    .btn:hover {
-      background: var(--primary-hover);
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
-    }
-
-    footer {
-      text-align: center;
-      font-size: 13px;
-      color: var(--text-muted);
-      border-top: 1px solid var(--border);
-      padding-top: 24px;
-    }
-  </style>
-</head>
-<body>
-
-<div class="container">
-
-  <header>
-    <div class="logo-badge">🦜✨</div>
-    <h1>LangChain Test Suite Hub</h1>
-    <p class="subtitle">
-      Four standalone, client-side web apps designed for building, tracing, and continuously optimizing autonomous AI agents with Groq LPU and WebGPU.
-    </p>
-    <div class="meta-pills">
-      <span class="pill green">⚡ Dual Engine: Groq LPU (500 T/s) + WebGPU (100% Private)</span>
-      <span class="pill purple">🔌 LangGraph + Claude Plugin</span>
-      <span class="pill">☀️ Crisp Light Mode</span>
-    </div>
-  </header>
-
-  <!-- 4 APPS GRID -->
-  <div class="apps-grid">
-
-    <!-- APP 1: STORYMINE -->
+    <!-- APP 10: ONYX TRUTH CHATBOT -->
     <div class="app-card">
-      <div class="app-img-wrap">
-        <img src="ux_story_miner_preview.png" alt="StoryMine Preview">
-      </div>
-      <div class="app-body">
-        <div class="app-top">
-          <div>
-            <div class="app-num">App 01</div>
-            <div class="app-title">StoryMine 🕵️✨ — Web UX Story Miner</div>
-          </div>
+      <div class="app-header" style="background: linear-gradient(135deg, #090d16 0%, #1e293b 100%); color: #f8fafc;">
+        <div>
+          <span class="badge" style="background: rgba(56, 189, 248, 0.2); color: #38bdf8;">App 10</span>
+          <span class="badge" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">Dual Engine</span>
         </div>
-        <p class="app-desc">
-          Scrapes any live website or review thread (via CORS-friendly Jina Reader) and extracts colorful persona journeys, friction points, "Aha!" breakthrough moments, sentiment meters, and product takeaways.
-        </p>
-        <div class="feature-list">
-          <span class="feature-tag">Jina Reader Scraper</span>
-          <span class="feature-tag">Bento Story Cards</span>
-          <span class="feature-tag">Sentiment Heatmap</span>
-          <span class="feature-tag">JSON / Markdown Export</span>
-        </div>
-      </div>
-      <div class="app-footer">
-        <a href="ux_story_miner.html" class="btn"><span>🚀</span> Launch App 1</a>
-        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">ux_story_miner.html</span>
-      </div>
-    </div>
-
-    <!-- APP 2: GRAPHSMITH -->
-    <div class="app-card">
-      <div class="app-img-wrap">
-        <img src="langgraph_agent_studio_preview.png" alt="GraphSmith Preview">
-      </div>
-      <div class="app-body">
-        <div class="app-top">
-          <div>
-            <div class="app-num">App 02</div>
-            <div class="app-title">GraphSmith 🛠️🦜 — LangGraph &amp; Claude Studio</div>
-          </div>
-        </div>
-        <p class="app-desc">
-          Uses in-browser WebLLM (WebGPU) &amp; Groq LPU to compile natural language prompts into production LangGraph state machines for the Claude LangChain Plugin (langgraph-skills@langchain-plugins). Features live Mermaid state diagrams and an in-browser step simulator with zero server dependencies.
-        </p>
-        <div class="feature-list">
-          <span class="feature-tag">Mermaid StateGraph Canvas</span>
-          <span class="feature-tag">TypedDict Schema</span>
-          <span class="feature-tag">Claude Plugin Bindings</span>
-          <span class="feature-tag">Step-by-Step Simulator</span>
-        </div>
-      </div>
-      <div class="app-footer">
-        <a href="langgraph_agent_studio.html" class="btn"><span>🚀</span> Launch App 2</a>
-        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">langgraph_agent_studio.html</span>
-      </div>
-    </div>
-
-    <!-- APP 3: LANGSMITH STUDIO -->
-    <div class="app-card">
-      <div class="app-img-wrap">
-        <img src="langsmith_studio_preview.png" alt="LangSmith Studio Preview">
-      </div>
-      <div class="app-body">
-        <div class="app-top">
-          <div>
-            <div class="app-num">App 03</div>
-            <div class="app-title">LangSmith Studio 🔍 — LLM Observability</div>
-          </div>
-        </div>
-        <p class="app-desc">
-          Uses in-browser WebLLM &amp; Groq LPU as a zero-server compiler to reproduce the iconic LangSmith developer experience: streams execution traces from Claude Code via <code>langsmith-tracing</code>, hierarchical trace trees, Gantt waterfall latency charts, and prompt playground.
-        </p>
-        <div class="feature-list">
-          <span class="feature-tag">In-Browser Compiler</span>
-          <span class="feature-tag">Claude Tracing Plugin</span>
-          <span class="feature-tag">Gantt Waterfall Spans</span>
-          <span class="feature-tag">LLM-as-a-Judge Evals</span>
-        </div>
-      </div>
-      <div class="app-footer">
-        <a href="langsmith_studio.html" class="btn"><span>🚀</span> Launch App 3</a>
-        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">langsmith_studio.html</span>
-      </div>
-    </div>
-
-    <!-- APP 4: LANGFLYWHEEL -->
-    <div class="app-card">
-      <div class="app-img-wrap">
-        <img src="continuous_agent_optimizer_preview.png" alt="LangFlywheel Preview">
-      </div>
-      <div class="app-body">
-        <div class="app-top">
-          <div>
-            <div class="app-num">App 04</div>
-            <div class="app-title">LangFlywheel 🔄 — Continuous Trace Optimizer</div>
-          </div>
-        </div>
-        <p class="app-desc">
-          Demonstrates continuous agent self-healing driven by LangChain &amp; Claude tracing telemetry: diagnoses silent SQL failures from trace spans, auto-synthesizes upgraded StateGraph architectures (v1 ➔ v2 ➔ v3), and quantifies performance lifts.
-        </p>
-        <div class="feature-list">
-          <span class="feature-tag">Trace-Driven Self-Healing</span>
-          <span class="feature-tag">Auto-Evolve Generator</span>
-          <span class="feature-tag">Pass@1 Lift (+58%)</span>
-          <span class="feature-tag">Zero-Silent-Failure Hardening</span>
-        </div>
-      </div>
-      <div class="app-footer">
-        <a href="continuous_agent_optimizer.html" class="btn"><span>🚀</span> Launch App 4</a>
-        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">continuous_agent_optimizer.html</span>
-      </div>
-    </div>
-
-    <!-- APP 5: OMNISMITH (VISOKIO OMNISCOPE MCP) -->
-    <div class="app-card">
-      <div class="app-img-wrap">
-        <img src="omniscope_mcp_studio_preview.png" alt="OmniSmith Studio Preview">
-      </div>
-      <div class="app-body">
-        <div class="app-top">
-          <div>
-            <div class="app-num">App 05</div>
-            <div class="app-title">OmniSmith 🧭📊 — Visokio Omniscope MCP Studio</div>
-          </div>
-        </div>
-        <p class="app-desc">
-          Uses in-browser WebLLM &amp; Groq LPU to translate functional specifications into multi-stage Visokio Omniscope Evo workflows (grouped by SCP stages), Custom Python blocks, and live interactive KPI executive dashboards via the Omniscope MCP Server.
-        </p>
-        <div class="feature-list">
-          <span class="feature-tag">Visokio Workflow Ninja</span>
-          <span class="feature-tag">Omniscope MCP Server</span>
-          <span class="feature-tag">SCP Stage Block Grouping</span>
-          <span class="feature-tag">Custom Python Block SDK</span>
-          <span class="feature-tag">Live Executive Dashboard</span>
-        </div>
-      </div>
-      <div class="app-footer">
-        <a href="omniscope_mcp_studio.html" class="btn"><span>🚀</span> Launch App 5</a>
-        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">omniscope_mcp_studio.html</span>
-      </div>
-    </div>
-
-    <!-- APP 6: GROUNDTRUTH AGENT EDUCATION STUDIO -->
-    <div class="app-card">
-      <div class="app-img-wrap">
-        <img src="truth_agent_education_studio_preview.png" alt="GroundTruth Studio Preview">
-      </div>
-      <div class="app-body">
-        <div class="app-top">
-          <div>
-            <div class="app-num">App 06</div>
-            <div class="app-title">GroundTruth 📘🔑 — Agent Education &amp; Verification Studio</div>
-          </div>
-        </div>
-        <p class="app-desc">
-          Approved Truth In, Reliable Agent Out. One human-approved source of truth does two jobs: it is The Book that teaches the agent, and the hidden Answer Key that grades it. Designs interactive websites from multi-docs, spider crawls ARIA semantic DAGs, diagnoses baseline knowledge gaps, and educates the chatbot with the 5 levers.
-        </p>
-        <div class="feature-list">
-          <span class="feature-tag">Embedded Web Site Designer</span>
-          <span class="feature-tag">Deterministic Spider Crawl</span>
-          <span class="feature-tag">ARIA Semantic Tree &amp; DAG</span>
-          <span class="feature-tag">Knowledge Gap Radar</span>
-          <span class="feature-tag">5 Levers of Education</span>
-          <span class="feature-tag">Hidden Exam Key Verification</span>
-        </div>
-      </div>
-      <div class="app-footer">
-        <a href="truth_agent_education_studio.html" class="btn"><span>🚀</span> Launch App 6</a>
-        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">truth_agent_education_studio.html</span>
-      </div>
-    </div>
-
-    <!-- APP 7: GROUNDTRUTH CASCADE TEXT STUDIO -->
-    <div class="app-card">
-      <div class="app-img-wrap">
-        <img src="truth_cascade_text_studio_preview.png" alt="Cascade Text Studio Preview">
-      </div>
-      <div class="app-body">
-        <div class="app-top">
-          <div>
-            <div class="app-num">App 07</div>
-            <div class="app-title">GroundTruth 📘📑 — Cascading Policies Studio</div>
-          </div>
-        </div>
-        <p class="app-desc">
-          Text Cascades over Flowcharts. Distills complex policies into hierarchical multi-tiered cascading rulebooks (Root Constitutional Invariants ➔ Scoped Directives ➔ Action Criteria ➔ Dead Ends). Diagnoses tier-by-tier knowledge gaps and trains reliable agents without diagrammatic workflows.
-        </p>
-        <div class="feature-list">
-          <span class="feature-tag">Heavy Cascade Text</span>
-          <span class="feature-tag">Hierarchical Rule Trees</span>
-          <span class="feature-tag">Zero Flowcharts / No Diagrams</span>
-          <span class="feature-tag">Invariant Survival Audit</span>
-          <span class="feature-tag">Cascade Tier Radar</span>
-          <span class="feature-tag">Light Mode Studio</span>
-        </div>
-      </div>
-      <div class="app-footer">
-        <a href="truth_cascade_text_studio.html" class="btn"><span>🚀</span> Launch App 7</a>
-        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">truth_cascade_text_studio.html</span>
-      </div>
-    </div>
-
-    <!-- APP 8: POLICY CASCADES & FLOWCHARTS DUAL STUDIO -->
-    <div class="app-card" style="border-color: #0284c7; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08);">
-      <div class="app-card-header">
-        <span class="app-badge" style="background:#e0f2fe; color:#0284c7; border: 1px solid #bae6fd;">App 08 • Dual Governance</span>
-        <div class="status-indicator">
-          <div class="status-dot"></div>
-          <span>Active</span>
+        <div class="engine-badge" style="background: rgba(255,255,255,0.1); color: #f8fafc;">
+          <span>💎</span> Onyx Split Studio
         </div>
       </div>
       <div class="app-body">
-        <div class="app-title">Policy Cascades &amp; Flowcharts Studio</div>
-        <div class="app-subtitle">Cascading Policy Tree &amp; Flowchart Side-by-Side (Dual Governance Architecture)</div>
+        <div class="app-title">Onyx Truth Chatbot (Side-by-Side Dual Inference)</div>
+        <div class="app-subtitle">Grounded Reasoning Chatbot Tethered to Real-Time Excerpts & Web URLs</div>
         <p class="app-desc">
-          Brings both paradigms together side-by-side in one studio. Maps multi-tiered hierarchical text rules (Root Invariants ➔ Scoped Directives ➔ Parameter Bounds ➔ Dead Ends) 1:1 against visual flowchart DAG execution gates. Explores 3 specialized, high-stakes domains: Model Predictive Control (MPC), Sales & Operations Planning (S&OP), and Cooling Tower Water Treatment.
+          Onyx-styled dark obsidian dual-inference workspace. Paste any text excerpt, novel chapter, or web URL on the left pane, and engage with a strictly grounded assistant on the right. Powered by in-browser WebGPU WebLLM (Llama-3.2) and cloud Groq LPU (Llama-3.3-70B).
         </p>
         <div class="feature-tags">
-          <span class="feature-tag">Side-by-Side Dual View</span>
-          <span class="feature-tag">Cascading Policy Tree</span>
-          <span class="feature-tag">Interactive Flowchart</span>
-          <span class="feature-tag">MPC Distillation</span>
-          <span class="feature-tag">S&amp;OP Mass-Balance</span>
-          <span class="feature-tag">Cooling Tower LSI</span>
+          <span class="feature-tag">Side-by-Side Split View</span>
+          <span class="feature-tag">WebGPU WebLLM (Local)</span>
+          <span class="feature-tag">Groq LPU (Sub-second)</span>
+          <span class="feature-tag">Strict Context Grounding</span>
+          <span class="feature-tag">Live URL Crawler</span>
         </div>
       </div>
       <div class="app-footer">
-        <a href="truth_policy_flowchart_studio.html" class="btn" style="background:#0284c7;"><span>🚀</span> Launch App 8</a>
-        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">truth_policy_flowchart_studio.html</span>
+        <a href="onyx_truth_chatbot.html" class="btn" style="background:#0f172a; border: 1px solid #334155;"><span>🚀</span> Launch App 10</a>
+        <span style="font-size: 11px; color: var(--text-muted); font-family: var(--font-mono);">onyx_truth_chatbot.html</span>
       </div>
     </div>
 
 
   </div>
 
+  <div style="margin-top: 32px; padding: 24px; background: #ffffff; border: 1px solid var(--border); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+    <div>
+      <div style="font-weight: 700; font-size: 16px; color: var(--text);">📄 Ensuring Text-Based Invariants — Executive 1-Pager PDF</div>
+      <div style="font-size: 13px; color: var(--text-muted); margin-top: 4px;">Download the visual executive briefing on closed-loop invariant architectures, runtime tripwires, and zero-hallucination policies.</div>
+    </div>
+    <div style="display: flex; gap: 12px;">
+      <a href="ensuring_invariants_one_pager.pdf" class="btn" style="background:#0284c7;" target="_blank"><span>📥</span> Download PDF</a>
+      <a href="ensuring_invariants_one_pager.png" class="btn btn-secondary" target="_blank"><span>🖼️</span> View High-Res PNG</a>
+    </div>
+  </div>
+
   <footer>
     <p>
-      100% Client-Side Architecture • Runs directly in any modern browser
+      100% Client-Side Architecture • Runs directly in any modern browser • No server dependencies
     </p>
   </footer>
 
