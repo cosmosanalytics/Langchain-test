@@ -2040,7 +2040,7 @@ STRICT ANSWERING RULES:
       // Detect if Narrative / Literature vs Technical / SOP
       const lowerText = text.toLowerCase();
       const lowerTitle = (title || '').toLowerCase();
-      const litKeywords = ['novel', 'chapter', 'story', 'excerpt', 'father', 'mother', 'eyes', 'smile', 'house', 'village', 'river', 'mountain', 'gatsby', 'carraway', 'daisy', 'fitzgerald', 'summer', 'heart', 'life', 'spirit', 'character', 'man', 'girl', 'woman', 'years', 'night', 'sun', 'grandpa', 'jeff', 'cade', 'lottery', 'school', 'math', 'teacher'];
+      const litKeywords = ['novel', 'chapter', 'story', 'excerpt', 'father', 'mother', 'eyes', 'smile', 'house', 'village', 'river', 'mountain', 'gatsby', 'carraway', 'daisy', 'fitzgerald', 'summer', 'heart', 'life', 'spirit', 'character', 'man', 'girl', 'woman', 'years', 'night', 'sun', 'school', 'math', 'teacher', 'university', 'campus', 'love', 'date', 'friend'];
       let litScore = 0;
       litKeywords.forEach(k => {
         if (lowerText.includes(k)) litScore++;
@@ -2074,7 +2074,8 @@ STRICT ANSWERING RULES:
             if (pr.test(s)) score += 6;
           }
         }
-        if (s.length >= 35 && s.length <= 190) score += 3;
+        if (s.length >= 35 && s.length <= 180) score += 3;
+        if (s.startsWith('“') && s.length < 32) score -= 3;
         return score;
       }
 
@@ -2113,25 +2114,28 @@ STRICT ANSWERING RULES:
       let dagMermaid = '';
 
       if (isNarrative) {
-        // TIER 0: World Invariants & Setting (Act I: 0-20%)
-        const t0_1 = selectBestSentence(act1, [/pop-up store/i, /math teacher/i, /hands-on learning/i, /class/i, /school/i], null, act1[0] || "World setting and environmental laws established in source.");
-        const t0_2 = selectBestSentence(act1, [/market day/i, /students/i, /cookies/i, /buy things/i, /parents/i], null, act1[1] || "Institutional framework constrains all participant actions.");
+        // TIER 0: World Invariants & Setting (Act I: 0-20%) - Story Agnostic
+        const t0_1 = selectBestSentence(act1, [/\b(university|school|town|city|house|campus|department|state|years|place|job|career|student|engineer|teacher|learning|class|setting)\b/i], null, act1[0] || "World setting and environmental laws established in source.");
+        const t0_2 = selectBestSentence(act1, [/\b(world|environment|community|family|friends|rules|routine|normal|daily|schedule|habit|dates|flirty|strict)\b/i], null, act1[1] || "Institutional framework constrains all participant actions.");
 
-        // TIER 1: Character Truths & Behavioral Axioms (Acts I-II: 0-40%)
-        const t1_1 = selectBestSentence(act1.concat(act2), [/psychologist/i, /people tick/i, /faces and body language/i, /analysis/i, /cade/i], null, act2[0] || "Protagonist operates according to psychological observation.");
-        const t1_2 = selectBestSentence(act2, [/grandpa jeff/i, /lottery/i, /tickets/i, /addicted/i, /yacht/i, /property/i, /shed/i], null, act2[1] || "Mentor figure provides unconventional perspective and hidden assets.");
+        // TIER 1: Character Truths & Behavioral Axioms (Acts I-II: 0-40%) - Story Agnostic
+        const t1_1 = selectBestSentence(act1.concat(act2), [/\b(personality|character|nature|habit|sweet|quiet|reserved|ambitious|flirty|wanted|believed|felt|thought|observed|examined)\b/i], null, act2[0] || "Protagonist operates according to psychological observation.");
+        const t1_2 = selectBestSentence(act2, [/\b(friend|boyfriend|girlfriend|father|mother|grandpa|mentor|partner|relationship|influence|habit|together|routine)\b/i], null, act2[1] || "Key relational dynamic or mentor figure shapes character perspectives.");
 
-        // TIER 2: Narrative Tension & Tactical Pivot (Acts II-III: 20-60%)
-        const t2_1 = selectBestSentence(act2.concat(act3), [/collecting dust/i, /trouble.*worth/i, /beanie babies/i, /make anything good/i, /stuffed animals/i], null, act3[0] || "Core dilemma: Zero existing demand for obsolete physical inventory.");
-        const t2_2 = selectBestSentence(act3, [/raffle/i, /roll of tickets/i, /lottery/i, /plan jelled/i, /churned/i, /selling stuff/i], null, act3[1] || "Action catalyst: Gamifying retail transactions via speculative raffle mechanism.");
+        // TIER 2: Narrative Tension & Tactical Pivot (Acts II-III: 20-60%) - Story Agnostic
+        const t2_1 = selectBestSentence(act2.concat(act3), [/\b(awkward|problem|dilemma|worry|worried|struggle|trouble|difficult|fear|conflict|contrast|instead|however|although|differ|uncomfortable|dust|unwanted)\b/i], null, act3[0] || "Core dilemma: Conflict between passive expectation and practical reality.");
+        const t2_2 = selectBestSentence(act3, [/\b(decided|planned|began|started|created|suggested|invited|agreed|went|gathered|wrote|read|performed|produced|plan|idea|catalyst|supermarket|tickets|raffle)\b/i], null, act3[1] || "Action catalyst: Direct initiative altering the narrative trajectory.");
 
-        // TIER 3: Empirical Quantities & Operational Bounds (Acts III-IV: 40-80%)
-        const t3_1 = selectBestSentence(act4, [/\$1600|\$500|\$1100/i, /collected around/i, /twenty/i, /tickets/i, /market day/i], null, act4[0] || "Quantitative boundary: Pool scales from initial intake to documented total.");
-        const t3_2 = selectBestSentence(act4, [/grand prize/i, /winner/i, /saul/i, /\$700/i, /2046/i, /half of the ticket/i, /divide/i], null, act4[1] || "Distribution constraint: Defined payout formula separates grand prize from net margin.");
+        // TIER 3: Empirical Quantities & Operational Bounds (Acts III-IV: 40-80%) - Story Agnostic
+        const t3_1 = selectBestSentence(act4, [/\b(\d+|dollars?|\$|percent|audience|people|crowd|members|group|room|table|score|number|time|hours?|minutes?|days?|week)\b/i], null, act4[0] || "Quantitative boundary: Concrete timeline or scale limit documented in source.");
+        const t3_2 = selectBestSentence(act4, [/\b(divide|allocated|distributed|award|won|prize|shared|money|cost|measure|limit|boundary|label|pair)\b/i], null, act4[1] || "Distribution constraint: Allocation formula separating outcomes.");
 
-        // TIER 4: Institutional Tripwires & Final Moral (Acts IV-V: 60-100%)
-        const t4_1 = selectBestSentence(act4, [/principal tua/i, /teacher display board/i, /defense/i, /help the school/i, /shouted/i], null, act4[2] || "Institutional tripwire: Administrative oversight neutralized by public-benefit alignment.");
-        const t4_2 = selectBestSentence(act5, [/city council/i, /people tick/i, /running for office/i, /profit/i, /amazement/i, /office/i], null, act5[act5.length - 1] || "Thematic resolution: Demonstrated mastery of human psychology transcends immediate gains.");
+        // TIER 4: Institutional Tripwires & Final Moral (Acts IV-V: 60-100%) - Story Agnostic
+        const t4_1 = selectBestSentence(act4, [/\b(confronted|stopped|authority|principal|shouted|asked|demanded|reaction|audience|cheered|defense|interrupted|question|poem|breakup|display)\b/i], null, act4[2] || "Turning point: Critical checkpoint or authority intervention.");
+        const t4_2 = selectBestSentence(act5, [/\b(years later|married|ceremony|vows|realized|concluded|admitted|lesson|truth|moral|understood|laughter|remembered|amazement|council|credit|credit)\b/i], null, act5[act5.length - 1] || "Thematic resolution: Concluding realization reshaping long-term reality.");
+
+        // Dynamic Stagnation Sentence (Inaction / Hesitation / Status Quo)
+        const stagnate_sent = selectBestSentence(act2, [/\b(quiet|reserved|hesitated|did not want|worried|remained|kept|waited|silence|reading|class|same|stayed|withdrawing)\b/i], null, "Passive Inertia: Preserves conventional status quo without taking decisive risk.");
 
         cascadeTiers = [
           {
@@ -2140,16 +2144,16 @@ STRICT ANSWERING RULES:
             badge: 'tier-0',
             rules: [
               `SETTING INVARIANT: ${t0_1}`,
-              `INSTITUTIONAL RULE: ${t0_2}`
+              `ENVIRONMENTAL LAW: ${t0_2}`
             ]
           },
           {
             tier: 'Tier 1: Character Truths',
-            desc: 'Acts I-II (20-40%): Protagonist Psychology & Mentorship',
+            desc: 'Acts I-II (20-40%): Protagonist Psychology & Core Relationship',
             badge: 'tier-1',
             rules: [
               `PROTAGONIST AXIOM: ${t1_1}`,
-              `MENTOR AXIOM: ${t1_2}`
+              `RELATIONAL DYNAMIC: ${t1_2}`
             ]
           },
           {
@@ -2163,41 +2167,41 @@ STRICT ANSWERING RULES:
           },
           {
             tier: 'Tier 3: Narrative Bounds',
-            desc: 'Acts III-IV (60-80%): Empirical Scale, Numbers & Payout Bounds',
+            desc: 'Acts III-IV (60-80%): Empirical Scale & Quantitative Bounds',
             badge: 'tier-3',
             rules: [
-              `REVENUE POOL: ${t3_1}`,
-              `PAYOUT BOUND: ${t3_2}`
+              `EMPIRICAL METRIC: ${t3_1}`,
+              `ALLOCATION BOUND: ${t3_2}`
             ]
           },
           {
             tier: 'Tier 4: Journey Tripwires',
-            desc: 'Acts IV-V (80-100%): Administrative Checkpoint & Final Moral',
+            desc: 'Acts IV-V (80-100%): Turning Point & Final Resolution',
             badge: 'tier-4',
             rules: [
-              `INSTITUTIONAL TRIPWIRE: ${t4_1}`,
+              `TURNING POINT: ${t4_1}`,
               `THEMATIC PUNCHLINE: ${t4_2}`
             ]
           }
         ];
 
-        // Multi-Act Topological Flowchart DAG Nodes spanning the whole story
+        // 100% Story-Agnostic Multi-Act Topological Flowchart DAG Nodes
         const nSetting = formatFullNode('Act I: World Setting', t0_1, 6);
         const nProtagonist = formatFullNode('Act I-II: Protagonist Drive', t1_1, 6);
         const nDilemma = formatFullNode('Act II: Core Dilemma', t2_1, 5);
-        const nStagnate = formatFullNode('🛑 Stagnation: Zero Demand', 'Passive Status Quo: Selling dated collectibles at retail price attracts zero buyer interest.', 6);
-        const nAction = formatFullNode('🎟️ Action Catalyst: The Pop-Up Lottery (Act III)', t2_2, 6);
-        const nAudit = formatFullNode('🚨 Institutional Tripwire: Principal Tua (Act III-IV)', t4_1, 6);
-        const nClimax = formatFullNode('📈 Market Day Climax: $1,600 Pool (Act IV)', `${t3_1} Saul Howard wins $700 grand prize.`, 6);
+        const nStagnate = formatFullNode('🛑 Passive Inaction / Status Quo', stagnate_sent, 6);
+        const nAction = formatFullNode('✨ Decisive Catalyst (Act III)', t2_2, 6);
+        const nAudit = formatFullNode('⚡ Turning Point (Act III-IV)', t4_1, 6);
+        const nClimax = formatFullNode('📈 Climax & Peak Event (Act IV)', t3_1, 6);
         const nResolution = formatFullNode('🏆 Act V: True Resolution & Moral', t4_2, 6);
 
         dagMermaid = `flowchart TD
   A["${nSetting}"] --> B["${nProtagonist}"]
   B --> C{"${nDilemma}"}
-  C -->|"Conventional Retail"| D["${nStagnate}"]
-  C -->|"Gamify Speculation"| E["${nAction}"]
+  C -->|"Routine / Hesitation"| D["${nStagnate}"]
+  C -->|"Take Initiative"| E["${nAction}"]
   E --> F{"${nAudit}"}
-  F -->|"Frame as School Fundraiser"| G["${nClimax}"]
+  F -->|"Escalation"| G["${nClimax}"]
   G --> H["${nResolution}"]
   style A fill:#fef3c7,stroke:#f59e0b,stroke-width:2px
   style B fill:#f1f5f9,stroke:#64748b,stroke-width:2px
