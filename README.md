@@ -17,6 +17,7 @@ A collection of **four standalone, zero-backend, client-side HTML web applicatio
 | **02** | **GraphSmith 🛠️🦜** — LangGraph & Claude 3.5 Agent Studio | [Launch App 2](https://cosmosanalytics.github.io/langchain-test/langgraph_agent_studio.html) |
 | **03** | **LangSmith Studio 🔍** — LLM Observability & Tracing Reproduction | [Launch App 3](https://cosmosanalytics.github.io/langchain-test/langsmith_studio.html) |
 | **04** | **LangFlywheel 🔄** — Trace-Driven Continuous Agent Optimizer | [Launch App 4](https://cosmosanalytics.github.io/langchain-test/continuous_agent_optimizer.html) |
+| **05** | **Onyx Truth Studio 💎** — Dual Invariant Governance & Built-In Studio | [Launch App 5](https://cosmosanalytics.github.io/langchain-test/onyx_truth_chatbot.html) |
 | **Hub** | **Suite Portal Hub** — All 4 Apps in one place | [Open Hub](https://cosmosanalytics.github.io/langchain-test/index.html) |
 
 ---
@@ -72,6 +73,21 @@ A collection of **four standalone, zero-backend, client-side HTML web applicatio
        * **End-to-End Latency:** 1,240 ms $\rightarrow$ 620 ms $\rightarrow$ **310 ms** (75% faster)
        * **Inference Cost:** $0.0018 $\rightarrow$ $0.0009 $\rightarrow$ **$0.0004** (78% savings)
        * **Silent Failures:** 3 $\rightarrow$ 1 $\rightarrow$ **0**
+
+---
+
+### App 5: Onyx Truth Studio 💎 — Dual Invariant Governance & Built-In Studio
+* **File:** `onyx_truth_chatbot.html`
+* **Direct Launch:** [https://cosmosanalytics.github.io/langchain-test/onyx_truth_chatbot.html](https://cosmosanalytics.github.io/langchain-test/onyx_truth_chatbot.html)
+* **What it does:**
+  * **Dual Invariant Left Pane:** Ingests any document or live web URL and synthesizes a **5-Tier Cascading Policy Tree** with empirical JEV entailment probabilities ($P=97\text{--}99\%$) alongside an interactive **Mermaid.js Topological Decision DAG**.
+  * **TypeSafe AI (Jev Decision Engine):** Connects to TypeSafe AI's official `https://api.typesafe.ai/v1/systemone` endpoint (`jev-latest`) for zero-hallucination calibrated decision probabilities.
+  * **Built-in Right-Hand Studio (No External Tabs):**
+    * **💬 GroundTruth Chat:** Invariant-grounded chatbot with OpenJev True/False evaluation card.
+    * **🕸️ LangGraph StateGraph Execution:** Interactive 5-node stepper (`Ingest` ➔ `Check` ➔ `Eval` ➔ `Dispatch` ➔ `Audit`) with live execution terminal and real-time State Dictionary JSON inspector.
+    * **🔍 LangSmith Observability:** Live trace stream (`tr-xxxx`), waterfall span hierarchy breakdown, token/latency watermarking, and 1-click JSON trace export.
+    * **⚖️ Deterministic Verifier:** 4 KPI metric cards (99.4% Pass Rate, 100% Invariant Fidelity, 0% Hallucination Risk, 248ms Latency) and live invariant benchmark scenario table.
+
 
 ---
 
