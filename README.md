@@ -81,7 +81,7 @@ A collection of **four standalone, zero-backend, client-side HTML web applicatio
 * **Direct Launch:** [https://cosmosanalytics.github.io/langchain-test/onyx_truth_chatbot.html](https://cosmosanalytics.github.io/langchain-test/onyx_truth_chatbot.html)
 * **What it does:**
   * **Dual Invariant Left Pane:** Ingests any document or live web URL and synthesizes a **5-Tier Cascading Policy Tree** with empirical JEV entailment probabilities ($P=97\text{--}99\%$) alongside an interactive **Mermaid.js Topological Decision DAG**.
-  * **TypeSafe AI (Jev Decision Engine):** Connects to TypeSafe AI's official `https://api.typesafe.ai/v1/systemone` endpoint (`jev-latest`) for zero-hallucination calibrated decision probabilities.
+  * **TypeSafe AI (Jev Decision Engine):** Connects to TypeSafe AI's official Jev decision engine for zero-hallucination calibrated decision probabilities.
   * **Built-in Right-Hand Studio (No External Tabs):**
     * **💬 GroundTruth Chat:** Invariant-grounded chatbot with OpenJev True/False evaluation card.
     * **🕸️ LangGraph StateGraph Execution:** Interactive 5-node stepper (`Ingest` ➔ `Check` ➔ `Eval` ➔ `Dispatch` ➔ `Audit`) with live execution terminal and real-time State Dictionary JSON inspector.
