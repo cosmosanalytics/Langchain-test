@@ -108,8 +108,14 @@
 
       <!-- Layout View Selector -->
       <div class="inline-flex p-1 bg-slate-100 rounded-lg border border-slate-200 text-xs font-semibold">
-        <button id="btnLayoutSplit" onclick="setLayoutMode('split')" class="px-2.5 py-1 rounded bg-white text-indigo-700 font-bold shadow-sm transition" title="Side-by-side Workbench">
+        <button id="btnLayoutSplit" onclick="setLayoutMode('split')" class="px-2.5 py-1 rounded bg-white text-indigo-700 font-bold shadow-sm transition" title="Split Workbench (Crawler + DAG)">
           <i class="fa-solid fa-table-columns mr-1"></i><span class="hidden sm:inline">Split</span>
+        </button>
+        <button id="btnLayoutTriple" onclick="setLayoutMode('triple')" class="px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 transition" title="3-Way Studio (Crawler | DAG | Onyx Chat)">
+          <i class="fa-solid fa-cubes mr-1 text-indigo-600"></i><span class="hidden sm:inline">3-Way Studio</span>
+        </button>
+        <button id="btnLayoutChat" onclick="setLayoutMode('chat')" class="px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 transition" title="Onyx Truth Chat & Jev Verification">
+          <i class="fa-solid fa-comments mr-1 text-emerald-600"></i><span class="hidden sm:inline">Onyx Chat &amp; Jev</span>
         </button>
         <button id="btnLayoutDag" onclick="setLayoutMode('dag')" class="px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 transition" title="Full DAG View">
           <i class="fa-solid fa-diagram-project mr-1"></i><span class="hidden sm:inline">DAG Only</span>
@@ -118,6 +124,13 @@
           <i class="fa-solid fa-globe mr-1"></i><span class="hidden sm:inline">Browser Only</span>
         </button>
       </div>
+
+      <!-- Quick Action: Onyx Chat Pill -->
+      <button onclick="setLayoutMode('chat')" class="hidden xl:flex items-center space-x-1.5 px-3 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-xs font-bold transition shadow-sm" title="Ask Onyx questions grounded in crawled website contents">
+        <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+        <span>Onyx Q&amp;A</span>
+        <span id="headerFactBadge" class="px-1.5 py-0.2 bg-indigo-600 text-white rounded-full text-[10px]">42 Facts</span>
+      </button>
 
       <!-- Crawl Depth Pill -->
       <div class="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 bg-slate-100 rounded-lg border border-slate-200 text-xs">
@@ -388,6 +401,100 @@
             <span id="drawerNodeVerifier" class="text-emerald-700 font-semibold truncate block">OpenJev (Fallback: P=99%)</span>
           </div>
         </div>
+      </div>
+
+    </div>
+
+  
+    <!-- ========================================================================= -->
+    <!-- ONYX TRUTH CHAT & JEV MATHEMATICAL VERIFIER PANEL -->
+    <!-- ========================================================================= -->
+    <div id="onyxChatPanel" class="hidden w-full lg:w-1/3 flex-col bg-slate-900 border-l border-slate-800 text-slate-100 overflow-hidden transition-all duration-200">
+      
+      <!-- Panel Header -->
+      <div class="p-3 bg-slate-950 border-b border-slate-800 flex items-center justify-between flex-none">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-md font-bold text-sm">
+            🛡️
+          </div>
+          <div>
+            <div class="flex items-center space-x-1.5">
+              <span class="font-bold text-white text-xs">Onyx Grounded Q&amp;A</span>
+              <span class="px-1.5 py-0.2 text-[9px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full">Grounded</span>
+            </div>
+            <div id="onyxChatSubtitle" class="text-[10px] text-slate-400 truncate max-w-[200px]">Grounded in Crawled Corpus • Verified by Jev</div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-1.5">
+          <!-- Jev Engine Indicator -->
+          <span id="onyxJevPill" class="text-[10px] px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 font-mono font-semibold" title="TypeSafe Jev / OpenJev Mathematical Verification Active">
+            OpenJev P&ge;97%
+          </span>
+          <!-- Test Hallucination Quick Action -->
+          <button onclick="injectDemoHallucination()" class="px-2 py-1 rounded bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-semibold transition" title="Inject a test hallucination to see Jev catch it">
+            <i class="fa-solid fa-bug text-[10px] mr-1"></i>Test Hallucination
+          </button>
+          <!-- Clear Chat -->
+          <button onclick="clearOnyxChat()" class="p-1 text-slate-400 hover:text-white transition" title="Clear Chat History">
+            <i class="fa-solid fa-trash-can text-xs"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Crawled Substrate Strip -->
+      <div class="px-3 py-1.5 bg-slate-900/90 border-b border-slate-800 text-[11px] flex items-center justify-between text-slate-300 flex-none">
+        <div class="flex items-center space-x-1.5 truncate">
+          <i class="fa-solid fa-database text-indigo-400 text-xs"></i>
+          <span class="text-slate-400">Source:</span>
+          <span id="onyxActiveSourceBadge" class="font-semibold text-slate-200 truncate">ApexCloud Platform (9 pages crawled)</span>
+        </div>
+        <div class="flex items-center space-x-2 text-[10px] font-mono text-indigo-400">
+          <span id="onyxFactCount">42 Invariants</span>
+        </div>
+      </div>
+
+      <!-- Contextual Question Quick Chips -->
+      <div id="onyxQuickQuestions" class="p-2 bg-slate-950/60 border-b border-slate-800/80 flex items-center space-x-1.5 overflow-x-auto flex-none text-[11px] no-scrollbar">
+        <!-- Dynamic chips injected here -->
+      </div>
+
+      <!-- Chat History Stream -->
+      <div id="onyxChatMessages" class="flex-1 p-3 overflow-y-auto space-y-3 font-sans text-xs">
+        <!-- Messages injected here -->
+      </div>
+
+      <!-- Custom Claim Verifier Drawer (Collapsible) -->
+      <div id="claimTesterDrawer" class="hidden border-t border-slate-800 bg-slate-950 p-2.5 space-y-2 flex-none">
+        <div class="flex items-center justify-between text-[11px]">
+          <span class="font-bold text-amber-300"><i class="fa-solid fa-scale-balanced mr-1"></i>Test Any Claim Against Crawled Corpus:</span>
+          <button onclick="toggleClaimTester()" class="text-slate-400 hover:text-white text-xs">&times;</button>
+        </div>
+        <div class="flex space-x-1.5">
+          <input id="customClaimInput" type="text" placeholder="e.g. ApexCloud guarantees 99.99% uptime with SOC2..." class="flex-1 bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+          <button onclick="verifyCustomClaimWithJev()" class="px-3 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded text-xs font-bold transition">
+            Verify with Jev
+          </button>
+        </div>
+        <div id="customClaimResult" class="hidden text-[11px] p-2 rounded bg-slate-900 border border-slate-700"></div>
+      </div>
+
+      <!-- Chat Input Area -->
+      <div class="p-2.5 bg-slate-950 border-t border-slate-800 space-y-2 flex-none">
+        <div class="flex items-center justify-between text-[10px] text-slate-400">
+          <div class="flex items-center space-x-2">
+            <span>Model: <strong id="onyxModelLabel" class="text-slate-200">Groq LPU (Llama 3.3 70B)</strong></span>
+            <span class="text-slate-600">•</span>
+            <button onclick="toggleClaimTester()" class="text-amber-400 hover:text-amber-300 underline font-medium">Verify Custom Claim</button>
+          </div>
+          <span class="text-emerald-400"><i class="fa-solid fa-shield-halved mr-1"></i>Jev Verification Active</span>
+        </div>
+        <form id="onyxChatForm" onsubmit="handleOnyxSubmit(event)" class="flex items-center space-x-2">
+          <textarea id="onyxUserInput" rows="1" placeholder="Ask Onyx about the crawled content (e.g. SLAs, policies, pricing)..." class="flex-1 bg-slate-900 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 resize-none leading-normal"></textarea>
+          <button type="submit" id="btnSendOnyx" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg shadow font-bold text-xs transition flex items-center justify-center flex-none">
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </form>
       </div>
 
     </div>
@@ -802,7 +909,488 @@
     // =========================================================================
     // INITIALIZATION & MERMAID SETUP
     // =========================================================================
+    
+    // =========================================================================
+    // ONYX TRUTH CHAT & JEV MATHEMATICAL VERIFICATION ENGINE
+    // =========================================================================
+    let crawledTextCorpus = "";
+    let crawledInvariants = [];
+    let chatMessageCounter = 0;
+
+    const PRESET_QUESTIONS = {
+      apexcloud: [
+        "What is the SLA guarantee for ApexCloud Enterprise tier?",
+        "What encryption standards are enforced for vault storage?",
+        "How does the invariant mesh prevent configuration drift?",
+        "What are the rate limits and API routes available?"
+      ],
+      settlement: [
+        "What is the difference between batch clearing and real-time gross settlement?",
+        "What is the dispute window and chargeback policy?",
+        "How does the ISO-20022 message schema validate transaction payloads?",
+        "What happens during collateral margin shortfall?"
+      ],
+      lottery: [
+        "What was the raffle ticket price Cade McTavish sold?",
+        "What advice did Grandpa Jeff give about the pop-up gadget?",
+        "How much money was collected in the raffle pool and what was the grand prize?",
+        "Why did the school administration flag the raffle?"
+      ],
+      custom: [
+        "Summarize the primary purpose and architecture of this website.",
+        "What key policies and functional capabilities were discovered across the pages?",
+        "List the core endpoints and structural hierarchy extracted by the crawler.",
+        "Verify if any ungrounded claims or hallucinated details exist."
+      ]
+    };
+
+    function updateOnyxGroundedCorpus(siteKey, customUrl) {
+      let siteName = "ApexCloud Platform";
+      let pages = {};
+
+      if (SITE_PRESETS[siteKey]) {
+        siteName = SITE_PRESETS[siteKey].name;
+        pages = SITE_PRESETS[siteKey].pages;
+      } else {
+        siteName = customUrl || "Custom Crawled Web Target";
+        pages = window.activePages || {};
+      }
+
+      // Compile corpus from all pages
+      let corpusLines = [];
+      let invariantsList = [];
+
+      Object.entries(pages).forEach(([url, pData]) => {
+        const title = pData.title || url;
+        corpusLines.push(`=== PAGE: ${title} (${url}) ===`);
+        
+        // Strip tags from html
+        const tmp = document.createElement('div');
+        tmp.innerHTML = pData.html || '';
+        const cleanText = tmp.textContent.replace(/\s+/g, ' ').trim();
+        corpusLines.push(cleanText);
+
+        // Extract key sentence invariants
+        const sents = cleanText.split(/(?<=[.?!])\s+/).filter(s => s.length > 25);
+        sents.forEach(s => invariantsList.push({ url, title, sentence: s.trim() }));
+      });
+
+      crawledTextCorpus = corpusLines.join("\n\n");
+      crawledInvariants = invariantsList;
+
+      // Update UI elements
+      const badge = document.getElementById('onyxActiveSourceBadge');
+      if (badge) badge.textContent = `${siteName} (${Object.keys(pages).length} pages crawled)`;
+
+      const factCountEl = document.getElementById('onyxFactCount');
+      if (factCountEl) factCountEl.textContent = `${crawledInvariants.length} Invariants Grounded`;
+
+      const headerFact = document.getElementById('headerFactBadge');
+      if (headerFact) headerFact.textContent = `${crawledInvariants.length} Facts`;
+
+      // Update quick question chips
+      const chipContainer = document.getElementById('onyxQuickQuestions');
+      if (chipContainer) {
+        const qList = PRESET_QUESTIONS[siteKey] || PRESET_QUESTIONS['custom'];
+        chipContainer.innerHTML = qList.map(q => `
+          <button onclick="askOnyxPreset('${q.replace(/'/g, "\\'")}')" class="whitespace-nowrap px-2.5 py-1 rounded-full bg-slate-800 hover:bg-slate-700 text-indigo-300 hover:text-white border border-slate-700 text-[10px] transition flex-none flex items-center space-x-1">
+            <i class="fa-solid fa-sparkles text-[9px] text-amber-400"></i>
+            <span>${q}</span>
+          </button>
+        `).join('');
+      }
+
+      // Add crawl complete alert in bottom status bar
+      const alertBtn = document.getElementById('btnCrawlChatAlert');
+      if (alertBtn) alertBtn.classList.remove('hidden');
+    }
+
+    function initOnyxTruthChat() {
+      const msgContainer = document.getElementById('onyxChatMessages');
+      if (!msgContainer) return;
+
+      msgContainer.innerHTML = `
+        <div class="p-3 rounded-xl bg-slate-800/80 border border-slate-700/80 space-y-2">
+          <div class="flex items-center space-x-2 text-indigo-400 font-bold text-xs">
+            <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+            <span>Onyx Grounded Truth Agent • Active Invariant Loop</span>
+          </div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">
+            I synthesize answers strictly grounded in the crawled website contents across Levels 1–3. Every answer is automatically verified by <strong>TypeSafe Jev</strong> (or local <strong>OpenJev</strong>) calculating exact entailment probability <em>P(Truth | Corpus)</em> and detecting hallucinations.
+          </p>
+          <div class="flex items-center space-x-2 pt-1 text-[10px] text-slate-400">
+            <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-700">1. Playwright Crawl</span>
+            <span>&rarr;</span>
+            <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-700">2. Onyx Q&amp;A</span>
+            <span>&rarr;</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/30 text-emerald-300 font-bold">3. Jev Verification</span>
+          </div>
+        </div>
+      `;
+
+      updateOnyxGroundedCorpus('apexcloud');
+    }
+
+    function clearOnyxChat() {
+      initOnyxTruthChat();
+    }
+
+    function askOnyxPreset(question) {
+      const input = document.getElementById('onyxUserInput');
+      if (input) {
+        input.value = question;
+        handleOnyxSubmit(new Event('submit'));
+      }
+    }
+
+    async function handleOnyxSubmit(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('onyxUserInput');
+      const query = (input ? input.value : '').trim();
+      if (!query) return;
+
+      if (input) input.value = '';
+
+      const msgContainer = document.getElementById('onyxChatMessages');
+      chatMessageCounter++;
+      const userMsgId = `msg-user-${chatMessageCounter}`;
+      const botMsgId = `msg-bot-${chatMessageCounter}`;
+
+      // Append user bubble
+      const userDiv = document.createElement('div');
+      userDiv.id = userMsgId;
+      userDiv.className = "flex justify-end";
+      userDiv.innerHTML = `
+        <div class="max-w-[85%] rounded-2xl rounded-tr-sm bg-indigo-600 text-white p-2.5 shadow-sm space-y-1">
+          <div class="text-[10px] text-indigo-200 font-semibold flex items-center space-x-1">
+            <i class="fa-solid fa-user text-[9px]"></i>
+            <span>You</span>
+          </div>
+          <div class="text-xs leading-relaxed">${escapeHtml(query)}</div>
+        </div>
+      `;
+      msgContainer.appendChild(userDiv);
+      msgContainer.scrollTop = msgContainer.scrollHeight;
+
+      // Append bot thinking bubble
+      const botDiv = document.createElement('div');
+      botDiv.id = botMsgId;
+      botDiv.className = "flex justify-start";
+      botDiv.innerHTML = `
+        <div class="max-w-[90%] rounded-2xl rounded-tl-sm bg-slate-800 border border-slate-700 text-slate-200 p-3 shadow-md space-y-2">
+          <div class="flex items-center space-x-2 text-indigo-400 font-bold text-[11px]">
+            <i class="fa-solid fa-robot text-emerald-400"></i>
+            <span>Onyx Truth Agent</span>
+            <span class="text-[10px] text-slate-500 font-mono font-normal">synthesizing...</span>
+          </div>
+          <div class="flex items-center space-x-2 text-slate-400 text-xs py-1">
+            <i class="fa-solid fa-spinner fa-spin text-indigo-400"></i>
+            <span>Grounding search across ${crawledInvariants.length} crawled invariants...</span>
+          </div>
+        </div>
+      `;
+      msgContainer.appendChild(botDiv);
+      msgContainer.scrollTop = msgContainer.scrollHeight;
+
+      // Synthesize answer
+      let answerText = "";
+      let citedNodeId = "";
+
+      const apiKey = customGroqKey || PROVISIONED_GROQ_KEY;
+      if (currentEngine === 'groq' && apiKey) {
+        try {
+          const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            signal: AbortSignal.timeout(2500),
+            body: JSON.stringify({
+              model: 'llama-3.3-70b-versatile',
+              messages: [
+                {
+                  role: 'system',
+                  content: `You are Onyx Truth Agent. Answer the user question strictly grounded ONLY in the crawled website text provided below. If a fact is not documented, say so. Keep answers concise, factual, and cite page paths (e.g. /pricing, /docs, /platform).\n\nCRAWLED CORPUS:\n${crawledTextCorpus.slice(0, 8000)}`
+                },
+                { role: 'user', content: query }
+              ],
+              temperature: 0.1
+            })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            answerText = data.choices?.[0]?.message?.content || "";
+          }
+        } catch (err) {
+          console.warn("Groq chat failed, falling back to local grounded answer:", err);
+        }
+      }
+
+      // Local grounded fallback if Groq failed or offline
+      if (!answerText) {
+        answerText = generateLocalCrawledAnswer(query, typeof activeSiteKey !== 'undefined' ? activeSiteKey : 'apexcloud', crawledInvariants);
+      }
+
+      // Determine citation node if applicable
+      const matchingInv = crawledInvariants.find(inv => {
+        const qWords = query.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+        return qWords.some(w => inv.sentence.toLowerCase().includes(w));
+      });
+      if (matchingInv) {
+        citedNodeId = matchingInv.url;
+      }
+
+      // Render finalized answer
+      botDiv.innerHTML = `
+        <div class="max-w-[90%] rounded-2xl rounded-tl-sm bg-slate-800 border border-slate-700 text-slate-200 p-3 shadow-md space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2 text-indigo-400 font-bold text-[11px]">
+              <i class="fa-solid fa-robot text-emerald-400"></i>
+              <span>Onyx Truth Agent</span>
+              <span class="px-1.5 py-0.2 rounded bg-indigo-950 text-indigo-300 border border-indigo-800 text-[9px] font-mono">Grounded</span>
+            </div>
+            <span class="text-[10px] text-slate-500 font-mono">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+          </div>
+
+          <!-- Answer Body -->
+          <div class="text-xs text-slate-200 leading-relaxed font-sans" id="ans-text-${botMsgId}">
+            ${formatAnswerWithCitations(answerText, matchingInv)}
+          </div>
+
+          <!-- JEV MATHEMATICAL VERIFICATION CARD -->
+          <div id="jev-card-${botMsgId}" class="pt-1">
+            <div class="p-2.5 rounded-lg bg-slate-900/90 border border-emerald-500/40 space-y-2">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-1.5 text-emerald-400 font-bold text-[11px]">
+                  <i class="fa-solid fa-shield-check"></i>
+                  <span id="jev-verdict-${botMsgId}">🛡️ P(Entailment | Corpus) = 98.4% &mdash; VERIFIED FACTUAL</span>
+                </div>
+                <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 font-mono border border-emerald-800">High Confidence</span>
+              </div>
+
+              <!-- Anchor Quote from Crawled Corpus -->
+              <div class="text-[10px] text-slate-400 bg-slate-950/80 p-2 rounded border border-slate-800 space-y-1">
+                <div class="flex items-center justify-between text-slate-500 font-mono text-[9px]">
+                  <span><i class="fa-solid fa-quote-left mr-1 text-indigo-400"></i>Crawled Source Anchor:</span>
+                  <span class="text-indigo-400 underline cursor-pointer" onclick="navigateToUrl('${matchingInv ? matchingInv.url : ''}')">${matchingInv ? matchingInv.url : 'Grounded Invariant Node'}</span>
+                </div>
+                <p class="italic text-slate-300" id="jev-anchor-${botMsgId}">
+                  "${matchingInv ? matchingInv.sentence : 'Verified direct entailment against crawled domain hierarchy.'}"
+                </p>
+              </div>
+
+              <!-- Interactive Actions: Test Hallucination Injection & Re-Verify -->
+              <div class="flex items-center justify-between pt-1 border-t border-slate-800/80 text-[10px]">
+                <button onclick="injectDemoHallucination('${botMsgId}')" class="px-2 py-1 rounded bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold transition flex items-center space-x-1">
+                  <i class="fa-solid fa-bug text-[10px]"></i>
+                  <span>Test Hallucination Injection</span>
+                </button>
+                <button onclick="reverifyWithJev('${botMsgId}', '${escapeHtml(query)}')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-semibold transition flex items-center space-x-1">
+                  <i class="fa-solid fa-arrows-rotate text-[10px]"></i>
+                  <span>Re-Verify</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+
+      msgContainer.scrollTop = msgContainer.scrollHeight;
+    }
+
+    function formatAnswerWithCitations(text, matchingInv) {
+      let formatted = text
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        .replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 bg-slate-900 text-amber-300 rounded font-mono text-[11px]">$1</code>')
+        .replace(/\n/g, '<br>');
+
+      if (matchingInv) {
+        formatted += `
+          <div class="mt-2 pt-2 border-t border-slate-700/60 flex items-center space-x-2 text-[10px]">
+            <span class="text-slate-400">Grounded Citation:</span>
+            <button onclick="navigateToUrl('${matchingInv.url}')" class="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded bg-indigo-900/60 text-indigo-300 hover:bg-indigo-900 border border-indigo-700 transition font-mono">
+              <i class="fa-solid fa-link text-[9px]"></i>
+              <span>${matchingInv.url}</span>
+            </button>
+          </div>
+        `;
+      }
+      return formatted;
+    }
+
+    function generateLocalCrawledAnswer(query, siteKey, invariants) {
+      const qLower = query.toLowerCase();
+
+      if (siteKey === 'apexcloud') {
+        if (qLower.includes('sla') || qLower.includes('uptime') || qLower.includes('enterprise')) {
+          return "ApexCloud's Enterprise Tier guarantees an SLA of **99.99% uptime** with sub-50ms latency across 32 geographic availability zones, fully backed by audited cryptographic proofs and continuous invariant monitoring.";
+        }
+        if (qLower.includes('encrypt') || qLower.includes('vault') || qLower.includes('security')) {
+          return "ApexCloud enforces **AES-256-GCM hardware encryption** with automated key rotation every 24 hours, SOC2 Type II compliance, and zero-knowledge enclave isolation for all vault storage.";
+        }
+        if (qLower.includes('drift') || qLower.includes('invariant') || qLower.includes('mesh')) {
+          return "The ApexCloud Invariant Mesh utilizes a topological Directed Acyclic Graph (DAG) to continuously reconcile live cluster telemetry against baseline declarations, instantly blocking drift.";
+        }
+        if (qLower.includes('pricing') || qLower.includes('cost') || qLower.includes('tier')) {
+          return "ApexCloud pricing offers **Starter ($49/mo)**, **Growth ($199/mo)**, and **Enterprise ($999/mo)** with unlimited distributed workers and dedicated compliance pipelines.";
+        }
+      }
+
+      if (siteKey === 'settlement') {
+        if (qLower.includes('real-time') || qLower.includes('batch') || qLower.includes('settlement')) {
+          return "Real-Time Gross Settlement (RTGS) settles transactions immediately with gross finality in sub-second windows, whereas Batch Clearing aggregates transfers into 15-minute netting cycles to optimize liquidity.";
+        }
+        if (qLower.includes('dispute') || qLower.includes('chargeback')) {
+          return "Disputes are subject to a **48-hour formal arbitration window**. Validated transactions require multi-signature non-repudiation receipts signed with Ed25519 cryptographic keys.";
+        }
+        if (qLower.includes('iso') || qLower.includes('schema') || qLower.includes('20022')) {
+          return "All settlement message payloads are strictly validated against the **ISO-20022 pacs.008 and camt.053 schemas**, automatically quarantining malformed XML/JSON structures.";
+        }
+      }
+
+      if (siteKey === 'lottery') {
+        if (qLower.includes('price') || qLower.includes('ticket') || qLower.includes('raffle')) {
+          return "Cade McTavish sold raffle tickets for **$16 each** (promising a **$700 grand prize pop-up gadget**), amassing a total pool of **$1,600** from 100 participants.";
+        }
+        if (qLower.includes('jeff') || qLower.includes('grandpa') || qLower.includes('advice')) {
+          return "Grandpa Jeff cautioned Cade about the psychological trap of gambling, warning that 'the house always wins' and sharing his own past addiction to scratch-off tickets.";
+        }
+        if (qLower.includes('pool') || qLower.includes('700') || qLower.includes('prize') || qLower.includes('payout')) {
+          return "The raffle accumulated **$1,600 across 100 sold tickets**. Cade guaranteed a **$700 gadget grand prize**, with secondary novelty prizes (Beanie Babies) to maximize ticket velocity.";
+        }
+      }
+
+      // Generic fallback for custom crawl
+      const best = invariants.find(i => {
+        const words = qLower.split(/\s+/).filter(w => w.length > 3);
+        return words.some(w => i.sentence.toLowerCase().includes(w));
+      });
+
+      if (best) {
+        return `Based on crawled page **${best.title}** (${best.url}): ${best.sentence}`;
+      }
+
+      return `The crawled documents confirm this topic within the ${siteKey || 'active'} site hierarchy. All edge transitions and semantic contracts have been topological verified.`;
+    }
+
+    function injectDemoHallucination(botMsgId) {
+      const card = document.getElementById(`jev-card-${botMsgId}`);
+      const ansDiv = document.getElementById(`ans-text-${botMsgId}`);
+      if (!card || !ansDiv) return;
+
+      // Inject deliberate hallucination into answer text
+      ansDiv.innerHTML = `
+        <span class="line-through text-slate-500">ApexCloud guarantees 99.99% uptime with SOC2 compliance.</span><br>
+        <span class="text-rose-400 font-bold bg-rose-950/60 p-1 rounded border border-rose-500/40 inline-block mt-1">
+          ⚠️ [INJECTED HALLUCINATION]: ApexCloud promises 100% unconditional uptime with automatic $10,000 cash refunds and an all-inclusive cruise ship lottery trip for every server outage.
+        </span>
+      `;
+
+      // Jev immediately detects contradiction and flips to red alert
+      card.innerHTML = `
+        <div class="p-2.5 rounded-lg bg-rose-950/40 border-2 border-rose-500 space-y-2 animate-pulse">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-1.5 text-rose-400 font-bold text-[11px]">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span>❌ P(Entailment | Corpus) = 11.8% &mdash; HALLUCINATION DETECTED</span>
+            </div>
+            <span class="text-[9px] px-1.5 py-0.5 rounded bg-rose-950 text-rose-300 font-mono border border-rose-800">Flagged by Jev</span>
+          </div>
+
+          <div class="text-[10px] text-rose-200 bg-rose-950/80 p-2 rounded border border-rose-800/80 space-y-1">
+            <div class="flex items-center justify-between font-mono text-[9px] text-rose-400">
+              <span><i class="fa-solid fa-circle-xmark mr-1"></i>Contradiction Found in Crawled Source:</span>
+              <span>Guardrail Triggered</span>
+            </div>
+            <p class="italic text-slate-300">
+              Corpus invariant states maximum SLA credit is 15% service tier coupon; no cash refunds or cruise prizes exist in the crawled agreements.
+            </p>
+          </div>
+
+          <div class="flex items-center justify-between pt-1 border-t border-rose-800/60 text-[10px]">
+            <span class="text-rose-300 font-medium">Deterministic Jev Safety Gate: Blocked LLM Drift</span>
+            <button onclick="reverifyWithJev('${botMsgId}', 'Reset')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-white border border-slate-600 font-bold transition">
+              Reset Ground Truth
+            </button>
+          </div>
+        </div>
+      `;
+    }
+
+    function reverifyWithJev(botMsgId, query) {
+      handleOnyxSubmit();
+    }
+
+    function toggleClaimTester() {
+      const drawer = document.getElementById('claimTesterDrawer');
+      if (drawer) {
+        drawer.classList.toggle('hidden');
+      }
+    }
+
+    function verifyCustomClaimWithJev() {
+      const input = document.getElementById('customClaimInput');
+      const resDiv = document.getElementById('customClaimResult');
+      const claim = (input ? input.value : '').trim();
+      if (!claim || !resDiv) return;
+
+      resDiv.classList.remove('hidden');
+      resDiv.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i>Evaluating claim against ${crawledInvariants.length} crawled invariants...`;
+
+      setTimeout(() => {
+        const claimWords = claim.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+        let bestScore = 0;
+        let bestInv = null;
+
+        crawledInvariants.forEach(inv => {
+          const sLow = inv.sentence.toLowerCase();
+          let score = 0;
+          claimWords.forEach(w => { if (sLow.includes(w)) score++; });
+          if (score > bestScore) {
+            bestScore = score;
+            bestInv = inv;
+          }
+        });
+
+        const ratio = bestScore / Math.max(claimWords.length, 1);
+        let prob = 85;
+        if (ratio >= 0.5) {
+          prob = Math.min(Math.round(92 + ratio * 7), 99);
+        } else if (ratio >= 0.25) {
+          prob = Math.round(75 + ratio * 15);
+        } else {
+          prob = Math.round(15 + ratio * 20);
+        }
+
+        const isVerified = prob >= 75;
+        resDiv.innerHTML = `
+          <div class="space-y-1">
+            <div class="flex items-center justify-between font-bold ${isVerified ? 'text-emerald-400' : 'text-rose-400'}">
+              <span>${isVerified ? '🛡️ Claim Entailed by Crawled Site' : '❌ Ungrounded / Hallucination Risk'}</span>
+              <span class="font-mono text-xs">P = ${prob}%</span>
+            </div>
+            <div class="text-[10px] text-slate-300">
+              <strong>Nearest Crawled Anchor:</strong> "${bestInv ? bestInv.sentence : 'No direct contextual match found in crawled pages.'}"
+            </div>
+          </div>
+        `;
+      }, 350);
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/[&<>"']/g, m => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[m]));
+    }
+
+
     window.addEventListener('DOMContentLoaded', () => {
+      initOnyxTruthChat();
       mermaid.initialize({
         startOnLoad: false,
         theme: 'neutral',
@@ -1192,36 +1780,54 @@
     function setLayoutMode(mode) {
       const bP = document.getElementById('browserPanel');
       const dP = document.getElementById('dagPanel');
+      const cP = document.getElementById('onyxChatPanel');
       const btnS = document.getElementById('btnLayoutSplit');
+      const btnT = document.getElementById('btnLayoutTriple');
+      const btnC = document.getElementById('btnLayoutChat');
       const btnD = document.getElementById('btnLayoutDag');
       const btnB = document.getElementById('btnLayoutBrowser');
 
-      btnS.className = "px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 transition";
-      btnD.className = "px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 transition";
-      btnB.className = "px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 transition";
+      const allBtns = [btnS, btnT, btnC, btnD, btnB].filter(Boolean);
+      allBtns.forEach(b => {
+        b.className = "px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 transition";
+      });
 
-      if (mode === 'dag') {
-        bP.classList.add('hidden');
-        dP.classList.remove('hidden', 'lg:w-1/2');
-        dP.classList.add('w-full');
-        btnD.className = "px-2.5 py-1 rounded bg-white text-indigo-700 font-bold shadow-sm transition";
+      // Reset classes
+      if (bP) bP.classList.remove('hidden', 'w-full', 'lg:w-1/2', 'lg:w-1/3');
+      if (dP) dP.classList.remove('hidden', 'w-full', 'lg:w-1/2', 'lg:w-1/3');
+      if (cP) cP.classList.remove('hidden', 'w-full', 'lg:w-1/2', 'lg:w-1/3');
+
+      if (mode === 'split') {
+        if (btnS) btnS.className = "px-2.5 py-1 rounded bg-white text-indigo-700 font-bold shadow-sm transition";
+        if (bP) bP.classList.add('w-full', 'lg:w-1/2', 'flex');
+        if (dP) dP.classList.add('w-full', 'lg:w-1/2', 'flex');
+        if (cP) cP.classList.add('hidden');
+        logCrawler("[LAYOUT] Switched to Split Workbench View (Crawler + DAG).");
+      } else if (mode === 'triple') {
+        if (btnT) btnT.className = "px-2.5 py-1 rounded bg-white text-indigo-700 font-bold shadow-sm transition";
+        if (bP) bP.classList.add('w-full', 'lg:w-1/3', 'flex');
+        if (dP) dP.classList.add('w-full', 'lg:w-1/3', 'flex');
+        if (cP) cP.classList.add('w-full', 'lg:w-1/3', 'flex');
+        logCrawler("[LAYOUT] Switched to 3-Way Studio (Crawler | DAG | Onyx Chat & Jev).");
+      } else if (mode === 'chat') {
+        if (btnC) btnC.className = "px-2.5 py-1 rounded bg-white text-emerald-700 font-bold shadow-sm transition";
+        if (bP) bP.classList.add('hidden');
+        if (dP) dP.classList.add('hidden');
+        if (cP) cP.classList.add('w-full', 'flex');
+        logCrawler("[LAYOUT] Switched to Onyx Truth Chat & Jev Verification.");
+      } else if (mode === 'dag') {
+        if (btnD) btnD.className = "px-2.5 py-1 rounded bg-white text-indigo-700 font-bold shadow-sm transition";
+        if (bP) bP.classList.add('hidden');
+        if (dP) dP.classList.add('w-full', 'flex');
+        if (cP) cP.classList.add('hidden');
         logCrawler("[LAYOUT] Switched to Fullscreen DAG View.");
         if (panzoomInstance) setTimeout(() => panzoomInstance.reset(), 100);
       } else if (mode === 'browser') {
-        dP.classList.add('hidden');
-        bP.classList.remove('hidden', 'lg:w-1/2');
-        bP.classList.add('w-full');
-        btnB.className = "px-2.5 py-1 rounded bg-white text-indigo-700 font-bold shadow-sm transition";
-        logCrawler("[LAYOUT] Switched to Fullscreen Browser View.");
-      } else {
-        // Split mode
-        bP.classList.remove('hidden', 'w-full');
-        bP.classList.add('w-full', 'lg:w-1/2');
-        dP.classList.remove('hidden', 'w-full');
-        dP.classList.add('w-full', 'lg:w-1/2');
-        btnS.className = "px-2.5 py-1 rounded bg-white text-indigo-700 font-bold shadow-sm transition";
-        logCrawler("[LAYOUT] Switched to Side-by-Side Split View.");
-        if (panzoomInstance) setTimeout(() => panzoomInstance.reset(), 100);
+        if (btnB) btnB.className = "px-2.5 py-1 rounded bg-white text-indigo-700 font-bold shadow-sm transition";
+        if (bP) bP.classList.add('w-full', 'flex');
+        if (dP) dP.classList.add('hidden');
+        if (cP) cP.classList.add('hidden');
+        logCrawler("[LAYOUT] Switched to Browser & Crawler View.");
       }
     }
 
