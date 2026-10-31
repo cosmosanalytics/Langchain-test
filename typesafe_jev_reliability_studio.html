@@ -119,7 +119,7 @@
         <button onclick="openApiModal()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold rounded-lg shadow transition flex items-center space-x-1.5">
           <i class="fa-solid fa-key text-amber-400"></i>
           <span class="hidden md:inline">API Keys:</span>
-          <span id="apiKeyStatusBadge" class="font-mono text-emerald-400">Jev Active</span>
+          <span id="apiKeyStatusBadge" class="font-mono text-emerald-400">OpenJev (Fallback)</span>
         </button>
 
       </div>
@@ -320,7 +320,7 @@
 
           <div class="p-4 bg-emerald-50/60 border border-emerald-300 rounded-xl space-y-2">
             <div class="flex items-center justify-between text-xs font-bold text-emerald-900">
-              <span><i class="fa-solid fa-shield-halved mr-1"></i> TypeSafe Jev Decision Engine</span>
+              <span><i class="fa-solid fa-shield-halved mr-1 text-emerald-600"></i> <span id="playEngineLabel">OpenJev (Deterministic Local Fallback)</span></span>
               <span id="playJevBadge" class="px-2 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 border border-emerald-300 font-mono">P = 0.994 (TRUE)</span>
             </div>
             
@@ -760,10 +760,10 @@
         <div class="space-y-1.5">
           <label class="font-bold text-slate-700 flex items-center justify-between">
             <span>TypeSafe AI (Jev Decision Engine) Key:</span>
-            <span class="text-[10px] text-emerald-600 font-semibold">Optional • Simulated if empty</span>
+            <span class="text-[10px] text-emerald-600 font-semibold">OpenJev Fallback Active if Empty</span>
           </label>
           <input type="password" id="inputJevKey" placeholder="ts_..." class="w-full bg-slate-50 border border-slate-200 rounded-lg p-2.5 font-mono focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-          <p class="text-[11px] text-slate-500">Connects directly to TypeSafe AI's official System One Jev model endpoint.</p>
+          <p class="text-[11px] text-slate-500">Connects directly to TypeSafe AI's official System One endpoint. If omitted, the app automatically runs <b>OpenJev</b> (100% in-browser deterministic fallback).</p>
         </div>
 
         <!-- Groq LPU API Key Input -->
@@ -848,13 +848,13 @@
       
       const badge = document.getElementById('apiKeyStatusBadge');
       if (customJevKey) {
-        badge.textContent = "Jev Connected (Cloud)";
+        badge.textContent = "TypeSafe Jev (Cloud)";
         badge.className = "font-mono text-emerald-400";
-        logTerminal(`[AUTH] Custom TypeSafe AI Key saved: ${customJevKey.slice(0, 6)}...`);
+        logTerminal(`[AUTH] Custom TypeSafe AI Key saved: ${customJevKey.slice(0, 6)}... (Cloud System One API)`);
       } else {
-        badge.textContent = "Jev Engine (Local/Sim)";
-        badge.className = "font-mono text-indigo-400";
-        logTerminal(`[AUTH] Operating in high-precision calibrated Jev Simulation mode.`);
+        badge.textContent = "OpenJev (Fallback Active)";
+        badge.className = "font-mono text-emerald-400";
+        logTerminal(`[AUTH] No TypeSafe key provided → OpenJev activated as automatic local fallback.`);
       }
       closeApiModal();
     }
@@ -994,6 +994,8 @@
         }
       }
 
+      const activeEngineName = customJevKey ? "TypeSafe AI Jev (Cloud API)" : "OpenJev (Deterministic Local Fallback)";
+      document.getElementById('playEngineLabel').textContent = activeEngineName;
       // High-precision calibrated evaluator
       const latency = Math.round(performance.now() - startTime + (100 + Math.random() * 25));
       document.getElementById('telemetryLatency').textContent = `${latency}ms`;
@@ -1290,6 +1292,14 @@
     // Initialize all use cases on page load
     window.addEventListener('DOMContentLoaded', () => {
       checkWebGpu();
+      const badge = document.getElementById('apiKeyStatusBadge');
+      if (customJevKey) {
+        badge.textContent = "TypeSafe Jev (Cloud)";
+        logTerminal(`[AUTH] TypeSafe AI Key detected: ${customJevKey.slice(0, 6)}... (Cloud API Active)`);
+      } else {
+        badge.textContent = "OpenJev (Fallback Active)";
+        logTerminal("[AUTH] No TypeSafe API key provided → OpenJev active as 100% in-browser fallback.");
+      }
       runCase1();
       runCase2();
       runCase3();
