@@ -1680,7 +1680,7 @@ The chatbot will strictly tether all answers and reasoning to this context witho
       let invariantsPromptSection = '';
       if (currentInvariants && currentInvariants.cascadeTiers && currentInvariants.cascadeTiers.length > 0) {
         invariantsPromptSection = `CONSTITUTIONAL GROUND-TRUTH INVARIANTS (ENFORCE WITHOUT EXCEPTION):\n` +
-          currentInvariants.cascadeTiers.map(t => `[${t.tier}] ${t.desc}\n` + t.rules.map(r => `  * ${r}`).join('\n')).join('\n') + '\n\n';
+          currentInvariants.cascadeTiers.map(t => `[${t.tier}] ${t.desc}\n` + (t.rules || []).map(r => `  * ${typeof r === 'string' ? r : (r && r.text ? r.text : '')}`).join('\n')).join('\n') + '\n\n';
       }
 
       // Construct Grounding System Prompt with Invariants
@@ -1806,7 +1806,8 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
         // A. University / College / Campus query -> Check Tier 0
         if (qLower.includes('university') || qLower.includes('college') || qLower.includes('campus') || (qLower.includes('where') && qLower.includes('attend'))) {
           for (const t of window.currentInvariants.cascadeTiers) {
-            for (const r of t.rules) {
+            for (const rItem of (t.rules || [])) {
+              const r = typeof rItem === 'string' ? rItem : (rItem && rItem.text ? rItem.text : '');
               const m = r.match(/\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:University|College|Institute|School|Academy))\b/);
               if (m) return `**${m[1]}**`;
             }
@@ -1816,7 +1817,8 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
         // B. Grandpa / Relative Name query -> Check Tier 1
         if (qLower.includes('grandpa') || qLower.includes('grandfather')) {
           for (const t of window.currentInvariants.cascadeTiers) {
-            for (const r of t.rules) {
+            for (const rItem of (t.rules || [])) {
+              const r = typeof rItem === 'string' ? rItem : (rItem && rItem.text ? rItem.text : '');
               const m = r.match(/\bgrandpa\s+([A-Z][a-z]+)\b/i);
               if (m) return `**${m[1]}** (Grandpa ${m[1]})`;
             }
@@ -1826,7 +1828,8 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
         // C. Money / Quantities query -> Check Tier 3
         if (qLower.includes('how much') || qLower.includes('profit') || qLower.includes('pool') || qLower.includes('total')) {
           for (const t of window.currentInvariants.cascadeTiers) {
-            for (const r of t.rules) {
+            for (const rItem of (t.rules || [])) {
+              const r = typeof rItem === 'string' ? rItem : (rItem && rItem.text ? rItem.text : '');
               const m1 = r.match(/\b(\$[\d,]+)\b/);
               if (m1) return `**${m1[1]}**`;
             }
@@ -2037,7 +2040,8 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
       const tiers = (invariants && invariants.cascadeTiers) || (window.currentInvariants && window.currentInvariants.cascadeTiers);
       if (tiers && tiers.length > 0) {
         tiers.forEach(t => {
-          t.rules.forEach(r => {
+          (t.rules || []).forEach(rItem => {
+            const r = typeof rItem === 'string' ? rItem : (rItem && rItem.text ? rItem.text : String(rItem || ''));
             const rLow = r.toLowerCase();
             let score = 0;
             words.forEach(w => {
@@ -2046,7 +2050,7 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
             if (score > bestTierScore) {
               bestTierScore = score;
               matchedTier = t.tier;
-              matchedRule = r;
+              matchedRule = (typeof rItem === 'object' && rItem && rItem.anchor) ? rItem.anchor : r;
             }
           });
         });
@@ -2540,14 +2544,19 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
         const t4_1 = selectBestSentence(act4, [/abort/i, /halt/i, /rollback/i, /tripwire/i, /dead-end/i], null, act4[2] || "Circuit breaker: halt operations on anomaly detection.");
         const t4_2 = selectBestSentence(act5, [/verified/i, /audit/i, /logged/i, /success/i, /concluded/i], null, act5[act5.length - 1] || "Verification: state committed with cryptographic audit trail.");
 
+        const evalJev = (ruleTxt) => {
+          const res = computeJevEntailmentProbability(ruleTxt, sentences);
+          return { text: ruleTxt, prob: res.prob, anchor: res.anchor };
+        };
+
         cascadeTiers = [
           {
             tier: 'Tier 0: Root Invariants',
             desc: 'Phase 1: Constitutional System Boundary & Strict Scope',
             badge: 'tier-0',
             rules: [
-              `SYSTEM INVARIANT: ${t0_1}`,
-              `STRICT NEGATION: ${t0_2}`
+              evalJev(`SYSTEM INVARIANT: ${t0_1}`),
+              evalJev(`STRICT NEGATION: ${t0_2}`)
             ]
           },
           {
@@ -2555,8 +2564,8 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
             desc: 'Phase 2: Authentication & Interface Preconditions',
             badge: 'tier-1',
             rules: [
-              `INTERFACE DIRECTIVE: ${t1_1}`,
-              `PRECONDITION GATE: ${t1_2}`
+              evalJev(`INTERFACE DIRECTIVE: ${t1_1}`),
+              evalJev(`PRECONDITION GATE: ${t1_2}`)
             ]
           },
           {
@@ -2564,8 +2573,8 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
             desc: 'Phase 3: Core Pipeline & State Transformation Rules',
             badge: 'tier-2',
             rules: [
-              `CONSISTENCY RULE: ${t2_1}`,
-              `ATOMIC EXECUTION: ${t2_2}`
+              evalJev(`CONSISTENCY RULE: ${t2_1}`),
+              evalJev(`ATOMIC EXECUTION: ${t2_2}`)
             ]
           },
           {
@@ -2573,8 +2582,8 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
             desc: 'Phase 4: Explicit Tolerances, Budgets & Threshold Limits',
             badge: 'tier-3',
             rules: [
-              `THRESHOLD CEILING: ${t3_1}`,
-              `SERVICE BOUND: ${t3_2}`
+              evalJev(`THRESHOLD CEILING: ${t3_1}`),
+              evalJev(`SERVICE BOUND: ${t3_2}`)
             ]
           },
           {
@@ -2582,8 +2591,8 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
             desc: 'Phase 5: Automated Rollback Tripwires & Audit Conformance',
             badge: 'tier-4',
             rules: [
-              `FAILOVER TRIPWIRE: ${t4_1}`,
-              `AUDIT VERIFICATION: ${t4_2}`
+              evalJev(`FAILOVER TRIPWIRE: ${t4_1}`),
+              evalJev(`AUDIT VERIFICATION: ${t4_2}`)
             ]
           }
         ];
@@ -2778,7 +2787,10 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
       let txt = `POLICY INVARIANTS: ${currentInvariants.title}\n==============================\n\n`;
       currentInvariants.cascadeTiers.forEach(t => {
         txt += `[${t.tier}] - ${t.desc}\n`;
-        t.rules.forEach(r => { txt += `  * ${r}\n`; });
+        (t.rules || []).forEach(r => {
+          const rText = typeof r === 'string' ? r : (r && r.text ? r.text : String(r || ''));
+          txt += `  * ${rText}\n`;
+        });
         txt += '\n';
       });
       navigator.clipboard.writeText(txt).then(() => {
