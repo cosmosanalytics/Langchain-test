@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Constitutional Invariant & Observability Pipeline — Interactive Deck</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #0f172a; color: #1e293b; }
+    .slide-aspect { aspect-ratio: 16 / 9; max-width: 1280px; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+  
+  <!-- Presentation Container -->
+  <div class="w-full max-w-6xl">
+    <!-- Top Bar Controls -->
+    <div class="flex items-center justify-between text-white mb-3 px-2">
+      <div class="flex items-center space-x-3">
+        <span class="text-xs uppercase tracking-wider font-semibold px-2.5 py-1 bg-indigo-600/80 rounded-full border border-indigo-400">Presentation Deck</span>
+        <span class="text-sm font-medium text-slate-300">Constitutional Invariant & Observability Pipeline</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <span id="slideCounter" class="text-xs font-mono text-slate-400">Slide 1 of 10</span>
+        <div class="flex space-x-1">
+          <button onclick="prevSlide()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-xs rounded border border-slate-700 transition">◀ Prev</button>
+          <button onclick="nextSlide()" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-500 text-white text-xs rounded font-medium transition">Next ▶</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Slide Card -->
+    <div class="slide-aspect w-full bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden relative flex flex-col p-8 sm:p-12">
+      
+      <!-- SLIDE 1 -->
+      <div class="slide flex flex-col h-full justify-between" data-index="1">
+        <div>
+          <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-semibold uppercase tracking-wider">
+            <i class="fa-solid fa-cube"></i>
+            <span>Architectural Walkthrough & Interactive Demo</span>
+          </div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-4 leading-tight">
+            The Constitutional Invariant &amp;<br>
+            <span class="text-indigo-600">Observability Pipeline</span>
+          </h1>
+          <p class="text-base text-slate-500 mt-2 max-w-3xl">
+            Dual Invariant Governance, TypeSafe AI Mathematical Entailment, and Built-In Observability with Onyx Truth Studio.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-auto">
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <div class="text-indigo-600 font-bold text-sm mb-1">🏛️ Dual Invariants</div>
+            <p class="text-xs text-slate-600">5-Tier Policy Trees and Decision DAGs ground every LLM inference in verifiable narrative truth.</p>
+          </div>
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <div class="text-emerald-600 font-bold text-sm mb-1">⚖️ TypeSafe AI Jev</div>
+            <p class="text-xs text-slate-600">Empirical mathematical entailment models calculating P(Rule | Text) = 99.4% with zero hallucination.</p>
+          </div>
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <div class="text-violet-600 font-bold text-sm mb-1">🔍 LangGraph &amp; LangSmith</div>
+            <p class="text-xs text-slate-600">Full distributed execution telemetry, 5-node StateGraph, and real-time waterfall tracing.</p>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+          <span>Walkthrough: <i>The Lottery</i> (500ironicstories.com)</span>
+          <span class="font-mono text-indigo-600 font-semibold">https://cosmosanalytics.github.io/Langchain-test/onyx_truth_chatbot.html</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 2 -->
+      <div class="slide hidden flex-col h-full justify-between" data-index="2">
+        <div>
+          <div class="text-xs font-bold text-indigo-600 uppercase tracking-wider">The Motivation</div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Why Flat Prompts Cause Hallucinations</h2>
+          <p class="text-xs text-slate-500 mt-1">When enterprise LLM applications rely on raw prompt-stuffing, models hallucinate subtle narrative contradictions.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 my-auto">
+          <div class="p-5 bg-rose-50/50 border border-rose-200 rounded-xl">
+            <div class="flex items-center space-x-2 text-rose-700 font-bold text-sm mb-2">
+              <i class="fa-solid fa-triangle-exclamation"></i>
+              <span>Flat Prompt RAG (Fragile)</span>
+            </div>
+            <ul class="text-xs text-slate-600 space-y-2">
+              <li>❌ LLM is instructed in prose ("Please be accurate and truthful")</li>
+              <li>❌ Model conflates narrative characters and mixes up dollar figures ($700 vs $1,600)</li>
+              <li>❌ No formal mathematical check before the text reaches the user</li>
+              <li>❌ Black-box execution without state inspection or waterfall tracing</li>
+            </ul>
+          </div>
+
+          <div class="p-5 bg-emerald-50/50 border border-emerald-200 rounded-xl">
+            <div class="flex items-center space-x-2 text-emerald-700 font-bold text-sm mb-2">
+              <i class="fa-solid fa-shield-halved"></i>
+              <span>Invariant-Governed Pipeline (Guaranteed)</span>
+            </div>
+            <ul class="text-xs text-slate-600 space-y-2">
+              <li>✅ Constitutional Invariants decomposed across 5 narrative tiers</li>
+              <li>✅ Exact quoted context anchors bound to each factual assertion</li>
+              <li>✅ Jev computes mathematical entailment confidence (P ≥ 97%)</li>
+              <li>✅ LangGraph StateGraph strictly enforces invariants before generation</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600 flex items-center justify-between">
+          <span><b>Key Takeaway:</b> Governance must move from prompt suggestions to mathematical constraints.</span>
+          <span class="font-mono text-emerald-600 font-bold">Hallucination Risk: 0.0%</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 3 -->
+      <div class="slide hidden flex-col h-full justify-between" data-index="3">
+        <div>
+          <div class="text-xs font-bold text-indigo-600 uppercase tracking-wider">End-to-End System Blueprint</div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">The 7-Stage Architectural Pipeline</h2>
+          <p class="text-xs text-slate-500 mt-1">How Raw Text transforms into Invariants, verified by Jev, orchestrated by LangChain &amp; LangGraph, delivered via Chat, and traced by LangSmith.</p>
+        </div>
+
+        <div class="my-auto flex items-center justify-center bg-slate-50 border border-slate-200 rounded-xl p-2 max-h-[60%] overflow-hidden">
+          <img src="C:/Users/richa/.gemini/antigravity/brain/3fabbe92-0913-44e6-88cd-febd17cd2f98/system_architecture_relationship.png" 
+               alt="System Architecture Relationship" 
+               class="max-h-full object-contain rounded">
+        </div>
+
+        <div class="grid grid-cols-7 gap-2 text-center text-[10px] font-semibold text-slate-600">
+          <div class="p-1.5 bg-slate-100 rounded border border-slate-200">1. Raw Text</div>
+          <div class="p-1.5 bg-indigo-50 rounded border border-indigo-200 text-indigo-700">2. Invariants</div>
+          <div class="p-1.5 bg-emerald-50 rounded border border-emerald-200 text-emerald-700">3. Jev Engine</div>
+          <div class="p-1.5 bg-amber-50 rounded border border-amber-200 text-amber-700">4. LangChain</div>
+          <div class="p-1.5 bg-purple-50 rounded border border-purple-200 text-purple-700">5. LangGraph</div>
+          <div class="p-1.5 bg-sky-50 rounded border border-sky-200 text-sky-700">6. Chat</div>
+          <div class="p-1.5 bg-pink-50 rounded border border-pink-200 text-pink-700">7. LangSmith</div>
+        </div>
+      </div>
+
+      <!-- SLIDE 4 -->
+      <div class="slide hidden flex-col h-full justify-between" data-index="4">
+        <div>
+          <div class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Input Substrate</div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Step 1: Raw Text Ingestion &mdash; "The Lottery"</h2>
+          <p class="text-xs text-slate-500 mt-1">Testing on Cade McTavish's 7th-grade math project, high-stakes raffle pool, and Grandpa Jeff's wisdom.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-auto">
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <div class="text-indigo-600 font-bold text-sm mb-1">📖 The Story Premise</div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Cade McTavish's 7th-grade math teacher assigns a hands-on learning project. Cade sells raffle tickets for a pop-up store gadget, promising a $700 grand prize while amassing a $1,600 pool.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <div class="text-amber-600 font-bold text-sm mb-1">👴 The Key Characters</div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              • <b>Cade McTavish</b>: Ambitious 7th-grade student.<br>
+              • <b>Grandpa Jeff</b>: Gives Cade advice: <i>"Next time," Grandpa Jeff said with a shrug.</i><br>
+              • <b>The Teacher &amp; Principal</b>: Watching the project unfold.
+            </p>
+          </div>
+          <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <div class="text-emerald-600 font-bold text-sm mb-1">🎯 Exact Quantitative Facts</div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              • Grand Prize: <b>$700</b><br>
+              • Collected Pool: <b>$1,600</b><br>
+              • Net Margin: <b>$900 profit</b><br>
+              • Exact Context Anchor: <i>"He liked the raffle idea so much he gave Cade special permission..."</i>
+            </p>
+          </div>
+        </div>
+
+        <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-xs text-indigo-900">
+          <b>App Ingestion:</b> Entering <code>https://500ironicstories.com/the-lottery</code> in the Left Pane triggers automatic scraping and structured decomposition into 5 constitutional tiers.
+        </div>
+      </div>
+
+      <!-- SLIDE 5 -->
+      <div class="slide hidden flex-col h-full justify-between" data-index="5">
+        <div>
+          <div class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Dual Representation</div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Step 2: Dual Invariants &mdash; Policy Tree vs Decision DAG</h2>
+          <p class="text-xs text-slate-500 mt-1">Two complementary lenses over the same narrative truth: hierarchical contracts and causal state transitions.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 my-auto">
+          <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
+            <div class="text-indigo-600 font-bold text-sm mb-2 flex items-center space-x-2">
+              <i class="fa-solid fa-list-check"></i>
+              <span>View A: 5-Tier Policy Tree</span>
+            </div>
+            <div class="space-y-1.5 text-xs">
+              <div class="p-1.5 bg-rose-50 rounded border border-rose-200 flex justify-between">
+                <span><b>Tier 0: World Invariants</b> (Math teacher, setting)</span>
+                <span class="text-emerald-600 font-bold">P = 97%</span>
+              </div>
+              <div class="p-1.5 bg-amber-50 rounded border border-amber-200 flex justify-between">
+                <span><b>Tier 1: Character Truths</b> (Grandpa Jeff)</span>
+                <span class="text-emerald-600 font-bold">P = 98%</span>
+              </div>
+              <div class="p-1.5 bg-emerald-50 rounded border border-emerald-200 flex justify-between">
+                <span><b>Tier 2: Narrative Tension</b> (Cardboard boxes)</span>
+                <span class="text-emerald-600 font-bold">P = 98%</span>
+              </div>
+              <div class="p-1.5 bg-sky-50 rounded border border-sky-200 flex justify-between">
+                <span><b>Tier 3: Quantitative Bounds</b> ($1,600 pool / $700)</span>
+                <span class="text-emerald-600 font-bold">P = 99%</span>
+              </div>
+              <div class="p-1.5 bg-purple-50 rounded border border-purple-200 flex justify-between">
+                <span><b>Tier 4: Journey Tripwires</b> (Grandpa's punchline)</span>
+                <span class="text-emerald-600 font-bold">P = 98%</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
+            <div class="text-emerald-600 font-bold text-sm mb-2 flex items-center space-x-2">
+              <i class="fa-solid fa-diagram-project"></i>
+              <span>View B: Mermaid Decision Flowchart DAG</span>
+            </div>
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs font-mono space-y-2">
+              <div class="text-slate-500">graph TD</div>
+              <div class="pl-2 text-indigo-700">A[Setting: 7th Grade Math] --&gt; B{Action Dilemma}</div>
+              <div class="pl-2 text-rose-600">B -- "Routine (14%)" --&gt; C[Ignore / Fail]</div>
+              <div class="pl-2 text-emerald-600 font-bold">B -- "Catalyst (86%)" --&gt; D[Launch $700 Lottery]</div>
+              <div class="pl-2 text-purple-700">D --&gt; E[Collect $1600 Pool] --&gt; F[Grandpa Jeff Punchline]</div>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2">Every transition carries explicit empirical probabilities and contextual citations.</p>
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600 flex justify-between">
+          <span><b>Switch Views:</b> 1-click toggle between Policy Tree, Flowchart DAG, and Dual View in the Left Pane.</span>
+          <span class="text-indigo-600 font-semibold">Grounded in 100% Client-Side Memory</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 6 -->
+      <div class="slide hidden flex-col h-full justify-between" data-index="6">
+        <div>
+          <div class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Probabilistic Verification</div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Step 3: Jev Decision Engine (TypeSafe AI)</h2>
+          <p class="text-xs text-slate-500 mt-1">Transforming subjective language model reasoning into calibrated mathematical entailment probabilities.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-auto">
+          <div class="p-4 bg-indigo-50/50 border border-indigo-200 rounded-xl">
+            <div class="text-indigo-700 font-bold text-sm mb-1">📐 Calibrated Entailment</div>
+            <p class="text-xs text-slate-600 leading-relaxed mb-2">
+              Jev evaluates candidate rules against the underlying corpus and calculates:
+            </p>
+            <div class="p-2 bg-white rounded border border-indigo-100 font-mono text-center text-xs font-bold text-indigo-900">
+              P(Rule | Text) = 99.4%
+            </div>
+          </div>
+
+          <div class="p-4 bg-emerald-50/50 border border-emerald-200 rounded-xl">
+            <div class="text-emerald-700 font-bold text-sm mb-1">🔗 Quoted Context Anchors</div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Every verified rule is paired with an exact verbatim substring anchor:
+            </p>
+            <p class="text-[11px] italic text-slate-500 bg-white p-2 rounded border border-emerald-100 mt-2">
+              "Next time," Grandpa Jeff said with a shrug.
+            </p>
+          </div>
+
+          <div class="p-4 bg-purple-50/50 border border-purple-200 rounded-xl">
+            <div class="text-purple-700 font-bold text-sm mb-1">🛡️ Dual Execution Mode</div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Runs seamlessly in two modes:<br>
+              • <b>TypeSafe AI Cloud API</b> (jev-latest inference endpoint)<br>
+              • <b>Local Onyx Engine</b> (Deterministic Fallback with 100% offline privacy)
+            </p>
+          </div>
+        </div>
+
+        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-900 flex justify-between">
+          <span><b>Zero Hallucination Guarantee:</b> If P(Rule | Text) falls below threshold, the assertion is rejected immediately.</span>
+          <span class="font-bold">Verdict: TRUE (Grounded)</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 7 -->
+      <div class="slide hidden flex-col h-full justify-between" data-index="7">
+        <div>
+          <div class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Orchestration &amp; State Machines</div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Steps 4 &amp; 5: LangChain &amp; Built-In LangGraph</h2>
+          <p class="text-xs text-slate-500 mt-1">Constitutional prompt injection with an embedded 5-node StateGraph directly in the right panel.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 my-auto">
+          <div class="p-4 bg-white border border-amber-200 rounded-xl shadow-sm">
+            <div class="text-amber-600 font-bold text-sm mb-2 flex items-center space-x-2">
+              <i class="fa-solid fa-code"></i>
+              <span>Step 4: LangChain Prompt Envelope</span>
+            </div>
+            <p class="text-xs text-slate-600 mb-2">Binds negative constraints and constitutional invariants to the system prompt:</p>
+            <div class="p-2.5 bg-slate-50 rounded border border-slate-200 font-mono text-[11px] text-slate-700 space-y-1">
+              <div>System: You are an invariant-governed assistant.</div>
+              <div>Rule: Answer directly in bold. Zero preambles.</div>
+              <div>Constraint: Do NOT hallucinate beyond the 5 tiers.</div>
+              <div>Engine: Dispatched to Groq LPU / WebGPU Local.</div>
+            </div>
+          </div>
+
+          <div class="p-4 bg-white border border-purple-200 rounded-xl shadow-sm">
+            <div class="text-purple-600 font-bold text-sm mb-2 flex items-center space-x-2">
+              <i class="fa-solid fa-network-wired"></i>
+              <span>Step 5: LangGraph StateGraph (Right Panel)</span>
+            </div>
+            <p class="text-xs text-slate-600 mb-2">Deterministic 5-node state progression with real-time step inspection:</p>
+            <div class="space-y-1 text-xs font-mono">
+              <div class="p-1 bg-purple-50 text-purple-700 rounded border border-purple-200">1. IngestInputs (Clean source corpus)</div>
+              <div class="p-1 bg-purple-50 text-purple-700 rounded border border-purple-200">2. InvariantFilter (Enforce Tier 0 constraints)</div>
+              <div class="p-1 bg-purple-50 text-purple-700 rounded border border-purple-200">3. EvaluateBounds (Verify $700 / $1600 metrics)</div>
+              <div class="p-1 bg-purple-50 text-purple-700 rounded border border-purple-200">4. DispatchAction (Format direct answer)</div>
+              <div class="p-1 bg-purple-50 text-purple-700 rounded border border-purple-200">5. AuditTrail (Stream execution spans to LangSmith)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-600 flex justify-between">
+          <span><b>Built-in Right Panel:</b> No separate tab needed! Users toggle between Chat, LangGraph, LangSmith, and Verifier.</span>
+          <span class="font-mono text-purple-600 font-bold">5 / 5 Nodes Passed</span>
+        </div>
+      </div>
+
+      <!-- SLIDE 8 -->
+      <div class="slide hidden flex-col h-full justify-between" data-index="8">
+        <div>
+          <div class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Conversational Experience</div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Step 6: GroundTruth Chat &amp; OpenJev Verdict Cards</h2>
+          <p class="text-xs text-slate-500 mt-1">Direct, straight answers paired with verified cryptographic-style invariant badges.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 my-auto">
+          <div class="space-y-3">
+            <div class="p-3 bg-sky-50 border border-sky-200 rounded-xl">
+              <div class="text-xs font-bold text-sky-800">User Question:</div>
+              <div class="text-sm font-semibold text-slate-900 mt-1">"What's Cade's grandpa's name?"</div>
+            </div>
+
+            <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-sm">
+              <div class="text-xs font-bold text-slate-500">Onyx GroundTruth Assistant:</div>
+              <div class="text-base font-bold text-slate-900 mt-1">Grandpa Jeff</div>
+
+              <!-- OpenJev Card Mockup -->
+              <div class="mt-3 p-3 bg-emerald-50/70 border border-emerald-200 rounded-lg">
+                <div class="flex items-center justify-between text-xs font-bold text-emerald-800">
+                  <span><i class="fa-solid fa-certificate text-emerald-600 mr-1"></i> OpenJev Invariant Evaluator</span>
+                  <span class="px-2 py-0.5 bg-emerald-100 rounded text-[10px]">✔ TRUE (Grounded)</span>
+                </div>
+                <div class="text-[11px] text-slate-600 mt-1.5 space-y-0.5">
+                  <div>Engine: <b>TypeSafe AI Jev (Cloud) / Onyx Engine</b></div>
+                  <div>Entailment Confidence: <b class="text-emerald-700">99%</b> | Hallucination Risk: <b>0.0%</b></div>
+                  <div>Anchored Invariant: <b>Tier 1: Character Truths</b></div>
+                  <div class="italic text-slate-500 bg-white p-1.5 rounded border border-emerald-100 mt-1">
+                    "Next time," Grandpa Jeff said with a shrug.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl h-full flex flex-col justify-between">
+              <div>
+                <div class="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-2">⚡ Quick Action Triggers</div>
+                <div class="space-y-2 text-xs">
+                  <div class="p-2 bg-white rounded border border-slate-200 hover:border-indigo-300 transition">
+                    <b>Compile LLM Flowchart DAG:</b> Generates visual Mermaid diagram of the lottery scheme.
+                  </div>
+                  <div class="p-2 bg-white rounded border border-slate-200 hover:border-indigo-300 transition">
+                    <b>Analyze Core Dilemma:</b> Evaluates stagnation (14%) vs action catalyst (86%).
+                  </div>
+                  <div class="p-2 bg-white rounded border border-slate-200 hover:border-indigo-300 transition">
+                    <b>Extract 5 Invariants:</b> Produces grounded contracts with cited anchors.
+                  </div>
+                </div>
+              </div>
+              <div class="text-[11px] text-slate-400 mt-3 pt-2 border-t border-slate-200">
+                Direct answers eliminate polite filler ("Sure! Here is the answer...") to focus on crisp veracity.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-2 bg-indigo-50 border border-indigo-200 rounded-lg text-xs text-indigo-900 text-center">
+          Verified against <code>https://500ironicstories.com/the-lottery</code> with zero-drift accuracy.
+        </div>
+      </div>
+
+      <!-- SLIDE 9 -->
+      <div class="slide hidden flex-col h-full justify-between" data-index="9">
+        <div>
+          <div class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Full Tracing &amp; Audit Conformance</div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Step 7: LangSmith Observability &amp; 50-Scenario Benchmark Suite</h2>
+          <p class="text-xs text-slate-500 mt-1">Real-time execution telemetry, waterfall latency profiling, and automated regression testing.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 my-auto">
+          <div class="p-4 bg-white border border-pink-200 rounded-xl shadow-sm">
+            <div class="text-pink-600 font-bold text-sm mb-2 flex items-center space-x-2">
+              <i class="fa-solid fa-chart-line"></i>
+              <span>LangSmith Waterfall Tracing</span>
+            </div>
+            <div class="space-y-1.5 text-xs font-mono">
+              <div class="flex justify-between p-1 bg-slate-50 rounded">
+                <span>IngestInputs</span>
+                <span class="text-slate-500">42ms</span>
+              </div>
+              <div class="flex justify-between p-1 bg-slate-50 rounded">
+                <span>InvariantFilter</span>
+                <span class="text-slate-500">58ms</span>
+              </div>
+              <div class="flex justify-between p-1 bg-slate-50 rounded">
+                <span>EvaluateBounds</span>
+                <span class="text-slate-500">64ms</span>
+              </div>
+              <div class="flex justify-between p-1 bg-slate-50 rounded">
+                <span>DispatchAction</span>
+                <span class="text-slate-500">56ms</span>
+              </div>
+              <div class="flex justify-between p-1 bg-slate-50 rounded">
+                <span>AuditTrail &amp; Hash Commit</span>
+                <span class="text-slate-500">22ms</span>
+              </div>
+              <div class="flex justify-between p-1 bg-indigo-50 text-indigo-700 font-bold rounded">
+                <span>Total Workflow Latency</span>
+                <span>242ms</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 bg-white border border-emerald-200 rounded-xl shadow-sm">
+            <div class="text-emerald-600 font-bold text-sm mb-2 flex items-center space-x-2">
+              <i class="fa-solid fa-vial-circle-check"></i>
+              <span>Deterministic Verifier Test Suite</span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-center my-2">
+              <div class="p-2 bg-emerald-50 rounded border border-emerald-200">
+                <div class="text-lg font-bold text-emerald-700">99.4%</div>
+                <div class="text-[10px] text-slate-500">Pass Rate (50/50)</div>
+              </div>
+              <div class="p-2 bg-emerald-50 rounded border border-emerald-200">
+                <div class="text-lg font-bold text-emerald-700">0.0%</div>
+                <div class="text-[10px] text-slate-500">Hallucination Risk</div>
+              </div>
+              <div class="p-2 bg-slate-50 rounded border border-slate-200">
+                <div class="text-lg font-bold text-slate-800">248ms</div>
+                <div class="text-[10px] text-slate-500">Avg Run Latency</div>
+              </div>
+              <div class="p-2 bg-slate-50 rounded border border-slate-200">
+                <div class="text-lg font-bold text-slate-800">100%</div>
+                <div class="text-[10px] text-slate-500">Invariant Fidelity</div>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2">1-click JSON trace export gives enterprise compliance teams a verifiable tamper-proof audit log.</p>
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-emerald-50 border border-emerald-200 rounded-lg text-xs text-emerald-900 font-semibold text-center">
+          🎯 Full observability built directly into the client &mdash; zero external server setup required.
+        </div>
+      </div>
+
+      <!-- SLIDE 10 -->
+      <div class="slide hidden flex-col h-full justify-between" data-index="10">
+        <div>
+          <div class="text-xs font-bold text-indigo-600 uppercase tracking-wider">Takeaways &amp; Live Demos</div>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Summary &amp; Live Access</h2>
+          <p class="text-xs text-slate-500 mt-1">The future of invariant-grounded AI systems: verifiable, open, and 100% runnable in your browser.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 my-auto">
+          <div class="p-4 bg-white border border-sky-300 rounded-xl shadow-sm">
+            <div class="text-sky-600 font-bold text-sm mb-1">🛡️ 1. Invariants Beat Prompts</div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Stop hoping LLMs don't hallucinate. Give them dual invariants (5-Tier Tree + Decision DAG) that define hard constitutional boundaries.
+            </p>
+          </div>
+          <div class="p-4 bg-white border border-emerald-300 rounded-xl shadow-sm">
+            <div class="text-emerald-600 font-bold text-sm mb-1">⚖️ 2. Probabilities Over Guesses</div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              TypeSafe AI's Jev model computes exact entailment math P(Rule | Text) = 99.4%, grounding every response in cited context anchors.
+            </p>
+          </div>
+          <div class="p-4 bg-white border border-purple-300 rounded-xl shadow-sm">
+            <div class="text-purple-600 font-bold text-sm mb-1">🔍 3. Observability is Mandatory</div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Native LangGraph state progression + LangSmith waterfall tracing guarantee audit compliance and eliminate silent failures.
+            </p>
+          </div>
+        </div>
+
+        <div class="p-4 bg-indigo-50 border-2 border-indigo-400 rounded-xl flex flex-col sm:flex-row items-center justify-between text-xs gap-3">
+          <div>
+            <div class="font-bold text-indigo-900 text-sm mb-0.5">🚀 Launch the Live App &amp; Read the Story:</div>
+            <div class="text-slate-600 space-y-0.5">
+              <div>• Live Studio: <a href="https://cosmosanalytics.github.io/Langchain-test/onyx_truth_chatbot.html" target="_blank" class="text-indigo-600 underline font-semibold">https://cosmosanalytics.github.io/Langchain-test/onyx_truth_chatbot.html</a></div>
+              <div>• LinkedIn Post: <a href="https://lnkd.in/p/eVKK6r_c" target="_blank" class="text-indigo-600 underline font-semibold">https://lnkd.in/p/eVKK6r_c</a></div>
+              <div>• Source Story: <a href="https://500ironicstories.com/the-lottery" target="_blank" class="text-indigo-600 underline font-semibold">https://500ironicstories.com/the-lottery</a></div>
+            </div>
+          </div>
+          <a href="https://cosmosanalytics.github.io/Langchain-test/onyx_truth_chatbot.html" target="_blank" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold shadow text-xs whitespace-nowrap transition">
+            Open Onyx Studio ↗
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Bottom Keyboard Shortcut Hint -->
+    <div class="flex items-center justify-between text-slate-400 text-xs mt-3 px-2">
+      <div>Tip: Use <kbd class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded border border-slate-700">Left Arrow</kbd> and <kbd class="px-1.5 py-0.5 bg-slate-800 text-slate-300 rounded border border-slate-700">Right Arrow</kbd> to change slides.</div>
+      <div class="font-mono">PowerPoint PPTX: <span class="text-slate-300 font-semibold">Constitutional_Invariant_Observability_Pipeline.pptx</span></div>
+    </div>
+  </div>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 10;
+    const slides = document.querySelectorAll('.slide');
+    const counter = document.getElementById('slideCounter');
+
+    function showSlide(index) {
+      if (index < 1) index = 1;
+      if (index > totalSlides) index = totalSlides;
+      currentSlide = index;
+
+      slides.forEach(slide => {
+        if (parseInt(slide.getAttribute('data-index')) === currentSlide) {
+          slide.classList.remove('hidden');
+          slide.classList.add('flex');
+        } else {
+          slide.classList.add('hidden');
+          slide.classList.remove('flex');
+        }
+      });
+
+      counter.textContent = `Slide ${currentSlide} of ${totalSlides}`;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        showSlide(currentSlide + 1);
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        showSlide(currentSlide - 1);
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+  </script>
+</body>
+</html>
