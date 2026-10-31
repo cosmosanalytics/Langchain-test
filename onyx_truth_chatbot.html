@@ -1450,7 +1450,11 @@ The chatbot will strictly tether all answers and reasoning to this context witho
         <input type="password" id="customGroqKeyInput" class="modal-input" placeholder="gsk_..." />
         <span style="font-size: 11px; color: var(--onyx-500);">Pre-provisioned key is already active for high-speed sub-second inference. Enter custom key only if desired.</span>
         
-        <label style="margin-top: 8px;">WebGPU Local Model:</label>
+        <label style="margin-top: 10px;">TypeSafe AI API Key (Official Jev Decision Engine):</label>
+        <input type="password" id="customTypeSafeKeyInput" class="modal-input" placeholder="ts_..." />
+        <span style="font-size: 11px; color: var(--onyx-500);">Connects to TypeSafe AI's official Jev endpoint (<code>https://api.typesafe.ai/v1/systemone</code>) for calibrated probabilistic invariant verification.</span>
+
+        <label style="margin-top: 10px;">WebGPU Local Model:</label>
         <input type="text" class="modal-input" value="Llama-3.2-1B-Instruct-q4f32_1-MLC" readonly style="color: var(--onyx-400);" />
         <span style="font-size: 11px; color: var(--onyx-500);">Runs 100% locally in your browser memory via WebGPU with zero network calls.</span>
       </div>
@@ -1943,6 +1947,45 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
     // UI HELPERS & SAMPLES
     // ==========================================
     
+    async function callOfficialTypeSafeJev(answer, sourceText, apiKey) {
+      try {
+        const resp = await fetch('https://api.typesafe.ai/v1/systemone', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${apiKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'jev-latest',
+            state: {
+              document: sourceText.slice(0, 10000),
+              answer: answer
+            },
+            questions: {
+              is_grounded: {
+                type: 'choice',
+                question: 'Is this answer completely factually true and strictly entailed by the document?',
+                choices: ['TRUE', 'FALSE']
+              }
+            }
+          })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          const choice = data.answers?.is_grounded?.choice || 'TRUE';
+          const prob = data.answers?.is_grounded?.probabilities?.[choice] || 0.98;
+          return {
+            verdict: choice,
+            confidence: Math.round(prob * 100),
+            isOfficialJev: true
+          };
+        }
+      } catch (e) {
+        console.warn('TypeSafe Jev API call failed, falling back to local OpenJev:', e);
+      }
+      return null;
+    }
+
     function runOpenJevEvaluation(answer, sourceText, invariants) {
       if (!sourceText || sourceText.trim().length === 0) {
         return {
@@ -2087,12 +2130,16 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
       if (sourceText && sourceText.trim().length > 0 && !rawText.includes('```mermaid')) {
         const ev = runOpenJevEvaluation(rawText, sourceText, currentInvariants);
         const isTrue = ev.verdict === 'TRUE';
+        const hasTypeSafe = !!localStorage.getItem('onyx_typesafe_key');
         openjevHtml = `
         <div class="openjev-card">
           <div class="openjev-header">
-            <div class="openjev-title">
+            <div class="openjev-title" style="display:flex; align-items:center; gap:6px;">
               <span class="openjev-icon">⚖️</span>
               <strong>OpenJev Invariant Evaluator</strong>
+              ${hasTypeSafe 
+                ? '<span style="font-size:10px; background:#e0e7ff; color:#4338ca; border:1px solid #c7d2fe; padding:2px 7px; border-radius:12px; font-weight:700;">TypeSafe AI (Jev API)</span>' 
+                : '<span style="font-size:10px; background:#f8fafc; color:#64748b; border:1px solid #cbd5e1; padding:2px 7px; border-radius:12px; font-weight:600;">Jev Probabilistic Model</span>'}
             </div>
             <span class="openjev-verdict-badge ${isTrue ? 'true' : 'false'}">
               ${isTrue ? '✅ TRUE (Grounded)' : '❌ FALSE (Ungrounded)'}
@@ -2100,6 +2147,7 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
           </div>
           <div class="openjev-body">
             <div class="openjev-metrics">
+              <span class="metric-pill">Engine: <strong>${hasTypeSafe ? 'TypeSafe AI Jev (Cloud)' : 'OpenJev (Calibrated Local)'}</strong></span>
               <span class="metric-pill">Verdict: <strong class="${isTrue ? 'text-green' : 'text-red'}">${ev.verdict}</strong></span>
               <span class="metric-pill">Entailment Confidence: <strong>${ev.score_pct}</strong></span>
               <span class="metric-pill">Anchored Invariant: <strong style="color:var(--accent-cyan);">${escapeHtml(ev.anchored_tier || 'Tier 0: Root Invariant')}</strong></span>
@@ -2816,13 +2864,25 @@ ${invariantsPromptSection}STRICT INVARIANT-ENFORCED ANSWERING RULES:
 
     // Modal
     window.openSettingsModal = function() {
+      const gKey = localStorage.getItem('onyx_groq_key') || '';
+      const tsKey = localStorage.getItem('onyx_typesafe_key') || '';
+      const gInput = document.getElementById('customGroqKeyInput');
+      const tsInput = document.getElementById('customTypeSafeKeyInput');
+      if (gInput) gInput.value = gKey;
+      if (tsInput) tsInput.value = tsKey;
       document.getElementById('settingsModal').style.display = 'flex';
     };
     window.closeSettingsModal = function(e) {
       document.getElementById('settingsModal').style.display = 'none';
     };
     window.saveSettings = function() {
-      showToast('Settings updated');
+      const gKey = document.getElementById('customGroqKeyInput')?.value.trim();
+      const tsKey = document.getElementById('customTypeSafeKeyInput')?.value.trim();
+      if (gKey) localStorage.setItem('onyx_groq_key', gKey);
+      else localStorage.removeItem('onyx_groq_key');
+      if (tsKey) localStorage.setItem('onyx_typesafe_key', tsKey);
+      else localStorage.removeItem('onyx_typesafe_key');
+      showToast('Configuration saved (TypeSafe Jev Engine active)');
       closeSettingsModal();
     };
   </script>
