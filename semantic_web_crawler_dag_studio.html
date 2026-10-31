@@ -106,6 +106,19 @@
         <span id="openJevStatusText">OpenJev (Fallback Active)</span>
       </div>
 
+      <!-- Layout View Selector -->
+      <div class="inline-flex p-1 bg-slate-100 rounded-lg border border-slate-200 text-xs font-semibold">
+        <button id="btnLayoutSplit" onclick="setLayoutMode('split')" class="px-2.5 py-1 rounded bg-white text-indigo-700 font-bold shadow-sm transition" title="Side-by-side Workbench">
+          <i class="fa-solid fa-table-columns mr-1"></i><span class="hidden sm:inline">Split</span>
+        </button>
+        <button id="btnLayoutDag" onclick="setLayoutMode('dag')" class="px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 transition" title="Full DAG View">
+          <i class="fa-solid fa-diagram-project mr-1"></i><span class="hidden sm:inline">DAG Only</span>
+        </button>
+        <button id="btnLayoutBrowser" onclick="setLayoutMode('browser')" class="px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 transition" title="Full Browser View">
+          <i class="fa-solid fa-globe mr-1"></i><span class="hidden sm:inline">Browser Only</span>
+        </button>
+      </div>
+
       <!-- Crawl Depth Pill -->
       <div class="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 bg-slate-100 rounded-lg border border-slate-200 text-xs">
         <span class="text-slate-500 font-medium">Depth:</span>
@@ -142,13 +155,13 @@
     </div>
   </header>
 
-  <!-- WORKSPACE SPLIT (SIDE-BY-SIDE) -->
-  <div class="flex-1 flex flex-col lg:flex-row overflow-hidden relative">
+  <!-- WORKSPACE CONTAINER -->
+  <div class="flex-1 flex flex-col lg:flex-row overflow-hidden relative" id="workspaceContainer">
 
     <!-- ========================================================================= -->
-    <!-- LEFT PANEL: MULTI-LEVEL WEB BROWSER & PLAYWRIGHT CRAWLER -->
+    <!-- WEB BROWSER & PLAYWRIGHT CRAWLER -->
     <!-- ========================================================================= -->
-    <div class="w-full lg:w-1/2 flex flex-col border-r border-slate-200 bg-white overflow-hidden">
+    <div id="browserPanel" class="w-full lg:w-1/2 flex flex-col border-r border-slate-200 bg-white overflow-hidden transition-all duration-200">
       
       <!-- Browser Toolbar & URL Input Bar -->
       <div class="p-3 bg-slate-100 border-b border-slate-200 space-y-2 flex-none">
@@ -266,9 +279,9 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- RIGHT PANEL: SEMANTIC DAG (DIRECTED ACYCLIC GRAPH) -->
+    <!-- SEMANTIC DAG (DIRECTED ACYCLIC GRAPH) -->
     <!-- ========================================================================= -->
-    <div class="w-full lg:w-1/2 flex flex-col bg-slate-50 overflow-hidden">
+    <div id="dagPanel" class="w-full lg:w-1/2 flex flex-col bg-slate-50 overflow-hidden transition-all duration-200">
       
       <!-- DAG Toolbar -->
       <div class="p-3 bg-white border-b border-slate-200 flex items-center justify-between flex-none z-10 shadow-sm">
@@ -1176,6 +1189,42 @@
     // =========================================================================
     // ENGINE & SETTINGS HANDLERS
     // =========================================================================
+    function setLayoutMode(mode) {
+      const bP = document.getElementById('browserPanel');
+      const dP = document.getElementById('dagPanel');
+      const btnS = document.getElementById('btnLayoutSplit');
+      const btnD = document.getElementById('btnLayoutDag');
+      const btnB = document.getElementById('btnLayoutBrowser');
+
+      btnS.className = "px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 transition";
+      btnD.className = "px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 transition";
+      btnB.className = "px-2.5 py-1 rounded text-slate-600 hover:text-slate-900 transition";
+
+      if (mode === 'dag') {
+        bP.classList.add('hidden');
+        dP.classList.remove('hidden', 'lg:w-1/2');
+        dP.classList.add('w-full');
+        btnD.className = "px-2.5 py-1 rounded bg-white text-indigo-700 font-bold shadow-sm transition";
+        logCrawler("[LAYOUT] Switched to Fullscreen DAG View.");
+        if (panzoomInstance) setTimeout(() => panzoomInstance.reset(), 100);
+      } else if (mode === 'browser') {
+        dP.classList.add('hidden');
+        bP.classList.remove('hidden', 'lg:w-1/2');
+        bP.classList.add('w-full');
+        btnB.className = "px-2.5 py-1 rounded bg-white text-indigo-700 font-bold shadow-sm transition";
+        logCrawler("[LAYOUT] Switched to Fullscreen Browser View.");
+      } else {
+        // Split mode
+        bP.classList.remove('hidden', 'w-full');
+        bP.classList.add('w-full', 'lg:w-1/2');
+        dP.classList.remove('hidden', 'w-full');
+        dP.classList.add('w-full', 'lg:w-1/2');
+        btnS.className = "px-2.5 py-1 rounded bg-white text-indigo-700 font-bold shadow-sm transition";
+        logCrawler("[LAYOUT] Switched to Side-by-Side Split View.");
+        if (panzoomInstance) setTimeout(() => panzoomInstance.reset(), 100);
+      }
+    }
+
     function switchEngine(engine) {
       currentEngine = engine;
       const bG = document.getElementById('btnGroqEngine');

@@ -120,14 +120,17 @@
           <p class="text-xs text-slate-500 mt-1">How Raw Text transforms into Invariants, verified by Jev, orchestrated by LangChain &amp; LangGraph, delivered via Chat, and traced by LangSmith.</p>
         </div>
 
-                <!-- Architecture Diagram Container -->
+                        <!-- Architecture Diagram Container -->
         <div class="my-auto flex flex-col items-center justify-center bg-slate-50 border border-slate-200 rounded-xl p-3 shadow-inner">
           <a href="system_architecture_relationship.png" target="_blank" title="Click to view full high-resolution diagram" class="block w-full text-center">
-            <img src="system_architecture_relationship.png?v=3" 
-                 onerror="this.onerror=null; this.src='system_architecture_relationship.jpg?v=3';"
-                 alt="The Constitutional Invariant and Observability Pipeline" 
-                 class="w-full max-h-[360px] sm:max-h-[400px] object-contain rounded mx-auto hover:opacity-95 transition"
-                 loading="eager">
+            <picture>
+              <source srcset="system_architecture_relationship.png?v=4" type="image/png">
+              <img src="system_architecture_relationship.jpg?v=4" 
+                   onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/cosmosanalytics/langchain-test/main/system_architecture_relationship.jpg';"
+                   alt="The 7-Stage Constitutional Invariant and Observability Pipeline" 
+                   class="w-full max-h-[360px] sm:max-h-[400px] object-contain rounded mx-auto hover:opacity-95 transition"
+                   loading="eager">
+            </picture>
           </a>
           <div class="text-[11px] text-slate-400 mt-1 flex items-center justify-center space-x-2">
             <span><i class="fa-solid fa-magnifying-glass-plus text-indigo-500"></i> Tap or click image to expand in full resolution</span>
