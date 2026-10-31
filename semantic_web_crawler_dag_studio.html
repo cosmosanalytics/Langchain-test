@@ -77,6 +77,83 @@
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.4; transform: scale(1.2); }
     }
+  
+    /* =========================================================================
+       MOBILE RESPONSIVENESS & TOUCH SCROLLING ENGINE
+       ========================================================================= */
+    @media (max-width: 1023px) {
+      html, body {
+        overflow-y: auto !important;
+        height: auto !important;
+        min-height: 100vh !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+
+      #workspaceContainer {
+        height: auto !important;
+        min-height: calc(100vh - 110px) !important;
+        overflow-y: visible !important;
+      }
+
+      /* True Left-and-Right Split on mobile when split mode is active */
+      #workspaceContainer.split-active {
+        display: flex !important;
+        flex-direction: row !important;
+        overflow-x: auto !important;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch !important;
+      }
+
+      #workspaceContainer.split-active > #browserPanel {
+        display: flex !important;
+        min-width: 85vw !important;
+        max-width: 90vw !important;
+        flex: none !important;
+        scroll-snap-align: start;
+        border-right: 2px solid #e2e8f0 !important;
+      }
+
+      #workspaceContainer.split-active > #dagPanel {
+        display: flex !important;
+        min-width: 85vw !important;
+        max-width: 90vw !important;
+        flex: none !important;
+        scroll-snap-align: start;
+      }
+
+      /* Landscape phones (e.g. 700px - 900px wide): 50% Left & 50% Right */
+      @media (orientation: landscape) and (min-width: 640px) {
+        #workspaceContainer.split-active {
+          overflow-x: hidden !important;
+        }
+        #workspaceContainer.split-active > #browserPanel {
+          min-width: 50% !important;
+          max-width: 50% !important;
+          width: 50% !important;
+        }
+        #workspaceContainer.split-active > #dagPanel {
+          min-width: 50% !important;
+          max-width: 50% !important;
+          width: 50% !important;
+        }
+      }
+
+      /* Panel heights on mobile */
+      #browserPanel, #dagPanel, #onyxChatPanel {
+        min-height: 75vh !important;
+        height: auto !important;
+        overflow-y: visible !important;
+      }
+
+      #leftTabContainer, #dagViewport, #onyxChatMessages {
+        min-height: 480px !important;
+        max-height: 70vh !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-y !important;
+      }
+    }
+
   </style>
 </head>
 <body class="h-screen flex flex-col bg-slate-50 text-slate-900 overflow-hidden">
@@ -167,6 +244,29 @@
       </button>
     </div>
   </header>
+
+  <!-- STICKY MOBILE PANEL SWITCHER (VISIBLE ON MOBILE / TABLET < 1024px) -->
+  <div class="lg:hidden bg-slate-900 border-b border-slate-800 text-xs px-2 py-2 sticky top-0 z-40 shadow-lg flex items-center justify-between">
+    <div class="flex items-center space-x-1 w-full justify-between">
+      <button onclick="setMobileView('split')" id="btnMobSplit" class="flex-1 py-1.5 px-2 rounded-lg bg-indigo-600 text-white font-bold text-center transition flex items-center justify-center space-x-1" title="Side-by-side Left and Right">
+        <i class="fa-solid fa-table-columns text-xs"></i>
+        <span>Split L|R</span>
+      </button>
+      <button onclick="setMobileView('browser')" id="btnMobBrowser" class="flex-1 py-1.5 px-2 rounded-lg text-slate-400 hover:text-white font-semibold text-center transition flex items-center justify-center space-x-1" title="Left Panel: Web Browser & Crawler">
+        <i class="fa-solid fa-globe text-xs"></i>
+        <span>Browser (Left)</span>
+      </button>
+      <button onclick="setMobileView('dag')" id="btnMobDag" class="flex-1 py-1.5 px-2 rounded-lg text-slate-400 hover:text-white font-semibold text-center transition flex items-center justify-center space-x-1" title="Right Panel: Semantic DAG">
+        <i class="fa-solid fa-diagram-project text-xs"></i>
+        <span>DAG (Right)</span>
+      </button>
+      <button onclick="setMobileView('chat')" id="btnMobChat" class="flex-1 py-1.5 px-2 rounded-lg text-slate-400 hover:text-white font-semibold text-center transition flex items-center justify-center space-x-1" title="Onyx Grounded Q&A & Jev Verifier">
+        <i class="fa-solid fa-comments text-xs text-emerald-400"></i>
+        <span>Onyx Q&amp;A</span>
+      </button>
+    </div>
+  </div>
+
 
   <!-- WORKSPACE CONTAINER -->
   <div class="flex-1 flex flex-col lg:flex-row overflow-hidden relative" id="workspaceContainer">
@@ -1033,6 +1133,7 @@
 
     function clearOnyxChat() {
       initOnyxTruthChat();
+      const wsInit = document.getElementById('workspaceContainer'); if (wsInit) wsInit.classList.add('split-active');
     }
 
     function askOnyxPreset(question) {
@@ -1389,8 +1490,107 @@
     }
 
 
+    
+    // =========================================================================
+    // MOBILE VIEW CONTROLLER & TOUCH SCROLL MANAGER
+    // =========================================================================
+    let currentMobileView = 'split';
+
+    function setMobileView(view) {
+      currentMobileView = view;
+      const ws = document.getElementById('workspaceContainer');
+      const bP = document.getElementById('browserPanel');
+      const dP = document.getElementById('dagPanel');
+      const cP = document.getElementById('onyxChatPanel');
+
+      const bMobSplit = document.getElementById('btnMobSplit');
+      const bMobBrowser = document.getElementById('btnMobBrowser');
+      const bMobDag = document.getElementById('btnMobDag');
+      const bMobChat = document.getElementById('btnMobChat');
+
+      const allMobBtns = [bMobSplit, bMobBrowser, bMobDag, bMobChat].filter(Boolean);
+      allMobBtns.forEach(b => {
+        b.className = "flex-1 py-1.5 px-2 rounded-lg text-slate-400 hover:text-white font-semibold text-center transition flex items-center justify-center space-x-1";
+      });
+
+      if (view === 'split') {
+        if (bMobSplit) bMobSplit.className = "flex-1 py-1.5 px-2 rounded-lg bg-indigo-600 text-white font-bold text-center transition flex items-center justify-center space-x-1";
+        if (ws) ws.classList.add('split-active');
+        if (bP) {
+          bP.classList.remove('hidden');
+          bP.style.display = 'flex';
+        }
+        if (dP) {
+          dP.classList.remove('hidden');
+          dP.style.display = 'flex';
+        }
+        if (cP) {
+          cP.classList.add('hidden');
+          cP.style.display = 'none';
+        }
+        logCrawler("[MOBILE] Active: Split Left and Right (Swipe horizontally to switch between panels).");
+      } else if (view === 'browser') {
+        if (bMobBrowser) bMobBrowser.className = "flex-1 py-1.5 px-2 rounded-lg bg-indigo-600 text-white font-bold text-center transition flex items-center justify-center space-x-1";
+        if (ws) ws.classList.remove('split-active');
+        if (bP) {
+          bP.classList.remove('hidden');
+          bP.style.display = 'flex';
+          bP.style.width = '100%';
+        }
+        if (dP) {
+          dP.classList.add('hidden');
+          dP.style.display = 'none';
+        }
+        if (cP) {
+          cP.classList.add('hidden');
+          cP.style.display = 'none';
+        }
+        logCrawler("[MOBILE] Active: Full Browser & Crawler (Left Panel).");
+      } else if (view === 'dag') {
+        if (bMobDag) bMobDag.className = "flex-1 py-1.5 px-2 rounded-lg bg-indigo-600 text-white font-bold text-center transition flex items-center justify-center space-x-1";
+        if (ws) ws.classList.remove('split-active');
+        if (bP) {
+          bP.classList.add('hidden');
+          bP.style.display = 'none';
+        }
+        if (dP) {
+          dP.classList.remove('hidden');
+          dP.style.display = 'flex';
+          dP.style.width = '100%';
+        }
+        if (cP) {
+          cP.classList.add('hidden');
+          cP.style.display = 'none';
+        }
+        logCrawler("[MOBILE] Active: Full Semantic DAG (Right Panel).");
+        if (panzoomInstance) setTimeout(() => panzoomInstance.reset(), 100);
+      } else if (view === 'chat') {
+        if (bMobChat) bMobChat.className = "flex-1 py-1.5 px-2 rounded-lg bg-emerald-600 text-white font-bold text-center transition flex items-center justify-center space-x-1";
+        if (ws) ws.classList.remove('split-active');
+        if (bP) {
+          bP.classList.add('hidden');
+          bP.style.display = 'none';
+        }
+        if (dP) {
+          dP.classList.add('hidden');
+          dP.style.display = 'none';
+        }
+        if (cP) {
+          cP.classList.remove('hidden');
+          cP.style.display = 'flex';
+          cP.style.width = '100%';
+        }
+        logCrawler("[MOBILE] Active: Full Onyx Truth Chat & Jev Verification.");
+      }
+
+      // Sync desktop buttons if applicable
+      setLayoutMode(view);
+    }
+
+
     window.addEventListener('DOMContentLoaded', () => {
       initOnyxTruthChat();
+      const wsInit = document.getElementById('workspaceContainer'); if (wsInit) wsInit.classList.add('split-active');
       mermaid.initialize({
         startOnLoad: false,
         theme: 'neutral',
