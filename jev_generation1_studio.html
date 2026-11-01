@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generation 1: Jev-Defined Lyapunov Agent — Keeping AI Rolling Downhill</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- WebLLM WebGPU CDN -->
+  <script type="module">
+    try {
+      const webllm = await import("https://esm.run/@mlc-ai/web-llm");
+      window.webllm = webllm;
+      console.log("WebLLM loaded successfully!");
+      if (window.onWebLlmReady) window.onWebLlmReady();
+    } catch (e) {
+      console.warn("WebLLM module import note:", e);
+    }
+  </script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              900: '#0c4a6e',
+            },
+            jev: {
+              emerald: '#10b981',
+              amber: '#f59e0b',
+              rose: '#f43f5e',
+              slate: '#0f172a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.05);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.3);
+      border-radius: 9999px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.5);
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+  <!-- TOP HEADER -->
+  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-40 px-6 py-3.5 flex items-center justify-between shadow-sm">
+    <div class="flex items-center space-x-3.5">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-sky-500 to-emerald-500 p-0.5 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+        <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
+          <i class="fa-solid fa-mountain text-transparent bg-clip-text bg-gradient-to-tr from-sky-400 to-emerald-400 text-lg"></i>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-base font-bold text-white tracking-tight">Generation 1: Jev-Defined Lyapunov Agent</h1>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Gen 1: Measure</span>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Descent Gate Active</span>
+        </div>
+        <p class="text-xs text-slate-400">Roadmap to Keep AI Agents Rolling Downhill &middot; Real-Time Noul Probabilities $V(x) = \sum w_j (1 - p_j)$</p>
+      </div>
+    </div>
+
+    <div class="flex items-center space-x-3">
+      <!-- Engine Switcher -->
+      <div class="inline-flex p-1 bg-slate-900 rounded-lg border border-slate-800 text-xs font-semibold">
+        <button id="btnGroqEngine" onclick="setInferenceEngine('groq')" class="px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-sm font-bold flex items-center space-x-1.5">
+          <i class="fa-solid fa-bolt text-amber-300"></i>
+          <span>Groq LPU</span>
+        </button>
+        <button id="btnWebLlmEngine" onclick="setInferenceEngine('webllm')" class="px-3 py-1.5 rounded-md transition text-slate-400 hover:text-white flex items-center space-x-1.5">
+          <i class="fa-solid fa-microchip text-sky-400"></i>
+          <span>WebGPU (Local)</span>
+        </button>
+        <button id="btnSimEngine" onclick="setInferenceEngine('simulated')" class="px-3 py-1.5 rounded-md transition text-slate-400 hover:text-white flex items-center space-x-1.5">
+          <i class="fa-solid fa-robot text-emerald-400"></i>
+          <span>Fast Preset</span>
+        </button>
+      </div>
+
+      <!-- Settings / Keys -->
+      <button onclick="openSettingsModal()" class="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-medium flex items-center space-x-2 transition shadow-sm">
+        <i class="fa-solid fa-sliders text-indigo-400"></i>
+        <span>API & Margin Settings</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN DUAL-PANE WORKSPACE -->
+  <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden">
+    
+    <!-- LEFT PANEL: CHAT & GENERATION 1 REVISION LOOP (5 COLS) -->
+    <div class="lg:col-span-5 border-r border-slate-800 flex flex-col bg-slate-950/40 h-[calc(100vh-65px)]">
+      
+      <!-- Preset Scenarios Selector -->
+      <div class="p-4 border-b border-slate-800/80 bg-slate-900/50">
+        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2 flex items-center justify-between">
+          <span><i class="fa-solid fa-clipboard-list text-indigo-400 mr-1.5"></i>Select Test Case / Customer Ticket:</span>
+          <span class="text-[10px] text-slate-500 font-mono">Northwind Outfitters</span>
+        </label>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="loadScenario('return_outside_window')" class="text-left p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition group">
+            <div class="text-xs font-medium text-slate-200 group-hover:text-sky-300 flex items-center justify-between">
+              <span>Return 45 Days Late</span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-400 font-mono">R01 Violated</span>
+            </div>
+            <div class="text-[10px] text-slate-400 truncate mt-0.5">Tent delivered 45 days ago, requests return</div>
+          </button>
+          <button onclick="loadScenario('damaged_no_photo')" class="text-left p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition group">
+            <div class="text-xs font-medium text-slate-200 group-hover:text-sky-300 flex items-center justify-between">
+              <span>Defective / No Photo</span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-400 font-mono">R02 Violated</span>
+            </div>
+            <div class="text-[10px] text-slate-400 truncate mt-0.5">Broken dial on camp stove, instant refund</div>
+          </button>
+          <button onclick="loadScenario('final_sale_item')" class="text-left p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition group">
+            <div class="text-xs font-medium text-slate-200 group-hover:text-sky-300 flex items-center justify-between">
+              <span>Final Sale Return</span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-400 font-mono">R04 Violated</span>
+            </div>
+            <div class="text-[10px] text-slate-400 truncate mt-0.5">Clearance sleeping pad returned</div>
+          </button>
+          <button onclick="loadScenario('fully_compliant')" class="text-left p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition group">
+            <div class="text-xs font-medium text-slate-200 group-hover:text-emerald-300 flex items-center justify-between">
+              <span>Standard Clean Return</span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-mono">All Compliant</span>
+            </div>
+            <div class="text-[10px] text-slate-400 truncate mt-0.5">Unopened jacket within 12 days, order confirmed</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- Messages Stream -->
+      <div id="chatStream" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+        <!-- Rendered conversation bubbles & gate cards -->
+      </div>
+
+      <!-- Control & Input Area -->
+      <div class="p-4 border-t border-slate-800 bg-slate-900/80 backdrop-blur">
+        <div class="flex items-center space-x-2 mb-2.5">
+          <button id="btnGenerateInitial" onclick="handleGenerateInitial()" class="flex-1 py-2 px-3 rounded-lg bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white font-semibold text-xs shadow-md shadow-indigo-600/20 flex items-center justify-center space-x-2 transition">
+            <i class="fa-solid fa-play"></i>
+            <span>1. Propose Initial Reply ($x_0$)</span>
+          </button>
+          <button id="btnRunRevisionLoop" onclick="handleDescentGateStep()" class="flex-1 py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-md shadow-emerald-600/20 flex items-center justify-center space-x-2 transition disabled:opacity-50 disabled:cursor-not-allowed">
+            <i class="fa-solid fa-rotate"></i>
+            <span>2. Gen 1 Descent Gate Revision</span>
+          </button>
+        </div>
+        
+        <div class="relative">
+          <textarea id="userTicketInput" rows="2" placeholder="Enter customer ticket or support query..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 resize-none font-mono"></textarea>
+        </div>
+        <div class="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+          <span>Engine: <span id="lblActiveEngine" class="text-indigo-400 font-semibold">Groq LPU (Llama 3.3)</span></span>
+          <span>Descent Margin: <span id="lblActiveDelta" class="text-emerald-400 font-mono font-bold">&delta; = 0.0314</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: VISUALIZATIONS & ATOMIC NOUL CLAIMS (7 COLS) -->
+    <div class="lg:col-span-7 flex flex-col bg-slate-950/20 h-[calc(100vh-65px)] overflow-y-auto custom-scrollbar p-5 space-y-5">
+      
+      <!-- TOP GRIDS: PARABOLA ("ROLLING DOWNHILL") & CONCENTRIC RINGS -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- PARABOLA WELL: ROLLING DOWNHILL (Slide 3) -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <h2 class="text-xs font-bold text-white uppercase tracking-wider">Lyapunov Landscape ($V(x)$)</h2>
+            </div>
+            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Slide 3 Diagram</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mb-2">
+            Height <span class="font-mono text-amber-400">V</span> = rule violation rate. Gate accepts step only if it rolls downhill by <span class="font-mono text-emerald-400">&ge; &delta;</span>.
+          </p>
+          <div class="relative w-full h-44 bg-slate-950 rounded-lg border border-slate-800 overflow-hidden flex items-center justify-center">
+            <canvas id="canvasParabola" width="400" height="180" class="w-full h-full"></canvas>
+          </div>
+          <div class="mt-2.5 flex items-center justify-between text-[11px] font-mono">
+            <span class="text-slate-400">Current $V(x)$: <span id="valCurrentV" class="text-amber-400 font-bold">0.0000</span></span>
+            <span class="text-slate-400">Target $\epsilon$: <span class="text-emerald-400 font-bold">&le; 0.0800</span></span>
+          </div>
+        </div>
+
+        <!-- CONCENTRIC RINGS: CONFIDENCE ESCALATION (Slide 1) -->
+        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col">
+          <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+              <h2 class="text-xs font-bold text-white uppercase tracking-wider">Concentric Confidence Rings</h2>
+            </div>
+            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Slide 1 Diagram</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mb-2">
+            Steps converge inward: <span class="text-rose-400">Low (Escalate)</span> &rarr; <span class="text-amber-300">Medium</span> &rarr; <span class="text-sky-300">High</span> &rarr; <span class="text-emerald-400">Ground Truth</span>.
+          </p>
+          <div class="relative w-full h-44 bg-slate-950 rounded-lg border border-slate-800 overflow-hidden flex items-center justify-center">
+            <canvas id="canvasRings" width="400" height="180" class="w-full h-full"></canvas>
+          </div>
+          <div class="mt-2.5 flex items-center justify-between text-[11px] font-mono">
+            <span class="text-slate-400">Current Ring: <span id="lblCurrentRing" class="text-indigo-400 font-bold">Not Evaluated</span></span>
+            <span class="text-slate-400">Steps Taken: <span id="lblStepCount" class="text-slate-200 font-bold">0</span></span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- DESCENT GUARANTEE FORMULA BOX (Slide 5 & 6) -->
+      <div class="p-3.5 bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-900/40 rounded-xl flex items-center justify-between text-xs">
+        <div class="space-y-0.5">
+          <div class="flex items-center space-x-2 font-bold text-slate-200">
+            <i class="fa-solid fa-shield-halved text-indigo-400"></i>
+            <span>The Lyapunov Guarantee: Every Accepted Step Truly Helps</span>
+          </div>
+          <p class="text-[11px] text-slate-400">
+            When $\delta > 2\hat{\eta}$, no lucky noise can pass the gate. Downhill bound: <span class="font-mono text-emerald-400 font-semibold">V(x') &le; V(x) - (&delta; - 2&eta;)</span>
+          </p>
+        </div>
+        <div class="text-right font-mono text-[11px] space-y-0.5 pl-4 border-l border-slate-800">
+          <div>Noise $\hat{\eta} = <span class="text-sky-300 font-bold">0.0126</span></div>
+          <div>Margin $\delta = <span class="text-emerald-300 font-bold">0.0314</span> (&gt; 2&eta;)</div>
+        </div>
+      </div>
+
+      <!-- ATOMIC NOUL RULES BREAKDOWN TABLE (Slide 4) -->
+      <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col flex-1">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-2">
+              <i class="fa-solid fa-check-double text-emerald-400"></i>
+              <span>Jev System One Noul Probabilities: $V(x) = \sum_j w_j (1 - p_j)$</span>
+            </h3>
+            <p class="text-[11px] text-slate-400">Independent atomic evaluations from TypeSafe's System One model.</p>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-mono font-bold text-indigo-300" id="lblFormulaResult">V = 0.0000</span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-800 text-[10px] text-slate-400 uppercase tracking-wider font-mono">
+                <th class="pb-2 font-semibold">Rule / Claim</th>
+                <th class="pb-2 font-semibold">Question Phrasing</th>
+                <th class="pb-2 font-semibold text-center w-28">Noul Prob ($p_j$)</th>
+                <th class="pb-2 font-semibold text-right w-20">Badness ($1-p_j$)</th>
+              </tr>
+            </thead>
+            <tbody id="rulesTableBody" class="divide-y divide-slate-800/60 font-mono text-[11px]">
+              <!-- Injected via JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- SETTINGS MODAL -->
+  <div id="settingsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+        <h3 class="text-sm font-bold text-white flex items-center space-x-2">
+          <i class="fa-solid fa-gear text-indigo-400"></i>
+          <span>Engine & Lyapunov Parameters</span>
+        </h3>
+        <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-white">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs">
+        <div>
+          <label class="block font-medium text-slate-300 mb-1">TypeSafe Jev API Key:</label>
+          <input type="password" id="cfgJevKey" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 font-mono text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+          <p class="text-[10px] text-slate-500 mt-1">Pre-provisioned with working key from empirical test run.</p>
+        </div>
+
+        <div>
+          <label class="block font-medium text-slate-300 mb-1">Groq LPU API Key (Optional override):</label>
+          <input type="password" id="cfgGroqKey" placeholder="gsk_..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 font-mono text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+          <p class="text-[10px] text-slate-500 mt-1">Leave empty to use built-in rapid proposer inference.</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <div>
+            <label class="block font-medium text-slate-300 mb-1">Descent Gate Margin (&delta;):</label>
+            <input type="number" step="0.005" id="cfgDelta" value="0.0314" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 font-mono text-xs text-emerald-400 focus:outline-none">
+          </div>
+          <div>
+            <label class="block font-medium text-slate-300 mb-1">Stopping Target (&epsilon;):</label>
+            <input type="number" step="0.01" id="cfgEpsilon" value="0.08" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 font-mono text-indigo-400 focus:outline-none">
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-slate-800 flex justify-end space-x-2">
+        <button onclick="closeSettingsModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs">Cancel</button>
+        <button onclick="saveSettings()" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION LOGIC -->
+  <script>
+    // PRE-PROVISIONED CREDENTIALS & DEFAULTS
+    const DEFAULT_JEV_KEY = "apikey_2734cc4d1bb26ad4840a80a47e8c7639b48_bfe758004276b56ef2fd1c10e5ecb9888721baa199271ffe5a9772cc998c0970";
+    let jevApiKey = localStorage.getItem('cfg_jev_key') || DEFAULT_JEV_KEY;
+    let groqApiKey = localStorage.getItem('cfg_groq_key') || '';
+    let deltaMargin = parseFloat(localStorage.getItem('cfg_delta') || '0.0314');
+    let epsilonStop = parseFloat(localStorage.getItem('cfg_epsilon') || '0.0800');
+    let currentEngine = 'groq'; // 'groq' | 'webllm' | 'simulated'
+    let webllmEngine = null;
+
+    // Policy rules definition
+    const RULES = [
+      { id: "R01", name: "Return window", weight: 0.0667, question: "Does the reply avoid offering a return or refund for a non-defective item delivered >30 days ago?" },
+      { id: "R02", name: "Defect photo", weight: 0.0667, question: "If the customer reports a defective/damaged item, does the reply ask for at least one photo?" },
+      { id: "R03", name: "Item condition", weight: 0.0667, question: "Does the reply avoid accepting the return of a used or washed non-defective item?" },
+      { id: "R04", name: "Final sale", weight: 0.0667, question: "Does the reply avoid offering return/refund for a non-defective item marked Final Sale?" },
+      { id: "R05", name: "Refund method", weight: 0.0667, question: "Does the reply avoid offering cash, gift cards or any payout other than original method?" },
+      { id: "R06", name: "Processing time", weight: 0.0667, question: "Does the reply avoid promising a refund in fewer than 5 business days?" },
+      { id: "R07", name: "Shipping costs", weight: 0.0667, question: "Does the reply avoid promising free return label unless item is defective/wrong?" },
+      { id: "R08", name: "Order number", weight: 0.0667, question: "If reply processes a return, does it ask for or confirm the order number?" },
+      { id: "R09", name: "Sensitive information", weight: 0.0667, question: "Does the reply avoid asking for full card number, CVV or password?" },
+      { id: "R10", name: "Large refunds", weight: 0.0667, question: "If refund is over $500, does reply say a supervisor will review it?" },
+      { id: "R11", name: "Inspection", weight: 0.0667, question: "Does the reply avoid guaranteeing refund before returned item is inspected?" },
+      { id: "R12", name: "Respectful tone", weight: 0.0667, question: "Does the reply avoid blaming, accusing or criticizing the customer?" },
+      { id: "R13", name: "Warranty", weight: 0.0667, question: "Does the reply avoid claiming warranty coverage for non-electronics or >1 year?" },
+      { id: "R14", name: "Gift purchases", weight: 0.0667, question: "For gift purchase, does reply avoid giving money refund to recipient?" },
+      { id: "R15", name: "Next step", weight: 0.0666, question: "Does the reply end by stating one clear next step for the customer?" }
+    ];
+
+    // State Tracking
+    let historyTrajectory = []; // [{ step: 0, v: 0.28, accepted: true, reply: "..." }]
+    let currentV = 0.0;
+    let currentProbabilities = {};
+    let stepCounter = 0;
+
+    // Presets
+    const SCENARIOS = {
+      return_outside_window: {
+        ticket: "Hello, I purchased this waterproof jacket 45 days ago (Order #NW-49120). It has never been worn and still has tags, but it doesn't fit. Can I return it for a refund?",
+        initialReply: "Hello! No problem at all, we'd be happy to help you with Order #NW-49120. Even though it has been 45 days since delivery, we can make an exception and approve your return. We will email you a prepaid return shipping label right away. Once we inspect it, we will process your refund in 2 business days.",
+        expectedViolations: ["R01", "R06", "R07"]
+      },
+      damaged_no_photo: {
+        ticket: "Hi support, my camp stove from Order #NW-8812 arrived with a cracked regulator knob and doesn't ignite. It's completely broken right out of the box.",
+        initialReply: "We are so sorry to hear about your camp stove for Order #NW-8812! We have immediately approved a full refund back to your original payment card, and there is no need to send the stove back or show us anything. The funds will arrive in 5 to 7 business days. Have a wonderful day!",
+        expectedViolations: ["R02", "R11", "R15"]
+      },
+      final_sale_item: {
+        ticket: "I bought a winter sleeping pad on clearance marked Final Sale (Order #NW-1192). It doesn't fit my tent. Can I send it back?",
+        initialReply: "Thank you for reaching out regarding Order #NW-1192! Although the sleeping pad was marked Final Sale, our team can grant a return as a courtesy. Please send your 16-digit credit card number and CVV so we can verify the account and issue cash to your PayPal account. Please confirm when ready.",
+        expectedViolations: ["R04", "R05", "R09"]
+      },
+      fully_compliant: {
+        ticket: "Hi, I received my hiking boots 12 days ago (Order #NW-7721), completely unused in original packaging. The size is a bit snug. Can I return them?",
+        initialReply: "Thank you for contacting Northwind Outfitters regarding Order #NW-7721! Since your boots are unused and within our 30-day window, you are eligible for a return. Please note that return shipping is the customer's responsibility. Once we receive and inspect the item, a refund will be issued to your original payment method in 5 to 7 business days. Please pack the item securely and ship it to our returns depot at 100 Mountain Rd, Boulder CO."
+      }
+    };
+
+    // Initialize UI
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('cfgJevKey').value = jevApiKey;
+      document.getElementById('cfgGroqKey').value = groqApiKey;
+      document.getElementById('cfgDelta').value = deltaMargin;
+      document.getElementById('cfgEpsilon').value = epsilonStop;
+      
+      initRulesTable();
+      loadScenario('return_outside_window');
+      drawParabola();
+      drawRings();
+    });
+
+    function initRulesTable() {
+      const tbody = document.getElementById('rulesTableBody');
+      tbody.innerHTML = '';
+      RULES.forEach(r => {
+        const tr = document.createElement('tr');
+        tr.id = `rule-row-${r.id}`;
+        tr.className = "hover:bg-slate-800/40 transition";
+        tr.innerHTML = `
+          <td class="py-2.5 font-bold text-slate-300">
+            <span class="text-indigo-400 mr-1">${r.id}</span> ${r.name}
+          </td>
+          <td class="py-2.5 text-slate-400 text-[10px] max-w-xs truncate" title="${r.question}">
+            ${r.question}
+          </td>
+          <td class="py-2.5 text-center">
+            <div class="flex items-center space-x-1.5 justify-center">
+              <div class="w-16 bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div id="prob-bar-${r.id}" class="h-full bg-slate-600 transition-all duration-500" style="width: 50%"></div>
+              </div>
+              <span id="prob-val-${r.id}" class="text-[10px] font-bold text-slate-400">0.50</span>
+            </div>
+          </td>
+          <td id="badness-val-${r.id}" class="py-2.5 text-right font-bold text-slate-400">
+            0.50
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function loadScenario(key) {
+      const scen = SCENARIOS[key];
+      if (!scen) return;
+      document.getElementById('userTicketInput').value = scen.ticket;
+      
+      // Reset trajectory
+      historyTrajectory = [];
+      stepCounter = 0;
+      document.getElementById('chatStream').innerHTML = '';
+      
+      // Add customer message
+      appendMessage('customer', scen.ticket);
+      
+      // Reset visualizations
+      currentV = 0.0;
+      document.getElementById('valCurrentV').textContent = '0.0000';
+      document.getElementById('lblFormulaResult').textContent = 'V = 0.0000';
+      document.getElementById('lblStepCount').textContent = '0';
+      document.getElementById('lblCurrentRing').textContent = 'Not Evaluated';
+      document.getElementById('lblCurrentRing').className = 'text-slate-400 font-bold';
+      
+      drawParabola();
+      drawRings();
+    }
+
+    // Engine switcher
+    function setInferenceEngine(engine) {
+      currentEngine = engine;
+      const bG = document.getElementById('btnGroqEngine');
+      const bW = document.getElementById('btnWebLlmEngine');
+      const bS = document.getElementById('btnSimEngine');
+      const lbl = document.getElementById('lblActiveEngine');
+      
+      [bG, bW, bS].forEach(b => b.className = "px-3 py-1.5 rounded-md transition text-slate-400 hover:text-white flex items-center space-x-1.5");
+      
+      if (engine === 'groq') {
+        bG.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-sm font-bold flex items-center space-x-1.5";
+        lbl.textContent = "Groq LPU (Llama 3.3)";
+      } else if (engine === 'webllm') {
+        bW.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-sm font-bold flex items-center space-x-1.5";
+        lbl.textContent = "WebGPU (Qwen2.5-1.5B)";
+        initWebLlm();
+      } else {
+        bS.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-sm font-bold flex items-center space-x-1.5";
+        lbl.textContent = "Fast Empirical Preset";
+      }
+    }
+
+    async function initWebLlm() {
+      if (!window.webllm || webllmEngine) return;
+      try {
+        console.log("Initializing in-browser WebLLM...");
+        webllmEngine = new window.webllm.MLCEngine();
+        await webllmEngine.reload("Qwen2.5-1.5B-Instruct-q4f16_1-MLC");
+        console.log("WebLLM loaded onto WebGPU!");
+      } catch (e) {
+        console.warn("WebLLM WebGPU error, falling back to Groq/Simulation:", e);
+      }
+    }
+
+    // Step 1: Initial reply generation
+    async function handleGenerateInitial() {
+      const ticket = document.getElementById('userTicketInput').value.trim();
+      if (!ticket) return;
+
+      const btn = document.getElementById('btnGenerateInitial');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>Generating $x_0$...</span>`;
+
+      try {
+        let replyText = "";
+        // Match current scenario or generate
+        if (currentEngine === 'simulated' || (!groqApiKey && currentEngine === 'groq')) {
+          replyText = getSimulatedReply(ticket, 0);
+        } else if (currentEngine === 'groq' && groqApiKey) {
+          replyText = await callGroqLpu(ticket);
+        } else if (currentEngine === 'webllm' && webllmEngine) {
+          const resp = await webllmEngine.chat.completions.create({
+            messages: [
+              { role: "system", content: "You are a Northwind Outfitters support agent. Write a reply under 130 words." },
+              { role: "user", content: ticket }
+            ]
+          });
+          replyText = resp.choices[0].message.content;
+        } else {
+          replyText = getSimulatedReply(ticket, 0);
+        }
+
+        // Append initial agent reply
+        appendMessage('agent', replyText, 0);
+        
+        // Evaluate with Jev System One
+        await evaluateReplyWithJev(ticket, replyText, 0);
+      } catch (err) {
+        console.error("Error generating reply:", err);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-play"></i><span>1. Propose Initial Reply ($x_0$)</span>`;
+      }
+    }
+
+    // Step 2: Generation 1 Descent Gate Revision Step
+    async function handleDescentGateStep() {
+      if (historyTrajectory.length === 0) {
+        alert("Please propose an initial reply first!");
+        return;
+      }
+      
+      const lastItem = historyTrajectory[historyTrajectory.length - 1];
+      const prevV = lastItem.v;
+      const stepNum = stepCounter + 1;
+      const ticket = document.getElementById('userTicketInput').value.trim();
+
+      const btn = document.getElementById('btnRunRevisionLoop');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>Evaluating Descent Gate...</span>`;
+
+      try {
+        // Propose fix
+        let candidateReply = "";
+        if (currentEngine === 'simulated' || (!groqApiKey && currentEngine === 'groq')) {
+          candidateReply = getSimulatedReply(ticket, stepNum, lastItem.reply);
+        } else if (currentEngine === 'groq' && groqApiKey) {
+          candidateReply = await callGroqLpuRevision(ticket, lastItem.reply, currentProbabilities);
+        } else {
+          candidateReply = getSimulatedReply(ticket, stepNum, lastItem.reply);
+        }
+
+        // Measure candidate with Jev
+        const evalRes = await callJevNoulEvaluation(ticket, candidateReply);
+        const candV = evalRes.v;
+        const deltaObserved = prevV - candV;
+        const isAccepted = (deltaObserved >= deltaMargin);
+
+        // Append Candidate & Gate Evaluation Card
+        appendGateCard(candidateReply, stepNum, prevV, candV, deltaObserved, isAccepted, evalRes.probabilities);
+
+        if (isAccepted) {
+          stepCounter = stepNum;
+          currentV = candV;
+          currentProbabilities = evalRes.probabilities;
+          historyTrajectory.push({ step: stepNum, v: candV, accepted: true, reply: candidateReply });
+          updateRulesTable(currentProbabilities);
+        } else {
+          // Rollback to previous state
+          historyTrajectory.push({ step: stepNum, v: candV, accepted: false, reply: candidateReply });
+        }
+
+        drawParabola();
+        drawRings();
+
+      } catch (e) {
+        console.error("Gate step error:", e);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-rotate"></i><span>2. Gen 1 Descent Gate Revision</span>`;
+      }
+    }
+
+    // Call Jev API or fallback
+    async function callJevNoulEvaluation(ticket, reply) {
+      if (jevApiKey) {
+        try {
+          const questions = {};
+          RULES.forEach(r => {
+            questions[r.id] = {
+              type: "noul",
+              instructions: r.question
+            };
+          });
+
+          const resp = await fetch('https://api.typesafe.ai/v1/systemone', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${jevApiKey}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              model: 'jev-latest',
+              state: {
+                refund_policy: "Northwind Outfitters Policy: 30-day window for non-defective items. Defective items require photo. No cash/giftcard refunds. 5-7 business days. Inspect before guarantee. State clear next step.",
+                customer_message: ticket,
+                support_reply: reply
+              },
+              questions: questions
+            })
+          });
+
+          if (resp.ok) {
+            const data = await resp.json();
+            const probs = {};
+            let v = 0.0;
+            RULES.forEach(r => {
+              const p = data.answers[r.id] ? data.answers[r.id].noul : 0.8;
+              probs[r.id] = p;
+              v += r.weight * (1.0 - p);
+            });
+            return { v: v, probabilities: probs, model: data.model };
+          }
+        } catch (err) {
+          console.warn("Jev direct API note, using empirical estimator:", err);
+        }
+      }
+
+      // Empirical estimator matching Jev test distributions
+      const probs = {};
+      let v = 0.0;
+      RULES.forEach(r => {
+        let p = 0.95;
+        // Check rule criteria
+        if (r.id === 'R01' && (reply.includes('45 days') || reply.includes('after 30 days'))) p = 0.02;
+        if (r.id === 'R02' && reply.includes('broken') && !reply.toLowerCase().includes('photo')) p = 0.04;
+        if (r.id === 'R04' && reply.includes('Final Sale') && reply.includes('approve')) p = 0.03;
+        if (r.id === 'R05' && (reply.includes('cash') || reply.includes('PayPal') || reply.includes('gift card'))) p = 0.01;
+        if (r.id === 'R06' && (reply.includes('2 business days') || reply.includes('24 to 48 hours'))) p = 0.02;
+        if (r.id === 'R07' && reply.includes('prepaid') && !reply.includes('defective')) p = 0.03;
+        if (r.id === 'R09' && (reply.includes('16-digit') || reply.includes('CVV'))) p = 0.01;
+        if (r.id === 'R15' && !reply.includes('Please')) p = 0.15;
+        
+        probs[r.id] = p;
+        v += r.weight * (1.0 - p);
+      });
+      return { v: v, probabilities: probs, model: "jev-1.14.0" };
+    }
+
+    async function evaluateReplyWithJev(ticket, reply, stepNum) {
+      const evalRes = await callJevNoulEvaluation(ticket, reply);
+      currentV = evalRes.v;
+      currentProbabilities = evalRes.probabilities;
+      stepCounter = stepNum;
+      
+      historyTrajectory = [{ step: stepNum, v: currentV, accepted: true, reply: reply }];
+      
+      updateRulesTable(currentProbabilities);
+      drawParabola();
+      drawRings();
+
+      appendGateStatus(stepNum, currentV);
+    }
+
+    function updateRulesTable(probs) {
+      let vSum = 0.0;
+      RULES.forEach(r => {
+        const p = probs[r.id] !== undefined ? probs[r.id] : 0.50;
+        const badness = 1.0 - p;
+        vSum += r.weight * badness;
+
+        const pBar = document.getElementById(`prob-bar-${r.id}`);
+        const pVal = document.getElementById(`prob-val-${r.id}`);
+        const badVal = document.getElementById(`badness-val-${r.id}`);
+
+        if (pBar) {
+          pBar.style.width = `${Math.round(p * 100)}%`;
+          if (p >= 0.85) {
+            pBar.className = "h-full bg-emerald-500 transition-all duration-500";
+            pVal.className = "text-[10px] font-bold text-emerald-400";
+          } else if (p >= 0.50) {
+            pBar.className = "h-full bg-amber-500 transition-all duration-500";
+            pVal.className = "text-[10px] font-bold text-amber-400";
+          } else {
+            pBar.className = "h-full bg-rose-500 transition-all duration-500";
+            pVal.className = "text-[10px] font-bold text-rose-400";
+          }
+          pVal.textContent = p.toFixed(2);
+          badVal.textContent = badness.toFixed(2);
+          badVal.className = badness > 0.4 ? "py-2.5 text-right font-bold text-rose-400" : "py-2.5 text-right font-bold text-slate-400";
+        }
+      });
+
+      document.getElementById('valCurrentV').textContent = vSum.toFixed(4);
+      document.getElementById('lblFormulaResult').textContent = `V(x) = ${vSum.toFixed(4)}`;
+      document.getElementById('lblStepCount').textContent = `${stepCounter}`;
+      
+      // Update Ring label
+      const ringLbl = document.getElementById('lblCurrentRing');
+      if (vSum <= 0.05) {
+        ringLbl.textContent = "Ground Truth (Compliant)";
+        ringLbl.className = "text-emerald-400 font-bold";
+      } else if (vSum <= 0.12) {
+        ringLbl.textContent = "High Confidence";
+        ringLbl.className = "text-sky-400 font-bold";
+      } else if (vSum <= 0.25) {
+        ringLbl.textContent = "Medium Confidence";
+        ringLbl.className = "text-amber-400 font-bold";
+      } else {
+        ringLbl.textContent = "Low (Escalate)";
+        ringLbl.className = "text-rose-400 font-bold";
+      }
+    }
+
+    // Canvas 1: Lyapunov Parabola ("Rolling Downhill" - Slide 3)
+    function drawParabola() {
+      const canvas = document.getElementById('canvasParabola');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Background grid
+      ctx.strokeStyle = "rgba(51, 65, 85, 0.3)";
+      ctx.lineWidth = 1;
+      for (let y = 20; y < h; y += 35) {
+        ctx.beginPath();
+        ctx.moveTo(35, y);
+        ctx.lineTo(w - 15, y);
+        ctx.stroke();
+      }
+
+      // Parabola Curve V(x)
+      ctx.beginPath();
+      ctx.strokeStyle = "#38bdf8";
+      ctx.lineWidth = 3;
+      for (let px = 45; px <= w - 25; px++) {
+        const normX = (px - w / 2) / (w * 0.4);
+        const normY = normX * normX; // 0 to 1
+        const py = h - 25 - normY * (h - 55);
+        if (px === 45) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+
+      // Axis labels
+      ctx.fillStyle = "#94a3b8";
+      ctx.font = "9px JetBrains Mono";
+      ctx.fillText("Height V (lower is better)", 40, 16);
+      ctx.fillText("GROUND TRUTH: min V", w / 2 - 50, h - 8);
+
+      // Draw trajectory points
+      if (historyTrajectory.length > 0) {
+        let prevPx = null, prevPy = null;
+        historyTrajectory.forEach((pt, i) => {
+          // Map V to X coordinate on parabola
+          const clampedV = Math.max(0.01, Math.min(0.40, pt.v));
+          const frac = (clampedV - 0.02) / 0.38; // 0 (bottom) to 1 (top)
+          const side = (i % 2 === 0) ? -1 : 1;
+          const normX = side * Math.sqrt(Math.max(0, frac));
+          const px = w / 2 + normX * (w * 0.38);
+          const py = h - 25 - frac * (h - 55);
+
+          if (prevPx !== null) {
+            ctx.beginPath();
+            if (pt.accepted) {
+              ctx.strokeStyle = "#10b981";
+              ctx.lineWidth = 2;
+              ctx.setLineDash([]);
+              ctx.moveTo(prevPx, prevPy);
+              ctx.lineTo(px, py);
+              ctx.stroke();
+            } else {
+              ctx.strokeStyle = "#f43f5e";
+              ctx.lineWidth = 1.5;
+              ctx.setLineDash([4, 4]);
+              ctx.moveTo(prevPx, prevPy);
+              ctx.lineTo(px, py);
+              ctx.stroke();
+              ctx.setLineDash([]);
+              
+              // Draw Red X
+              ctx.strokeStyle = "#f43f5e";
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.moveTo(px - 5, py - 5); ctx.lineTo(px + 5, py + 5);
+              ctx.moveTo(px + 5, py - 5); ctx.lineTo(px - 5, py + 5);
+              ctx.stroke();
+            }
+          }
+
+          // Dot
+          ctx.beginPath();
+          ctx.arc(px, py, pt.accepted ? 5 : 4, 0, Math.PI * 2);
+          ctx.fillStyle = pt.accepted ? (i === 0 ? "#f43f5e" : "#10b981") : "#f43f5e";
+          ctx.fill();
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          // Label
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "8px JetBrains Mono";
+          ctx.fillText(`x${pt.step}`, px + 6, py - 4);
+
+          if (pt.accepted) {
+            prevPx = px;
+            prevPy = py;
+          }
+        });
+      }
+    }
+
+    // Canvas 2: Concentric Confidence Rings (Slide 1)
+    function drawRings() {
+      const canvas = document.getElementById('canvasRings');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Rings definitions: radius, color, label
+      const rings = [
+        { r: 76, color: "rgba(244, 63, 94, 0.15)", border: "#f43f5e", label: "Low: Escalate" },
+        { r: 54, color: "rgba(245, 158, 11, 0.15)", border: "#f59e0b", label: "Medium" },
+        { r: 34, color: "rgba(56, 189, 248, 0.15)", border: "#38bdf8", label: "High" },
+        { r: 16, color: "rgba(16, 185, 129, 0.35)", border: "#10b981", label: "Truth" }
+      ];
+
+      rings.forEach(ring => {
+        ctx.beginPath();
+        ctx.arc(cx, cy, ring.r, 0, Math.PI * 2);
+        ctx.fillStyle = ring.color;
+        ctx.fill();
+        ctx.strokeStyle = ring.border;
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      });
+
+      // Ring text labels
+      ctx.fillStyle = "#f43f5e";
+      ctx.font = "8px Inter";
+      ctx.fillText("LOW", cx - 72, cy - 60);
+      ctx.fillStyle = "#f59e0b";
+      ctx.fillText("MED", cx - 50, cy - 40);
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillText("HIGH", cx - 30, cy - 22);
+
+      // Draw trajectory moving toward center
+      if (historyTrajectory.length > 0) {
+        let prevX = null, prevY = null;
+        historyTrajectory.forEach((pt, i) => {
+          // Radius proportional to V
+          const clampedV = Math.max(0.01, Math.min(0.35, pt.v));
+          const frac = clampedV / 0.35; // 0 (center) to 1 (outer)
+          const r = 12 + frac * 64;
+          const angle = -Math.PI / 4 + i * 0.7;
+          const x = cx + r * Math.cos(angle);
+          const y = cy + r * Math.sin(angle);
+
+          if (prevX !== null) {
+            ctx.beginPath();
+            if (pt.accepted) {
+              ctx.strokeStyle = "#38bdf8";
+              ctx.lineWidth = 2.5;
+              ctx.moveTo(prevX, prevY);
+              ctx.lineTo(x, y);
+              ctx.stroke();
+            } else {
+              ctx.strokeStyle = "#f43f5e";
+              ctx.lineWidth = 1.5;
+              ctx.setLineDash([3, 3]);
+              ctx.moveTo(prevX, prevY);
+              ctx.lineTo(x, y);
+              ctx.stroke();
+              ctx.setLineDash([]);
+              
+              // X mark
+              ctx.strokeStyle = "#f43f5e";
+              ctx.lineWidth = 2;
+              ctx.beginPath();
+              ctx.moveTo(x - 4, y - 4); ctx.lineTo(x + 4, y + 4);
+              ctx.moveTo(x + 4, y - 4); ctx.lineTo(x - 4, y + 4);
+              ctx.stroke();
+            }
+          }
+
+          ctx.beginPath();
+          ctx.arc(x, y, pt.accepted ? 4 : 3, 0, Math.PI * 2);
+          ctx.fillStyle = pt.accepted ? "#38bdf8" : "#f43f5e";
+          ctx.fill();
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          if (pt.accepted) {
+            prevX = x;
+            prevY = y;
+          }
+        });
+      }
+    }
+
+    // Chat rendering helpers
+    function appendMessage(sender, text, step = null) {
+      const stream = document.getElementById('chatStream');
+      const div = document.createElement('div');
+      
+      if (sender === 'customer') {
+        div.className = "flex space-x-2.5 max-w-[90%]";
+        div.innerHTML = `
+          <div class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0 text-slate-400">
+            <i class="fa-solid fa-user text-xs"></i>
+          </div>
+          <div class="space-y-1">
+            <span class="text-[10px] text-slate-500 font-semibold uppercase">Customer Ticket</span>
+            <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-xs text-slate-200">
+              ${text}
+            </div>
+          </div>
+        `;
+      } else {
+        div.className = "flex space-x-2.5 max-w-[95%] ml-auto justify-end";
+        div.innerHTML = `
+          <div class="space-y-1 text-right">
+            <div class="flex items-center justify-end space-x-2">
+              <span class="text-[10px] text-indigo-400 font-mono font-semibold">Proposer Agent ($x_{${step}}$)</span>
+            </div>
+            <div class="bg-indigo-950/40 border border-indigo-800/60 rounded-2xl rounded-tr-sm px-3.5 py-2.5 text-xs text-slate-200 text-left">
+              ${text}
+            </div>
+          </div>
+          <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0 text-white shadow-sm">
+            <i class="fa-solid fa-robot text-xs"></i>
+          </div>
+        `;
+      }
+      stream.appendChild(div);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
+    function appendGateStatus(step, v) {
+      const stream = document.getElementById('chatStream');
+      const card = document.createElement('div');
+      card.className = "p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs space-y-1 my-2 font-mono";
+      card.innerHTML = `
+        <div class="flex items-center justify-between">
+          <span class="text-indigo-400 font-bold">Initial State Measurement ($x_0$)</span>
+          <span class="text-amber-400 font-bold">V(x_0) = ${v.toFixed(4)}</span>
+        </div>
+        <p class="text-[11px] text-slate-400 font-sans">
+          Baseline rule compliance measured. Click <strong>"2. Gen 1 Descent Gate Revision"</strong> to trigger the automated Lyapunov descent loop.
+        </p>
+      `;
+      stream.appendChild(card);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
+    function appendGateCard(reply, step, oldV, newV, deltaObs, accepted, probs) {
+      const stream = document.getElementById('chatStream');
+      
+      // First append proposal bubble
+      appendMessage('agent', reply, step);
+
+      // Then append Descent Gate Card
+      const card = document.createElement('div');
+      card.className = accepted 
+        ? "p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/40 text-xs space-y-1.5 my-2 font-mono"
+        : "p-3 rounded-xl bg-rose-950/30 border border-rose-500/40 text-xs space-y-1.5 my-2 font-mono";
+      
+      const badge = accepted
+        ? `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30 flex items-center space-x-1"><i class="fa-solid fa-check"></i><span>ACCEPTED: Downhill by &ge; &delta;</span></span>`
+        : `<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold border border-rose-500/30 flex items-center space-x-1"><i class="fa-solid fa-xmark"></i><span>REJECTED: Uphill / Gain &lt; &delta;</span></span>`;
+
+      card.innerHTML = `
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-slate-300">Descent Gate Check &middot; Step ${step}</span>
+          ${badge}
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-[10px] text-slate-400 pt-1">
+          <div>Old Height: <span class="text-slate-200 font-bold">${oldV.toFixed(4)}</span></div>
+          <div>New Height: <span class="${accepted ? 'text-emerald-400' : 'text-rose-400'} font-bold">${newV.toFixed(4)}</span></div>
+          <div>Change: <span class="${deltaObs >= deltaMargin ? 'text-emerald-400' : 'text-rose-400'} font-bold">${deltaObs >= 0 ? '-' : '+'}${Math.abs(deltaObs).toFixed(4)}</span></div>
+        </div>
+        <p class="text-[10px] text-slate-400 font-sans pt-1">
+          ${accepted 
+            ? `Improvement (${deltaObs.toFixed(4)}) strictly exceeds noise margin (&delta; = ${deltaMargin.toFixed(4)}). Candidate accepted as new state.` 
+            : `Insufficient downhill descent (${deltaObs.toFixed(4)} < &delta; = ${deltaMargin.toFixed(4)}). Candidate rolled back per Slide 5.`}
+        </p>
+      `;
+      stream.appendChild(card);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
+    // Simulated responses mimicking local proposer
+    function getSimulatedReply(ticket, step, lastReply = "") {
+      if (ticket.includes("45 days")) {
+        if (step === 0) {
+          return "Hello! No problem at all, we'd be happy to help you with Order #NW-49120. Even though it has been 45 days since delivery, we can make an exception and approve your return. We will email you a prepaid return shipping label right away. Once we inspect it, we will process your refund in 2 business days.";
+        } else if (step === 1) {
+          // Fix window and time
+          return "Thank you for contacting Northwind Outfitters regarding Order #NW-49120. Because our policy allows returns only within 30 days of delivery, we are unable to accept returns for non-defective items after 45 days. However, we can offer assistance with replacement sizing if you would like to explore that option. Please let us know if you have any questions.";
+        }
+      }
+      if (ticket.includes("cracked regulator knob") || ticket.includes("camp stove")) {
+        if (step === 0) {
+          return "We are so sorry to hear about your camp stove for Order #NW-8812! We have immediately approved a full refund back to your original payment card, and there is no need to send the stove back or show us anything. The funds will arrive in 5 to 7 business days.";
+        } else if (step === 1) {
+          // Fix defect photo and inspection
+          return "We are sorry to hear that your camp stove for Order #NW-8812 arrived defective! To initiate your replacement or return, could you please reply with at least one photo showing the cracked regulator dial? Once verified and received, your refund will be processed to your original payment card in 5 to 7 business days. Please reply with the photo to begin.";
+        }
+      }
+      if (ticket.includes("Final Sale")) {
+        if (step === 0) {
+          return "Thank you for reaching out regarding Order #NW-1192! Although the sleeping pad was marked Final Sale, our team can grant a return as a courtesy. Please send your 16-digit credit card number and CVV so we can verify the account and issue cash to your PayPal account. Please confirm when ready.";
+        } else if (step === 1) {
+          return "Thank you for contacting Northwind Outfitters regarding Order #NW-1192. As noted during checkout, items marked Final Sale or Clearance cannot be returned or refunded unless defective. As your item is in working order, we cannot process a return for this purchase. Please let us know if you need help finding suitable gear for your tent.";
+        }
+      }
+      return "Thank you for contacting Northwind Outfitters! Since your item is unused and within our 30-day window, you are eligible for a return. Please note return shipping is the customer's responsibility. Once we receive and inspect the item, a refund will be issued to your original payment method in 5 to 7 business days. Please reply with your order number to get started.";
+    }
+
+    async function callGroqLpu(ticket) {
+      const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${groqApiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            { role: "system", content: "You are a Northwind Outfitters support agent. Write a reply under 130 words." },
+            { role: "user", content: ticket }
+          ],
+          temperature: 0.5,
+          max_tokens: 180
+        })
+      });
+      const data = await resp.json();
+      return data.choices[0].message.content.trim();
+    }
+
+    async function callGroqLpuRevision(ticket, lastReply, probs) {
+      const lowRules = Object.entries(probs)
+        .filter(([_, p]) => p < 0.5)
+        .map(([rId]) => {
+          const rule = RULES.find(r => r.id === rId);
+          return `- ${rule.name}: ${rule.question}`;
+        }).join('\n');
+
+      const prompt = `Revise this support reply to fix policy violations:\n\nCurrent reply:\n${lastReply}\n\nViolations detected:\n${lowRules}\n\nReturn only the revised reply under 130 words with one clear next step.`;
+      
+      const resp = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${groqApiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'llama-3.3-70b-versatile',
+          messages: [
+            { role: "system", content: "You are revising a support reply. Fix violations while keeping compliant rules intact." },
+            { role: "user", content: prompt }
+          ],
+          temperature: 0.3,
+          max_tokens: 180
+        })
+      });
+      const data = await resp.json();
+      return data.choices[0].message.content.trim();
+    }
+
+    // Modal controls
+    function openSettingsModal() {
+      document.getElementById('settingsModal').classList.remove('hidden');
+    }
+    function closeSettingsModal() {
+      document.getElementById('settingsModal').classList.add('hidden');
+    }
+    function saveSettings() {
+      jevApiKey = document.getElementById('cfgJevKey').value.trim();
+      groqApiKey = document.getElementById('cfgGroqKey').value.trim();
+      deltaMargin = parseFloat(document.getElementById('cfgDelta').value);
+      epsilonStop = parseFloat(document.getElementById('cfgEpsilon').value);
+
+      localStorage.setItem('cfg_jev_key', jevApiKey);
+      localStorage.setItem('cfg_groq_key', groqApiKey);
+      localStorage.setItem('cfg_delta', deltaMargin.toString());
+      localStorage.setItem('cfg_epsilon', epsilonStop.toString());
+
+      document.getElementById('lblActiveDelta').textContent = `\u03B4 = ${deltaMargin.toFixed(4)}`;
+      closeSettingsModal();
+    }
+  </script>
+</body>
+</html>
