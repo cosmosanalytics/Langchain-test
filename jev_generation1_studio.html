@@ -296,6 +296,56 @@
         </div>
       </div>
 
+      <!-- LIVE CONTEXT WINDOW & STATE INSPECTOR -->
+      <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col">
+        <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-code text-indigo-600"></i>
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Live Context Window &amp; State Inspector</h3>
+            <span class="text-[9px] font-mono bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-semibold">x_t State Tuple</span>
+          </div>
+          <!-- Tabs -->
+          <div class="flex items-center space-x-1 text-xs">
+            <button id="tabBtnContext" onclick="switchInspectorTab('context')" class="px-2.5 py-1 rounded bg-indigo-600 text-white font-bold text-[11px] shadow-xs">
+              Context Window Prompt
+            </button>
+            <button id="tabBtnState" onclick="switchInspectorTab('state')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px]">
+              State Object (x_t)
+            </button>
+            <button id="tabBtnJev" onclick="switchInspectorTab('jev')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px]">
+              Jev API Payload
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 1: CONTEXT WINDOW PROMPT -->
+        <div id="inspectorTabContext" class="space-y-2">
+          <div class="flex items-center justify-between text-[11px] text-slate-500 font-mono">
+            <span>What the Proposer LLM Actually Sees in Context</span>
+            <span id="lblPromptTokens" class="text-indigo-600 font-bold">~185 Tokens</span>
+          </div>
+          <pre id="codeContextWindow" class="p-3 bg-slate-900 text-emerald-400 rounded-lg text-[11px] font-mono overflow-x-auto max-h-56 custom-scrollbar whitespace-pre-wrap selection:bg-indigo-700 font-medium"></pre>
+        </div>
+
+        <!-- TAB 2: STATE OBJECT (x_t) -->
+        <div id="inspectorTabState" class="hidden space-y-2">
+          <div class="flex items-center justify-between text-[11px] text-slate-500 font-mono">
+            <span>Full System State Tuple: x_t = (u, y_t, c, P, V_t, history)</span>
+            <span class="text-emerald-700 font-bold">JSON Serializable</span>
+          </div>
+          <pre id="codeStateObject" class="p-3 bg-slate-900 text-sky-300 rounded-lg text-[11px] font-mono overflow-x-auto max-h-56 custom-scrollbar whitespace-pre-wrap selection:bg-indigo-700 font-medium"></pre>
+        </div>
+
+        <!-- TAB 3: JEV API PAYLOAD -->
+        <div id="inspectorTabJev" class="hidden space-y-2">
+          <div class="flex items-center justify-between text-[11px] text-slate-500 font-mono">
+            <span>Payload sent to https://api.typesafe.ai/v1/systemone</span>
+            <span class="text-amber-400 font-bold">15 Atomic Invariants</span>
+          </div>
+          <pre id="codeJevPayload" class="p-3 bg-slate-900 text-amber-300 rounded-lg text-[11px] font-mono overflow-x-auto max-h-56 custom-scrollbar whitespace-pre-wrap selection:bg-indigo-700 font-medium"></pre>
+        </div>
+      </div>
+
     </div>
   </main>
 
@@ -414,7 +464,98 @@
       loadScenario('return_outside_window');
       drawParabola();
       drawRings();
+      updateInspector(0, scen.ticket, scen.initialReply || "", {}, 0.0, "SCENARIO_LOADED");
     });
+
+    function switchInspectorTab(tab) {
+      const btnC = document.getElementById('tabBtnContext');
+      const btnS = document.getElementById('tabBtnState');
+      const btnJ = document.getElementById('tabBtnJev');
+      const paneC = document.getElementById('inspectorTabContext');
+      const paneS = document.getElementById('inspectorTabState');
+      const paneJ = document.getElementById('inspectorTabJev');
+
+      [btnC, btnS, btnJ].forEach(b => b.className = "px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px]");
+      [paneC, paneS, paneJ].forEach(p => p.classList.add('hidden'));
+
+      if (tab === 'context') {
+        btnC.className = "px-2.5 py-1 rounded bg-indigo-600 text-white font-bold text-[11px] shadow-xs";
+        paneC.classList.remove('hidden');
+      } else if (tab === 'state') {
+        btnS.className = "px-2.5 py-1 rounded bg-indigo-600 text-white font-bold text-[11px] shadow-xs";
+        paneS.classList.remove('hidden');
+      } else if (tab === 'jev') {
+        btnJ.className = "px-2.5 py-1 rounded bg-indigo-600 text-white font-bold text-[11px] shadow-xs";
+        paneJ.classList.remove('hidden');
+      }
+    }
+
+    function updateInspector(step, ticket, currentReply, probs, v, statusDesc = "ACTIVE") {
+      // 1. Build Context Window Prompt
+      const lowRules = Object.entries(probs || {})
+        .filter(([_, p]) => p < 0.5)
+        .map(([rId, p]) => {
+          const rule = RULES.find(r => r.id === rId);
+          return `  • [${rId}] ${rule.name}: ${rule.question} (Current p = ${p.toFixed(2)})`;
+        }).join('\n');
+
+      const systemPrompt = "You are a customer support agent for Northwind Outfitters.\nYour job is to revise the support reply to strictly uphold all store policy invariants.\nPreserve all customer ground-truth facts (order numbers, delivery timelines, product claims).\nDo not promise exceptions or invent rules. End with one clear next step.";
+      
+      const userMessage = `=== CUSTOMER TICKET (GROUND TRUTH u) ===\n"${ticket}"\n\n` +
+        `=== CURRENT PROPOSED REPLY (y_${step}) ===\n"${currentReply}"\n\n` +
+        `=== DIAGNOSTIC INVARIANT FEEDBACK (Violations where p_j < 0.50) ===\n` +
+        (lowRules ? lowRules : "  (All 15 invariants currently satisfied! V <= epsilon)") + "\n\n`" +
+        `=== INSTRUCTION ===\n` +
+        `Return only the revised reply under 130 words with one clear next step.`;
+
+      const fullContext = `// SYSTEM PROMPT\n${systemPrompt}\n\n// USER MESSAGE (CONTEXT WINDOW)\n${userMessage}`;
+      
+      const elContext = document.getElementById('codeContextWindow');
+      if (elContext) elContext.textContent = fullContext;
+      
+      const elTokens = document.getElementById('lblPromptTokens');
+      if (elTokens) elTokens.textContent = `~${Math.round(fullContext.length / 4)} Tokens`;
+
+      // 2. Build State Object (x_t)
+      const stateObj = {
+        step: step,
+        timestamp: new Date().toISOString(),
+        status: statusDesc,
+        lyapunov_height_V: parseFloat(v.toFixed(4)),
+        target_epsilon: epsilonStop,
+        descent_margin_delta: deltaMargin,
+        is_in_target_basin: (v <= epsilonStop),
+        state_tuple: {
+          u_customer_ticket: ticket,
+          y_accepted_reply: currentReply,
+          c_policy_context: "Northwind Outfitters Standard Policy (30-day return, photo for defects, inspect before refund)"
+        },
+        atomic_noul_probabilities_P: probs,
+        trajectory_history_length: historyTrajectory.length,
+        trajectory: historyTrajectory.map(h => ({ step: h.step, v: parseFloat(h.v.toFixed(4)), accepted: h.accepted }))
+      };
+      
+      const elState = document.getElementById('codeStateObject');
+      if (elState) elState.textContent = JSON.stringify(stateObj, null, 2);
+
+      // 3. Build Jev API Payload
+      const jevQuestions = {};
+      RULES.forEach(r => {
+        jevQuestions[r.id] = { type: "noul", instructions: r.question };
+      });
+      const jevPayload = {
+        model: "jev-latest",
+        endpoint: "https://api.typesafe.ai/v1/systemone",
+        state: {
+          customer_message: ticket,
+          support_reply: currentReply,
+          refund_policy: "Northwind Outfitters Policy: 30-day window for non-defective items. Defective items require photo. No cash/giftcard refunds. 5-7 business days. Inspect before guarantee. State clear next step."
+        },
+        questions: jevQuestions
+      };
+      const elJev = document.getElementById('codeJevPayload');
+      if (elJev) elJev.textContent = JSON.stringify(jevPayload, null, 2);
+    }
 
     function initRulesTable() {
       const tbody = document.getElementById('rulesTableBody');
@@ -469,6 +610,7 @@
       
       drawParabola();
       drawRings();
+      updateInspector(0, scen.ticket, scen.initialReply || "", {}, 0.0, "SCENARIO_LOADED");
     }
 
     // Engine switcher
@@ -595,9 +737,11 @@
           currentProbabilities = evalRes.probabilities;
           historyTrajectory.push({ step: stepNum, v: candV, accepted: true, reply: candidateReply });
           updateRulesTable(currentProbabilities);
+          updateInspector(stepNum, ticket, candidateReply, currentProbabilities, currentV, "ACCEPTED_DESCENT_STEP");
         } else {
           // Rollback to previous state
           historyTrajectory.push({ step: stepNum, v: candV, accepted: false, reply: candidateReply });
+          updateInspector(stepNum, ticket, lastItem.reply, currentProbabilities, currentV, "REJECTED_ROLLED_BACK");
         }
 
         drawParabola();
@@ -774,6 +918,7 @@
       drawRings();
 
       appendGateStatus(stepNum, currentV);
+      updateInspector(stepNum, ticket, reply, currentProbabilities, currentV, "INITIAL_EVALUATION");
     }
 
     function updateRulesTable(probs) {
