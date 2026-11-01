@@ -90,7 +90,7 @@
           <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 font-semibold">Descent Gate Active</span>
           <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-semibold">☀️ Light Mode</span>
         </div>
-        <p class="text-xs text-slate-500">Keeping AI Agents Rolling Downhill &middot; Real-Time Noul Probabilities $V(x) = \sum w_j (1 - p_j)$</p>
+        <p class="text-xs text-slate-500">Keeping AI Agents Rolling Downhill &middot; Real-Time Noul Probabilities: <span class="font-mono font-semibold text-slate-700">V(x) = &Sigma; w_j (1 - p_j)</span></p>
       </div>
     </div>
 
@@ -559,6 +559,12 @@
       const stepNum = stepCounter + 1;
       const ticket = document.getElementById('userTicketInput').value.trim();
 
+      // Check if already reached ground truth basin (Slide 5: Stop at V <= epsilon)
+      if (prevV <= epsilonStop) {
+        appendOptimalReachedCard(stepNum, prevV);
+        return;
+      }
+
       const btn = document.getElementById('btnRunRevisionLoop');
       btn.disabled = true;
       btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>Evaluating Descent Gate...</span>`;
@@ -653,18 +659,102 @@
       // Empirical estimator matching Jev test distributions
       const probs = {};
       let v = 0.0;
+      const tLow = ticket.toLowerCase();
+      const rLow = reply.toLowerCase();
+
       RULES.forEach(r => {
         let p = 0.95;
-        // Check rule criteria
-        if (r.id === 'R01' && (reply.includes('45 days') || reply.includes('after 30 days'))) p = 0.02;
-        if (r.id === 'R02' && reply.includes('broken') && !reply.toLowerCase().includes('photo')) p = 0.04;
-        if (r.id === 'R04' && reply.includes('Final Sale') && reply.includes('approve')) p = 0.03;
-        if (r.id === 'R05' && (reply.includes('cash') || reply.includes('PayPal') || reply.includes('gift card'))) p = 0.01;
-        if (r.id === 'R06' && (reply.includes('2 business days') || reply.includes('24 to 48 hours'))) p = 0.02;
-        if (r.id === 'R07' && reply.includes('prepaid') && !reply.includes('defective')) p = 0.03;
-        if (r.id === 'R09' && (reply.includes('16-digit') || reply.includes('CVV'))) p = 0.01;
-        if (r.id === 'R15' && !reply.includes('Please')) p = 0.15;
-        
+
+        // R01: Does reply avoid offering return/refund for non-defective item delivered >30 days ago?
+        if (r.id === 'R01') {
+          if (tLow.includes('45 days') || tLow.includes('outside')) {
+            if (rLow.includes('approve') || rLow.includes('eligible for a return') || rLow.includes('within our 30-day')) {
+              p = 0.02; // Severe violation: approves return for >30d item or hallucinates within 30d
+            } else if (rLow.includes('unable to accept') || rLow.includes('cannot') || rLow.includes('outside our standard 30-day') || rLow.includes('only within 30 days')) {
+              p = 0.98; // Compliant: correctly upholds return window policy
+            } else {
+              p = 0.40;
+            }
+          }
+        }
+
+        // R02: If customer reports defective item, does reply ask for at least one photo?
+        if (r.id === 'R02') {
+          if (tLow.includes('broken') || tLow.includes('damaged') || tLow.includes('defective') || tLow.includes('knob')) {
+            if (rLow.includes('photo')) {
+              p = 0.97;
+            } else {
+              p = 0.04; // Severe violation: missed mandatory photo requirement
+            }
+          }
+        }
+
+        // R03: Condition check
+        if (r.id === 'R03') {
+          if (rLow.includes('worn') || rLow.includes('washed')) p = 0.05;
+        }
+
+        // R04: Final sale
+        if (r.id === 'R04') {
+          if (tLow.includes('final sale') || tLow.includes('clearance')) {
+            if (rLow.includes('approve') || rLow.includes('grant a return')) {
+              p = 0.03;
+            } else {
+              p = 0.98;
+            }
+          }
+        }
+
+        // R05: Refund method
+        if (r.id === 'R05') {
+          if (rLow.includes('cash') || rLow.includes('paypal') || rLow.includes('gift card')) {
+            p = 0.01;
+          }
+        }
+
+        // R06: Processing time
+        if (r.id === 'R06') {
+          if (rLow.includes('2 business days') || rLow.includes('24 to 48 hours') || rLow.includes('instant')) {
+            p = 0.02;
+          } else {
+            p = 0.96;
+          }
+        }
+
+        // R07: Shipping costs
+        if (r.id === 'R07') {
+          if (rLow.includes('prepaid') && !tLow.includes('defective') && !tLow.includes('broken')) {
+            p = 0.03;
+          } else {
+            p = 0.95;
+          }
+        }
+
+        // R09: Sensitive information
+        if (r.id === 'R09') {
+          if (rLow.includes('16-digit') || rLow.includes('cvv') || rLow.includes('password')) {
+            p = 0.01;
+          }
+        }
+
+        // R11: Inspection before guarantee
+        if (r.id === 'R11') {
+          if (rLow.includes('no need to send') || rLow.includes('without inspection')) {
+            p = 0.03;
+          } else {
+            p = 0.96;
+          }
+        }
+
+        // R15: Clear next step
+        if (r.id === 'R15') {
+          if (rLow.includes('please reply') || rLow.includes('please pack') || rLow.includes('please send') || rLow.includes('please confirm')) {
+            p = 0.97;
+          } else {
+            p = 0.15; // Lacks clear next step
+          }
+        }
+
         probs[r.id] = p;
         v += r.weight * (1.0 - p);
       });
@@ -996,6 +1086,26 @@
       stream.scrollTop = stream.scrollHeight;
     }
 
+    function appendOptimalReachedCard(step, v) {
+      const stream = document.getElementById('chatStream');
+      const card = document.createElement('div');
+      card.className = "p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 shadow-xs text-xs space-y-1.5 my-2 font-mono";
+      card.innerHTML = `
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-emerald-950 flex items-center space-x-1.5">
+            <i class="fa-solid fa-bullseye text-emerald-600"></i>
+            <span>Ground Truth Basin Reached &middot; V(x) &le; &epsilon;</span>
+          </span>
+          <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-300 text-[10px]">Optimal Target Achieved</span>
+        </div>
+        <p class="text-[11px] text-slate-700 font-sans pt-1">
+          Current Lyapunov height <strong>V = ${v.toFixed(4)}</strong> is within the certified target basin (&epsilon; = ${epsilonStop.toFixed(4)}). All ground-truth facts (e.g. 45-day window) and policy invariants are fully satisfied. Revision halted per Slide 5 to prevent judge-chasing or fact distortion.
+        </p>
+      `;
+      stream.appendChild(card);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
     function appendGateCard(reply, step, oldV, newV, deltaObs, accepted, probs) {
       const stream = document.getElementById('chatStream');
       
@@ -1032,32 +1142,68 @@
       stream.scrollTop = stream.scrollHeight;
     }
 
-    // Simulated responses mimicking local proposer
+    function appendOptimalReachedCard(step, v) {
+      const stream = document.getElementById('chatStream');
+      const card = document.createElement('div');
+      card.className = "p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 shadow-xs text-xs space-y-1.5 my-2 font-mono";
+      card.innerHTML = `
+        <div class="flex items-center justify-between">
+          <span class="font-bold text-emerald-950 flex items-center space-x-1.5">
+            <i class="fa-solid fa-bullseye text-emerald-600"></i>
+            <span>Ground Truth Basin Reached &middot; V(x) &le; &epsilon;</span>
+          </span>
+          <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-300 text-[10px]">Optimal Target Achieved</span>
+        </div>
+        <p class="text-[11px] text-slate-700 font-sans pt-1">
+          Current Lyapunov height <strong>V = ${v.toFixed(4)}</strong> is within the certified target basin (&epsilon; = ${epsilonStop.toFixed(4)}). All ground-truth facts (e.g. 45-day window) and policy invariants are fully satisfied. Revision halted per Slide 5 to prevent judge-chasing or fact distortion.
+        </p>
+      `;
+      stream.appendChild(card);
+      stream.scrollTop = stream.scrollHeight;
+    }
+
+    // Simulated responses mimicking local proposer (preserves ground-truth facts of each ticket)
     function getSimulatedReply(ticket, step, lastReply = "") {
-      if (ticket.includes("45 days")) {
+      const tLow = ticket.toLowerCase();
+
+      // SCENARIO 1: Return 45 Days Late (Fact: Delivered 45 days ago, non-defective)
+      if (tLow.includes("45 days")) {
         if (step === 0) {
+          // Initial: Hallucinates exception, promises free label, promises 2-day refund
           return "Hello! No problem at all, we'd be happy to help you with Order #NW-49120. Even though it has been 45 days since delivery, we can make an exception and approve your return. We will email you a prepaid return shipping label right away. Once we inspect it, we will process your refund in 2 business days.";
         } else if (step === 1) {
-          // Fix window and time
-          return "Thank you for contacting Northwind Outfitters regarding Order #NW-49120. Because our policy allows returns only within 30 days of delivery, we are unable to accept returns for non-defective items after 45 days. However, we can offer assistance with replacement sizing if you would like to explore that option. Please let us know if you have any questions.";
+          // Revision 1: Fixes 45-day window refusal, but vague ending
+          return "Thank you for contacting Northwind Outfitters regarding Order #NW-49120. Because our policy allows returns only within 30 days of delivery, we are unable to accept returns or issue refunds for non-defective items delivered 45 days ago. However, we can offer assistance with replacement sizing if you would like to explore that option. Please let us know if you have any questions.";
+        } else {
+          // Revision 2+: Perfect compliance, retains 45-day fact, clear next step
+          return "Thank you for contacting Northwind Outfitters regarding Order #NW-49120. Because your waterproof jacket was delivered 45 days ago, it falls outside our standard 30-day return window, so we are unable to accept a return or issue a refund. To help make sure you have gear that works for you, our team would be happy to guide you through sizing adjustments or trade-in alternatives. Please reply with your preferred sizing or let us know if you would like trade-in details to get started.";
         }
       }
-      if (ticket.includes("cracked regulator knob") || ticket.includes("camp stove")) {
+
+      // SCENARIO 2: Damaged / Defective Camp Stove (Fact: Broken regulator knob)
+      if (tLow.includes("cracked regulator knob") || tLow.includes("camp stove")) {
         if (step === 0) {
-          return "We are so sorry to hear about your camp stove for Order #NW-8812! We have immediately approved a full refund back to your original payment card, and there is no need to send the stove back or show us anything. The funds will arrive in 5 to 7 business days.";
+          return "We are so sorry to hear about your camp stove for Order #NW-8812! We have immediately approved a full refund back to your original payment card, and there is no need to send the stove back or show us anything. The funds will arrive in 5 to 7 business days. Have a wonderful day!";
         } else if (step === 1) {
-          // Fix defect photo and inspection
-          return "We are sorry to hear that your camp stove for Order #NW-8812 arrived defective! To initiate your replacement or return, could you please reply with at least one photo showing the cracked regulator dial? Once verified and received, your refund will be processed to your original payment card in 5 to 7 business days. Please reply with the photo to begin.";
+          return "We are sorry to hear that your camp stove for Order #NW-8812 arrived defective! To initiate your claim, could you please reply with at least one photo showing the cracked regulator dial? Once verified, your refund will be processed to your original payment card in 5 to 7 business days. Please reply with the photo to begin.";
+        } else {
+          return "Thank you for contacting Northwind Outfitters regarding Order #NW-8812. We apologize that your camp stove arrived with a cracked regulator knob. Because this item arrived damaged, please reply with a clear photo of the defective regulator. Once our inspection team reviews the photo and processes the return, a full refund will be issued to your original payment method within 5 to 7 business days. Please reply with the photo attached to start your return.";
         }
       }
-      if (ticket.includes("Final Sale")) {
+
+      // SCENARIO 3: Final Sale Item (Fact: Clearance sleeping pad marked Final Sale)
+      if (tLow.includes("final sale") || tLow.includes("sleeping pad")) {
         if (step === 0) {
           return "Thank you for reaching out regarding Order #NW-1192! Although the sleeping pad was marked Final Sale, our team can grant a return as a courtesy. Please send your 16-digit credit card number and CVV so we can verify the account and issue cash to your PayPal account. Please confirm when ready.";
         } else if (step === 1) {
-          return "Thank you for contacting Northwind Outfitters regarding Order #NW-1192. As noted during checkout, items marked Final Sale or Clearance cannot be returned or refunded unless defective. As your item is in working order, we cannot process a return for this purchase. Please let us know if you need help finding suitable gear for your tent.";
+          return "Thank you for contacting Northwind Outfitters regarding Order #NW-1192. As noted during checkout, items marked Final Sale or Clearance cannot be returned or refunded unless defective. Since your item is in working order, we cannot accept a return. Please let us know if you need help finding suitable gear for your tent.";
+        } else {
+          return "Thank you for contacting Northwind Outfitters regarding Order #NW-1192. As noted during purchase, items marked Final Sale or Clearance are non-returnable and non-refundable unless they arrive defective. Because your sleeping pad is in working condition, we cannot accept a return or issue a refund. If you would like advice on compatible tent setups or authorized gear resale options, please reply to let us know how we can best assist.";
         }
       }
-      return "Thank you for contacting Northwind Outfitters! Since your item is unused and within our 30-day window, you are eligible for a return. Please note return shipping is the customer's responsibility. Once we receive and inspect the item, a refund will be issued to your original payment method in 5 to 7 business days. Please reply with your order number to get started.";
+
+      // SCENARIO 4: Standard Clean Return (Fact: Unopened jacket/boots within 12 days)
+      return "Thank you for contacting Northwind Outfitters regarding Order #NW-7721! Because your boots are unused and within our 30-day window, you are eligible for a return. Please note return shipping is the customer's responsibility. Once our warehouse receives and inspects the item, a refund will be issued to your original payment method in 5 to 7 business days. Please reply with your order confirmation to receive your returns depot packing slip.";
     }
 
     async function callGroqLpu(ticket) {
