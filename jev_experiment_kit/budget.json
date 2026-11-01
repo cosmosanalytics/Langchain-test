@@ -1,0 +1,8 @@
+{
+  "note": "Owner: edit these numbers before the run. The runner must stop and report when any cap is reached.",
+  "max_usd_total": 40,
+  "max_usd_per_phase": {"phase0": 1, "phase1": 4, "phase2": 8, "phase3": 12, "phase4": 12, "controls": 3},
+  "max_jev_calls_total": 20000,
+  "max_proposer_calls_total": 6000,
+  "max_grader_calls_total": 12000
+}

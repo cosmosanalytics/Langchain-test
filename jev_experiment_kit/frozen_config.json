@@ -1,0 +1,11 @@
+{
+  "jev_model_id": "jev-1.14.0",
+  "proposer_model": "Qwen/Qwen2.5-1.5B-Instruct",
+  "delta": 0.031412639999999874,
+  "epsilon": 0.08,
+  "B_consecutive_rejects": 3,
+  "step_cap_T": 10,
+  "seed": 42,
+  "rules_hash": "ec3276eb9a5394e512ea704af1ef7f4d849f10303208963b5eee2835f53ed31e",
+  "timestamp": "2026-10-31T18:44:14Z"
+}

@@ -1,0 +1,4 @@
+{
+  "compliant_vs_violating_auroc": 0.56,
+  "mean_abs_diff_main_vs_audit": 0.097105
+}

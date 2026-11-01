@@ -1,0 +1,4202 @@
+[
+  {
+    "query_id": "Q001",
+    "message": "I bought a Northwind tent (order #NW7890) about 10 days ago, and the main zipper is already completely broken. It won't close at all. This is ridiculous for a brand new tent. I need to return this for a full refund or a functional replacement immediately.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 250.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q002",
+    "message": "Hi, I received my hiking boots (order #NW7891) a few days ago, but they're a bit too tight. I'd like to return them for a refund. They haven't been worn outside.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 120.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q003",
+    "message": "I'm hoping to return a backpack (order #NW7892) that I bought last month. It's still in its original packaging, completely unused. I know it's just over the 30-day window, but I was really busy and didn't get a chance to send it back sooner. Is there any flexibility?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 35,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 90.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q004",
+    "message": "I'd like to return a jacket from order #NW7893. I just changed my mind about it. It's unworn.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 180.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q005",
+    "message": "This GPS watch (order #NW7894) is a total lemon! I've had it for barely a week and the altimeter readings are completely off, and it keeps losing satellite connection. For over $500, I expect it to work! I need a full refund for this defective piece of junk.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 550.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q006",
+    "message": "I tried out the sleeping bag (order #NW7895) once on a camping trip last weekend, but it wasn't as warm as I'd hoped. Can I return it? It's clean and in good condition.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 18,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 150.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q007",
+    "message": "I bought a swimsuit (order #NW7896) a few days ago, and it doesn't fit right. I need to return it, but I see something about 'final sale' on my receipt. What does that mean? I can't return it?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 4,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 45.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q008",
+    "message": "My friend gave me a Northwind camping stove (order #NW7897) for my birthday, but when I tried to use it, the igniter switch just sparks and nothing happens. It's clearly faulty. Can I exchange it or get a store credit, please?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 75.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q009",
+    "message": "I received a Northwind water bottle (order #NW7898) as a gift over a month ago, but I already have one just like it. It's still in the box. Would it be possible to return it for store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 40,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 25.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q010",
+    "message": "Hello, I recently purchased a kayak (order #NW7899) and unfortunately, it's just too big for my car roof rack. I need to return it. It's still brand new, never been in the water. Can you help me arrange the return process?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 14,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 700.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q011",
+    "message": "I need to return some ski goggles (order #NW7900). They arrived last week.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 60.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q012",
+    "message": "This headlamp (order #NW7901) is a joke! I bought it over a month ago, used it once, and now it just flickers and dies. I'm out in the wilderness with a broken light, this is unacceptable! I want my money back, not some store credit, my actual money, or I'm taking this to social media!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 45,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 40.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": true
+    }
+  },
+  {
+    "query_id": "Q013",
+    "message": "I ordered a pair of hiking poles (order #NW7902) but decided I don't need them. Can I send them back?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 22,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 70.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q014",
+    "message": "Hi, I received my rain jacket (order #NW7903) last week, but it's the wrong size. I'd like to exchange it for a larger one, or get a refund if an exchange isn't possible. It's still in new condition with tags.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 8,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 190.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q015",
+    "message": "I'm writing about a pair of trail running shoes (order #NW7904) I bought about five weeks ago. I've worn them a few times, but they're just not comfortable for my feet. Is there any way I can still return them?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 38,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 130.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q016",
+    "message": "I bought a down jacket (order #NW7905) two weeks ago, and the stitching is already coming apart at the seams! This was supposed to be a high-quality jacket, and it's falling apart! And now I see it was marked 'final sale'?! This is unacceptable! I want my money back for this defective item!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 15,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 300.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q017",
+    "message": "Return for order #NW7906. T-shirt doesn't fit.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 3,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 30.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q018",
+    "message": "Hello! I received a Northwind camping chair (order #NW7907) as a gift, but it's not the color I wanted. Can I exchange it for a different color, or get a store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 12,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 65.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q019",
+    "message": "My portable charger (order #NW7908) stopped working after only a few uses. It won't hold a charge anymore. Can I return it for a replacement?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 25,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 50.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q020",
+    "message": "I bought a Northwind hiking backpack (order #NW7909) a few months ago, and the main strap is tearing. It's clearly a manufacturing defect. Is this covered under warranty? I've used it for several trips, but it shouldn't be falling apart already.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 90,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 100.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q021",
+    "message": "I'd like to return the gloves from order #NW7910.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 6,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 35.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q022",
+    "message": "I'm trying to return a sleeping pad (order #NW7911) that I bought about 5 weeks ago. I haven't used it, but I just realized it's been over 30 days. Is there anything you can do, or am I out of luck?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 33,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 80.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q023",
+    "message": "I purchased an expedition tent (order #NW7912) two months ago, and after only one use, one of the main poles cracked during a mild wind. This tent cost a fortune, and it's clearly not durable enough. What are my options under warranty for such an expensive, defective item?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 60,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 650.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q024",
+    "message": "The hiking socks (order #NW7913) I got last week already have a hole in the toe after one hike. That's pretty poor quality. I'd like to get a refund.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 18,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 20.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q025",
+    "message": "I can't believe this! I bought a bikini top (order #NW7914) online, it doesn't fit, and now you're telling me it's 'final sale'?! This is ridiculous! How am I supposed to know if it fits without trying it on? I demand a refund!",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 35.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q026",
+    "message": "Hey, I got these sunglasses (order #NW7915) a few days ago, but they're not really my style. Can I send them back for a refund?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 9,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 55.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q027",
+    "message": "The camping lantern (order #NW7916) I ordered is not working. It arrived about two weeks ago, and the light just won't turn on. I've tried new batteries.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 14,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 45.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q028",
+    "message": "Urgent! My new water filter (order #NW7917) is leaking terribly. I just got it a few days ago, and it's completely unusable. I need a replacement or refund before my trip next week!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 60.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q029",
+    "message": "I purchased a Northwind multi-tool (order #NW7918) about a year ago, and the blade mechanism has become really stiff and difficult to open. It feels like it's seizing up. Is this something that would be covered by warranty, even after this time? I use it regularly.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 365,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 80.0,
+      "item_category": "accessories",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q030",
+    "message": "I'd like to return a travel pillow (order #NW7919). It's unused.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 11,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 20.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q031",
+    "message": "Hi, I just received my order for the 'Everest Summit Tent' (Order #NW12345). Unfortunately, when I set it up, one of the main poles snapped at the joint. It seems like a manufacturing defect. I haven't even used it outdoors yet. Can I get a replacement or a full refund?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 2,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 450.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q032",
+    "message": "I need to return a men's hiking shirt, size large. It's too big. I'd like a medium instead. Order number is NW12346.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 3,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 45.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q033",
+    "message": "Hey, I got the 'Trailblazer' backpack in blue, but honestly, the color isn't quite what I expected. Can I send it back? Order NW12347, delivered last week.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 8,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 70.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q034",
+    "message": "These 'Mountain Trekker' hiking boots are just too stiff and uncomfortable for my feet. I wore them once on a short trail to try them out. Can I return them for a refund? Order NW12348.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 160.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q035",
+    "message": "I know it's a bit late, but I'd like to return a jacket (NW12349). It was delivered about 35 days ago. I was out of town and just got back. It's unworn with tags still on. Is there any way I can still return it?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 35,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 70.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q036",
+    "message": "I bought a 'Winter Ascent Parka' (NW12350) that was marked as 'final sale'. It arrived last week, and it's definitely too small. I usually wear a medium, but this one is really tight. What are my options? I can't wear it.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 250.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q037",
+    "message": "I received a 'Northwind Fleece Vest' as a gift (Order NW12351, bought by my sister). It's a size L, but I need an M. How can I exchange it?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 55.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q038",
+    "message": "The headlamp I bought just doesn't seem bright enough for night hiking, even on the highest setting. I'd like to return it. Order NW12352, delivered 3 weeks ago. I've used it a few times on short walks.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 21,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 40.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q039",
+    "message": "I need to return the 'Expedition Dome Tent' (Order NW12353). It's a fantastic tent, but my plans changed, and I no longer need one of this size. It's still in its original packaging, unopened. Received it last week.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 750.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q040",
+    "message": "I'd like to return a pair of 'Waterproof Hiking Shoes' (NW12354). I just changed my mind; they're not quite what I'm looking for. They're unworn.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 120.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q041",
+    "message": "Help! I accidentally ordered two 'Compact Camping Chairs' (NW12355 and NW12356). I only need one. Can I return the duplicate?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 60.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q042",
+    "message": "The zipper on my new 'Alpine Shell Jacket' (NW12357) completely broke after only a month and a half of light use. This is ridiculous for the price! I expect a replacement or a full refund. This is clearly a defect.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 45,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 200.0,
+      "item_category": "apparel",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q043",
+    "message": "I understand this 'Quick-Pitch Tent' (NW12358) was final sale, but it arrived with a noticeable tear in the rainfly. This isn't right! I haven't even used it. I demand a refund or an undamaged replacement.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 5,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 150.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q044",
+    "message": "The 'Women's Trail Pants' (NW12359) I ordered don't fit well. They're too snug around the waist. Can I return them for a larger size?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 80.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q045",
+    "message": "I bought a 'Summit Series Sleeping Bag' (NW12360) about a year ago. I'm wondering what the warranty covers for this product? It's still working fine, but I want to be prepared.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 365,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 0.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q046",
+    "message": "The 'Portable Camping Stove' (NW12361) I received is faulty. It's difficult to light and the flame is very weak, even after trying new fuel. Used it once. I need to return it.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 95.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q047",
+    "message": "My friend gave me a 'Hydration Pack' (NW12362) for my birthday, but I already have one. I think she bought it over a month ago, maybe 40 days. It's unused. Can I still return it for store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 40,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 65.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q048",
+    "message": "This is unacceptable! My new 'Carbon Fiber Kayak Paddle' (NW12363) broke on its first outing! The shaft snapped clean in half. I need a replacement immediately or a full refund. This was an expensive item!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 3,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 550.0,
+      "item_category": "water sports",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q049",
+    "message": "Oops! I ordered the wrong model of 'Portable Solar Charger' (NW12364). My mistake. Can I return it and get the correct one?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 2,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 110.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q050",
+    "message": "The 'Expedition Backpack' I received as a gift (NW12365, from my brother) has a seam coming undone already, and I haven't even used it yet. It looks like a manufacturing flaw. I'm really disappointed. Can I get it replaced?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 180.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q051",
+    "message": "I need to return a pair of 'Winter Hiking Boots' (NW12366). They're just a bit too small. I tried them on once indoors. Can I get a different size?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 18,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 140.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q052",
+    "message": "These 'Polarized Sunglasses' (NW12367) just don't fit my face properly; they keep slipping down. I've worn them a couple of times but they're just not comfortable. Can I return them?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 14,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 75.0,
+      "item_category": "accessories",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q053",
+    "message": "My aunt bought me a 'Base Layer Top' (NW12368) as a gift, but it's not the color I wanted. I saw it was marked as 'final sale'. Is there anything at all I can do to exchange it for a different color or size, even if it's not a refund?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 25,
+      "final_sale": true,
+      "gift": true,
+      "refund_amount_usd": 60.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q054",
+    "message": "The 'Adventure GPS Watch' (NW12369) I bought two months ago has completely stopped working. It won't even turn on. This is a high-end device, and I expect it to last longer than 60 days. I demand a replacement or full refund under warranty.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 60,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 600.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q055",
+    "message": "The 'Family Camping Tent' (NW12370) I ordered arrived today, but it's missing all the poles. What am I supposed to do with this? I need to use it this weekend!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 1,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 300.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q056",
+    "message": "I purchased the 'Ultralight Down Jacket' (NW12371) about 20 days ago. I wore it once on a chilly morning hike, and it just didn't feel as warm as I expected. I'd like to return it. It's otherwise in perfect condition.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 220.0,
+      "item_category": "apparel",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q057",
+    "message": "My Northwind camping stove (NW12372), which I bought 7 months ago, has completely stopped working. It's supposed to have a 1-year warranty, right? Can you help me with a repair or replacement?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 210,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 120.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q058",
+    "message": "I know this is a long shot, but I bought a 'Cold Weather Sleeping Bag' (NW12373) about 50 days ago. I've used it twice. It's great, but I've realized it's just too bulky for my backpacking trips. Is there any possibility of returning it, even for store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 50,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 190.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q059",
+    "message": "I received a 'Hiking Pole Set' (NW12374) as a gift. It's not something I'll use. Can I return it for store credit instead of a refund to the original purchaser?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 70.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": true
+    }
+  },
+  {
+    "query_id": "Q060",
+    "message": "The child's bike helmet (NW12375) I ordered is too big. Need to exchange for a smaller size.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 2,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 60.0,
+      "item_category": "cycling",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q061",
+    "message": "Hi, I'd like to return a camping lantern I bought last week. It's still in its original packaging, I just realized I already have one.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 12,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 85.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q062",
+    "message": "I am absolutely furious! My new hiking jacket arrived with a torn seam on the sleeve. This is unacceptable for a brand new item! I need this resolved immediately.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 60.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q063",
+    "message": "Hello, I purchased a pair of hiking boots a while ago, maybe a month or so? They're really uncomfortable on long hikes, and I was wondering if I could still return them. I've worn them on a few trails.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 45,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 120.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q064",
+    "message": "Need to return a base layer top. It was on clearance, but it's too small. Can I get a refund or store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 3,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 45.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q065",
+    "message": "Hi, I received a pair of trail running shoes as a birthday gift, but they're a size too big. I have the gift receipt. Can I exchange them for the correct size or get a refund?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 110.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q066",
+    "message": "I'd like to return the premium family tent I ordered. It's just much larger than I anticipated for our needs, and we haven't even taken it out of the box yet. The order total was quite high.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 650.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q067",
+    "message": "My new GPS watch, which I bought here, stopped holding a charge after only a few weeks. It's completely dead now. This is ridiculous for an item designed for outdoor use. What's your policy on defective electronics under warranty?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 250.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q068",
+    "message": "Can I return a water bottle? It's unused, just changed my mind.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 30.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q069",
+    "message": "The cycling helmet I received yesterday has a huge scratch on the side! It was clearly damaged before shipping. I expect a brand new, undamaged item. What are my options for a replacement?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 2,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 180.0,
+      "item_category": "cycling",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q070",
+    "message": "I bought a fleece jacket about a month and a half ago. It's been worn a few times, but it's just not as warm as I hoped. Can I still return it?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 35,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 75.0,
+      "item_category": "apparel",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q071",
+    "message": "I purchased some climbing chalk bags on sale, but they're not quite what I was looking for. They're marked as final sale. Is there any flexibility on returns for these?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 8,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 90.0,
+      "item_category": "climbing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q072",
+    "message": "My uncle bought me a new fishing rod and reel combo for my birthday. It's lovely, but I already have a very similar setup. I have the gift receipt, and it's still in the box. Could I return it for store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 150.0,
+      "item_category": "fishing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q073",
+    "message": "This is absolutely unacceptable! My brand new portable power station failed completely on its first camping trip last weekend. It won't even turn on now. I spent over $700 on this, and it's useless! I need a full refund or a working replacement immediately.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 700.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q074",
+    "message": "I've had these hiking boots for a few weeks now, and the sole is already starting to separate from the upper on one of them. I've only used them on light trails. Is this covered under any kind of warranty?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 25,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 130.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q075",
+    "message": "I'd like to return a small backpack. It's too small for my needs. Unused.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 50.0,
+      "item_category": "hiking",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q076",
+    "message": "I am disgusted! I bought a rain jacket from you guys two months ago, and the waterproofing has completely failed. I'm soaked every time I wear it in light rain! This is unacceptable for a product marketed as waterproof. I want my money back!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 60,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 40.0,
+      "item_category": "apparel",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q077",
+    "message": "Hello, I need to return a paddleboard paddle. It's brand new, still in its packaging, but I found a lighter one that better suits my needs. Can I get a full refund?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 18,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 220.0,
+      "item_category": "water sports",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q078",
+    "message": "We bought a large family camping tent, sleeping bags, and a portable stove from you two weeks ago for our summer trip. Unfortunately, our plans changed drastically, and we won't be able to go. Everything is still in its original packaging. Could we return the entire order for a refund? The total was close to a thousand dollars.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 14,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 900.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q079",
+    "message": "I received a pair of hiking pants as a gift, but one of the belt loops is ripped right out of the box. It's clearly a manufacturing defect. I don't have the original receipt, just the gift receipt. What should I do?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 70.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q080",
+    "message": "I know it's a long shot, but I bought these special edition climbing shoes on final sale about three months ago. I've worn them a lot, but they just never fit right, and I finally gave up on them. Is there any chance at all for a store credit, even partial?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 90,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 100.0,
+      "item_category": "climbing",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q081",
+    "message": "I purchased a new bike repair stand a few days ago, but one of the clamps isn't tightening properly. It feels like a stripped thread. Is this something that would be covered under warranty, or can I get an exchange?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 3,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 200.0,
+      "item_category": "cycling",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q082",
+    "message": "I need to return a headlamp. Still in box. Wrong model.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 9,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 25.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q083",
+    "message": "I just received my new fishing kayak yesterday, and there's a significant dent on the hull! It must have happened during shipping. This is a very expensive item, and I expect it to be perfect. What's your process for handling shipping damage and getting a replacement?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 1,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 300.0,
+      "item_category": "water sports",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q084",
+    "message": "Hi, I'd like to return a pair of hiking socks. They're still in the packaging and unworn. I accidentally ordered too many pairs.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 22,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 55.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q085",
+    "message": "I bought a sleeping bag from you about 40 days ago. It's been used a couple of times. It's not warm enough. Can I return it? This is ridiculous.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 40,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 150.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q086",
+    "message": "I bought a climbing harness on clearance, marked final sale. It's the wrong size. Can I exchange it for a different size, or am I out of luck?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 5,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 65.0,
+      "item_category": "climbing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q087",
+    "message": "Hello, I received a pair of hiking sandals last week, and the strap on one of them is already tearing. It looks like a weak point in the material. I haven't even gone on a proper hike with them yet. Could I get a replacement or a refund?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 11,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 120.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q088",
+    "message": "My sister gave me a gift certificate for your store, and I used it to buy a new backpack. It's a great pack, but it's just a bit too small for my usual gear. I've only tried it on at home. Can I return it and get the value back on the gift certificate, or get a larger one?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 25,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 95.0,
+      "item_category": "hiking",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q089",
+    "message": "We ordered a full set of snorkeling gear for our family vacation, including wetsuits, masks, and fins. Our trip got cancelled unexpectedly, so we no longer need them. Everything is still in its original packaging. The total order was over $500. Can we return it all for a full refund?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 16,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 550.0,
+      "item_category": "water sports",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q090",
+    "message": "I purchased a high-end camping stove from you about 10 days ago. It works fine, but I'm concerned about the durability of one of the plastic components; it feels quite flimsy. Is there an extended warranty available for this type of product, or what are my options if it breaks down prematurely?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 400.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q091",
+    "message": "Hello, I'd like to return the hiking boots I purchased last week. They're a size too small, and I haven't worn them outside. My order number is #NW87654. Thanks!",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 12,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 85.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q092",
+    "message": "This is ridiculous! I just received the camping tent, and one of the main poles is bent right out of the box. How am I supposed to set this up? I need a replacement immediately or my trip next weekend is ruined!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 120.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q093",
+    "message": "Hi there, I know it's a bit past the usual return window, but I completely forgot to send back these trail running shoes. I bought them for a race that got cancelled and never ended up using them. Is there any chance I could still return them? They're brand new in the box. Order #NW98765.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 45,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 60.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q094",
+    "message": "I'm so frustrated! I bought this Northwind branded fleece jacket during your 'Final Sale' event, but it's way too small. The sizing chart was totally off. Can I please exchange it for a larger size, or at least get store credit? It's unworn, tags still attached.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 30.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q095",
+    "message": "Hello, I received a Northwind backpack as a gift for my birthday, but I already have one. I'd like to return it for store credit if possible. I don't have the original receipt, but I believe it was purchased a few weeks ago. The tags are still on.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 75.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q096",
+    "message": "I'm absolutely furious! The high-end GPS watch I ordered for my expedition arrived completely dead. It won't charge, won't turn on, nothing. This cost me over $600! I need a full refund and an explanation for this terrible quality control. Order #NW12345.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 650.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q097",
+    "message": "My Northwind 4-person tent, purchased about 3 months ago, has developed a tear along one of the seams, despite careful use. It's supposed to have a 1-year warranty. What are my options for repair or replacement under the warranty?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 90,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 0.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q098",
+    "message": "Hi, I'd like to return a pair of hiking pants. I wore them once on a short walk and realized they're not comfortable for me. They've been washed once. Is this still okay for a return?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 25,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 45.0,
+      "item_category": "apparel",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q099",
+    "message": "I received these waterproof hiking boots over a month ago, but only just got a chance to use them on a rainy hike. My feet were soaked! They're definitely not waterproof. Can I still return them even though it's been a bit over 30 days? This is a clear defect.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 35,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 90.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q100",
+    "message": "My friend gave me a Northwind water bottle as a gift, but it was purchased during your final sale. It's a bit small for my needs. Is there any way to exchange it for a larger one, or get store credit? I don't have the original receipt.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 8,
+      "final_sale": true,
+      "gift": true,
+      "refund_amount_usd": 40.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q101",
+    "message": "Hey, I need to return the camping lantern I bought last week. It's just not bright enough for what I need. Still in the box, unused. Order #NW54321.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 110.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q102",
+    "message": "THIS IS UNACCEPTABLE! The drone I purchased for $700 crashed on its first flight due to a clear malfunction. I followed all instructions! This isn't just about a refund; I expect compensation for the damage it caused when it hit my car! I want a full refund AND a store credit for my trouble!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 700.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": true
+    }
+  },
+  {
+    "query_id": "Q103",
+    "message": "Good morning, I received a Northwind rain jacket as a gift about 6 weeks ago. It's a lovely jacket, but it's the wrong size. I haven't worn it. Could I still exchange it for a different size, or get a gift card for the value? I don't have the order details.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 40,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 55.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q104",
+    "message": "My Northwind portable solar charger, bought 6 months ago, has stopped working entirely. It's been used on several trips and always worked great until now. It should be under warranty, right? I need it for my upcoming trek. What's the process for a warranty claim and a quick replacement?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 180,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 0.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q105",
+    "message": "Return request for order #NW11223. The headlamp is not what I expected. Unused.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 18,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 25.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q106",
+    "message": "I just opened the box for my new hiking boots, and the stitching on the left boot is completely undone near the ankle. This is a brand new item! I need to return these for a full refund immediately. Order #NW33445.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 2,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 150.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q107",
+    "message": "I purchased a lightweight camping stove during your end-of-season sale, marked as final sale. I haven't used it, but I found a better option elsewhere. Is there any flexibility on your final sale policy for an unused item? I'd really appreciate a store credit.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 14,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 80.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q108",
+    "message": "I would like to initiate a return for the sleeping bag purchased on [date]. It's too bulky for my backpacking needs. The item is in its original packaging and unused. Order #NW67890.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 28,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 150.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q109",
+    "message": "My apologies, I'm just getting around to this. I bought a technical base layer shirt a few weeks ago, wore it once for a run, and it's just not comfortable. It's been washed. Can I still return it? Order #NW22334.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 35.0,
+      "item_category": "apparel",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q110",
+    "message": "I'm inquiring about the warranty for my Northwind portable stove. I bought it a few months ago, and the igniter has stopped working. It's been used regularly. Can this be repaired or replaced under warranty? Order #NW77889.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 120,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 0.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q111",
+    "message": "The hiking shirt I ordered is too tight. I need to return it for a refund. Order #NW99887.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 22,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 65.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q112",
+    "message": "Return for order #NW10101. Boots don't fit. Unworn.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 9,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 130.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q113",
+    "message": "I need to return a hiking backpack. I used it once on a day trip, and it's just not comfortable for my back shape. It's clean and in good condition, but definitely used. Can I still return it? Order #NW13579.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 25,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 100.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q114",
+    "message": "I bought a pair of thermal leggings for my trip next month, but after trying them on, I noticed a small hole near the seam. They haven't been worn or washed. I'd like to get a replacement or a refund. Order #NW24680.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 95.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q115",
+    "message": "I'd like to return the portable charger I bought. It's not compatible with my phone. Unopened package.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 70.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q116",
+    "message": "This is ridiculous! I paid good money for your premium sleeping bag, and the zipper broke on the first night! I was freezing! I want a full refund of the $800 I spent and some sort of compensation for the terrible experience and ruined camping trip!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 800.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": true
+    }
+  },
+  {
+    "query_id": "Q117",
+    "message": "Hi, I bought a pair of hiking socks last month and wore them once. They developed a hole after the first wash, which is really disappointing for the price. I know they're used, but this seems like poor quality. Can I return them?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 40.0,
+      "item_category": "accessories",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q118",
+    "message": "I am returning the waterproof jacket from order #NW56789. It's simply too bulky for my needs. The item is unworn and still has tags.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 11,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 180.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q119",
+    "message": "The hiking sandals I bought are falling apart after only a few uses! The sole is detaching from the upper. I've only had them for less than a month. I'm very dissatisfied with this product and expect a full refund. Order #NW80808.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 29,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 160.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q120",
+    "message": "Return the camping pillow. Not comfortable. Order #NW90909.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 16,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 50.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q121",
+    "message": "Hi, I'd like to return the hiking boots I ordered last week. They're a bit too snug for my liking. They haven't been worn outside, just tried on indoors.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 149.99,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q122",
+    "message": "I need to return this waterproof jacket. It's just not the right color for me. I received it a few days ago and it's still in its original packaging.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 180.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q123",
+    "message": "Could I get a refund for the camping hammock I bought? My trip got cancelled, so I won't need it after all. It's brand new.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 75.5,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q124",
+    "message": "Hello, I'd like to send back the hiking backpack (order #NW7890). It's a bit too large for what I need. I haven't used it, tags are still on.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 14,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 120.0,
+      "item_category": "backpacks",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q125",
+    "message": "The headlamp I ordered (NW12345) arrived last week. I've decided I prefer a different model. Can I return it for a full refund? It's unopened.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 6,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 45.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q126",
+    "message": "Hi, I purchased a pair of convertible hiking pants a couple of weeks ago. They fit well, but I found a similar pair locally that I prefer. They've only been tried on. Can I return them?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 18,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 85.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q127",
+    "message": "I received my new tent, the 'Summit Peak 3-Person', two days ago. I set it up in the backyard and noticed one of the pole segments is bent, making it impossible to fully assemble. This is clearly defective. I need a replacement or a full refund immediately.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 2,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 350.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q128",
+    "message": "My partner bought me a new GPS watch for my birthday a week ago, but the altimeter function isn't working correctly right out of the box. It keeps showing wildly inaccurate readings. Since it was a gift, I don't have the original receipt, but I can provide the order number if needed. I'd like to exchange it for a working one.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 299.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q129",
+    "message": "I'm extremely upset! I bought a pair of your 'Trailblazer' hiking boots about 45 days ago. After only a few moderate hikes, the sole on one boot is already separating from the upper! This is unacceptable for boots that cost this much and are advertised as durable. I need to return these for a full refund, despite it being a bit past your usual return window. This is a clear manufacturing defect.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 45,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 220.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q130",
+    "message": "The kayak I ordered, the 'River Runner Pro', arrived last week. Upon inspection, there's a significant crack near the bow, clearly from shipping or a manufacturing defect. This is a very expensive item, and I'm very disappointed. I need to arrange for a return and a full refund of the $1,200 I paid. What's the process for returning such a large item?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 1200.0,
+      "item_category": "water_sports",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q131",
+    "message": "I purchased a 'Mountaineer' sleeping bag about 3 weeks ago. It's rated for -10\u00b0C, but during a recent trip where temperatures dropped to 0\u00b0C, I was freezing. The insulation seems to be clumped in places, and it's not performing as advertised. This feels like a warranty issue. Can I get a replacement or repair under warranty?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 21,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 450.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q132",
+    "message": "I bought the 'Explorer' multi-tool during your clearance sale last week. It was listed as final sale, but it arrived with one of the tools completely jammed and unusable. This is not a change of mind, it's genuinely broken. What can be done about a defective final sale item?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 8,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 35.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q133",
+    "message": "The portable water filter I purchased (order NW9876) arrived a few weeks ago. I took it on one short camping trip, and it stopped filtering water effectively after only a couple of uses, much less than its advertised capacity. It seems to be defective. I need to return it for a refund.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 25,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 60.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q134",
+    "message": "I know it's a long shot, but I'm hoping I can still return this pair of snowshoes. I bought them about 6 weeks ago, anticipating a winter trip that ended up being postponed. They are still in their original box, completely unused. Is there any flexibility on your 30-day return policy for unused items?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 42,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 190.0,
+      "item_category": "winter_sports",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q135",
+    "message": "My sister gave me a Northwind gift for my birthday, a 'Voyager' backpack. It's lovely, but I already have one just like it. I received it about 5 weeks ago. I don't have the receipt, but she might. It's never been used. Can I exchange it or get store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 38,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 110.0,
+      "item_category": "backpacks",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q136",
+    "message": "I bought a 'Trailblazer' hydration pack about 2 months ago. I've used it a few times, but it's just not comfortable for longer hikes. I know it's past the return window and it's been used, but I was wondering if I could still get store credit or an exchange for a different model?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 60,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 70.0,
+      "item_category": "backpacks",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": true
+    }
+  },
+  {
+    "query_id": "Q137",
+    "message": "I purchased a pair of your premium 'Everest' hiking poles 7 months ago. One of the locking mechanisms has completely failed, making the pole unusable. These poles come with a 1-year warranty. How do I go about getting them repaired or replaced under warranty?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 210,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 150.0,
+      "item_category": "hiking",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q138",
+    "message": "I bought a pair of your 'River Guide' paddling gloves from the final sale section last week. Unfortunately, they're a size too small and really uncomfortable. I know final sale items can't be returned, but is there any way I could at least exchange them for a larger size, or get store credit? I haven't used them.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 9,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 25.0,
+      "item_category": "water_sports",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q139",
+    "message": "I purchased a 'Chill Out' insulated water bottle during your flash sale two weeks ago. It was marked final sale. I love the bottle, but it doesn't fit in my car's cup holder, which is a deal breaker for me. Is there anything you can do? I'd even be happy with an exchange for a different model or store credit.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 14,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 30.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q140",
+    "message": "My friend bought me a 'Canyon Explorer' map set as a gift for my birthday last month. It's a really thoughtful gift, but I already own this specific set. I don't have the receipt, but I know she ordered it online. Can I return it for store credit? It's unopened.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 28,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 40.0,
+      "item_category": "books_maps",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q141",
+    "message": "I'd like to return the 'Expedition' down jacket I bought last week. It's a fantastic jacket, but I realized I overspent and need to cut back. It's still new with tags. The original purchase was for $650.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 9,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 650.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q142",
+    "message": "I need to return several items from my recent order (NW65432). The 'Pro Series' camping stove (valor $250) is unused, but the 'Deluxe' sleeping pad (valor $180) was used once and has a small scuff, and the 'Ultralight' tent (valor $400) was also used once but is fine. The total refund would be $830. Can I send them all back for a refund?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 830.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q143",
+    "message": "My 'Solar Charger Pro' stopped working entirely after only 6 months of light use. It was advertised with a 2-year warranty. I have the purchase receipt. How can I get this resolved under warranty? I'd prefer a replacement if possible.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 180,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 110.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q144",
+    "message": "Hello, I received the 'Quick-Dry' hiking shirt a few days ago. It fits okay, but the material feels different than I expected. I'd like to return it. It's unworn.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 4,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 50.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q145",
+    "message": "I ordered a set of 'Adventure' binoculars last week. They're excellent quality, but I received another pair as a gift shortly after. I'd like to return yours for a refund. They're still in the box.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 8,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 120.0,
+      "item_category": "optics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q146",
+    "message": "I need to return the 'All-Season' sleeping pad. It's just not as comfortable as I hoped. I only tried it out once in my living room. Can I get a refund?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 12,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 90.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q147",
+    "message": "I bought a 'Compact' camping stove (order NW7777). It's too small for my needs. It arrived yesterday. I'd like to return it for a full refund.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 1,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 70.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q148",
+    "message": "The 'Mountain View' tent stakes I ordered are not what I expected. They seem flimsy. I got them about 20 days ago. Can I return them?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 25.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q149",
+    "message": "I received the 'Pathfinder' compass last week. It's a nice compass, but I decided I don't really need it. It's still in its blister packaging. Please process a return.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 30.0,
+      "item_category": "navigation",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q150",
+    "message": "I ordered a 'Trail Snack' variety pack of energy bars a couple of weeks ago. While the individual bars are fine, the assortment isn't what I was hoping for. Can I return the unopened boxes?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 14,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 55.0,
+      "item_category": "food",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q151",
+    "message": "Hi, I'd like to return the hiking boots I bought last week. They're a bit too snug, even after trying them on at home. Still new in the box. Order #NW7890.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 120.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q152",
+    "message": "The headlamp I received on Tuesday isn't working properly. The main beam flickers constantly, making it useless for camping. This is really frustrating, I need a reliable light for my trip next month. Can I get a replacement or a full refund?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 45.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q153",
+    "message": "I received a Northwind jacket as a gift for my birthday. It's a lovely jacket, but unfortunately, it's the wrong size. I have the gift receipt, but no original order number. How do I go about exchanging it for a different size?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 85.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q154",
+    "message": "Hello, I bought a new sleeping bag a few weeks ago, but I haven't had a chance to use it yet. I've realized I actually need a warmer one for my upcoming trip. Can I return it? I still have the tags and packaging. Order #NW7912.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 25,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 150.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q155",
+    "message": "I just received my new bicycle helmet, and it's already broken! The strap buckle snapped the first time I tried to adjust it. This is unacceptable for a safety item. I demand a full refund or a replacement immediately. Order #NW7933.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 3,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 70.0,
+      "item_category": "cycling",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q156",
+    "message": "I'm trying to return a pair of trekking poles that I bought a while back. I've only used them once, and they're in perfect condition, but I found them to be too heavy. I think it's been about a month and a half since I got them. Is that still okay?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 45,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 90.0,
+      "item_category": "hiking",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q157",
+    "message": "I purchased a clearance t-shirt online last week, order #NW8001. It doesn't fit at all, and I'd like to return it. What's the process for clearance items?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 20.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q158",
+    "message": "I need to return the family tent I ordered, #NW8015. It arrived perfectly, but my camping plans changed, and I won't be needing such a large one. It's still in its original packaging, unopened.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 680.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q159",
+    "message": "My GPS watch, purchased six months ago (order #NW7500), has stopped charging completely. It was working fine until a few days ago. Is this covered under warranty? I rely on it for my trail runs.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 180,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 350.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q160",
+    "message": "I'd like to return a water bottle. It's unused. Order #NW8030. Thanks.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 14,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 15.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q161",
+    "message": "The fishing reel I ordered two weeks ago (Order #NW8045) is making a grinding noise after only two uses. It feels like something is wrong internally. Can I get a replacement? This is very disappointing.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 18,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 95.0,
+      "item_category": "fishing",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q162",
+    "message": "My aunt gave me a portable camping chair for Christmas, but I already have one. It's still in the box, never used. Christmas was a while ago, but is it possible to return it for store credit? I don't have the original receipt, just know it was from Northwind.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 90,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 60.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q163",
+    "message": "I bought a pair of hiking socks from the clearance section (Order #NW8060). They said 'final sale', but honestly, the stitching is already coming apart on one of them, and I haven't even worn them! I think this is a defect, not just a clearance item. Can I get a refund?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 10,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 15.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q164",
+    "message": "I'd like to return a hydration pack I bought a couple of weeks ago. I tried it on a short hike, but it just doesn't sit right on my back. It's clean and still looks new. Order #NW8075.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 55.0,
+      "item_category": "hiking",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q165",
+    "message": "This is ridiculous! The portable stove I received last week (Order #NW8090) leaks fuel whenever I try to use it. This is a serious safety hazard! I want a full refund immediately. I almost set my campsite on fire!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 8,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 520.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q166",
+    "message": "I purchased a high-end bike computer from you about a year ago, order #NW7000. It's completely stopped responding to inputs. Is there any warranty coverage for this? It was a significant investment, and I expected it to last longer.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 365,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 450.0,
+      "item_category": "cycling",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q167",
+    "message": "Hi, I need to return a pair of hiking pants (Order #NW8105). They're just not the right fit for me. Unworn, with tags.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 12,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 75.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q168",
+    "message": "I bought these waterproof boots (Order #NW8120) about a month ago, maybe a few days over. I haven't worn them outside yet, just tried them on in the house. Can I still return them for a different pair? They're a bit too clunky.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 32,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 110.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q169",
+    "message": "My new tent (Order #NW8135) has a ripped seam right out of the box! I only just opened it to set it up for a backyard test. My big trip is next week, and I need a functional tent ASAP. What can you do to help?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 6,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 280.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q170",
+    "message": "I got a backpack as a gift for my graduation (no order number, just a gift receipt). It's a nice pack, but I really need a larger capacity one for my travels. Can I exchange it for a different model or get store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 100.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q171",
+    "message": "I bought a final sale jacket (Order #NW8150) a few days ago, but I misread the sizing chart and it's huge on me. Is there any way to return it, even for store credit? I really like Northwind gear, but this is unwearable.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 5,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 60.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q172",
+    "message": "We need to return the kayak we ordered, Order #NW8165. It's a beautiful kayak, but we decided it's just too big for our car. It's still in its protective wrapping, completely unused.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 950.0,
+      "item_category": "fishing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q173",
+    "message": "My hiking backpack (Order #NW7200), which I bought about 7 months ago, has a zipper that completely broke off. I use it regularly, but I wouldn't expect a premium backpack to fail like this so soon. What are my options under warranty?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 210,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 180.0,
+      "item_category": "hiking",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q174",
+    "message": "Hello, I received my order #NW8180 last week, and I'd like to return the fleece jacket. It's a nice jacket, but I've decided I don't really need it. It's still new with tags.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 9,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 65.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q175",
+    "message": "I found an unused portable grill (Order #NW7990) in my garage that I bought a couple of months ago and completely forgot about. It's still in its original packaging. Is there any chance I can return it for store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 70,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 130.0,
+      "item_category": "home_goods",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q176",
+    "message": "The camping multi-tool I received last week (Order #NW8200) broke on its first use \u2013 the pliers snapped right off! I'd like to return it, but instead of a refund to my card, could I get a Northwind gift card for the amount?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 40.0,
+      "item_category": "accessories",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": true
+    }
+  },
+  {
+    "query_id": "Q177",
+    "message": "My sister gave me an insulated water bottle for my birthday last week, but the lid doesn't seal properly, and it leaks everywhere. I don't have the order number, but I do have the gift receipt. Can I get a replacement that actually works?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 14,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 30.0,
+      "item_category": "accessories",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q178",
+    "message": "I need to return several items from my recent order, #NW8215. I'm returning two pairs of socks and a base layer top. They're all unworn, with tags attached. Please provide instructions for how to send them back.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 22,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 70.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q179",
+    "message": "I'm trying to return a pair of hiking boots (Order #NW8230). It's been about 35 days since delivery, but I haven't worn them much due to an injury. They're practically new. Can you make an exception for me?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 35,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 130.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q180",
+    "message": "The bike rack I ordered (Order #NW8245) arrived with a bent frame and a missing part! This is completely unusable and clearly damaged in transit or defective from the factory. I just got it two days ago. I want a full refund and instructions on how to return this junk.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 2,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 250.0,
+      "item_category": "cycling",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q181",
+    "message": "Hi, I'd like to return the 'Summit Seeker Backpack' (order #XYZ123) I purchased last week. It's a great bag, but a bit too large for my needs. It's still new with tags. Can you process a refund?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 75.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q182",
+    "message": "I just received my 'Trailblazer Hiking Boots' and wore them once on a short walk. The sole is already starting to separate from the toe! This is unacceptable for new boots. I need to return these for a full refund.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 120.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q183",
+    "message": "Need to return the 'Adventure Compass' from order #ABC789. It was an impulse buy and I already have one. Unopened. Thanks.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 14,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 60.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q184",
+    "message": "I bought a 'Rainy Day Jacket' about 6 weeks ago but never got around to returning it. It's still in its original packaging, completely unworn. Is there any chance I could still exchange it for a different size or get store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 40,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 90.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q185",
+    "message": "I am absolutely furious! My 'Expedition Dome Tent' arrived with a major tear in the main canopy, right out of the box. I just set it up for the first time on my trip, only to find this. I paid over $700 for this tent and it's completely unusable. I demand a full refund immediately and compensation for my ruined camping trip!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 18,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 750.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q186",
+    "message": "Hello, I received a 'Cozy Campfire Hoodie' as a gift last week. It's a lovely hoodie, but it's unfortunately the wrong size. I have the gift receipt. Can I exchange it for a larger size, or get store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 12,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 85.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q187",
+    "message": "I bought a 'Quick-Dry Towel' during your clearance sale. It says 'final sale', but the towel has a significant snag and a small hole, making it defective. I only just opened it. Can I still return it?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 7,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 45.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q188",
+    "message": "My 'Solar Charger Pro' stopped working after about 3 months of light use. It won't hold a charge anymore. Is this covered under warranty? I have my original purchase details.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 100,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 200.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q189",
+    "message": "I need to return the 'Portable Bluetooth Speaker' from my recent order. It's still sealed in the box. I decided I don't really need it after all.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 150.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q190",
+    "message": "The stitching on my 'River Runner Sandals' is coming apart after only a few wears. I'm really disappointed with the quality. Can I get a replacement or a refund?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 110.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q191",
+    "message": "My aunt gave me a 'Travel Mug' for my birthday, but I already have one just like it. It's still in the gift box, never used. I know it's been a little over a month since she bought it, but could I possibly return it for store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 35,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 50.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q192",
+    "message": "I purchased a 'Deluxe Family Tent' from you 6 months ago. The main zipper on the door completely broke during my last camping trip. This is a premium tent, and I expect better durability. Is this covered under your warranty? I need this repaired or replaced immediately.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 180,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 800.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q193",
+    "message": "Hi, I ordered a 'Performance T-shirt' but got the wrong color. I need to exchange it for the correct one. Order #XYZ456.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 3,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 55.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q194",
+    "message": "I bought a 'Water Bottle Clip' on sale, and it says final sale, but I really don't need it. Is there any way I can still return it? It's completely unused.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 30.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q195",
+    "message": "The 'Portable Camp Stove' I ordered has a faulty igniter. It sparks sporadically and takes forever to light. I used it once and it was a hassle. I need to return it.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 22,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 180.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q196",
+    "message": "I'd like to return a pair of 'Hiking Sandals' I ordered. They're just a bit too small for me, even though I ordered my usual size. They haven't been worn outside.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 14,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 130.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q197",
+    "message": "My sister got me a 'Fleece Vest' for my birthday. I like it but it's not really my style. I have the gift receipt, can I return it for something else?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 25,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 95.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q198",
+    "message": "I need to know what the warranty covers for my 'GPS Watch'. It's been acting up lately, losing signal and draining battery very fast. I've had it for about two months now.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 70,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 300.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q199",
+    "message": "I accidentally ordered two 'Headlamps' in my last purchase (order #JKL012). Can I return one of them? It's still in the box.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 6,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 25.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q200",
+    "message": "This is ridiculous! I spent over a thousand dollars on your 'Professional Drone Camera' and it crashed on its third flight because of a software glitch. It's completely destroyed! I want a full refund and I expect you to compensate me for the lost footage and my time. This is a premium product, it should NOT fail like this!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 18,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 1200.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": true
+    }
+  },
+  {
+    "query_id": "Q201",
+    "message": "I'm trying to return a 'Lightweight Vest' I bought, but it looks like it was a final sale item. I didn't realize that when I purchased it, and it's still unworn with tags. It's been 32 days since delivery. Is there anything at all you can do for me?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 32,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 70.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q202",
+    "message": "Hello, I'd like to return the 'Compact Sleeping Bag' I ordered last week. I've decided to go with a different model. It's unopened.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 9,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 200.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q203",
+    "message": "The seams on my 'Waterproof Pants' are already coming undone after just one wash. I followed the care instructions exactly. I need to return these, this is ridiculous for something advertised as durable.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 16,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 80.0,
+      "item_category": "apparel",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q204",
+    "message": "I'd like to return a pair of 'Winter Boots'. They are too big for me. Still new in box.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 28,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 400.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q205",
+    "message": "Hi there! I got a 'Keychain Multi-tool' a few weeks ago, but my friend ended up getting me the exact same one. Can I return this duplicate? It's still in the package.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 25,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 40.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q206",
+    "message": "I bought the 'Ultra-Light Daypack' but it's not comfortable for my frame. I need to return it.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 19,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 100.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q207",
+    "message": "I need to return a 'Thermal Base Layer' shirt. It's the wrong size and still has tags on. Please advise on how to proceed.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 11,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 115.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q208",
+    "message": "I purchased a 'Foldable Camp Chair' a couple of weeks ago. It's just not as sturdy as I hoped. I'd like to return it for a refund. It's barely been used.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 50.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q209",
+    "message": "I ordered the 'Portable Power Bank' but realized I don't actually need the extra capacity. It's still in its original packaging.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 280.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q210",
+    "message": "I want to return the 'Waterproof Sandals'. They are uncomfortable and rub my feet in the wrong places. Worn once briefly inside.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 8,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 60.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q211",
+    "message": "Hi, I'd like to return a pair of hiking socks I bought last week. They're unworn and still have the tags. Order number is NWO-1001.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 85.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q212",
+    "message": "I'm really annoyed. The \"waterproof\" hiking boots I ordered (NWO-1002) are clearly not waterproof. My feet were soaked on the first hike! This is unacceptable for boots that cost this much. I need to return them.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 120.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q213",
+    "message": "I bought a fleece jacket (NWO-1003) for my trip but the weather changed and I didn't end up needing it. It's been a little over a month since it arrived, but it's still new with tags. Can I still send it back?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 45,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 60.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q214",
+    "message": "I made a mistake. I bought the NWO-1004 beanie during your clearance sale, thinking it would fit, but it's too small. I know it was a final sale, but is there any way I can exchange it or get store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 35.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q215",
+    "message": "My friend gave me a Northwind Outfitters gift card for my birthday, which was used to buy a shirt (order NWO-1005). The shirt is the wrong size. Can I return it for a different size or store credit? I don't have the original receipt.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 75.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q216",
+    "message": "I need to return the 'Summit Seeker' tent, order NWO-1006. It's unused and still in its original packaging. Please process a full refund to my original payment method.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 8,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 650.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q217",
+    "message": "The zipper on my 'Everest Explorer' sleeping bag (NWO-1007) broke after only a few uses. I bought it about three months ago. This is clearly a manufacturing defect. It should be covered under warranty. What are my options for repair or replacement?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 90,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 300.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q218",
+    "message": "I'd like to return the water bottle I bought (NWO-1008). It's still in new condition. Thanks!",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 45.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q219",
+    "message": "The stitching on these 'Trail Blazer' shoes (NWO-1009) is coming undone already, and I've only had them for a couple of weeks. This is really poor quality. I need to return them for a refund.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 12,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 200.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q220",
+    "message": "I received a 'Mountain Mist' t-shirt (NWO-1010) as a gift, but it's a final sale item according to the tag. It's too big for me. Is there anything at all I can do, like an exchange for a different size or store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": true,
+      "gift": true,
+      "refund_amount_usd": 50.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q221",
+    "message": "I'd like to return the 'Alpine Breeze' jacket I ordered (NWO-1011). It arrived a few days ago, but it's not quite what I was looking for. It's still in perfect condition.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 3,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 99.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q222",
+    "message": "I bought a pair of gloves (NWO-1012) for a trip that got cancelled. It's been about 38 days since delivery. They're still in the packaging. Is there any flexibility on the return window for these?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 38,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 75.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q223",
+    "message": "I received the 'Forest Dweller' backpack (NWO-1013) as a gift. It's a nice bag, but I already have one just like it. I'd like to return it. What's the process for gift returns?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 25,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 150.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q224",
+    "message": "I am furious! The 'Expedition Pro' tent (NWO-1014) I bought for $800 ripped on its second use during a light storm. This is absolutely unacceptable for a high-end tent. I demand a full refund immediately!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 14,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 800.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q225",
+    "message": "My 'River Trekker' sandals (NWO-1015) have completely fallen apart at the sole after just four months of wear. They're supposed to be durable. This must be a warranty issue. Can I get a replacement or a refund?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 120,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 450.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q226",
+    "message": "I'd like to return a pair of hiking boots (NWO-1016). They don't fit right. They haven't been worn outside.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 25,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 110.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q227",
+    "message": "Seriously? The seams on this new rain jacket (NWO-1017) are already leaking after one light drizzle. It's supposed to be waterproof! I need to send this back and get my money back.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 9,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 55.0,
+      "item_category": "apparel",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q228",
+    "message": "I bought a headlamp (NWO-1018) for a camping trip, but the trip was postponed and now it's past the 30-day return window (it's been 50 days). It's still in the box, completely unused. Can you please make an exception?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 50,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 25.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q229",
+    "message": "I purchased a 'Winter Trek' sleeping pad (NWO-1019) that was marked final sale. However, the product description said it was suitable for -20C, and it barely handled 0C. This feels like misrepresentation. Can I return it despite the final sale tag?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 18,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 180.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q230",
+    "message": "I need to return the 'Ultimate Backcountry' GPS unit (NWO-1020). It's unopened and within the return period. Please process a full refund to my card as quickly as possible.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 12,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 950.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q231",
+    "message": "Returning a small travel towel (NWO-1021). Unused.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 1,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 30.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q232",
+    "message": "The sole on my 'Quick Hike' trail runners (NWO-1022) is separating after only a month. This is ridiculous! I want a full refund, not store credit. They're clearly defective.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 28,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 130.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q233",
+    "message": "I know it's a long shot, but I found an old, unworn 'Adventure Seeker' t-shirt (NWO-1023) from an order about 70 days ago. Is there any chance I can return it for store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 70,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 40.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q234",
+    "message": "My 'Basecamp Pro' stove (NWO-1024) stopped working entirely after 6 months. It was a $600 purchase and should last much longer. This has to be a warranty claim. What's the process for getting it replaced or repaired?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 200,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 600.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q235",
+    "message": "I'd like to return a pair of athletic shorts (NWO-1025). They're unworn and still have the tags on them.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 16,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 65.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q236",
+    "message": "The stitching on my new 'Trailblazer' backpack (NWO-1026) is already fraying after just one use. This is unacceptable for a brand new item. I want a refund.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 150.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q237",
+    "message": "I bought a 'Winter Wander' scarf (NWO-1027) during a final sale, but it arrived with a noticeable tear in the fabric. How can a defective item be final sale? I expect a full refund for this damaged product!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 5,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 70.0,
+      "item_category": "accessories",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q238",
+    "message": "My aunt bought me a pair of 'Cloud Stepper' sandals (NWO-1028) for my birthday, but they're too big. I just found them in her closet, so it's been about 40 days since she bought them. Can I exchange them for a smaller size?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 40,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 100.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q239",
+    "message": "I need to return the 'Urban Explorer' sneakers (NWO-1029) I ordered. They're unworn and in original packaging.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 200.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q240",
+    "message": "I received a 'Cozy Camp' hoodie (NWO-1030) as a gift, but the drawstring is completely frayed and looks like it's about to break. It's a gift, so I don't have the receipt. Can I get a replacement?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 19,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 90.0,
+      "item_category": "apparel",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q241",
+    "message": "Hi, I received my order #NW55321 a couple of weeks ago, and the zipper on the sleeping bag (model 'Everest Dream') is already broken. It's completely stuck. I haven't even taken it on a trip yet, just unrolled it once. This is really disappointing for a premium product.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 12,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 185.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q242",
+    "message": "I'd like to return the hiking boots, order #NW55322. They don't fit quite right. Thank you.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 140.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q243",
+    "message": "WHAT IS WRONG WITH YOUR QUALITY CONTROL?! I just got the 'Trailblazer' headlamp (order #NW55323) two days ago and it's completely dead. I tried new batteries, everything. This is unacceptable for the price. I need this for my trip next week!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 2,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 75.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q244",
+    "message": "Hello, I purchased the 'Summit Pro' drone (order #NW55324) last week. While it's a fantastic piece of equipment, I've realized it's a bit more advanced than what I need for my casual outdoor photography. I'd like to initiate a return if possible. It's still in its original packaging, unused.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 680.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q245",
+    "message": "Hi there, I bought a pair of your 'River Runner' sandals (order #NW55325) about 35 days ago. I've only worn them once, and they're just not comfortable for my feet. I know it's a little past your usual return window, but is there any chance I could still exchange them or get store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 35,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 65.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q246",
+    "message": "I received order #NW55326 with the 'Explorer' backpack. I'm not sure if it's what I wanted. Can I send it back? How does that work?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 110.0,
+      "item_category": "backpacks",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q247",
+    "message": "My sister gave me one of your 'Rainy Day' jackets (order #NW55327) for my birthday, but the seam on the sleeve is already coming undone. It's a size too big anyway. She ordered it about three weeks ago. Can I get a different size or a refund? I don't have the original receipt, just the order number.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 21,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 120.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q248",
+    "message": "I purchased a 'Peak Performance' GPS watch (order #NW55328) about five months ago. It's been working great, but I'm curious about the warranty coverage. If I accidentally scratch the screen or if the battery life starts to degrade significantly, what are my options? Is there an extended warranty I can purchase?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 150,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 0.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q249",
+    "message": "I bought a 'Winter Comfort' beanie (order #NW55329) during your clearance sale a week ago. I just realized it's too small. Can I return it for a larger size or a refund?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 15.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q250",
+    "message": "Need to return order #NW55330, the 'Quick-Dry' towel. Not what I expected. Please send return label ASAP.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 25.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q251",
+    "message": "I'm contacting you about a 'Streamline' fishing reel (order #NW55331) I bought about 40 days ago. I finally got to use it last weekend, and the drag system completely seized up after only a few casts. This is clearly a manufacturing defect. I understand it's slightly outside your 30-day window, but it was defective from the start.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 40,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 150.0,
+      "item_category": "fishing",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q252",
+    "message": "Hi, I'd like to return the 'Cozy Camp' blanket from order #NW55332. It's a bit heavier than I anticipated for backpacking. Thanks!",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 3,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 40.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q253",
+    "message": "I received the 'Horizon' binoculars (order #NW55333) as a gift for Christmas, and while they're lovely, I already have a similar pair. It's been about 45 days since they were delivered, according to the tracking. Is there any way I can return them for store credit or an exchange? I don't have the original receipt.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 45,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 90.0,
+      "item_category": "optics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q254",
+    "message": "Hello, I purchased the 'Trekker' hiking poles (order #NW55334) a couple of weeks ago. I've decided I prefer a different style. Could you provide instructions for returning them?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 14,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 80.0,
+      "item_category": "hiking",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q255",
+    "message": "The 'Mountain Vista' tent (order #NW55335) I ordered arrived last week, and one of the main poles has a hairline fracture. It looks like a defect from manufacturing. I'm concerned it won't hold up in strong winds. I need to return this for a full refund or a replacement immediately.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 720.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q256",
+    "message": "I would like to return the 'All-Weather' jacket from order #NW55336. It arrived on the 8th of this month, and it's just not the right fit for me. Please advise on the return process.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 22,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 160.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q257",
+    "message": "Hello, I recently purchased the 'Pro-Series' kayak (order #NW55337) and unfortunately, due to unforeseen circumstances, I won't be able to use it as planned this summer. It's still in its original packaging. I received it about 25 days ago. Could you help me with the return process?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 25,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 850.0,
+      "item_category": "water_sports",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q258",
+    "message": "Good morning. I need to return the 'Comfort Fit' hiking pants from order #NW55338. They are a bit too long for my inseam, even after trying them on. I received them about two weeks ago. Could you please send me a return label?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 85.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q259",
+    "message": "I bought the 'Angler's Best' fishing rod (order #NW55339) during your final clearance sale about a week ago. The tip snapped off the first time I extended it. This is clearly a defect, not wear and tear. Even if it was a final sale, a broken item isn't right. What can be done?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 7,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 45.0,
+      "item_category": "fishing",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q260",
+    "message": "I just got the 'Camp Cook' portable stove (order #NW55340) three days ago. I tried to light it up for the first time in my backyard, and the igniter isn't working at all. It just clicks, no spark. I followed all the instructions. Can I get a replacement?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 3,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 95.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q261",
+    "message": "I'm writing about a 'Trail Mix' energy bar assortment (order #NW55341) I purchased about two months ago. I know it's a long shot since it was a final sale item and I've eaten a few, but I just don't like the flavors. Is there any possibility for a partial refund or credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 60,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 20.0,
+      "item_category": "food_and_nutrition",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q262",
+    "message": "Hi team, I received the 'Voyager' travel backpack (order #NW55342) 38 days ago. I was planning a trip, but it got canceled, and now I don't need such a large bag. It's still brand new with tags. Would it be possible to return it, even though it's slightly past the 30-day mark?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 38,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 130.0,
+      "item_category": "backpacks",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q263",
+    "message": "Hello, I recently received the 'Sun Guard' long-sleeve shirt (order #NW55343). Unfortunately, there's a small tear near the collar that looks like a manufacturing flaw. I received it a few days ago. Could you please assist with an exchange for a new one?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 50.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q264",
+    "message": "I purchased a pair of 'Snow Day' gloves (order #NW55344) during your end-of-season sale last week. I didn't realize they were final sale until after I tried them on at home and found them too bulky. Is there anything I can do, even for store credit?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 35.0,
+      "item_category": "apparel",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q265",
+    "message": "Hi, I received a 'Lake Explorer' paddle (order #NW55345) as a gift about 18 days ago. It's a lovely paddle, but I already have one. I'd like to return it for store credit if possible. I don't have the original purchase details, but I have the order number.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 18,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 115.0,
+      "item_category": "water_sports",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q266",
+    "message": "I need to return the 'Off-Road' electric bike (order #NW55346) I bought about 10 days ago. It's a fantastic bike, but I underestimated how much space it would take up in my garage. It's still in pristine condition, barely ridden. Please provide return instructions.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 1200.0,
+      "item_category": "cycling",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q267",
+    "message": "I bought the 'Everest View' camera drone (order #NW55347) almost three months ago. It was working fine until yesterday, when one of the rotors completely stopped spinning mid-flight, causing it to crash. It's clearly a mechanical failure. Is this covered under warranty for repair or replacement?",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 90,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 0.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q268",
+    "message": "I am absolutely furious! My 'Peak Climber' water filter (order #NW55348) stopped working after only two uses on a weekend trip. I bought it about 20 days ago. The pump mechanism just seized up. Not only do I want a full refund, but I think I deserve some compensation for the inconvenience and having to boil water on my trip!",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 60.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": true
+    }
+  },
+  {
+    "query_id": "Q269",
+    "message": "Hello, I purchased a 'Backcountry Pro' satellite communicator (order #NW55349) about a year ago. It's suddenly stopped holding a charge, even with the correct charging cable. I've used it extensively, but expected it to last longer. What are the warranty options for this device? It's critical for my safety.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 365,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 0.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q270",
+    "message": "Good day. I have a 'Solar Power' portable charger (order #NW55350) I bought six months ago. It's working fine, but I'm planning a longer expedition and want to make sure I'm getting the most out of it. What's the typical lifespan, and are there any recommended maintenance tips to ensure its longevity and warranty compliance?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 180,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 0.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q271",
+    "message": "Hi, I'd like to return a pair of hiking pants I ordered last week. They're unworn and still have the tags on. Order number is NWO-7890.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 65.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q272",
+    "message": "I'm really upset about the hiking boots I received. After just one short hike, the sole started detaching from the front! This is unacceptable for boots that cost this much. I need a full refund or a replacement that actually holds up. Order NWO-7901.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 120.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q273",
+    "message": "Hello, I received a Northwind Outfitters gift for my birthday, a travel mug, but I already have one. It's still in its original packaging. Can I return it for store credit? I don't have the original receipt, just the gift packing slip.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 45.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q274",
+    "message": "I need to return the 'Summit Seeker' tent I purchased. It's too large for my car and I need something more compact. It's unopened. Order ID NWO-7912.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 650.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q275",
+    "message": "I bought a jacket during your 'Flash Sale' last week, and it's not quite what I expected. I tried to initiate a return online, but it says 'Final Sale'. Is there really nothing I can do? The product page didn't make that clear enough.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 5,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 30.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q276",
+    "message": "This is ridiculous! I bought your 'Trailblazer' GPS device a month and a half ago, and it's already completely dead. It won't even turn on! I followed all the charging instructions. I paid good money for this, and it failed during my trip. What are you going to do about this? Order NWO-7923.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 45,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 250.0,
+      "item_category": "electronics",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q277",
+    "message": "Need to return a fleece vest, wrong size. Unworn, tags on. Order NWO-7934. Thanks.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 18,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 90.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q278",
+    "message": "My friend got me a camping lantern as a gift, but the light flickers inconsistently. I think it might be faulty. Can I exchange it for a working one? I have the gift receipt, order was NWO-7945.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 12,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 75.0,
+      "item_category": "camping",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q279",
+    "message": "I purchased a pair of sandals last month, but decided they're not quite right for my upcoming trip. They're still new in the box. I know it's just over 30 days, but is there any flexibility for a return? Order NWO-7956.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 35,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 150.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q280",
+    "message": "Could you tell me more about the warranty on the 'AdventureCam' action camera? I'm considering buying it and want to understand the coverage. Thanks!",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 0.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q281",
+    "message": "I just received my 'Expedition' sleeping bag, and it has a huge tear along one of the seams! I haven't even used it, just unrolled it. This is completely unacceptable for a premium product. I want a full refund immediately. Order NWO-7967.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 3,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 700.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q282",
+    "message": "I purchased a clearance backpack from your website, and now I want to return it. It says 'final sale' on the item page, but I didn't see that when I bought it. Is there any way to get my money back? Order NWO-7978.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 8,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 40.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q283",
+    "message": "I need to return a men's hiking shirt, size medium. It's too small. I've only tried it on. Order NWO-7989.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 22,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 55.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q284",
+    "message": "A friend gave me a Northwind Outfitters gift a while ago, a water bottle. I never used it, and it's still in the box. I'd love to exchange it for something else, or get store credit. It's been about 6 weeks since they bought it. Can you help?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 40,
+      "final_sale": false,
+      "gift": true,
+      "refund_amount_usd": 0.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": true
+    }
+  },
+  {
+    "query_id": "Q285",
+    "message": "I need to return a pair of trail running shoes. They just don't fit my feet right, even though I ordered my usual size. They're clean and unworn outside. Order NWO-8000.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 15,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 95.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q286",
+    "message": "Hi, I'd like to return a jacket that I bought a few weeks ago. I just changed my mind about the color. It's still new with tags. What's the process?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 25,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 110.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q287",
+    "message": "I bought a 'Trekker' backpack from you about two months ago, and the main zipper has completely broken. It's impossible to close now. This is unacceptable for a product meant for outdoor use. Is this covered under warranty? I need this fixed or replaced. Order NWO-8011.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 60,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 300.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q288",
+    "message": "I need to return the drone I ordered. It's still sealed in the box. Please process a refund quickly. Order NWO-8022.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 800.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q289",
+    "message": "I bought a pair of socks from your clearance section, but they are too small. I see it says 'final sale' but is there really no option to exchange them for a larger size or get store credit? Order NWO-8033.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 10,
+      "final_sale": true,
+      "gift": false,
+      "refund_amount_usd": 25.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q290",
+    "message": "The hiking pants I got are too tight in the waist. I need to return them for a different size or a refund. Order NWO-8044. This is frustrating.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 5,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 180.0,
+      "item_category": "footwear",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q291",
+    "message": "I purchased a 'Basecamp' water filter system about three months ago, and it seems to be losing its effectiveness. The water isn't flowing as quickly, and I'm concerned it's not filtering properly anymore. Is this something that would be covered under a warranty or guarantee?",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 90,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 0.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q292",
+    "message": "I'd like to return an insulated jacket. It's just not as warm as I hoped. Tags are still on. Order NWO-8055.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 28,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 70.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q293",
+    "message": "Hi, I bought a headlamp a couple of months ago and haven't used it. It's still in the packaging. I know it's past the usual return window, but would you be able to make an exception for a return? Order NWO-8066.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 50,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 100.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q294",
+    "message": "The portable stove I ordered arrived last week, and the igniter button is faulty. It takes multiple presses to spark, which is dangerous and annoying. I need to return this defective item for a full refund. Order NWO-8077.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 14,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 130.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q295",
+    "message": "I'd like to return the satellite messenger device I purchased. I decided on a different model. It's unused and still in its original packaging. Order NWO-8088.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 20,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 350.0,
+      "item_category": "electronics",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q296",
+    "message": "Can I return a pair of gloves I ordered? They're too big. Order NWO-8099.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 11,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 45.0,
+      "item_category": "clothing",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q297",
+    "message": "I'm extremely disappointed with the quality of your 'River Runner' water shoes! I bought them just over a month ago, and the sole is already coming apart after only a few uses. This is unacceptable for outdoor gear. I expect a full refund or a durable replacement. Order NWO-8100.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 38,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 200.0,
+      "item_category": "footwear",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q298",
+    "message": "I need to return a hiking pole. It's unused. Order NWO-8111.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 7,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 80.0,
+      "item_category": "accessories",
+      "item_used": false,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q299",
+    "message": "I purchased a large camping cooler from you about six months ago, and the lid no longer seals properly, causing ice to melt very quickly. Is this issue covered by a product warranty? I have the original purchase details.",
+    "situation": {
+      "defective": false,
+      "days_since_delivery": 180,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 0.0,
+      "item_category": "camping",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  },
+  {
+    "query_id": "Q300",
+    "message": "The rain jacket I bought has a faulty zipper. It keeps getting stuck and is very difficult to open and close. I've only worn it once. I need to return it for a refund. Order NWO-8122.",
+    "situation": {
+      "defective": true,
+      "days_since_delivery": 9,
+      "final_sale": false,
+      "gift": false,
+      "refund_amount_usd": 115.0,
+      "item_category": "clothing",
+      "item_used": true,
+      "asks_for_cash_or_other_payout": false
+    }
+  }
+]
