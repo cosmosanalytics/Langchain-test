@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generation 1: Jev-Defined Lyapunov Agent — Keeping AI Rolling Downhill</title>
+  <title>Generation 1: Jev-Defined Lyapunov Agent — Keeping AI Rolling Downhill (Light Mode)</title>
+  <meta name="description" content="Single-file HTML web app implementing Generation 1 Measure & Descent Gate with WebGPU, Groq LPU, and TypeSafe Jev System One in crisp Light Mode.">
+  
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome 6 -->
@@ -36,10 +38,10 @@
               900: '#0c4a6e',
             },
             jev: {
-              emerald: '#10b981',
-              amber: '#f59e0b',
-              rose: '#f43f5e',
-              slate: '#0f172a'
+              emerald: '#059669',
+              amber: '#d97706',
+              rose: '#e11d48',
+              slate: '#1e293b'
             }
           }
         }
@@ -60,59 +62,66 @@
       height: 6px;
     }
     .custom-scrollbar::-webkit-scrollbar-track {
-      background: rgba(15, 23, 42, 0.05);
+      background: rgba(226, 232, 240, 0.5);
     }
     .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(100, 116, 139, 0.3);
+      background: rgba(148, 163, 184, 0.4);
       border-radius: 9999px;
     }
     .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-      background: rgba(100, 116, 139, 0.5);
+      background: rgba(100, 116, 139, 0.6);
     }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
 
   <!-- TOP HEADER -->
-  <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-40 px-6 py-3.5 flex items-center justify-between shadow-sm">
+  <header class="border-b border-slate-200 bg-white/95 backdrop-blur sticky top-0 z-40 px-6 py-3.5 flex items-center justify-between shadow-xs">
     <div class="flex items-center space-x-3.5">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-sky-500 to-emerald-500 p-0.5 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-        <div class="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-          <i class="fa-solid fa-mountain text-transparent bg-clip-text bg-gradient-to-tr from-sky-400 to-emerald-400 text-lg"></i>
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-sky-500 to-emerald-500 p-0.5 flex items-center justify-center shadow-md shadow-indigo-500/10">
+        <div class="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
+          <i class="fa-solid fa-mountain text-transparent bg-clip-text bg-gradient-to-tr from-sky-600 to-emerald-600 text-lg"></i>
         </div>
       </div>
       <div>
         <div class="flex items-center space-x-2">
-          <h1 class="text-base font-bold text-white tracking-tight">Generation 1: Jev-Defined Lyapunov Agent</h1>
-          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold">Gen 1: Measure</span>
-          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Descent Gate Active</span>
+          <h1 class="text-base font-bold text-slate-900 tracking-tight">Generation 1: Jev-Defined Lyapunov Agent</h1>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold">Gen 1: Measure</span>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 font-semibold">Descent Gate Active</span>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 font-semibold">☀️ Light Mode</span>
         </div>
-        <p class="text-xs text-slate-400">Roadmap to Keep AI Agents Rolling Downhill &middot; Real-Time Noul Probabilities $V(x) = \sum w_j (1 - p_j)$</p>
+        <p class="text-xs text-slate-500">Keeping AI Agents Rolling Downhill &middot; Real-Time Noul Probabilities $V(x) = \sum w_j (1 - p_j)$</p>
       </div>
     </div>
 
     <div class="flex items-center space-x-3">
       <!-- Engine Switcher -->
-      <div class="inline-flex p-1 bg-slate-900 rounded-lg border border-slate-800 text-xs font-semibold">
-        <button id="btnGroqEngine" onclick="setInferenceEngine('groq')" class="px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-sm font-bold flex items-center space-x-1.5">
+      <div class="inline-flex p-1 bg-slate-100 rounded-lg border border-slate-200 text-xs font-semibold shadow-inner">
+        <button id="btnGroqEngine" onclick="setInferenceEngine('groq')" class="px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-xs font-bold flex items-center space-x-1.5">
           <i class="fa-solid fa-bolt text-amber-300"></i>
           <span>Groq LPU</span>
         </button>
-        <button id="btnWebLlmEngine" onclick="setInferenceEngine('webllm')" class="px-3 py-1.5 rounded-md transition text-slate-400 hover:text-white flex items-center space-x-1.5">
-          <i class="fa-solid fa-microchip text-sky-400"></i>
+        <button id="btnWebLlmEngine" onclick="setInferenceEngine('webllm')" class="px-3 py-1.5 rounded-md transition text-slate-600 hover:text-slate-900 flex items-center space-x-1.5">
+          <i class="fa-solid fa-microchip text-sky-600"></i>
           <span>WebGPU (Local)</span>
         </button>
-        <button id="btnSimEngine" onclick="setInferenceEngine('simulated')" class="px-3 py-1.5 rounded-md transition text-slate-400 hover:text-white flex items-center space-x-1.5">
-          <i class="fa-solid fa-robot text-emerald-400"></i>
+        <button id="btnSimEngine" onclick="setInferenceEngine('simulated')" class="px-3 py-1.5 rounded-md transition text-slate-600 hover:text-slate-900 flex items-center space-x-1.5">
+          <i class="fa-solid fa-robot text-emerald-600"></i>
           <span>Fast Preset</span>
         </button>
       </div>
 
       <!-- Settings / Keys -->
-      <button onclick="openSettingsModal()" class="px-3 py-1.5 rounded-lg bg-slate-800/80 hover:bg-slate-800 border border-slate-700 text-slate-300 hover:text-white text-xs font-medium flex items-center space-x-2 transition shadow-sm">
-        <i class="fa-solid fa-sliders text-indigo-400"></i>
-        <span>API & Margin Settings</span>
+      <button onclick="openSettingsModal()" class="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs font-semibold flex items-center space-x-2 transition shadow-xs">
+        <i class="fa-solid fa-sliders text-indigo-600"></i>
+        <span>API &amp; Margin Settings</span>
       </button>
+
+      <!-- Return to Hub -->
+      <a href="index.html" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-medium flex items-center space-x-1.5 transition">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Suite Hub</span>
+      </a>
     </div>
   </header>
 
@@ -120,167 +129,167 @@
   <main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden">
     
     <!-- LEFT PANEL: CHAT & GENERATION 1 REVISION LOOP (5 COLS) -->
-    <div class="lg:col-span-5 border-r border-slate-800 flex flex-col bg-slate-950/40 h-[calc(100vh-65px)]">
+    <div class="lg:col-span-5 border-r border-slate-200 flex flex-col bg-white h-[calc(100vh-65px)]">
       
       <!-- Preset Scenarios Selector -->
-      <div class="p-4 border-b border-slate-800/80 bg-slate-900/50">
-        <label class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-2 flex items-center justify-between">
-          <span><i class="fa-solid fa-clipboard-list text-indigo-400 mr-1.5"></i>Select Test Case / Customer Ticket:</span>
-          <span class="text-[10px] text-slate-500 font-mono">Northwind Outfitters</span>
+      <div class="p-4 border-b border-slate-200 bg-slate-50/80">
+        <label class="text-xs font-semibold text-slate-500 uppercase tracking-wider block mb-2 flex items-center justify-between">
+          <span><i class="fa-solid fa-clipboard-list text-indigo-600 mr-1.5"></i>Select Test Case / Customer Ticket:</span>
+          <span class="text-[10px] text-slate-400 font-mono">Northwind Outfitters</span>
         </label>
         <div class="grid grid-cols-2 gap-2">
-          <button onclick="loadScenario('return_outside_window')" class="text-left p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition group">
-            <div class="text-xs font-medium text-slate-200 group-hover:text-sky-300 flex items-center justify-between">
+          <button onclick="loadScenario('return_outside_window')" class="text-left p-2.5 rounded-lg bg-white hover:bg-indigo-50/60 border border-slate-200 hover:border-indigo-200 transition group shadow-xs">
+            <div class="text-xs font-bold text-slate-800 group-hover:text-indigo-600 flex items-center justify-between">
               <span>Return 45 Days Late</span>
-              <span class="text-[9px] px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-400 font-mono">R01 Violated</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 font-mono font-semibold">R01 Violated</span>
             </div>
-            <div class="text-[10px] text-slate-400 truncate mt-0.5">Tent delivered 45 days ago, requests return</div>
+            <div class="text-[11px] text-slate-500 truncate mt-1">Tent delivered 45 days ago, requests return</div>
           </button>
-          <button onclick="loadScenario('damaged_no_photo')" class="text-left p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition group">
-            <div class="text-xs font-medium text-slate-200 group-hover:text-sky-300 flex items-center justify-between">
+          <button onclick="loadScenario('damaged_no_photo')" class="text-left p-2.5 rounded-lg bg-white hover:bg-indigo-50/60 border border-slate-200 hover:border-indigo-200 transition group shadow-xs">
+            <div class="text-xs font-bold text-slate-800 group-hover:text-indigo-600 flex items-center justify-between">
               <span>Defective / No Photo</span>
-              <span class="text-[9px] px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-400 font-mono">R02 Violated</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 font-mono font-semibold">R02 Violated</span>
             </div>
-            <div class="text-[10px] text-slate-400 truncate mt-0.5">Broken dial on camp stove, instant refund</div>
+            <div class="text-[11px] text-slate-500 truncate mt-1">Broken dial on camp stove, instant refund</div>
           </button>
-          <button onclick="loadScenario('final_sale_item')" class="text-left p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition group">
-            <div class="text-xs font-medium text-slate-200 group-hover:text-sky-300 flex items-center justify-between">
+          <button onclick="loadScenario('final_sale_item')" class="text-left p-2.5 rounded-lg bg-white hover:bg-indigo-50/60 border border-slate-200 hover:border-indigo-200 transition group shadow-xs">
+            <div class="text-xs font-bold text-slate-800 group-hover:text-indigo-600 flex items-center justify-between">
               <span>Final Sale Return</span>
-              <span class="text-[9px] px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-400 font-mono">R04 Violated</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-rose-100 text-rose-700 font-mono font-semibold">R04 Violated</span>
             </div>
-            <div class="text-[10px] text-slate-400 truncate mt-0.5">Clearance sleeping pad returned</div>
+            <div class="text-[11px] text-slate-500 truncate mt-1">Clearance sleeping pad returned</div>
           </button>
-          <button onclick="loadScenario('fully_compliant')" class="text-left p-2 rounded-lg bg-slate-800/60 hover:bg-slate-800 border border-slate-700/60 transition group">
-            <div class="text-xs font-medium text-slate-200 group-hover:text-emerald-300 flex items-center justify-between">
+          <button onclick="loadScenario('fully_compliant')" class="text-left p-2.5 rounded-lg bg-white hover:bg-emerald-50/60 border border-slate-200 hover:border-emerald-200 transition group shadow-xs">
+            <div class="text-xs font-bold text-slate-800 group-hover:text-emerald-700 flex items-center justify-between">
               <span>Standard Clean Return</span>
-              <span class="text-[9px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 font-mono">All Compliant</span>
+              <span class="text-[9px] px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 font-mono font-semibold">All Compliant</span>
             </div>
-            <div class="text-[10px] text-slate-400 truncate mt-0.5">Unopened jacket within 12 days, order confirmed</div>
+            <div class="text-[11px] text-slate-500 truncate mt-1">Unopened jacket within 12 days, order confirmed</div>
           </button>
         </div>
       </div>
 
       <!-- Messages Stream -->
-      <div id="chatStream" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+      <div id="chatStream" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar bg-slate-50/40">
         <!-- Rendered conversation bubbles & gate cards -->
       </div>
 
       <!-- Control & Input Area -->
-      <div class="p-4 border-t border-slate-800 bg-slate-900/80 backdrop-blur">
+      <div class="p-4 border-t border-slate-200 bg-white shadow-xs">
         <div class="flex items-center space-x-2 mb-2.5">
-          <button id="btnGenerateInitial" onclick="handleGenerateInitial()" class="flex-1 py-2 px-3 rounded-lg bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white font-semibold text-xs shadow-md shadow-indigo-600/20 flex items-center justify-center space-x-2 transition">
+          <button id="btnGenerateInitial" onclick="handleGenerateInitial()" class="flex-1 py-2 px-3 rounded-lg bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-700 hover:to-sky-700 text-white font-semibold text-xs shadow-sm flex items-center justify-center space-x-2 transition">
             <i class="fa-solid fa-play"></i>
             <span>1. Propose Initial Reply ($x_0$)</span>
           </button>
-          <button id="btnRunRevisionLoop" onclick="handleDescentGateStep()" class="flex-1 py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs shadow-md shadow-emerald-600/20 flex items-center justify-center space-x-2 transition disabled:opacity-50 disabled:cursor-not-allowed">
+          <button id="btnRunRevisionLoop" onclick="handleDescentGateStep()" class="flex-1 py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs shadow-sm flex items-center justify-center space-x-2 transition disabled:opacity-50 disabled:cursor-not-allowed">
             <i class="fa-solid fa-rotate"></i>
             <span>2. Gen 1 Descent Gate Revision</span>
           </button>
         </div>
         
         <div class="relative">
-          <textarea id="userTicketInput" rows="2" placeholder="Enter customer ticket or support query..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 resize-none font-mono"></textarea>
+          <textarea id="userTicketInput" rows="2" placeholder="Enter customer ticket or support query..." class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 resize-none font-mono"></textarea>
         </div>
         <div class="mt-2 flex items-center justify-between text-[11px] text-slate-500">
-          <span>Engine: <span id="lblActiveEngine" class="text-indigo-400 font-semibold">Groq LPU (Llama 3.3)</span></span>
-          <span>Descent Margin: <span id="lblActiveDelta" class="text-emerald-400 font-mono font-bold">&delta; = 0.0314</span></span>
+          <span>Engine: <span id="lblActiveEngine" class="text-indigo-600 font-bold">Groq LPU (Llama 3.3)</span></span>
+          <span>Descent Margin: <span id="lblActiveDelta" class="text-emerald-700 font-mono font-bold">&delta; = 0.0314</span></span>
         </div>
       </div>
     </div>
 
     <!-- RIGHT PANEL: VISUALIZATIONS & ATOMIC NOUL CLAIMS (7 COLS) -->
-    <div class="lg:col-span-7 flex flex-col bg-slate-950/20 h-[calc(100vh-65px)] overflow-y-auto custom-scrollbar p-5 space-y-5">
+    <div class="lg:col-span-7 flex flex-col bg-slate-100/60 h-[calc(100vh-65px)] overflow-y-auto custom-scrollbar p-5 space-y-5">
       
       <!-- TOP GRIDS: PARABOLA ("ROLLING DOWNHILL") & CONCENTRIC RINGS -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         
         <!-- PARABOLA WELL: ROLLING DOWNHILL (Slide 3) -->
-        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col">
+        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col">
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center space-x-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <h2 class="text-xs font-bold text-white uppercase tracking-wider">Lyapunov Landscape ($V(x)$)</h2>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Lyapunov Landscape ($V(x)$)</h2>
             </div>
-            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Slide 3 Diagram</span>
+            <span class="text-[10px] font-mono text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded font-semibold">Slide 3 Diagram</span>
           </div>
-          <p class="text-[11px] text-slate-400 mb-2">
-            Height <span class="font-mono text-amber-400">V</span> = rule violation rate. Gate accepts step only if it rolls downhill by <span class="font-mono text-emerald-400">&ge; &delta;</span>.
+          <p class="text-[11px] text-slate-500 mb-2">
+            Height <span class="font-mono text-amber-700 font-bold">V</span> = rule violation rate. Gate accepts step only if it rolls downhill by <span class="font-mono text-emerald-700 font-bold">&ge; &delta;</span>.
           </p>
-          <div class="relative w-full h-44 bg-slate-950 rounded-lg border border-slate-800 overflow-hidden flex items-center justify-center">
+          <div class="relative w-full h-44 bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center">
             <canvas id="canvasParabola" width="400" height="180" class="w-full h-full"></canvas>
           </div>
           <div class="mt-2.5 flex items-center justify-between text-[11px] font-mono">
-            <span class="text-slate-400">Current $V(x)$: <span id="valCurrentV" class="text-amber-400 font-bold">0.0000</span></span>
-            <span class="text-slate-400">Target $\epsilon$: <span class="text-emerald-400 font-bold">&le; 0.0800</span></span>
+            <span class="text-slate-600">Current $V(x)$: <span id="valCurrentV" class="text-amber-700 font-bold">0.0000</span></span>
+            <span class="text-slate-600">Target $\epsilon$: <span class="text-emerald-700 font-bold">&le; 0.0800</span></span>
           </div>
         </div>
 
         <!-- CONCENTRIC RINGS: CONFIDENCE ESCALATION (Slide 1) -->
-        <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col">
+        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col">
           <div class="flex items-center justify-between mb-2">
             <div class="flex items-center space-x-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
-              <h2 class="text-xs font-bold text-white uppercase tracking-wider">Concentric Confidence Rings</h2>
+              <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span>
+              <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Concentric Confidence Rings</h2>
             </div>
-            <span class="text-[10px] font-mono text-slate-400 bg-slate-800 px-2 py-0.5 rounded">Slide 1 Diagram</span>
+            <span class="text-[10px] font-mono text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded font-semibold">Slide 1 Diagram</span>
           </div>
-          <p class="text-[11px] text-slate-400 mb-2">
-            Steps converge inward: <span class="text-rose-400">Low (Escalate)</span> &rarr; <span class="text-amber-300">Medium</span> &rarr; <span class="text-sky-300">High</span> &rarr; <span class="text-emerald-400">Ground Truth</span>.
+          <p class="text-[11px] text-slate-500 mb-2">
+            Steps converge inward: <span class="text-rose-600 font-semibold">Low (Escalate)</span> &rarr; <span class="text-amber-600 font-semibold">Medium</span> &rarr; <span class="text-sky-600 font-semibold">High</span> &rarr; <span class="text-emerald-700 font-semibold">Ground Truth</span>.
           </p>
-          <div class="relative w-full h-44 bg-slate-950 rounded-lg border border-slate-800 overflow-hidden flex items-center justify-center">
+          <div class="relative w-full h-44 bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center">
             <canvas id="canvasRings" width="400" height="180" class="w-full h-full"></canvas>
           </div>
           <div class="mt-2.5 flex items-center justify-between text-[11px] font-mono">
-            <span class="text-slate-400">Current Ring: <span id="lblCurrentRing" class="text-indigo-400 font-bold">Not Evaluated</span></span>
-            <span class="text-slate-400">Steps Taken: <span id="lblStepCount" class="text-slate-200 font-bold">0</span></span>
+            <span class="text-slate-600">Current Ring: <span id="lblCurrentRing" class="text-indigo-600 font-bold">Not Evaluated</span></span>
+            <span class="text-slate-600">Steps Taken: <span id="lblStepCount" class="text-slate-900 font-bold">0</span></span>
           </div>
         </div>
 
       </div>
 
       <!-- DESCENT GUARANTEE FORMULA BOX (Slide 5 & 6) -->
-      <div class="p-3.5 bg-gradient-to-r from-slate-900 via-indigo-950/40 to-slate-900 border border-indigo-900/40 rounded-xl flex items-center justify-between text-xs">
+      <div class="p-3.5 bg-gradient-to-r from-indigo-50/80 via-white to-sky-50/80 border border-indigo-200/80 rounded-xl flex items-center justify-between text-xs shadow-xs">
         <div class="space-y-0.5">
-          <div class="flex items-center space-x-2 font-bold text-slate-200">
-            <i class="fa-solid fa-shield-halved text-indigo-400"></i>
+          <div class="flex items-center space-x-2 font-bold text-indigo-950">
+            <i class="fa-solid fa-shield-halved text-indigo-600"></i>
             <span>The Lyapunov Guarantee: Every Accepted Step Truly Helps</span>
           </div>
-          <p class="text-[11px] text-slate-400">
-            When $\delta > 2\hat{\eta}$, no lucky noise can pass the gate. Downhill bound: <span class="font-mono text-emerald-400 font-semibold">V(x') &le; V(x) - (&delta; - 2&eta;)</span>
+          <p class="text-[11px] text-slate-600">
+            When $\delta > 2\hat{\eta}$, no lucky noise can pass the gate. Downhill bound: <span class="font-mono text-emerald-700 font-semibold">V(x') &le; V(x) - (&delta; - 2&eta;)</span>
           </p>
         </div>
-        <div class="text-right font-mono text-[11px] space-y-0.5 pl-4 border-l border-slate-800">
-          <div>Noise $\hat{\eta} = <span class="text-sky-300 font-bold">0.0126</span></div>
-          <div>Margin $\delta = <span class="text-emerald-300 font-bold">0.0314</span> (&gt; 2&eta;)</div>
+        <div class="text-right font-mono text-[11px] space-y-0.5 pl-4 border-l border-slate-200">
+          <div class="text-slate-600">Noise $\hat{\eta} = <span class="text-sky-700 font-bold">0.0126</span></div>
+          <div class="text-slate-600">Margin $\delta = <span class="text-emerald-700 font-bold">0.0314</span> (&gt; 2&eta;)</div>
         </div>
       </div>
 
       <!-- ATOMIC NOUL RULES BREAKDOWN TABLE (Slide 4) -->
-      <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-sm flex flex-col flex-1">
+      <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col flex-1">
         <div class="flex items-center justify-between mb-3">
           <div>
-            <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center space-x-2">
-              <i class="fa-solid fa-check-double text-emerald-400"></i>
+            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center space-x-2">
+              <i class="fa-solid fa-check-double text-emerald-600"></i>
               <span>Jev System One Noul Probabilities: $V(x) = \sum_j w_j (1 - p_j)$</span>
             </h3>
-            <p class="text-[11px] text-slate-400">Independent atomic evaluations from TypeSafe's System One model.</p>
+            <p class="text-[11px] text-slate-500">Independent atomic evaluations from TypeSafe's System One model.</p>
           </div>
           <div class="text-right">
-            <span class="text-xs font-mono font-bold text-indigo-300" id="lblFormulaResult">V = 0.0000</span>
+            <span class="text-xs font-mono font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100" id="lblFormulaResult">V = 0.0000</span>
           </div>
         </div>
 
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs">
             <thead>
-              <tr class="border-b border-slate-800 text-[10px] text-slate-400 uppercase tracking-wider font-mono">
-                <th class="pb-2 font-semibold">Rule / Claim</th>
-                <th class="pb-2 font-semibold">Question Phrasing</th>
-                <th class="pb-2 font-semibold text-center w-28">Noul Prob ($p_j$)</th>
-                <th class="pb-2 font-semibold text-right w-20">Badness ($1-p_j$)</th>
+              <tr class="border-b border-slate-200 text-[10px] text-slate-500 uppercase tracking-wider font-mono bg-slate-50/50">
+                <th class="py-2 px-2 font-semibold">Rule / Claim</th>
+                <th class="py-2 px-2 font-semibold">Question Phrasing</th>
+                <th class="py-2 px-2 font-semibold text-center w-28">Noul Prob ($p_j$)</th>
+                <th class="py-2 px-2 font-semibold text-right w-20">Badness ($1-p_j$)</th>
               </tr>
             </thead>
-            <tbody id="rulesTableBody" class="divide-y divide-slate-800/60 font-mono text-[11px]">
+            <tbody id="rulesTableBody" class="divide-y divide-slate-100 font-mono text-[11px]">
               <!-- Injected via JavaScript -->
             </tbody>
           </table>
@@ -291,46 +300,46 @@
   </main>
 
   <!-- SETTINGS MODAL -->
-  <div id="settingsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4">
-      <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-        <h3 class="text-sm font-bold text-white flex items-center space-x-2">
-          <i class="fa-solid fa-gear text-indigo-400"></i>
-          <span>Engine & Lyapunov Parameters</span>
+  <div id="settingsModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white border border-slate-200 rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <h3 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+          <i class="fa-solid fa-gear text-indigo-600"></i>
+          <span>Engine &amp; Lyapunov Parameters</span>
         </h3>
-        <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-white">
+        <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-slate-600">
           <i class="fa-solid fa-xmark text-sm"></i>
         </button>
       </div>
 
       <div class="space-y-3 text-xs">
         <div>
-          <label class="block font-medium text-slate-300 mb-1">TypeSafe Jev API Key:</label>
-          <input type="password" id="cfgJevKey" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 font-mono text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+          <label class="block font-semibold text-slate-700 mb-1">TypeSafe Jev API Key:</label>
+          <input type="password" id="cfgJevKey" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500">
           <p class="text-[10px] text-slate-500 mt-1">Pre-provisioned with working key from empirical test run.</p>
         </div>
 
         <div>
-          <label class="block font-medium text-slate-300 mb-1">Groq LPU API Key (Optional override):</label>
-          <input type="password" id="cfgGroqKey" placeholder="gsk_..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 font-mono text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+          <label class="block font-semibold text-slate-700 mb-1">Groq LPU API Key (Optional override):</label>
+          <input type="password" id="cfgGroqKey" placeholder="gsk_..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500">
           <p class="text-[10px] text-slate-500 mt-1">Leave empty to use built-in rapid proposer inference.</p>
         </div>
 
         <div class="grid grid-cols-2 gap-3 pt-2">
           <div>
-            <label class="block font-medium text-slate-300 mb-1">Descent Gate Margin (&delta;):</label>
-            <input type="number" step="0.005" id="cfgDelta" value="0.0314" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 font-mono text-xs text-emerald-400 focus:outline-none">
+            <label class="block font-semibold text-slate-700 mb-1">Descent Gate Margin (&delta;):</label>
+            <input type="number" step="0.005" id="cfgDelta" value="0.0314" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-xs text-emerald-700 font-bold focus:outline-none">
           </div>
           <div>
-            <label class="block font-medium text-slate-300 mb-1">Stopping Target (&epsilon;):</label>
-            <input type="number" step="0.01" id="cfgEpsilon" value="0.08" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 font-mono text-indigo-400 focus:outline-none">
+            <label class="block font-semibold text-slate-700 mb-1">Stopping Target (&epsilon;):</label>
+            <input type="number" step="0.01" id="cfgEpsilon" value="0.08" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono text-indigo-700 font-bold focus:outline-none">
           </div>
         </div>
       </div>
 
-      <div class="pt-3 border-t border-slate-800 flex justify-end space-x-2">
-        <button onclick="closeSettingsModal()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs">Cancel</button>
-        <button onclick="saveSettings()" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow">Save Settings</button>
+      <div class="pt-3 border-t border-slate-200 flex justify-end space-x-2">
+        <button onclick="closeSettingsModal()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold">Cancel</button>
+        <button onclick="saveSettings()" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs shadow-xs">Save Settings</button>
       </div>
     </div>
   </div>
@@ -413,23 +422,23 @@
       RULES.forEach(r => {
         const tr = document.createElement('tr');
         tr.id = `rule-row-${r.id}`;
-        tr.className = "hover:bg-slate-800/40 transition";
+        tr.className = "hover:bg-slate-50 transition";
         tr.innerHTML = `
-          <td class="py-2.5 font-bold text-slate-300">
-            <span class="text-indigo-400 mr-1">${r.id}</span> ${r.name}
+          <td class="py-2.5 px-2 font-bold text-slate-800">
+            <span class="text-indigo-600 mr-1">${r.id}</span> ${r.name}
           </td>
-          <td class="py-2.5 text-slate-400 text-[10px] max-w-xs truncate" title="${r.question}">
+          <td class="py-2.5 px-2 text-slate-500 text-[10px] max-w-xs truncate" title="${r.question}">
             ${r.question}
           </td>
-          <td class="py-2.5 text-center">
+          <td class="py-2.5 px-2 text-center">
             <div class="flex items-center space-x-1.5 justify-center">
-              <div class="w-16 bg-slate-800 h-2 rounded-full overflow-hidden">
-                <div id="prob-bar-${r.id}" class="h-full bg-slate-600 transition-all duration-500" style="width: 50%"></div>
+              <div class="w-16 bg-slate-200 h-2 rounded-full overflow-hidden">
+                <div id="prob-bar-${r.id}" class="h-full bg-slate-400 transition-all duration-500" style="width: 50%"></div>
               </div>
-              <span id="prob-val-${r.id}" class="text-[10px] font-bold text-slate-400">0.50</span>
+              <span id="prob-val-${r.id}" class="text-[10px] font-bold text-slate-600">0.50</span>
             </div>
           </td>
-          <td id="badness-val-${r.id}" class="py-2.5 text-right font-bold text-slate-400">
+          <td id="badness-val-${r.id}" class="py-2.5 px-2 text-right font-bold text-slate-500">
             0.50
           </td>
         `;
@@ -456,7 +465,7 @@
       document.getElementById('lblFormulaResult').textContent = 'V = 0.0000';
       document.getElementById('lblStepCount').textContent = '0';
       document.getElementById('lblCurrentRing').textContent = 'Not Evaluated';
-      document.getElementById('lblCurrentRing').className = 'text-slate-400 font-bold';
+      document.getElementById('lblCurrentRing').className = 'text-slate-500 font-bold';
       
       drawParabola();
       drawRings();
@@ -470,17 +479,17 @@
       const bS = document.getElementById('btnSimEngine');
       const lbl = document.getElementById('lblActiveEngine');
       
-      [bG, bW, bS].forEach(b => b.className = "px-3 py-1.5 rounded-md transition text-slate-400 hover:text-white flex items-center space-x-1.5");
+      [bG, bW, bS].forEach(b => b.className = "px-3 py-1.5 rounded-md transition text-slate-600 hover:text-slate-900 flex items-center space-x-1.5");
       
       if (engine === 'groq') {
-        bG.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-sm font-bold flex items-center space-x-1.5";
+        bG.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-xs font-bold flex items-center space-x-1.5";
         lbl.textContent = "Groq LPU (Llama 3.3)";
       } else if (engine === 'webllm') {
-        bW.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-sm font-bold flex items-center space-x-1.5";
+        bW.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-xs font-bold flex items-center space-x-1.5";
         lbl.textContent = "WebGPU (Qwen2.5-1.5B)";
         initWebLlm();
       } else {
-        bS.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-sm font-bold flex items-center space-x-1.5";
+        bS.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-xs font-bold flex items-center space-x-1.5";
         lbl.textContent = "Fast Empirical Preset";
       }
     }
@@ -692,17 +701,17 @@
           pBar.style.width = `${Math.round(p * 100)}%`;
           if (p >= 0.85) {
             pBar.className = "h-full bg-emerald-500 transition-all duration-500";
-            pVal.className = "text-[10px] font-bold text-emerald-400";
+            pVal.className = "text-[10px] font-bold text-emerald-700";
           } else if (p >= 0.50) {
             pBar.className = "h-full bg-amber-500 transition-all duration-500";
-            pVal.className = "text-[10px] font-bold text-amber-400";
+            pVal.className = "text-[10px] font-bold text-amber-700";
           } else {
             pBar.className = "h-full bg-rose-500 transition-all duration-500";
-            pVal.className = "text-[10px] font-bold text-rose-400";
+            pVal.className = "text-[10px] font-bold text-rose-700";
           }
           pVal.textContent = p.toFixed(2);
           badVal.textContent = badness.toFixed(2);
-          badVal.className = badness > 0.4 ? "py-2.5 text-right font-bold text-rose-400" : "py-2.5 text-right font-bold text-slate-400";
+          badVal.className = badness > 0.4 ? "py-2.5 px-2 text-right font-bold text-rose-600" : "py-2.5 px-2 text-right font-bold text-slate-500";
         }
       });
 
@@ -714,16 +723,16 @@
       const ringLbl = document.getElementById('lblCurrentRing');
       if (vSum <= 0.05) {
         ringLbl.textContent = "Ground Truth (Compliant)";
-        ringLbl.className = "text-emerald-400 font-bold";
+        ringLbl.className = "text-emerald-700 font-bold";
       } else if (vSum <= 0.12) {
         ringLbl.textContent = "High Confidence";
-        ringLbl.className = "text-sky-400 font-bold";
+        ringLbl.className = "text-sky-700 font-bold";
       } else if (vSum <= 0.25) {
         ringLbl.textContent = "Medium Confidence";
-        ringLbl.className = "text-amber-400 font-bold";
+        ringLbl.className = "text-amber-700 font-bold";
       } else {
         ringLbl.textContent = "Low (Escalate)";
-        ringLbl.className = "text-rose-400 font-bold";
+        ringLbl.className = "text-rose-700 font-bold";
       }
     }
 
@@ -737,8 +746,12 @@
 
       ctx.clearRect(0, 0, w, h);
 
+      // Light background fill
+      ctx.fillStyle = "#f8fafc";
+      ctx.fillRect(0, 0, w, h);
+
       // Background grid
-      ctx.strokeStyle = "rgba(51, 65, 85, 0.3)";
+      ctx.strokeStyle = "rgba(203, 213, 225, 0.6)";
       ctx.lineWidth = 1;
       for (let y = 20; y < h; y += 35) {
         ctx.beginPath();
@@ -749,7 +762,7 @@
 
       // Parabola Curve V(x)
       ctx.beginPath();
-      ctx.strokeStyle = "#38bdf8";
+      ctx.strokeStyle = "#0284c7";
       ctx.lineWidth = 3;
       for (let px = 45; px <= w - 25; px++) {
         const normX = (px - w / 2) / (w * 0.4);
@@ -761,9 +774,11 @@
       ctx.stroke();
 
       // Axis labels
-      ctx.fillStyle = "#94a3b8";
+      ctx.fillStyle = "#64748b";
       ctx.font = "9px JetBrains Mono";
       ctx.fillText("Height V (lower is better)", 40, 16);
+      ctx.fillStyle = "#0f172a";
+      ctx.font = "bold 9px JetBrains Mono";
       ctx.fillText("GROUND TRUTH: min V", w / 2 - 50, h - 8);
 
       // Draw trajectory points
@@ -781,15 +796,15 @@
           if (prevPx !== null) {
             ctx.beginPath();
             if (pt.accepted) {
-              ctx.strokeStyle = "#10b981";
-              ctx.lineWidth = 2;
+              ctx.strokeStyle = "#059669";
+              ctx.lineWidth = 2.5;
               ctx.setLineDash([]);
               ctx.moveTo(prevPx, prevPy);
               ctx.lineTo(px, py);
               ctx.stroke();
             } else {
-              ctx.strokeStyle = "#f43f5e";
-              ctx.lineWidth = 1.5;
+              ctx.strokeStyle = "#e11d48";
+              ctx.lineWidth = 1.8;
               ctx.setLineDash([4, 4]);
               ctx.moveTo(prevPx, prevPy);
               ctx.lineTo(px, py);
@@ -797,7 +812,7 @@
               ctx.setLineDash([]);
               
               // Draw Red X
-              ctx.strokeStyle = "#f43f5e";
+              ctx.strokeStyle = "#e11d48";
               ctx.lineWidth = 2;
               ctx.beginPath();
               ctx.moveTo(px - 5, py - 5); ctx.lineTo(px + 5, py + 5);
@@ -808,17 +823,17 @@
 
           // Dot
           ctx.beginPath();
-          ctx.arc(px, py, pt.accepted ? 5 : 4, 0, Math.PI * 2);
-          ctx.fillStyle = pt.accepted ? (i === 0 ? "#f43f5e" : "#10b981") : "#f43f5e";
+          ctx.arc(px, py, pt.accepted ? 5.5 : 4.5, 0, Math.PI * 2);
+          ctx.fillStyle = pt.accepted ? (i === 0 ? "#e11d48" : "#059669") : "#e11d48";
           ctx.fill();
           ctx.strokeStyle = "#ffffff";
-          ctx.lineWidth = 1.5;
+          ctx.lineWidth = 2;
           ctx.stroke();
 
           // Label
-          ctx.fillStyle = "#ffffff";
-          ctx.font = "8px JetBrains Mono";
-          ctx.fillText(`x${pt.step}`, px + 6, py - 4);
+          ctx.fillStyle = "#0f172a";
+          ctx.font = "bold 9px JetBrains Mono";
+          ctx.fillText(`x${pt.step}`, px + 7, py - 3);
 
           if (pt.accepted) {
             prevPx = px;
@@ -840,12 +855,16 @@
 
       ctx.clearRect(0, 0, w, h);
 
+      // Light background fill
+      ctx.fillStyle = "#f8fafc";
+      ctx.fillRect(0, 0, w, h);
+
       // Rings definitions: radius, color, label
       const rings = [
-        { r: 76, color: "rgba(244, 63, 94, 0.15)", border: "#f43f5e", label: "Low: Escalate" },
-        { r: 54, color: "rgba(245, 158, 11, 0.15)", border: "#f59e0b", label: "Medium" },
-        { r: 34, color: "rgba(56, 189, 248, 0.15)", border: "#38bdf8", label: "High" },
-        { r: 16, color: "rgba(16, 185, 129, 0.35)", border: "#10b981", label: "Truth" }
+        { r: 76, color: "rgba(225, 29, 72, 0.08)", border: "#f43f5e", label: "Low: Escalate" },
+        { r: 54, color: "rgba(217, 119, 6, 0.08)", border: "#f59e0b", label: "Medium" },
+        { r: 34, color: "rgba(2, 132, 199, 0.08)", border: "#0284c7", label: "High" },
+        { r: 16, color: "rgba(5, 150, 105, 0.22)", border: "#059669", label: "Truth" }
       ];
 
       rings.forEach(ring => {
@@ -859,12 +878,12 @@
       });
 
       // Ring text labels
-      ctx.fillStyle = "#f43f5e";
-      ctx.font = "8px Inter";
+      ctx.fillStyle = "#e11d48";
+      ctx.font = "bold 8px Inter";
       ctx.fillText("LOW", cx - 72, cy - 60);
-      ctx.fillStyle = "#f59e0b";
+      ctx.fillStyle = "#d97706";
       ctx.fillText("MED", cx - 50, cy - 40);
-      ctx.fillStyle = "#38bdf8";
+      ctx.fillStyle = "#0284c7";
       ctx.fillText("HIGH", cx - 30, cy - 22);
 
       // Draw trajectory moving toward center
@@ -882,13 +901,13 @@
           if (prevX !== null) {
             ctx.beginPath();
             if (pt.accepted) {
-              ctx.strokeStyle = "#38bdf8";
+              ctx.strokeStyle = "#0284c7";
               ctx.lineWidth = 2.5;
               ctx.moveTo(prevX, prevY);
               ctx.lineTo(x, y);
               ctx.stroke();
             } else {
-              ctx.strokeStyle = "#f43f5e";
+              ctx.strokeStyle = "#e11d48";
               ctx.lineWidth = 1.5;
               ctx.setLineDash([3, 3]);
               ctx.moveTo(prevX, prevY);
@@ -897,7 +916,7 @@
               ctx.setLineDash([]);
               
               // X mark
-              ctx.strokeStyle = "#f43f5e";
+              ctx.strokeStyle = "#e11d48";
               ctx.lineWidth = 2;
               ctx.beginPath();
               ctx.moveTo(x - 4, y - 4); ctx.lineTo(x + 4, y + 4);
@@ -907,11 +926,11 @@
           }
 
           ctx.beginPath();
-          ctx.arc(x, y, pt.accepted ? 4 : 3, 0, Math.PI * 2);
-          ctx.fillStyle = pt.accepted ? "#38bdf8" : "#f43f5e";
+          ctx.arc(x, y, pt.accepted ? 4.5 : 3.5, 0, Math.PI * 2);
+          ctx.fillStyle = pt.accepted ? "#0284c7" : "#e11d48";
           ctx.fill();
           ctx.strokeStyle = "#ffffff";
-          ctx.lineWidth = 1;
+          ctx.lineWidth = 1.5;
           ctx.stroke();
 
           if (pt.accepted) {
@@ -930,12 +949,12 @@
       if (sender === 'customer') {
         div.className = "flex space-x-2.5 max-w-[90%]";
         div.innerHTML = `
-          <div class="w-7 h-7 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center flex-shrink-0 text-slate-400">
+          <div class="w-7 h-7 rounded-lg bg-slate-200 border border-slate-300 flex items-center justify-center flex-shrink-0 text-slate-600">
             <i class="fa-solid fa-user text-xs"></i>
           </div>
           <div class="space-y-1">
             <span class="text-[10px] text-slate-500 font-semibold uppercase">Customer Ticket</span>
-            <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-xs text-slate-200">
+            <div class="bg-white border border-slate-200 shadow-xs rounded-2xl rounded-tl-sm px-3.5 py-2.5 text-xs text-slate-800">
               ${text}
             </div>
           </div>
@@ -945,13 +964,13 @@
         div.innerHTML = `
           <div class="space-y-1 text-right">
             <div class="flex items-center justify-end space-x-2">
-              <span class="text-[10px] text-indigo-400 font-mono font-semibold">Proposer Agent ($x_{${step}}$)</span>
+              <span class="text-[10px] text-indigo-700 font-mono font-bold">Proposer Agent ($x_{${step}}$)</span>
             </div>
-            <div class="bg-indigo-950/40 border border-indigo-800/60 rounded-2xl rounded-tr-sm px-3.5 py-2.5 text-xs text-slate-200 text-left">
+            <div class="bg-indigo-50/80 border border-indigo-200 shadow-xs rounded-2xl rounded-tr-sm px-3.5 py-2.5 text-xs text-slate-800 text-left">
               ${text}
             </div>
           </div>
-          <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0 text-white shadow-sm">
+          <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center flex-shrink-0 text-white shadow-xs">
             <i class="fa-solid fa-robot text-xs"></i>
           </div>
         `;
@@ -963,13 +982,13 @@
     function appendGateStatus(step, v) {
       const stream = document.getElementById('chatStream');
       const card = document.createElement('div');
-      card.className = "p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs space-y-1 my-2 font-mono";
+      card.className = "p-3 rounded-xl bg-white border border-slate-200 shadow-xs text-xs space-y-1 my-2 font-mono";
       card.innerHTML = `
         <div class="flex items-center justify-between">
-          <span class="text-indigo-400 font-bold">Initial State Measurement ($x_0$)</span>
-          <span class="text-amber-400 font-bold">V(x_0) = ${v.toFixed(4)}</span>
+          <span class="text-indigo-700 font-bold">Initial State Measurement ($x_0$)</span>
+          <span class="text-amber-700 font-bold">V(x_0) = ${v.toFixed(4)}</span>
         </div>
-        <p class="text-[11px] text-slate-400 font-sans">
+        <p class="text-[11px] text-slate-600 font-sans">
           Baseline rule compliance measured. Click <strong>"2. Gen 1 Descent Gate Revision"</strong> to trigger the automated Lyapunov descent loop.
         </p>
       `;
@@ -986,24 +1005,24 @@
       // Then append Descent Gate Card
       const card = document.createElement('div');
       card.className = accepted 
-        ? "p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/40 text-xs space-y-1.5 my-2 font-mono"
-        : "p-3 rounded-xl bg-rose-950/30 border border-rose-500/40 text-xs space-y-1.5 my-2 font-mono";
+        ? "p-3 rounded-xl bg-emerald-50/90 border border-emerald-300 shadow-xs text-xs space-y-1.5 my-2 font-mono"
+        : "p-3 rounded-xl bg-rose-50/90 border border-rose-300 shadow-xs text-xs space-y-1.5 my-2 font-mono";
       
       const badge = accepted
-        ? `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30 flex items-center space-x-1"><i class="fa-solid fa-check"></i><span>ACCEPTED: Downhill by &ge; &delta;</span></span>`
-        : `<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold border border-rose-500/30 flex items-center space-x-1"><i class="fa-solid fa-xmark"></i><span>REJECTED: Uphill / Gain &lt; &delta;</span></span>`;
+        ? `<span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold border border-emerald-300 flex items-center space-x-1"><i class="fa-solid fa-check"></i><span>ACCEPTED: Downhill by &ge; &delta;</span></span>`
+        : `<span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold border border-rose-300 flex items-center space-x-1"><i class="fa-solid fa-xmark"></i><span>REJECTED: Uphill / Gain &lt; &delta;</span></span>`;
 
       card.innerHTML = `
         <div class="flex items-center justify-between">
-          <span class="font-bold text-slate-300">Descent Gate Check &middot; Step ${step}</span>
+          <span class="font-bold text-slate-800">Descent Gate Check &middot; Step ${step}</span>
           ${badge}
         </div>
-        <div class="grid grid-cols-3 gap-2 text-[10px] text-slate-400 pt-1">
-          <div>Old Height: <span class="text-slate-200 font-bold">${oldV.toFixed(4)}</span></div>
-          <div>New Height: <span class="${accepted ? 'text-emerald-400' : 'text-rose-400'} font-bold">${newV.toFixed(4)}</span></div>
-          <div>Change: <span class="${deltaObs >= deltaMargin ? 'text-emerald-400' : 'text-rose-400'} font-bold">${deltaObs >= 0 ? '-' : '+'}${Math.abs(deltaObs).toFixed(4)}</span></div>
+        <div class="grid grid-cols-3 gap-2 text-[10px] text-slate-600 pt-1">
+          <div>Old Height: <span class="text-slate-900 font-bold">${oldV.toFixed(4)}</span></div>
+          <div>New Height: <span class="${accepted ? 'text-emerald-700' : 'text-rose-700'} font-bold">${newV.toFixed(4)}</span></div>
+          <div>Change: <span class="${deltaObs >= deltaMargin ? 'text-emerald-700' : 'text-rose-700'} font-bold">${deltaObs >= 0 ? '-' : '+'}${Math.abs(deltaObs).toFixed(4)}</span></div>
         </div>
-        <p class="text-[10px] text-slate-400 font-sans pt-1">
+        <p class="text-[10px] text-slate-600 font-sans pt-1">
           ${accepted 
             ? `Improvement (${deltaObs.toFixed(4)}) strictly exceeds noise margin (&delta; = ${deltaMargin.toFixed(4)}). Candidate accepted as new state.` 
             : `Insufficient downhill descent (${deltaObs.toFixed(4)} < &delta; = ${deltaMargin.toFixed(4)}). Candidate rolled back per Slide 5.`}
