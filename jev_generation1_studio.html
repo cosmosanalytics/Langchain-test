@@ -11,6 +11,9 @@
   <!-- FontAwesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
+  <!-- Mermaid.js for Causal Policy DAG Rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
   <!-- WebLLM WebGPU CDN -->
   <script type="module">
     try {
@@ -198,153 +201,258 @@
     </div>
 
     <!-- RIGHT PANEL: VISUALIZATIONS & ATOMIC NOUL CLAIMS (7 COLS) -->
-    <div class="lg:col-span-7 flex flex-col bg-slate-100/60 h-[calc(100vh-65px)] overflow-y-auto custom-scrollbar p-5 space-y-5">
+    <div class="lg:col-span-7 flex flex-col bg-slate-100/60 h-[calc(100vh-65px)] overflow-hidden">
       
-      <!-- TOP GRIDS: PARABOLA ("ROLLING DOWNHILL") & CONCENTRIC RINGS -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- TOP-LEVEL PANEL TABS -->
+      <div class="p-3 bg-white border-b border-slate-200 flex items-center justify-between shadow-xs z-10 flex-shrink-0">
+        <div class="inline-flex p-1 bg-slate-100 rounded-lg border border-slate-200 text-xs font-semibold">
+          <button id="mainTabBtnLandscapes" onclick="switchMainTab('landscapes')" class="px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-xs font-bold flex items-center space-x-1.5">
+            <i class="fa-solid fa-mountain text-emerald-300"></i>
+            <span>1. Energy Landscapes</span>
+          </button>
+          <button id="mainTabBtnRules" onclick="switchMainTab('rules')" class="px-3 py-1.5 rounded-md transition text-slate-600 hover:text-slate-900 flex items-center space-x-1.5">
+            <i class="fa-solid fa-check-double text-indigo-500"></i>
+            <span>2. Policy Invariants (15)</span>
+          </button>
+          <button id="mainTabBtnInspector" onclick="switchMainTab('inspector')" class="px-3 py-1.5 rounded-md transition text-slate-600 hover:text-slate-900 flex items-center space-x-1.5">
+            <i class="fa-solid fa-code text-sky-500"></i>
+            <span>3. Context Window &amp; State</span>
+          </button>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <span class="text-xs font-mono font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-200" id="lblHeaderV">V = 0.0000</span>
+        </div>
+      </div>
+
+      <!-- TAB CONTENT CONTAINER -->
+      <div class="flex-1 overflow-y-auto custom-scrollbar p-5">
         
-        <!-- PARABOLA WELL: ROLLING DOWNHILL (Slide 3) -->
-        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col">
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center space-x-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Lyapunov Landscape ($V(x)$)</h2>
+        <!-- PANE 1: ENERGY LANDSCAPES & DESCENT GUARANTEE -->
+        <div id="mainPaneLandscapes" class="space-y-4">
+          <!-- TOP GRIDS: PARABOLA ("ROLLING DOWNHILL") & CONCENTRIC RINGS -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            
+            <!-- PARABOLA WELL: ROLLING DOWNHILL (Slide 3) -->
+            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Lyapunov Landscape ($V(x)$)</h2>
+                </div>
+                <span class="text-[10px] font-mono text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded font-semibold">Slide 3 Diagram</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mb-2">
+                Height <span class="font-mono text-amber-700 font-bold">V</span> = rule violation rate. Gate accepts step only if it rolls downhill by <span class="font-mono text-emerald-700 font-bold">&ge; &delta;</span>.
+              </p>
+              <div class="relative w-full h-48 bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center">
+                <canvas id="canvasParabola" width="400" height="190" class="w-full h-full"></canvas>
+              </div>
+              <div class="mt-2.5 flex items-center justify-between text-[11px] font-mono">
+                <span class="text-slate-600">Current $V(x)$: <span id="valCurrentV" class="text-amber-700 font-bold">0.0000</span></span>
+                <span class="text-slate-600">Target $\epsilon$: <span class="text-emerald-700 font-bold">&le; 0.0800</span></span>
+              </div>
             </div>
-            <span class="text-[10px] font-mono text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded font-semibold">Slide 3 Diagram</span>
-          </div>
-          <p class="text-[11px] text-slate-500 mb-2">
-            Height <span class="font-mono text-amber-700 font-bold">V</span> = rule violation rate. Gate accepts step only if it rolls downhill by <span class="font-mono text-emerald-700 font-bold">&ge; &delta;</span>.
-          </p>
-          <div class="relative w-full h-44 bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center">
-            <canvas id="canvasParabola" width="400" height="180" class="w-full h-full"></canvas>
-          </div>
-          <div class="mt-2.5 flex items-center justify-between text-[11px] font-mono">
-            <span class="text-slate-600">Current $V(x)$: <span id="valCurrentV" class="text-amber-700 font-bold">0.0000</span></span>
-            <span class="text-slate-600">Target $\epsilon$: <span class="text-emerald-700 font-bold">&le; 0.0800</span></span>
-          </div>
-        </div>
 
-        <!-- CONCENTRIC RINGS: CONFIDENCE ESCALATION (Slide 1) -->
-        <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col">
-          <div class="flex items-center justify-between mb-2">
-            <div class="flex items-center space-x-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span>
-              <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Concentric Confidence Rings</h2>
+            <!-- CONCENTRIC RINGS: CONFIDENCE ESCALATION (Slide 1) -->
+            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col">
+              <div class="flex items-center justify-between mb-2">
+                <div class="flex items-center space-x-2">
+                  <span class="w-2.5 h-2.5 rounded-full bg-sky-500"></span>
+                  <h2 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Concentric Confidence Rings</h2>
+                </div>
+                <span class="text-[10px] font-mono text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded font-semibold">Slide 1 Diagram</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mb-2">
+                Steps converge inward: <span class="text-rose-600 font-semibold">Low (Escalate)</span> &rarr; <span class="text-amber-600 font-semibold">Medium</span> &rarr; <span class="text-sky-600 font-semibold">High</span> &rarr; <span class="text-emerald-700 font-semibold">Ground Truth</span>.
+              </p>
+              <div class="relative w-full h-48 bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center">
+                <canvas id="canvasRings" width="400" height="190" class="w-full h-full"></canvas>
+              </div>
+              <div class="mt-2.5 flex items-center justify-between text-[11px] font-mono">
+                <span class="text-slate-600">Current Ring: <span id="lblCurrentRing" class="text-indigo-600 font-bold">Not Evaluated</span></span>
+                <span class="text-slate-600">Steps Taken: <span id="lblStepCount" class="text-slate-900 font-bold">0</span></span>
+              </div>
             </div>
-            <span class="text-[10px] font-mono text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded font-semibold">Slide 1 Diagram</span>
+
           </div>
-          <p class="text-[11px] text-slate-500 mb-2">
-            Steps converge inward: <span class="text-rose-600 font-semibold">Low (Escalate)</span> &rarr; <span class="text-amber-600 font-semibold">Medium</span> &rarr; <span class="text-sky-600 font-semibold">High</span> &rarr; <span class="text-emerald-700 font-semibold">Ground Truth</span>.
-          </p>
-          <div class="relative w-full h-44 bg-slate-50 rounded-lg border border-slate-200 overflow-hidden flex items-center justify-center">
-            <canvas id="canvasRings" width="400" height="180" class="w-full h-full"></canvas>
+
+          <!-- DESCENT GUARANTEE FORMULA BOX (Slide 5 & 6) -->
+          <div class="p-4 bg-gradient-to-r from-indigo-50/80 via-white to-sky-50/80 border border-indigo-200/80 rounded-xl flex items-center justify-between text-xs shadow-xs">
+            <div class="space-y-1">
+              <div class="flex items-center space-x-2 font-bold text-indigo-950 text-sm">
+                <i class="fa-solid fa-shield-halved text-indigo-600"></i>
+                <span>The Lyapunov Guarantee: Every Accepted Step Truly Helps</span>
+              </div>
+              <p class="text-xs text-slate-600">
+                When $\delta > 2\hat{\eta}$, no lucky noise can pass the gate. Downhill bound: <span class="font-mono text-emerald-700 font-bold">V(x') &le; V(x) - (&delta; - 2&eta;)</span>
+              </p>
+            </div>
+            <div class="text-right font-mono text-xs space-y-1 pl-5 border-l border-slate-200">
+              <div class="text-slate-600">Noise Floor $\hat{\eta} = <span class="text-sky-700 font-bold">0.0126</span></div>
+              <div class="text-slate-600">Margin Gate $\delta = <span class="text-emerald-700 font-bold">0.0314</span> (&gt; 2&eta;)</div>
+            </div>
           </div>
-          <div class="mt-2.5 flex items-center justify-between text-[11px] font-mono">
-            <span class="text-slate-600">Current Ring: <span id="lblCurrentRing" class="text-indigo-600 font-bold">Not Evaluated</span></span>
-            <span class="text-slate-600">Steps Taken: <span id="lblStepCount" class="text-slate-900 font-bold">0</span></span>
+        </div>
+
+        <!-- PANE 2: ATOMIC NOUL RULES BREAKDOWN TABLE & CAUSAL DAG -->
+        <div id="mainPaneRules" class="hidden space-y-4">
+
+          <!-- POLICY INVARIANT CAUSAL DAG CARD -->
+          <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col">
+            <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
+              <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-diagram-project text-indigo-600"></i>
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Policy Invariant Causal DAG (5 Causal Layers)</h3>
+                <span class="text-[9px] font-mono bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-semibold">15 Interlocking Nodes</span>
+              </div>
+              <span class="text-[10px] text-slate-500 font-mono">Dependency Ordering &middot; Zero Cycle Invariance</span>
+            </div>
+            
+            <p class="text-[11px] text-slate-600 mb-3">
+              Jev evaluates each proposition independently, but the customer support policy forms a <strong>Directed Acyclic Graph (DAG)</strong>. A failure at an upstream eligibility node (e.g. <em>R01 Return Window</em>) invalidates all downstream settlement and refund fulfillment nodes!
+            </p>
+
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg overflow-x-auto">
+              <pre class="mermaid text-xs flex justify-center">
+flowchart TD
+    classDef l0 fill:#fee2e2,stroke:#ef4444,stroke-width:1.5px,color:#991b1b
+    classDef l1 fill:#e0e7ff,stroke:#6366f1,stroke-width:1.5px,color:#3730a3
+    classDef l2 fill:#fef3c7,stroke:#f59e0b,stroke-width:1.5px,color:#92400e
+    classDef l3 fill:#e0f2fe,stroke:#0284c7,stroke-width:1.5px,color:#075985
+    classDef l4 fill:#dcfce7,stroke:#10b981,stroke-width:1.5px,color:#065f46
+
+    subgraph L0 ["Layer 0: Universal Boundary Guardrails"]
+        R09["R09: Sensitive Info<br/>(No CC/CVV/Passwords)"]:::l0
+        R12["R12: Respectful Tone<br/>(No blaming/accusing)"]:::l0
+    end
+
+    subgraph L1 ["Layer 1: Identity & Eligibility Verification"]
+        R08["R08: Order Number<br/>Verification"]:::l1
+        R01["R01: 30-Day Window<br/>(Delivered <= 30d)"]:::l1
+        R04["R04: Final Sale<br/>(Clearance excluded)"]:::l1
+        R13["R13: Warranty Check<br/>(Electronics <= 1yr)"]:::l1
+        R14["R14: Gift Status<br/>(Credit for recipient)"]:::l1
+    end
+
+    subgraph L2 ["Layer 2: Condition & Defect Triage"]
+        R02["R02: Defect Photo Proof<br/>(Mandatory evidence)"]:::l2
+        R03["R03: Item Condition<br/>(Unused/unwashed)"]:::l2
+        R07A["R07: Prepaid Label<br/>(Allowed for Defects)"]:::l2
+        R07B["R07: Customer Shipping<br/>(Standard Returns)"]:::l2
+    end
+
+    subgraph L3 ["Layer 3: Settlement & Financial Execution"]
+        R11["R11: Inspection Required<br/>(No guarantee prior)"]:::l3
+        R10["R10: Large Refund Review<br/>(Supervisor if > $500)"]:::l3
+        R05["R05: Refund Method<br/>(Original payment only)"]:::l3
+        R06["R06: Processing Timeline<br/>(5 to 7 business days)"]:::l3
+    end
+
+    subgraph L4 ["Layer 4: Terminal Resolution"]
+        R15["R15: Single Next Step<br/>(Clear action instruction)"]:::l4
+    end
+
+    R08 --> R01 & R04 & R13 & R14
+    R01 -->|Claim Defect| R02
+    R01 -->|Claim Standard| R03
+    R02 -->|Photo Provided| R07A
+    R03 -->|Item Unused| R07B
+    R07A & R07B --> R11
+    R11 --> R10 --> R05 --> R06
+    R06 --> R15
+    R09 -.->|Constrains| R05
+    R12 -.->|Constrains| R15
+              </pre>
+            </div>
+          </div>
+          <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+              <div>
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center space-x-2">
+                  <i class="fa-solid fa-check-double text-emerald-600"></i>
+                  <span>Jev System One Noul Probabilities: $V(x) = \sum_j w_j (1 - p_j)$</span>
+                </h3>
+                <p class="text-[11px] text-slate-500">Independent atomic evaluations from TypeSafe's System One model across 15 store invariants.</p>
+              </div>
+              <div class="text-right">
+                <span class="text-xs font-mono font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100" id="lblFormulaResult">V = 0.0000</span>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs">
+                <thead>
+                  <tr class="border-b border-slate-200 text-[10px] text-slate-500 uppercase tracking-wider font-mono bg-slate-50/50">
+                    <th class="py-2.5 px-3 font-semibold">Rule / Claim</th>
+                    <th class="py-2.5 px-3 font-semibold">Question Phrasing</th>
+                    <th class="py-2.5 px-3 font-semibold text-center w-32">Noul Prob ($p_j$)</th>
+                    <th class="py-2.5 px-3 font-semibold text-right w-24">Badness ($1-p_j$)</th>
+                  </tr>
+                </thead>
+                <tbody id="rulesTableBody" class="divide-y divide-slate-100 font-mono text-[11px]">
+                  <!-- Injected via JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANE 3: LIVE CONTEXT WINDOW & STATE INSPECTOR -->
+        <div id="mainPaneInspector" class="hidden space-y-4">
+          <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col">
+            <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
+              <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-code text-indigo-600"></i>
+                <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Live Context Window &amp; State Inspector</h3>
+                <span class="text-[9px] font-mono bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-semibold">x_t State Tuple</span>
+              </div>
+              <!-- Sub-Tabs -->
+              <div class="flex items-center space-x-1 text-xs">
+                <button id="tabBtnContext" onclick="switchInspectorTab('context')" class="px-2.5 py-1 rounded bg-indigo-600 text-white font-bold text-[11px] shadow-xs">
+                  Context Window Prompt
+                </button>
+                <button id="tabBtnState" onclick="switchInspectorTab('state')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px]">
+                  State Object (x_t)
+                </button>
+                <button id="tabBtnJev" onclick="switchInspectorTab('jev')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px]">
+                  Jev API Payload
+                </button>
+              </div>
+            </div>
+
+            <!-- SUB-TAB 1: CONTEXT WINDOW PROMPT -->
+            <div id="inspectorTabContext" class="space-y-2">
+              <div class="flex items-center justify-between text-[11px] text-slate-500 font-mono">
+                <span>What the Proposer LLM Actually Sees in Context Window</span>
+                <span id="lblPromptTokens" class="text-indigo-600 font-bold">~185 Tokens</span>
+              </div>
+              <pre id="codeContextWindow" class="p-4 bg-slate-900 text-emerald-400 rounded-lg text-[11px] font-mono overflow-x-auto max-h-[500px] custom-scrollbar whitespace-pre-wrap selection:bg-indigo-700 font-medium"></pre>
+            </div>
+
+            <!-- SUB-TAB 2: STATE OBJECT (x_t) -->
+            <div id="inspectorTabState" class="hidden space-y-2">
+              <div class="flex items-center justify-between text-[11px] text-slate-500 font-mono">
+                <span>Full System State Tuple: x_t = (u, y_t, c, P, V_t, history)</span>
+                <span class="text-emerald-700 font-bold">JSON Serializable</span>
+              </div>
+              <pre id="codeStateObject" class="p-4 bg-slate-900 text-sky-300 rounded-lg text-[11px] font-mono overflow-x-auto max-h-[500px] custom-scrollbar whitespace-pre-wrap selection:bg-indigo-700 font-medium"></pre>
+            </div>
+
+            <!-- SUB-TAB 3: JEV API PAYLOAD -->
+            <div id="inspectorTabJev" class="hidden space-y-2">
+              <div class="flex items-center justify-between text-[11px] text-slate-500 font-mono">
+                <span>Payload sent to https://api.typesafe.ai/v1/systemone</span>
+                <span class="text-amber-400 font-bold">15 Atomic Invariants</span>
+              </div>
+              <pre id="codeJevPayload" class="p-4 bg-slate-900 text-amber-300 rounded-lg text-[11px] font-mono overflow-x-auto max-h-[500px] custom-scrollbar whitespace-pre-wrap selection:bg-indigo-700 font-medium"></pre>
+            </div>
           </div>
         </div>
 
       </div>
 
-      <!-- DESCENT GUARANTEE FORMULA BOX (Slide 5 & 6) -->
-      <div class="p-3.5 bg-gradient-to-r from-indigo-50/80 via-white to-sky-50/80 border border-indigo-200/80 rounded-xl flex items-center justify-between text-xs shadow-xs">
-        <div class="space-y-0.5">
-          <div class="flex items-center space-x-2 font-bold text-indigo-950">
-            <i class="fa-solid fa-shield-halved text-indigo-600"></i>
-            <span>The Lyapunov Guarantee: Every Accepted Step Truly Helps</span>
-          </div>
-          <p class="text-[11px] text-slate-600">
-            When $\delta > 2\hat{\eta}$, no lucky noise can pass the gate. Downhill bound: <span class="font-mono text-emerald-700 font-semibold">V(x') &le; V(x) - (&delta; - 2&eta;)</span>
-          </p>
-        </div>
-        <div class="text-right font-mono text-[11px] space-y-0.5 pl-4 border-l border-slate-200">
-          <div class="text-slate-600">Noise $\hat{\eta} = <span class="text-sky-700 font-bold">0.0126</span></div>
-          <div class="text-slate-600">Margin $\delta = <span class="text-emerald-700 font-bold">0.0314</span> (&gt; 2&eta;)</div>
-        </div>
-      </div>
-
-      <!-- ATOMIC NOUL RULES BREAKDOWN TABLE (Slide 4) -->
-      <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col flex-1">
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center space-x-2">
-              <i class="fa-solid fa-check-double text-emerald-600"></i>
-              <span>Jev System One Noul Probabilities: $V(x) = \sum_j w_j (1 - p_j)$</span>
-            </h3>
-            <p class="text-[11px] text-slate-500">Independent atomic evaluations from TypeSafe's System One model.</p>
-          </div>
-          <div class="text-right">
-            <span class="text-xs font-mono font-bold text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-md border border-indigo-100" id="lblFormulaResult">V = 0.0000</span>
-          </div>
-        </div>
-
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-xs">
-            <thead>
-              <tr class="border-b border-slate-200 text-[10px] text-slate-500 uppercase tracking-wider font-mono bg-slate-50/50">
-                <th class="py-2 px-2 font-semibold">Rule / Claim</th>
-                <th class="py-2 px-2 font-semibold">Question Phrasing</th>
-                <th class="py-2 px-2 font-semibold text-center w-28">Noul Prob ($p_j$)</th>
-                <th class="py-2 px-2 font-semibold text-right w-20">Badness ($1-p_j$)</th>
-              </tr>
-            </thead>
-            <tbody id="rulesTableBody" class="divide-y divide-slate-100 font-mono text-[11px]">
-              <!-- Injected via JavaScript -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- LIVE CONTEXT WINDOW & STATE INSPECTOR -->
-      <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col">
-        <div class="flex items-center justify-between mb-3 border-b border-slate-100 pb-2.5">
-          <div class="flex items-center space-x-2">
-            <i class="fa-solid fa-code text-indigo-600"></i>
-            <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Live Context Window &amp; State Inspector</h3>
-            <span class="text-[9px] font-mono bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-semibold">x_t State Tuple</span>
-          </div>
-          <!-- Tabs -->
-          <div class="flex items-center space-x-1 text-xs">
-            <button id="tabBtnContext" onclick="switchInspectorTab('context')" class="px-2.5 py-1 rounded bg-indigo-600 text-white font-bold text-[11px] shadow-xs">
-              Context Window Prompt
-            </button>
-            <button id="tabBtnState" onclick="switchInspectorTab('state')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px]">
-              State Object (x_t)
-            </button>
-            <button id="tabBtnJev" onclick="switchInspectorTab('jev')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px]">
-              Jev API Payload
-            </button>
-          </div>
-        </div>
-
-        <!-- TAB 1: CONTEXT WINDOW PROMPT -->
-        <div id="inspectorTabContext" class="space-y-2">
-          <div class="flex items-center justify-between text-[11px] text-slate-500 font-mono">
-            <span>What the Proposer LLM Actually Sees in Context</span>
-            <span id="lblPromptTokens" class="text-indigo-600 font-bold">~185 Tokens</span>
-          </div>
-          <pre id="codeContextWindow" class="p-3 bg-slate-900 text-emerald-400 rounded-lg text-[11px] font-mono overflow-x-auto max-h-56 custom-scrollbar whitespace-pre-wrap selection:bg-indigo-700 font-medium"></pre>
-        </div>
-
-        <!-- TAB 2: STATE OBJECT (x_t) -->
-        <div id="inspectorTabState" class="hidden space-y-2">
-          <div class="flex items-center justify-between text-[11px] text-slate-500 font-mono">
-            <span>Full System State Tuple: x_t = (u, y_t, c, P, V_t, history)</span>
-            <span class="text-emerald-700 font-bold">JSON Serializable</span>
-          </div>
-          <pre id="codeStateObject" class="p-3 bg-slate-900 text-sky-300 rounded-lg text-[11px] font-mono overflow-x-auto max-h-56 custom-scrollbar whitespace-pre-wrap selection:bg-indigo-700 font-medium"></pre>
-        </div>
-
-        <!-- TAB 3: JEV API PAYLOAD -->
-        <div id="inspectorTabJev" class="hidden space-y-2">
-          <div class="flex items-center justify-between text-[11px] text-slate-500 font-mono">
-            <span>Payload sent to https://api.typesafe.ai/v1/systemone</span>
-            <span class="text-amber-400 font-bold">15 Atomic Invariants</span>
-          </div>
-          <pre id="codeJevPayload" class="p-3 bg-slate-900 text-amber-300 rounded-lg text-[11px] font-mono overflow-x-auto max-h-56 custom-scrollbar whitespace-pre-wrap selection:bg-indigo-700 font-medium"></pre>
-        </div>
-      </div>
+    </div>
 
     </div>
   </main>
@@ -464,8 +572,32 @@
       loadScenario('return_outside_window');
       drawParabola();
       drawRings();
-      updateInspector(0, scen.ticket, scen.initialReply || "", {}, 0.0, "SCENARIO_LOADED");
     });
+
+    function switchMainTab(tab) {
+      const btnL = document.getElementById('mainTabBtnLandscapes');
+      const btnR = document.getElementById('mainTabBtnRules');
+      const btnI = document.getElementById('mainTabBtnInspector');
+      const paneL = document.getElementById('mainPaneLandscapes');
+      const paneR = document.getElementById('mainPaneRules');
+      const paneI = document.getElementById('mainPaneInspector');
+
+      [btnL, btnR, btnI].forEach(b => b.className = "px-3 py-1.5 rounded-md transition text-slate-600 hover:text-slate-900 flex items-center space-x-1.5");
+      [paneL, paneR, paneI].forEach(p => p.classList.add('hidden'));
+
+      if (tab === 'landscapes') {
+        btnL.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-xs font-bold flex items-center space-x-1.5";
+        paneL.classList.remove('hidden');
+        setTimeout(() => { drawParabola(); drawRings(); }, 50);
+      } else if (tab === 'rules') {
+        btnR.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-xs font-bold flex items-center space-x-1.5";
+        paneR.classList.remove('hidden');
+        if (window.mermaid) setTimeout(() => mermaid.run(), 50);
+      } else if (tab === 'inspector') {
+        btnI.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-xs font-bold flex items-center space-x-1.5";
+        paneI.classList.remove('hidden');
+      }
+    }
 
     function switchInspectorTab(tab) {
       const btnC = document.getElementById('tabBtnContext');
@@ -952,6 +1084,8 @@
 
       document.getElementById('valCurrentV').textContent = vSum.toFixed(4);
       document.getElementById('lblFormulaResult').textContent = `V(x) = ${vSum.toFixed(4)}`;
+      const hdrV = document.getElementById('lblHeaderV');
+      if (hdrV) hdrV.textContent = `V = ${vSum.toFixed(4)}`;
       document.getElementById('lblStepCount').textContent = `${stepCounter}`;
       
       // Update Ring label
