@@ -323,46 +323,57 @@ flowchart TD
     classDef l4 fill:#dcfce7,stroke:#10b981,stroke-width:1.5px,color:#065f46
 
     subgraph L0 ["Layer 0: Universal Boundary Guardrails"]
-        R09["R09: Sensitive Info<br/>(No CC/CVV/Passwords)"]:::l0
-        R12["R12: Respectful Tone<br/>(No blaming/accusing)"]:::l0
+        R09["R09: Sensitive Info (No CC/CVV/Passwords)"]:::l0
+        R12["R12: Respectful Tone (No blaming/scolding)"]:::l0
     end
 
     subgraph L1 ["Layer 1: Identity & Eligibility Verification"]
-        R08["R08: Order Number<br/>Verification"]:::l1
-        R01["R01: 30-Day Window<br/>(Delivered <= 30d)"]:::l1
-        R04["R04: Final Sale<br/>(Clearance excluded)"]:::l1
-        R13["R13: Warranty Check<br/>(Electronics <= 1yr)"]:::l1
-        R14["R14: Gift Status<br/>(Credit for recipient)"]:::l1
+        R08["R08: Order Number Verification"]:::l1
+        R01["R01: 30-Day Window (Delivered under 30 days)"]:::l1
+        R04["R04: Final Sale Exclusion (Clearance excluded)"]:::l1
+        R13["R13: Warranty Check (Electronics under 1 year)"]:::l1
+        R14["R14: Gift Status (Credit for recipient)"]:::l1
     end
 
     subgraph L2 ["Layer 2: Condition & Defect Triage"]
-        R02["R02: Defect Photo Proof<br/>(Mandatory evidence)"]:::l2
-        R03["R03: Item Condition<br/>(Unused/unwashed)"]:::l2
-        R07A["R07: Prepaid Label<br/>(Allowed for Defects)"]:::l2
-        R07B["R07: Customer Shipping<br/>(Standard Returns)"]:::l2
+        R02["R02: Defect Photo Proof (Mandatory evidence)"]:::l2
+        R03["R03: Item Condition (Unused and unwashed)"]:::l2
+        R07A["R07A: Prepaid Label (Allowed for Defects)"]:::l2
+        R07B["R07B: Customer Shipping (Standard Returns)"]:::l2
     end
 
     subgraph L3 ["Layer 3: Settlement & Financial Execution"]
-        R11["R11: Inspection Required<br/>(No guarantee prior)"]:::l3
-        R10["R10: Large Refund Review<br/>(Supervisor if > $500)"]:::l3
-        R05["R05: Refund Method<br/>(Original payment only)"]:::l3
-        R06["R06: Processing Timeline<br/>(5 to 7 business days)"]:::l3
+        R11["R11: Inspection Required (No guarantee prior)"]:::l3
+        R10["R10: Large Refund Check (Supervisor if over 500 dollars)"]:::l3
+        R05["R05: Refund Method (Original payment only)"]:::l3
+        R06["R06: Processing Timeline (5 to 7 business days)"]:::l3
     end
 
     subgraph L4 ["Layer 4: Terminal Resolution"]
-        R15["R15: Single Next Step<br/>(Clear action instruction)"]:::l4
+        R15["R15: Single Next Step (Clear action instruction)"]:::l4
     end
 
-    R08 --> R01 & R04 & R13 & R14
+    R08 --> R01
+    R08 --> R04
+    R08 --> R13
+    R08 --> R14
+
     R01 -->|Claim Defect| R02
-    R01 -->|Claim Standard| R03
+    R01 -->|Standard Return| R03
+
     R02 -->|Photo Provided| R07A
     R03 -->|Item Unused| R07B
-    R07A & R07B --> R11
-    R11 --> R10 --> R05 --> R06
+
+    R07A --> R11
+    R07B --> R11
+
+    R11 --> R10
+    R10 --> R05
+    R05 --> R06
     R06 --> R15
-    R09 -.->|Constrains| R05
-    R12 -.->|Constrains| R15
+
+    R09 -. Constrains .-> R05
+    R12 -. Constrains .-> R15
               </pre>
             </div>
           </div>
@@ -371,7 +382,7 @@ flowchart TD
               <div>
                 <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center space-x-2">
                   <i class="fa-solid fa-check-double text-emerald-600"></i>
-                  <span>Jev System One Noul Probabilities: $V(x) = \sum_j w_j (1 - p_j)$</span>
+                  <span>Jev System One Noul Probabilities: <i>V(x)</i> = &Sigma; <i>w<sub>j</sub></i>(1 &minus; <i>p<sub>j</sub></i>)</span>
                 </h3>
                 <p class="text-[11px] text-slate-500">Independent atomic evaluations from TypeSafe's System One model across 15 store invariants.</p>
               </div>
@@ -386,8 +397,8 @@ flowchart TD
                   <tr class="border-b border-slate-200 text-[10px] text-slate-500 uppercase tracking-wider font-mono bg-slate-50/50">
                     <th class="py-2.5 px-3 font-semibold">Rule / Claim</th>
                     <th class="py-2.5 px-3 font-semibold">Question Phrasing</th>
-                    <th class="py-2.5 px-3 font-semibold text-center w-32">Noul Prob ($p_j$)</th>
-                    <th class="py-2.5 px-3 font-semibold text-right w-24">Badness ($1-p_j$)</th>
+                    <th class="py-2.5 px-3 font-semibold text-center w-32">Noul Prob (<i>p<sub>j</sub></i>)</th>
+                    <th class="py-2.5 px-3 font-semibold text-right w-24">Badness (1 &minus; <i>p<sub>j</sub></i>)</th>
                   </tr>
                 </thead>
                 <tbody id="rulesTableBody" class="divide-y divide-slate-100 font-mono text-[11px]">
@@ -563,6 +574,13 @@ flowchart TD
 
     // Initialize UI
     window.addEventListener('DOMContentLoaded', () => {
+      if (window.mermaid) {
+        try {
+          mermaid.initialize({ startOnLoad: false, theme: 'default', securityLevel: 'loose' });
+        } catch (e) {
+          console.warn("Mermaid init:", e);
+        }
+      }
       document.getElementById('cfgJevKey').value = jevApiKey;
       document.getElementById('cfgGroqKey').value = groqApiKey;
       document.getElementById('cfgDelta').value = deltaMargin;
@@ -592,7 +610,12 @@ flowchart TD
       } else if (tab === 'rules') {
         btnR.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-xs font-bold flex items-center space-x-1.5";
         paneR.classList.remove('hidden');
-        if (window.mermaid) setTimeout(() => mermaid.run(), 50);
+        if (window.mermaid && !window.mermaidRendered) {
+          setTimeout(() => {
+            mermaid.run();
+            window.mermaidRendered = true;
+          }, 50);
+        }
       } else if (tab === 'inspector') {
         btnI.className = "px-3 py-1.5 rounded-md transition bg-indigo-600 text-white shadow-xs font-bold flex items-center space-x-1.5";
         paneI.classList.remove('hidden');
