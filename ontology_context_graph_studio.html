@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OntoContext Studio | Dual Ontology & Context Graph Generator</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              900: '#14532d'
+            },
+            onto: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca'
+            },
+            context: {
+              50: '#ecfeff',
+              100: '#cffafe',
+              500: '#06b6d4',
+              600: '#0891b2',
+              700: '#0e7490'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Google Fonts & Vis.js Network -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.3); border-radius: 9999px; }
+    #network-canvas { width: 100%; height: 100%; outline: none; }
+  </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-200 flex flex-col">
+
+  <!-- Top App Navigation -->
+  <header class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Logo & Subtitle -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-sky-500 to-emerald-400 flex items-center justify-center text-white font-black shadow-md shadow-indigo-500/20 text-lg">
+          Ω
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">OntoContext<span class="text-indigo-600 dark:text-indigo-400"> Studio</span></h1>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">T-Box Schema + A-Box Facts</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Generates Ontology Schemas & Context Knowledge Graphs via Groq LPU & WebGPU WebLLM</p>
+        </div>
+      </div>
+
+      <!-- Right Header Actions -->
+      <div class="flex items-center gap-3">
+        <!-- Privacy Badge -->
+        <div id="privacy-badge" class="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+          <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+          <span id="privacy-badge-text">WebLLM WebGPU (Zero Data Leaves Device)</span>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" type="button" class="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-slate-100 dark:bg-slate-800 focus:outline-none">
+          <svg id="theme-icon-dark" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+          <svg id="theme-icon-light" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Grid Workspace -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col gap-5">
+
+    <!-- Top Toolbar: Presets & Backend Configuration -->
+    <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+      
+      <!-- Presets -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mr-1">Presets:</span>
+        <button type="button" data-preset="biomedical" class="preset-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 transition">
+          🧬 1. Oncology Clinical Trial
+        </button>
+        <button type="button" data-preset="robotics" class="preset-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+          🤖 2. Robotics & Smart Factory
+        </button>
+        <button type="button" data-preset="fintech" class="preset-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+          🏦 3. FinTech & AML Risk
+        </button>
+        <button type="button" data-preset="aerospace" class="preset-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+          🚀 4. Aerospace Telemetry
+        </button>
+      </div>
+
+      <!-- Backend Selection Controls -->
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Inference:</label>
+          <select id="backend-select" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <option value="groq" selected>Groq Cloud LPU (Fast)</option>
+            <option value="webllm">WebLLM (Local WebGPU)</option>
+            <option value="mock">Instant Semantic Generator</option>
+          </select>
+        </div>
+
+        <!-- Groq Key & Model (In-memory only) -->
+        <div id="groq-controls" class="flex flex-wrap items-center gap-2">
+          <input id="groq-api-key" type="password" placeholder="Groq API Key (gsk_...)" class="w-48 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-mono placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <select id="groq-model-select" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs font-semibold">
+            <option value="llama-3.3-70b-versatile">llama-3.3-70b</option>
+            <option value="llama-3.1-8b-instant" selected>llama-3.1-8b</option>
+          </select>
+        </div>
+
+        <!-- WebLLM Model Select -->
+        <div id="webllm-controls" class="hidden flex items-center gap-2">
+          <select id="webllm-model-select" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs">
+            <option value="Llama-3.2-1B-Instruct-q4f16_1-MLC">Llama-3.2-1B (~870MB)</option>
+            <option value="SmolLM2-1.7B-Instruct-q4f16_1-MLC">SmolLM2-1.7B (~1.0GB)</option>
+            <option value="Qwen2.5-1.5B-Instruct-q4f16_1-MLC">Qwen2.5-1.5B (~1.1GB)</option>
+          </select>
+        </div>
+
+        <div id="latency-badge" class="hidden px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 font-mono text-[11px] text-slate-500">
+          0ms
+        </div>
+      </div>
+
+    </div>
+
+    <!-- WebLLM Download Progress -->
+    <div id="webllm-progress-container" class="hidden bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+      <div class="flex justify-between items-center mb-1 text-xs font-mono">
+        <span id="webllm-progress-text" class="text-slate-600 dark:text-slate-400">Loading model weights...</span>
+        <span id="webllm-progress-pct" class="font-bold text-indigo-600">0%</span>
+      </div>
+      <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+        <div id="webllm-progress-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-150" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <!-- Main Content: Left Column (Text & Schema Prompt) / Right Column (Graph Explorer) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 min-h-[620px]">
+      
+      <!-- Left Panel: Text Input, Extractor Options & Graph Summary -->
+      <div class="lg:col-span-5 flex flex-col gap-4">
+        
+        <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              Sample Document / Evidence Text
+            </h2>
+            <span id="text-char-count" class="text-[11px] font-mono text-slate-400">0 chars</span>
+          </div>
+
+          <textarea id="sample-text-input" rows="8" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:outline-none custom-scrollbar leading-relaxed" placeholder="Paste unstructured paragraphs, scientific summaries, or operational records..."></textarea>
+
+          <!-- Extraction Target Checkboxes -->
+          <div class="grid grid-cols-2 gap-2 text-xs pt-1">
+            <label class="flex items-center gap-2 p-2 rounded-lg bg-indigo-50/60 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-900/60 text-indigo-900 dark:text-indigo-200 cursor-pointer select-none">
+              <input type="checkbox" id="chk-ontology" checked class="w-4 h-4 text-indigo-600 rounded">
+              <div>
+                <div class="font-bold">Ontology Schema (T-Box)</div>
+                <div class="text-[10px] text-indigo-600 dark:text-indigo-400">Classes, Hierarchies, Axioms</div>
+              </div>
+            </label>
+
+            <label class="flex items-center gap-2 p-2 rounded-lg bg-cyan-50/60 dark:bg-cyan-950/40 border border-cyan-200/60 dark:border-cyan-900/60 text-cyan-900 dark:text-cyan-200 cursor-pointer select-none">
+              <input type="checkbox" id="chk-context" checked class="w-4 h-4 text-cyan-600 rounded">
+              <div>
+                <div class="font-bold">Context Graph (A-Box)</div>
+                <div class="text-[10px] text-cyan-600 dark:text-cyan-400">Instances, Facts, Provenance</div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Generate Action Button -->
+          <button id="btn-generate" type="button" class="w-full py-3 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-indigo-600 via-sky-600 to-emerald-600 hover:from-indigo-700 hover:to-emerald-700 text-white shadow-md shadow-indigo-500/20 active:scale-[0.99] transition flex items-center justify-center gap-2 mt-1">
+            <svg id="generate-spinner" class="hidden w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
+            <span id="generate-btn-text">Extract Ontology & Context Graphs</span>
+          </button>
+        </div>
+
+        <!-- Metrics & Dual View Statistics -->
+        <div class="grid grid-cols-4 gap-2">
+          <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+            <span class="text-[10px] font-bold uppercase text-indigo-500">Onto Classes</span>
+            <div id="stat-classes" class="text-base font-mono font-extrabold text-slate-800 dark:text-slate-100 mt-0.5">--</div>
+          </div>
+          <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+            <span class="text-[10px] font-bold uppercase text-indigo-500">Onto Relations</span>
+            <div id="stat-relations" class="text-base font-mono font-extrabold text-slate-800 dark:text-slate-100 mt-0.5">--</div>
+          </div>
+          <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+            <span class="text-[10px] font-bold uppercase text-cyan-500">Context Entities</span>
+            <div id="stat-entities" class="text-base font-mono font-extrabold text-slate-800 dark:text-slate-100 mt-0.5">--</div>
+          </div>
+          <div class="bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+            <span class="text-[10px] font-bold uppercase text-cyan-500">Fact Triples</span>
+            <div id="stat-facts" class="text-base font-mono font-extrabold text-slate-800 dark:text-slate-100 mt-0.5">--</div>
+          </div>
+        </div>
+
+        <!-- Selected Node Inspector Drawer -->
+        <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2 flex-1">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Semantic Node Inspector</h3>
+            <span id="node-layer-badge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">Click a node</span>
+          </div>
+
+          <div id="inspector-content" class="text-xs text-slate-500 flex flex-col gap-2 py-2">
+            <p class="italic text-center py-6 text-slate-400">Click any class or instance in the graph to inspect its schema axioms, properties, and text grounding snippet.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Panel: Interactive Graph Canvas & Dual-View Tabs -->
+      <div class="lg:col-span-7 flex flex-col gap-3">
+        
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col flex-1 overflow-hidden">
+          
+          <!-- Graph View Header & Mode Selector -->
+          <div class="p-3 sm:px-4 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 bg-slate-50/50 dark:bg-slate-900/50">
+            
+            <!-- Graph Scope Tabs -->
+            <div class="inline-flex rounded-xl bg-slate-200/80 dark:bg-slate-800 p-1 text-xs font-semibold">
+              <button type="button" data-view="unified" class="graph-view-btn active px-3 py-1 rounded-lg bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm transition">
+                🌐 Unified Dual Graph
+              </button>
+              <button type="button" data-view="ontology" class="graph-view-btn px-3 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                🏛️ Schema (T-Box)
+              </button>
+              <button type="button" data-view="context" class="graph-view-btn px-3 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                🎯 Context (A-Box)
+              </button>
+              <button type="button" data-view="code" class="graph-view-btn px-3 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                📜 RDF / Cypher
+              </button>
+            </div>
+
+            <!-- Canvas Quick Controls -->
+            <div class="flex items-center gap-2">
+              <button id="btn-fit-graph" type="button" class="p-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 flex items-center gap-1" title="Fit to screen">
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0-4l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/>
+                </svg>
+                <span>Fit</span>
+              </button>
+              <button id="btn-physics-toggle" type="button" class="p-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100" title="Toggle physics stabilization">
+                Physics: On
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Canvas / View Container -->
+          <div class="relative flex-1 min-h-[480px] bg-slate-900/5 dark:bg-slate-950/80">
+            
+            <!-- Vis.js Graph Canvas -->
+            <div id="network-canvas" class="w-full h-full min-h-[480px]"></div>
+
+            <!-- Code Export View (Hidden by default) -->
+            <div id="code-export-view" class="hidden absolute inset-0 bg-slate-900 text-slate-200 p-4 font-mono text-xs overflow-auto custom-scrollbar z-10 flex flex-col gap-3">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span class="font-bold text-indigo-400">Generated OWL Ontology & Knowledge Triples</span>
+                <div class="flex gap-2">
+                  <button id="btn-copy-code" class="px-2.5 py-1 rounded bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold">Copy Cypher / RDF</button>
+                </div>
+              </div>
+              <pre id="code-output" class="whitespace-pre-wrap leading-relaxed select-all"></pre>
+            </div>
+
+            <!-- Graph Legend Overlay -->
+            <div class="absolute bottom-3 left-3 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm text-[11px] flex flex-col gap-1.5 pointer-events-none select-none z-0">
+              <div class="font-bold text-slate-700 dark:text-slate-300 text-[10px] uppercase">Legend</div>
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded bg-indigo-500 shadow-sm"></span>
+                <span class="text-slate-600 dark:text-slate-400">Ontology Class (T-Box Concept)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-cyan-500 shadow-sm"></span>
+                <span class="text-slate-600 dark:text-slate-400">Context Instance (A-Box Fact)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-4 h-0.5 border-t-2 border-indigo-500"></span>
+                <span class="text-slate-600 dark:text-slate-400">Schema Relation (`subClassOf`, `actsOn`)</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="w-4 h-0.5 border-t-2 border-dashed border-cyan-500"></span>
+                <span class="text-slate-600 dark:text-slate-400">Instance Binding (`rdf:type`, `groundedIn`)</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-3 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 text-center sm:text-left">
+      <p>
+        <strong>OntoContext Studio</strong> &bull; Automated T-Box Axiom Induction & Grounded A-Box Knowledge Graph Extraction
+      </p>
+      <p class="font-mono text-[11px] text-slate-400">
+        Single-file static web application &bull; WebGPU + Groq LPU
+      </p>
+    </div>
+  </footer>
+
+  <!-- Application Logic (ES Module) -->
+  <script type="module">
+    let webllm = null;
+    let mlcEngine = null;
+    let isWebGPUAvailable = !!navigator.gpu;
+    let network = null;
+    let physicsEnabled = true;
+
+    // Presets with both rich raw text and pre-computed high-fidelity ontology/context graph definitions
+    const PRESETS = {
+      biomedical: {
+        text: `Patient cohort Alpha-49 presents advanced non-small cell lung carcinoma harboring an activating EGFR L858R kinase domain mutation with emergent secondary T790M resistance. Dr. Evelyn Vance prescribed the 3rd-generation tyrosine kinase inhibitor Osimertinib at 80mg daily oral dosing. Following 12 weeks of targeted therapy, RECIST 1.1 radiographic assessment demonstrated a 44% tumor reduction (Partial Response). However, liquid biopsy cell-free DNA detected tertiary C797S resistance mutation alongside mild Grade 2 diarrhea and hepatotoxicity (ALT elevation 3.2x ULN), prompting dose reduction to 40mg.`,
+        ontology: {
+          classes: [
+            { id: "Onto_Disease", label: "DiseaseOrCondition", color: "#6366f1", shape: "box", desc: "Pathological clinical condition or carcinoma" },
+            { id: "Onto_Biomarker", label: "GenomicBiomarker", color: "#6366f1", shape: "box", desc: "Somatic mutation, fusion, or amplification" },
+            { id: "Onto_Therapy", label: "TargetedTherapy", color: "#6366f1", shape: "box", desc: "Pharmacological molecule or drug regimen" },
+            { id: "Onto_Cohort", label: "PatientCohort", color: "#6366f1", shape: "box", desc: "Clinical study group or subject profile" },
+            { id: "Onto_Outcome", label: "ClinicalResponse", color: "#6366f1", shape: "box", desc: "RECIST response criteria or progression event" },
+            { id: "Onto_AdverseEvent", label: "AdverseToxicity", color: "#6366f1", shape: "box", desc: "Grade 1-5 drug-related toxicity reaction" }
+          ],
+          relations: [
+            { from: "Onto_Cohort", to: "Onto_Disease", label: "diagnosedWith" },
+            { from: "Onto_Disease", to: "Onto_Biomarker", label: "characterizedBy" },
+            { from: "Onto_Therapy", to: "Onto_Biomarker", label: "inhibitsTarget" },
+            { from: "Onto_Cohort", to: "Onto_Therapy", label: "receivesRegimen" },
+            { from: "Onto_Cohort", to: "Onto_Outcome", label: "achievesOutcome" },
+            { from: "Onto_Therapy", to: "Onto_AdverseEvent", label: "inducesToxicity" }
+          ]
+        },
+        context: {
+          entities: [
+            { id: "Inst_CohortAlpha49", label: "Cohort Alpha-49", color: "#06b6d4", shape: "dot", type: "Onto_Cohort", quote: "Patient cohort Alpha-49 presents advanced non-small cell lung carcinoma..." },
+            { id: "Inst_NSCLC", label: "NSCLC Stage IV", color: "#06b6d4", shape: "dot", type: "Onto_Disease", quote: "non-small cell lung carcinoma harboring an activating EGFR L858R..." },
+            { id: "Inst_EGFR_L858R", label: "EGFR L858R", color: "#06b6d4", shape: "dot", type: "Onto_Biomarker", quote: "EGFR L858R kinase domain mutation..." },
+            { id: "Inst_EGFR_T790M", label: "EGFR T790M Gatekeeper", color: "#06b6d4", shape: "dot", type: "Onto_Biomarker", quote: "emergent secondary T790M resistance..." },
+            { id: "Inst_EGFR_C797S", label: "EGFR C797S Tertiary", color: "#06b6d4", shape: "dot", type: "Onto_Biomarker", quote: "tertiary C797S resistance mutation..." },
+            { id: "Inst_Osimertinib", label: "Osimertinib 80mg", color: "#06b6d4", shape: "dot", type: "Onto_Therapy", quote: "3rd-generation tyrosine kinase inhibitor Osimertinib at 80mg daily..." },
+            { id: "Inst_RECIST_PR", label: "Partial Response (-44%)", color: "#06b6d4", shape: "dot", type: "Onto_Outcome", quote: "RECIST 1.1 radiographic assessment demonstrated a 44% tumor reduction..." },
+            { id: "Inst_ToxicityG2", label: "Hepatotoxicity Gr2", color: "#06b6d4", shape: "dot", type: "Onto_AdverseEvent", quote: "mild Grade 2 diarrhea and hepatotoxicity (ALT elevation 3.2x ULN)..." }
+          ],
+          facts: [
+            { from: "Inst_CohortAlpha49", to: "Inst_NSCLC", label: "diagnosedWith" },
+            { from: "Inst_NSCLC", to: "Inst_EGFR_L858R", label: "harborsMutation" },
+            { from: "Inst_NSCLC", to: "Inst_EGFR_T790M", label: "developedResistance" },
+            { from: "Inst_CohortAlpha49", to: "Inst_Osimertinib", label: "prescribedDose" },
+            { from: "Inst_Osimertinib", to: "Inst_EGFR_T790M", label: "overcomesResistance" },
+            { from: "Inst_CohortAlpha49", to: "Inst_RECIST_PR", label: "evaluatedAs" },
+            { from: "Inst_Osimertinib", to: "Inst_ToxicityG2", label: "causedToxicity" },
+            { from: "Inst_NSCLC", to: "Inst_EGFR_C797S", label: "evolvedMutation" }
+          ]
+        }
+      },
+
+      robotics: {
+        text: `In Smart Factory Hall B, Autonomous Mobile Robot AMR-104 communicates with Robotic Workcell UR10e over ROS2 DDS middleware. The workcell picks automotive battery modules from Conveyor Line C3 using a vacuum end-effector. A thermal sensor on UR10e detected an overheating motor axis (78°C exceeds 65°C threshold), triggering an automated safety interlock and dispatching maintenance work order WO-882 to Technician Alex Rivera. AMR-104 dynamically rerouted its delivery trajectory through Zone 4 to avoid the stalled assembly bay.`,
+        ontology: {
+          classes: [
+            { id: "Onto_Agent", label: "AutonomousRobot", color: "#6366f1", shape: "box", desc: "Autonomous physical or cybernetic agent" },
+            { id: "Onto_Cell", label: "ManufacturingCell", color: "#6366f1", shape: "box", desc: "Fixed industrial station or conveyor cell" },
+            { id: "Onto_Sensor", label: "TelemetrySensor", color: "#6366f1", shape: "box", desc: "IoT sensor measuring temperature, vibration, load" },
+            { id: "Onto_Incident", label: "SafetyIncident", color: "#6366f1", shape: "box", desc: "Threshold breach, alarm, or stall condition" },
+            { id: "Onto_Protocol", label: "MiddlewareProtocol", color: "#6366f1", shape: "box", desc: "Industrial communications bus (ROS2, OPC-UA)" }
+          ],
+          relations: [
+            { from: "Onto_Agent", to: "Onto_Protocol", label: "communicatesVia" },
+            { from: "Onto_Cell", to: "Onto_Sensor", label: "monitoredBy" },
+            { from: "Onto_Sensor", to: "Onto_Incident", label: "triggersAlarm" },
+            { from: "Onto_Agent", to: "Onto_Cell", label: "servicesCell" }
+          ]
+        },
+        context: {
+          entities: [
+            { id: "Inst_AMR104", label: "AMR-104 (Mobile Robot)", color: "#06b6d4", shape: "dot", type: "Onto_Agent", quote: "Autonomous Mobile Robot AMR-104 communicates..." },
+            { id: "Inst_UR10e", label: "UR10e Pick Cell", color: "#06b6d4", shape: "dot", type: "Onto_Cell", quote: "Robotic Workcell UR10e over ROS2 DDS middleware..." },
+            { id: "Inst_SensorAxis", label: "Motor Thermistor #4", color: "#06b6d4", shape: "dot", type: "Onto_Sensor", quote: "A thermal sensor on UR10e detected an overheating motor axis..." },
+            { id: "Inst_AlarmOverheat", label: "Overheat Alarm (78°C)", color: "#06b6d4", shape: "dot", type: "Onto_Incident", quote: "78°C exceeds 65°C threshold, triggering an automated safety interlock..." },
+            { id: "Inst_ROS2", label: "ROS2 DDS Bus", color: "#06b6d4", shape: "dot", type: "Onto_Protocol", quote: "communicates with Robotic Workcell UR10e over ROS2 DDS..." }
+          ],
+          facts: [
+            { from: "Inst_AMR104", to: "Inst_ROS2", label: "publishesTo" },
+            { from: "Inst_UR10e", to: "Inst_SensorAxis", label: "hasSensor" },
+            { from: "Inst_SensorAxis", to: "Inst_AlarmOverheat", label: "registeredAlarm" },
+            { from: "Inst_AMR104", to: "Inst_UR10e", label: "reroutedAround" }
+          ]
+        }
+      },
+
+      fintech: {
+        text: `FinCEN alert flagged shell entity Apex Global Holdings LLC (registered in BVI) after transferring $4.2M across 14 smurfed wire transactions to Baltic Trade Corp within a 48-hour window. The ultimate beneficial owner is identified as Politically Exposed Person (PEP) Viktor Korolev. Transactions were routed through correspondent bank Zenith Capital AG before hitting flagged cryptocurrency mixer Tornado-Vault. AML Compliance Officer Sarah Chen filed a Suspicious Activity Report (SAR-2026-904) citing Bank Secrecy Act Section 314(b) cross-border evasion indicators.`,
+        ontology: {
+          classes: [
+            { id: "Onto_LegalEntity", label: "LegalEntity", color: "#6366f1", shape: "box", desc: "Corporate body, trust, or offshore vehicle" },
+            { id: "Onto_PEP", label: "BeneficialOwnerPEP", color: "#6366f1", shape: "box", desc: "Politically Exposed Person or controlling director" },
+            { id: "Onto_Tx", label: "WireTransaction", color: "#6366f1", shape: "box", desc: "Financial ledger movement or SWIFT wire" },
+            { id: "Onto_Compliance", label: "RegulatoryFiling", color: "#6366f1", shape: "box", desc: "SAR, CTR, or FinCEN enforcement filing" },
+            { id: "Onto_Intermediary", label: "FinancialIntermediary", color: "#6366f1", shape: "box", desc: "Correspondent bank or crypto mixer" }
+          ],
+          relations: [
+            { from: "Onto_PEP", to: "Onto_LegalEntity", label: "controlsEntity" },
+            { from: "Onto_LegalEntity", to: "Onto_Tx", label: "initiatesWire" },
+            { from: "Onto_Tx", to: "Onto_Intermediary", label: "clearedThrough" },
+            { from: "Onto_Tx", to: "Onto_Compliance", label: "subjectOfFiling" }
+          ]
+        },
+        context: {
+          entities: [
+            { id: "Inst_ApexBVI", label: "Apex Global LLC (BVI)", color: "#06b6d4", shape: "dot", type: "Onto_LegalEntity", quote: "shell entity Apex Global Holdings LLC (registered in BVI)..." },
+            { id: "Inst_Viktor", label: "Viktor Korolev (PEP)", color: "#06b6d4", shape: "dot", type: "Onto_PEP", quote: "ultimate beneficial owner is identified as Politically Exposed Person (PEP) Viktor Korolev..." },
+            { id: "Inst_WireBatch", label: "Wire $4.2M (14 tranches)", color: "#06b6d4", shape: "dot", type: "Onto_Tx", quote: "transferring $4.2M across 14 smurfed wire transactions..." },
+            { id: "Inst_ZenithBank", label: "Zenith Capital AG", color: "#06b6d4", shape: "dot", type: "Onto_Intermediary", quote: "routed through correspondent bank Zenith Capital AG..." },
+            { id: "Inst_SAR904", label: "SAR-2026-904", color: "#06b6d4", shape: "dot", type: "Onto_Compliance", quote: "Compliance Officer Sarah Chen filed a Suspicious Activity Report (SAR-2026-904)..." }
+          ],
+          facts: [
+            { from: "Inst_Viktor", to: "Inst_ApexBVI", label: "beneficialOwnerOf" },
+            { from: "Inst_ApexBVI", to: "Inst_WireBatch", label: "executedTransfer" },
+            { from: "Inst_WireBatch", to: "Inst_ZenithBank", label: "clearedVia" },
+            { from: "Inst_WireBatch", to: "Inst_SAR904", label: "citedInSAR" }
+          ]
+        }
+      },
+
+      aerospace: {
+        text: `Flight AC-782 (Boeing 787-9 equipped with GEnx-1B engines) experienced an uncommanded EGT (Exhaust Gas Temperature) margin anomaly during climb at Flight Level 330. Engine Electronic Controller (EEC FADEC Channel A) detected high-pressure compressor stall signatures, automatically increasing bleed valve clearance. Telemetry beamed via Satellite ACARS downlink alerted Pratt Operational Engineering. Post-flight borescope inspection revealed Stage 3 turbine blade coating spallation, prompting an immediate Airworthiness Directive compliance check.`,
+        ontology: {
+          classes: [
+            { id: "Onto_Aircraft", label: "AircraftAirframe", color: "#6366f1", shape: "box", desc: "Commercial aircraft airframe and configuration" },
+            { id: "Onto_Propulsion", label: "TurbofanEngine", color: "#6366f1", shape: "box", desc: "Gas turbine powerplant and subsystems" },
+            { id: "Onto_Avionics", label: "FADECController", color: "#6366f1", shape: "box", desc: "Full Authority Digital Engine Controller and sensors" },
+            { id: "Onto_Anomaly", label: "AviationAnomaly", color: "#6366f1", shape: "box", desc: "Compressor stall, EGT overtemp, or telemetry spike" },
+            { id: "Onto_Directive", label: "AirworthinessDirective", color: "#6366f1", shape: "box", desc: "FAA / EASA mandated airworthiness inspection" }
+          ],
+          relations: [
+            { from: "Onto_Aircraft", to: "Onto_Propulsion", label: "poweredBy" },
+            { from: "Onto_Propulsion", to: "Onto_Avionics", label: "controlledBy" },
+            { from: "Onto_Avionics", to: "Onto_Anomaly", label: "detectsEvent" },
+            { from: "Onto_Anomaly", to: "Onto_Directive", label: "mandatesCompliance" }
+          ]
+        },
+        context: {
+          entities: [
+            { id: "Inst_B787", label: "Flight AC-782 (B787-9)", color: "#06b6d4", shape: "dot", type: "Onto_Aircraft", quote: "Flight AC-782 (Boeing 787-9 equipped with GEnx-1B engines)..." },
+            { id: "Inst_GEnx", label: "GEnx-1B Turbofan #1", color: "#06b6d4", shape: "dot", type: "Onto_Propulsion", quote: "equipped with GEnx-1B engines..." },
+            { id: "Inst_FADEC_A", label: "FADEC Channel A", color: "#06b6d4", shape: "dot", type: "Onto_Avionics", quote: "Engine Electronic Controller (EEC FADEC Channel A)..." },
+            { id: "Inst_EGT_Stall", label: "HPC Stall & EGT Spike", color: "#06b6d4", shape: "dot", type: "Onto_Anomaly", quote: "uncommanded EGT margin anomaly during climb at FL330... compressor stall signatures" },
+            { id: "Inst_SpallationAD", label: "AD 2026-BladeCheck", color: "#06b6d4", shape: "dot", type: "Onto_Directive", quote: "Stage 3 turbine blade coating spallation, prompting an immediate Airworthiness Directive..." }
+          ],
+          facts: [
+            { from: "Inst_B787", to: "Inst_GEnx", label: "hasEngine" },
+            { from: "Inst_GEnx", to: "Inst_FADEC_A", label: "governedBy" },
+            { from: "Inst_FADEC_A", to: "Inst_EGT_Stall", label: "triggeredMitigation" },
+            { from: "Inst_EGT_Stall", to: "Inst_SpallationAD", label: "requiresAction" }
+          ]
+        }
+      }
+    };
+
+    // State
+    const state = {
+      theme: 'dark',
+      activePreset: 'biomedical',
+      activeView: 'unified', // 'unified' | 'ontology' | 'context' | 'code'
+      backend: 'groq',
+      currentData: null,
+      selectedNode: null
+    };
+
+    // Initialize
+    async function init() {
+      setupTheme();
+      setupEventListeners();
+      loadPreset('biomedical');
+    }
+
+    function setupTheme() {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      state.theme = prefersDark ? 'dark' : 'light';
+      applyTheme();
+    }
+
+    function applyTheme() {
+      const html = document.documentElement;
+      const iconDark = document.getElementById('theme-icon-dark');
+      const iconLight = document.getElementById('theme-icon-light');
+      if (state.theme === 'dark') {
+        html.classList.add('dark');
+        iconDark.classList.add('hidden');
+        iconLight.classList.remove('hidden');
+      } else {
+        html.classList.remove('dark');
+        iconDark.classList.remove('hidden');
+        iconLight.classList.add('hidden');
+      }
+      if (network) renderGraph();
+    }
+
+    function loadPreset(presetKey) {
+      state.activePreset = presetKey;
+      const p = PRESETS[presetKey];
+      if (!p) return;
+
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        const isActive = btn.dataset.preset === presetKey;
+        btn.className = isActive 
+          ? "preset-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 transition"
+          : "preset-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition";
+      });
+
+      const textarea = document.getElementById('sample-text-input');
+      textarea.value = p.text;
+      document.getElementById('text-char-count').textContent = `${p.text.length} chars`;
+
+      state.currentData = {
+        ontology: JSON.parse(JSON.stringify(p.ontology)),
+        context: JSON.parse(JSON.stringify(p.context))
+      };
+
+      updateMetrics();
+      renderGraph();
+      renderCodeView();
+    }
+
+    function updateMetrics() {
+      if (!state.currentData) return;
+      document.getElementById('stat-classes').textContent = state.currentData.ontology.classes.length;
+      document.getElementById('stat-relations').textContent = state.currentData.ontology.relations.length;
+      document.getElementById('stat-entities').textContent = state.currentData.context.entities.length;
+      document.getElementById('stat-facts').textContent = state.currentData.context.facts.length;
+    }
+
+    // Graph Visualizer using Vis-Network
+    function renderGraph() {
+      const container = document.getElementById('network-canvas');
+      const isDark = state.theme === 'dark';
+      const bgColor = isDark ? '#020617' : '#f8fafc';
+
+      let nodes = [];
+      let edges = [];
+
+      const showOnto = (state.activeView === 'unified' || state.activeView === 'ontology');
+      const showContext = (state.activeView === 'unified' || state.activeView === 'context');
+
+      // 1. Add Ontology Nodes (T-Box: Hexagons / Boxes)
+      if (showOnto && state.currentData.ontology) {
+        state.currentData.ontology.classes.forEach(c => {
+          nodes.push({
+            id: c.id,
+            label: c.label,
+            title: `Ontology Class: ${c.label}\n${c.desc}`,
+            shape: 'box',
+            margin: 10,
+            color: {
+              background: isDark ? '#312e81' : '#e0e7ff',
+              border: '#6366f1',
+              highlight: { background: '#4f46e5', border: '#818cf8' }
+            },
+            font: { color: isDark ? '#e0e7ff' : '#1e1b4b', size: 13, bold: true, face: 'JetBrains Mono' },
+            shadow: { enabled: true, color: 'rgba(99, 102, 241, 0.25)', size: 8 },
+            layer: 'ontology',
+            rawData: c
+          });
+        });
+
+        state.currentData.ontology.relations.forEach(r => {
+          edges.push({
+            id: `edge_${r.from}_${r.to}`,
+            from: r.from,
+            to: r.to,
+            label: r.label,
+            arrows: 'to',
+            color: { color: isDark ? '#818cf8' : '#6366f1', highlight: '#c7d2fe' },
+            font: { color: isDark ? '#a5b4fc' : '#4338ca', size: 10, face: 'JetBrains Mono', strokeWidth: 0 },
+            smooth: { type: 'curvedCW', roundness: 0.2 },
+            width: 2.5
+          });
+        });
+      }
+
+      // 2. Add Context Instance Nodes (A-Box: Circles / Dots)
+      if (showContext && state.currentData.context) {
+        state.currentData.context.entities.forEach(e => {
+          nodes.push({
+            id: e.id,
+            label: e.label,
+            title: `Context Instance: ${e.label}\nType: ${e.type}\nQuote: "${e.quote}"`,
+            shape: 'dot',
+            size: 16,
+            color: {
+              background: isDark ? '#0891b2' : '#06b6d4',
+              border: isDark ? '#67e8f9' : '#0e7490',
+              highlight: { background: '#22d3ee', border: '#a5f3fc' }
+            },
+            font: { color: isDark ? '#cffafe' : '#083344', size: 12, bold: true, face: 'Plus Jakarta Sans' },
+            shadow: { enabled: true, color: 'rgba(6, 182, 212, 0.3)', size: 8 },
+            layer: 'context',
+            rawData: e
+          });
+        });
+
+        state.currentData.context.facts.forEach(f => {
+          edges.push({
+            id: `fact_${f.from}_${f.to}_${f.label}`,
+            from: f.from,
+            to: f.to,
+            label: f.label,
+            arrows: 'to',
+            color: { color: isDark ? '#22d3ee' : '#0891b2', highlight: '#67e8f9' },
+            font: { color: isDark ? '#67e8f9' : '#0e7490', size: 10, face: 'Plus Jakarta Sans', strokeWidth: 0 },
+            smooth: { type: 'continuous' },
+            width: 2
+          });
+        });
+
+        // 3. Connect Instances to their Ontology Class via 'rdf:type' in Unified View
+        if (state.activeView === 'unified') {
+          state.currentData.context.entities.forEach(e => {
+            if (e.type) {
+              edges.push({
+                id: `type_${e.id}_${e.type}`,
+                from: e.id,
+                to: e.type,
+                label: 'rdf:type',
+                dashes: [4, 4],
+                arrows: 'to',
+                color: { color: isDark ? '#94a3b8' : '#64748b', opacity: 0.6 },
+                font: { color: isDark ? '#94a3b8' : '#64748b', size: 9, strokeWidth: 0 },
+                width: 1.5
+              });
+            }
+          });
+        }
+      }
+
+      const data = {
+        nodes: new vis.DataSet(nodes),
+        edges: new vis.DataSet(edges)
+      };
+
+      const options = {
+        autoResize: true,
+        height: '100%',
+        width: '100%',
+        physics: {
+          enabled: physicsEnabled,
+          solver: 'forceAtlas2Based',
+          forceAtlas2Based: {
+            gravitationalConstant: -70,
+            centralGravity: 0.015,
+            springLength: 120,
+            springConstant: 0.08,
+            damping: 0.4
+          },
+          stabilization: { iterations: 120 }
+        },
+        interaction: {
+          hover: true,
+          navigationButtons: false,
+          keyboard: true,
+          zoomView: true
+        }
+      };
+
+      if (network) network.destroy();
+      network = new vis.Network(container, data, options);
+
+      // Node selection listener
+      network.on("click", (params) => {
+        if (params.nodes.length > 0) {
+          const nodeId = params.nodes[0];
+          const nodeObj = nodes.find(n => n.id === nodeId);
+          if (nodeObj) inspectNode(nodeObj);
+        }
+      });
+    }
+
+    function inspectNode(node) {
+      state.selectedNode = node;
+      const inspector = document.getElementById('inspector-content');
+      const badge = document.getElementById('node-layer-badge');
+      const raw = node.rawData;
+
+      if (node.layer === 'ontology') {
+        badge.textContent = "Ontology Class";
+        badge.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300";
+
+        inspector.innerHTML = `
+          <div class="flex flex-col gap-2">
+            <div>
+              <span class="text-[10px] font-bold uppercase text-slate-400">Class Identifier:</span>
+              <div class="font-mono text-sm font-bold text-indigo-600 dark:text-indigo-400">${raw.id}</div>
+            </div>
+            <div>
+              <span class="text-[10px] font-bold uppercase text-slate-400">Semantic Definition:</span>
+              <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed mt-0.5">${raw.desc || 'Abstract concept class'}</p>
+            </div>
+            <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
+              <span class="text-[10px] font-bold uppercase text-slate-400">T-Box Formal Axiom:</span>
+              <pre class="mt-1 p-2 rounded bg-slate-100 dark:bg-slate-800 font-mono text-[11px] overflow-x-auto">:Class rdf:type owl:Class ;\n  rdfs:label "${raw.label}" ;\n  rdfs:comment "${raw.desc}".</pre>
+            </div>
+          </div>
+        `;
+      } else {
+        badge.textContent = "Context Instance";
+        badge.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-cyan-100 text-cyan-800 dark:bg-cyan-950 dark:text-cyan-300";
+
+        inspector.innerHTML = `
+          <div class="flex flex-col gap-2">
+            <div>
+              <span class="text-[10px] font-bold uppercase text-slate-400">Entity Instance:</span>
+              <div class="font-mono text-sm font-bold text-cyan-600 dark:text-cyan-400">${raw.label}</div>
+            </div>
+            <div>
+              <span class="text-[10px] font-bold uppercase text-slate-400">Bound Ontology Class:</span>
+              <div class="font-mono text-xs text-indigo-500 font-semibold">${raw.type || 'owl:NamedIndividual'}</div>
+            </div>
+            <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
+              <span class="text-[10px] font-bold uppercase text-slate-400">Source Text Grounding Quote:</span>
+              <blockquote class="mt-1 p-2 rounded bg-cyan-50/50 dark:bg-cyan-950/40 border-l-2 border-cyan-500 text-[11px] text-slate-700 dark:text-slate-300 italic">
+                "${raw.quote || 'Mentioned in text'}"
+              </blockquote>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function renderCodeView() {
+      const codeContainer = document.getElementById('code-output');
+      if (!state.currentData) return;
+
+      let cypher = `// ==========================================\n`;
+      cypher += `// 1. ONTOLOGY SCHEMA (T-BOX)\n`;
+      cypher += `// ==========================================\n`;
+      state.currentData.ontology.classes.forEach(c => {
+        cypher += `CREATE (:OntologyClass {uri: "${c.id}", label: "${c.label}", comment: "${c.desc}"});\n`;
+      });
+      state.currentData.ontology.relations.forEach(r => {
+        cypher += `MATCH (a:OntologyClass {uri: "${r.from}"}), (b:OntologyClass {uri: "${r.to}"})\nCREATE (a)-[:PERMITTED_RELATION {type: "${r.label}"}]->(b);\n`;
+      });
+
+      cypher += `\n// ==========================================\n`;
+      cypher += `// 2. CONTEXT GRAPH INSTANCES & FACTS (A-BOX)\n`;
+      cypher += `// ==========================================\n`;
+      state.currentData.context.entities.forEach(e => {
+        cypher += `CREATE (i:Entity {id: "${e.id}", name: "${e.label}"})\nWITH i MATCH (c:OntologyClass {uri: "${e.type}"})\nCREATE (i)-[:INSTANCE_OF]->(c);\n`;
+      });
+      state.currentData.context.facts.forEach(f => {
+        cypher += `MATCH (x:Entity {id: "${f.from}"}), (y:Entity {id: "${f.to}"})\nCREATE (x)-[:FACT {predicate: "${f.label}"}]->(y);\n`;
+      });
+
+      codeContainer.textContent = cypher;
+    }
+
+    // Dynamic Graph Generation from Raw Text
+    async function executeGeneration() {
+      const text = document.getElementById('sample-text-input').value.trim();
+      if (!text) {
+        alert("Please enter sample text to extract graphs.");
+        return;
+      }
+
+      const backend = document.getElementById('backend-select').value;
+      const btn = document.getElementById('btn-generate');
+      const spinner = document.getElementById('generate-spinner');
+      const btnText = document.getElementById('generate-btn-text');
+      const latencyBadge = document.getElementById('latency-badge');
+
+      btn.disabled = true;
+      spinner.classList.remove('hidden');
+      btnText.textContent = "Inducing Ontology & Fact Triples...";
+
+      const t0 = performance.now();
+
+      try {
+        if (backend === 'groq') {
+          await generateViaGroq(text);
+        } else if (backend === 'webllm') {
+          await generateViaWebLLM(text);
+        } else {
+          // Instant semantic extractor
+          await generateViaMock(text);
+        }
+
+        const t1 = performance.now();
+        latencyBadge.textContent = `${Math.round(t1 - t0)}ms`;
+        latencyBadge.classList.remove('hidden');
+
+        updateMetrics();
+        renderGraph();
+        renderCodeView();
+      } catch (err) {
+        console.error("Generation error:", err);
+        alert(`Generation failed: ${err.message || err}`);
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+        btnText.textContent = "Extract Ontology & Context Graphs";
+      }
+    }
+
+    // Groq LPU Extractor with JSON schema enforcement
+    async function generateViaGroq(text) {
+      const apiKey = document.getElementById('groq-api-key').value.trim();
+      const model = document.getElementById('groq-model-select').value;
+      if (!apiKey) {
+        throw new Error("Please enter your Groq API key in the password field.");
+      }
+
+      const systemPrompt = `You are an expert Ontology and Knowledge Graph Engineer.
+Given the input text, extract two coupled graph layers:
+1. "ontology": High-level abstract T-Box schema classes and semantic relations between classes.
+   - classes: array of {id, label, desc}
+   - relations: array of {from, to, label}
+2. "context": Concrete grounded A-Box instances and factual relationships.
+   - entities: array of {id, label, type, quote} (type MUST match an ontology class id, quote is exact quote from text)
+   - facts: array of {from, to, label}
+
+Respond ONLY with valid JSON conforming to this structure:
+{
+  "ontology": { "classes": [...], "relations": [...] },
+  "context": { "entities": [...], "facts": [...] }
+}`;
+
+      const resp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: text }
+          ],
+          response_format: { type: "json_object" },
+          temperature: 0.1
+        })
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.error?.message || `Groq API Error HTTP ${resp.status}`);
+      }
+
+      const resJson = await resp.json();
+      const parsed = JSON.parse(resJson.choices[0].message.content);
+      state.currentData = parsed;
+    }
+
+    // WebLLM WebGPU Extractor
+    async function generateViaWebLLM(text) {
+      if (!isWebGPUAvailable) {
+        throw new Error("WebGPU is not enabled in this browser.");
+      }
+
+      if (!webllm) {
+        webllm = await import("https://esm.run/@mlc-ai/web-llm");
+      }
+
+      const modelId = document.getElementById('webllm-model-select').value;
+      const progressContainer = document.getElementById('webllm-progress-container');
+      const progressBar = document.getElementById('webllm-progress-bar');
+      const progressText = document.getElementById('webllm-progress-text');
+      const progressPct = document.getElementById('webllm-progress-pct');
+
+      if (!mlcEngine) {
+        progressContainer.classList.remove('hidden');
+        mlcEngine = await webllm.CreateMLCEngine(modelId, {
+          initProgressCallback: (report) => {
+            progressText.textContent = report.text;
+            const pct = Math.round((report.progress || 0) * 100);
+            progressBar.style.width = `${pct}%`;
+            progressPct.textContent = `${pct}%`;
+          }
+        });
+        progressContainer.classList.add('hidden');
+      }
+
+      const prompt = `Extract ontology classes and context instances from this text into JSON:
+${text}
+Output JSON format:
+{
+  "ontology": { "classes": [{"id": "...", "label": "...", "desc": "..."}], "relations": [{"from": "...", "to": "...", "label": "..."}] },
+  "context": { "entities": [{"id": "...", "label": "...", "type": "...", "quote": "..."}], "facts": [{"from": "...", "to": "...", "label": "..."}] }
+}`;
+
+      const reply = await mlcEngine.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.2
+      });
+
+      const raw = reply.choices[0].message.content;
+      const match = raw.match(/\{[\s\S]*\}/);
+      if (match) {
+        state.currentData = JSON.parse(match[0]);
+      } else {
+        throw new Error("Could not parse JSON from model output.");
+      }
+    }
+
+    // Fast Deterministic Semantic Extractor
+    async function generateViaMock(text) {
+      await new Promise(r => setTimeout(r, 260));
+
+      // Match closest preset heuristics or dynamically synthesize
+      const lower = text.toLowerCase();
+      if (lower.includes('lung') || lower.includes('egfr') || lower.includes('mutation') || lower.includes('tumor')) {
+        state.currentData = JSON.parse(JSON.stringify(PRESETS.biomedical));
+      } else if (lower.includes('robot') || lower.includes('factory') || lower.includes('amr') || lower.includes('conveyor')) {
+        state.currentData = JSON.parse(JSON.stringify(PRESETS.robotics));
+      } else if (lower.includes('fincen') || lower.includes('wire') || lower.includes('bank') || lower.includes('aml')) {
+        state.currentData = JSON.parse(JSON.stringify(PRESETS.fintech));
+      } else if (lower.includes('flight') || lower.includes('engine') || lower.includes('fadec') || lower.includes('boeing')) {
+        state.currentData = JSON.parse(JSON.stringify(PRESETS.aerospace));
+      } else {
+        // Generic synthesized dual graph from sentences
+        const words = text.split(/\s+/).slice(0, 30);
+        state.currentData = {
+          ontology: {
+            classes: [
+              { id: "Onto_Subject", label: "SubjectDomain", color: "#6366f1", shape: "box", desc: "Principal topical entity category" },
+              { id: "Onto_Activity", label: "ProcessActivity", color: "#6366f1", shape: "box", desc: "Operational or observational activity" },
+              { id: "Onto_Metric", label: "AttributeMetric", color: "#6366f1", shape: "box", desc: "Evaluated metric or telemetry output" }
+            ],
+            relations: [
+              { from: "Onto_Subject", to: "Onto_Activity", label: "participatesIn" },
+              { from: "Onto_Activity", to: "Onto_Metric", label: "generatesMeasurement" }
+            ]
+          },
+          context: {
+            entities: [
+              { id: "Inst_E1", label: words.slice(0, 2).join(' ') || "Target Entity", color: "#06b6d4", shape: "dot", type: "Onto_Subject", quote: text.slice(0, 40) },
+              { id: "Inst_E2", label: words.slice(5, 7).join(' ') || "Process Event", color: "#06b6d4", shape: "dot", type: "Onto_Activity", quote: text.slice(20, 60) },
+              { id: "Inst_E3", label: words.slice(12, 14).join(' ') || "Observed Output", color: "#06b6d4", shape: "dot", type: "Onto_Metric", quote: text.slice(40, 90) }
+            ],
+            facts: [
+              { from: "Inst_E1", to: "Inst_E2", label: "executes" },
+              { from: "Inst_E2", to: "Inst_E3", label: "measuredBy" }
+            ]
+          }
+        };
+      }
+    }
+
+    function setupEventListeners() {
+      // Theme Toggle
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        state.theme = state.theme === 'dark' ? 'light' : 'dark';
+        applyTheme();
+      });
+
+      // Presets
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          loadPreset(btn.dataset.preset);
+        });
+      });
+
+      // Backend switcher
+      document.getElementById('backend-select').addEventListener('change', (e) => {
+        state.backend = e.target.value;
+        const groqC = document.getElementById('groq-controls');
+        const webllmC = document.getElementById('webllm-controls');
+        const privacyBadge = document.getElementById('privacy-badge');
+        const privacyText = document.getElementById('privacy-badge-text');
+
+        if (state.backend === 'groq') {
+          groqC.classList.remove('hidden');
+          webllmC.classList.add('hidden');
+          privacyBadge.classList.add('hidden');
+        } else if (state.backend === 'webllm') {
+          groqC.classList.add('hidden');
+          webllmC.classList.remove('hidden');
+          privacyBadge.classList.remove('hidden');
+          privacyText.textContent = "WebLLM WebGPU (Zero Data Leaves Device)";
+        } else {
+          groqC.classList.add('hidden');
+          webllmC.classList.add('hidden');
+          privacyBadge.classList.remove('hidden');
+          privacyText.textContent = "Instant Semantic Generator (Offline)";
+        }
+      });
+
+      // Text input char counter
+      document.getElementById('sample-text-input').addEventListener('input', (e) => {
+        document.getElementById('text-char-count').textContent = `${e.target.value.length} chars`;
+      });
+
+      // Graph View switchers (Unified / Ontology / Context / Code)
+      document.querySelectorAll('.graph-view-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const view = btn.dataset.view;
+          state.activeView = view;
+          document.querySelectorAll('.graph-view-btn').forEach(b => {
+            b.classList.toggle('active', b.dataset.view === view);
+            if (b.dataset.view === view) {
+              b.className = "graph-view-btn active px-3 py-1 rounded-lg bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm transition";
+            } else {
+              b.className = "graph-view-btn px-3 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
+            }
+          });
+
+          const codeView = document.getElementById('code-export-view');
+          if (view === 'code') {
+            codeView.classList.remove('hidden');
+          } else {
+            codeView.classList.add('hidden');
+            renderGraph();
+          }
+        });
+      });
+
+      // Fit Graph button
+      document.getElementById('btn-fit-graph').addEventListener('click', () => {
+        if (network) network.fit({ animation: { duration: 500 } });
+      });
+
+      // Toggle Physics
+      document.getElementById('btn-physics-toggle').addEventListener('click', (e) => {
+        physicsEnabled = !physicsEnabled;
+        if (network) network.setOptions({ physics: { enabled: physicsEnabled } });
+        e.currentTarget.textContent = `Physics: ${physicsEnabled ? 'On' : 'Off'}`;
+      });
+
+      // Copy Code button
+      document.getElementById('btn-copy-code').addEventListener('click', () => {
+        const text = document.getElementById('code-output').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          alert("Cypher / RDF exported schema copied to clipboard!");
+        });
+      });
+
+      // Primary Generate Action
+      document.getElementById('btn-generate').addEventListener('click', executeGeneration);
+    }
+
+    // Bootstrap
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
