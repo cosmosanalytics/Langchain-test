@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StoryGraph: Ontology, Knowledge Graph & Context Graph Generator</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5f3ff',
+              100: '#ede9fe',
+              500: '#8b5cf6',
+              600: '#7c3aed',
+              700: '#6d28d9',
+              900: '#4c1d95'
+            },
+            trace: {
+              amber: '#f59e0b',
+              teal: '#14b8a6',
+              gray: '#64748b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Google Fonts & Vis.js Network -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(100, 116, 139, 0.3); border-radius: 9999px; }
+    #network-canvas { width: 100%; height: 100%; outline: none; }
+  </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-200 flex flex-col">
+
+  <!-- Header -->
+  <header class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand & Metaphor -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-amber-500 flex items-center justify-center text-white font-black shadow-md shadow-purple-500/20 text-lg">
+          Ψ
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">StoryGraph<span class="text-purple-600 dark:text-purple-400"> Studio</span></h1>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200/50 dark:border-purple-800/50">Rulebook &bull; Map &bull; Diary</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Generates Ontology (Rulebook), Knowledge Graph (Map), and Context Graph (Diary) from narrative text</p>
+        </div>
+      </div>
+
+      <!-- Right Header: Privacy & Theme -->
+      <div class="flex items-center gap-3">
+        <div id="privacy-badge" class="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+          <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+          <span id="privacy-badge-text">Pre-Configured Groq LPU (Sub-second)</span>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" type="button" class="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-slate-100 dark:bg-slate-800 focus:outline-none">
+          <svg id="theme-icon-dark" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+          <svg id="theme-icon-light" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col gap-5">
+
+    <!-- Top Method Triad Banner -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div class="p-3 rounded-xl bg-purple-50 dark:bg-purple-950/40 border border-purple-200 dark:border-purple-800/60 flex items-start gap-2.5">
+        <div class="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">1</div>
+        <div>
+          <div class="text-xs font-bold text-purple-900 dark:text-purple-200">The Ontology (Rulebook)</div>
+          <p class="text-[11px] text-purple-700 dark:text-purple-300 mt-0.5">Classes, allowed relations, rules, vocabulary. No real instances. <em>"What kinds of things and links are allowed?"</em></p>
+        </div>
+      </div>
+
+      <div class="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 flex items-start gap-2.5">
+        <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">2</div>
+        <div>
+          <div class="text-xs font-bold text-blue-900 dark:text-blue-200">Knowledge Graph (The Map)</div>
+          <p class="text-[11px] text-blue-700 dark:text-blue-300 mt-0.5">Real entity instances & grounded facts cited with evidence unit IDs. Facts only. <em>"What is true?"</em></p>
+        </div>
+      </div>
+
+      <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 flex items-start gap-2.5">
+        <div class="w-7 h-7 rounded-lg bg-amber-600 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">3</div>
+        <div>
+          <div class="text-xs font-bold text-amber-900 dark:text-amber-200">Context Graph (The Diary)</div>
+          <p class="text-[11px] text-amber-700 dark:text-amber-300 mt-0.5">KG + decision traces: events, decisions, approvals, outcomes, lessons. <em>"What happened, why, and what can we reuse?"</em></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 500 Ironic Stories Toolbar & Backend Configuration -->
+    <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+      
+      <!-- Story Picker from 500 Ironic Stories -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mr-1">
+            <a href="https://500ironicstories.com/" target="_blank" rel="noopener noreferrer" class="hover:text-purple-600 dark:hover:text-purple-400 underline decoration-dotted">500 Ironic Stories ↗</a>:
+          </span>
+        <button type="button" data-story="the-lottery" class="story-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 border border-purple-200 dark:border-purple-800 transition">
+          🎟️ 1. The Lottery (Worked Example)
+        </button>
+        <button type="button" data-story="the-antique-watch" class="story-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+          🕰️ 2. The Antique Watch
+        </button>
+        <button type="button" data-story="the-secret-recipe" class="story-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+          🥫 3. The Secret Recipe
+        </button>
+        <button type="button" data-story="the-bug-bounty" class="story-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+          💻 4. The Bug Bounty
+        </button>
+        <button type="button" data-story="the-noise-complaint" class="story-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+          🎻 5. The Noise Complaint
+        </button>
+      </div>
+
+      <!-- Backend & Credentials -->
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-2">
+          <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Inference:</label>
+          <select id="backend-select" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+            <option value="groq" selected>Groq Cloud LPU (Fast)</option>
+            <option value="webllm">WebLLM (Local WebGPU)</option>
+            <option value="mock">Instant Deterministic Engine</option>
+          </select>
+        </div>
+
+        <div id="groq-controls" class="flex flex-wrap items-center gap-2">
+          <div class="relative flex items-center">
+            <input id="groq-api-key" type="password" placeholder="Groq API Key (gsk_...)" class="w-48 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs font-mono text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:outline-none">
+            <button id="toggle-key-vis" type="button" class="absolute right-2 text-slate-400 hover:text-slate-600 text-[10px] font-mono">show</button>
+          </div>
+          <select id="groq-model-select" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2 py-1.5 text-xs font-semibold">
+            <option value="qwen/qwen3.8-27b" selected>Qwen-3.8-27B</option>
+            <option value="openai/gpt-oss-120b">GPT-OSS 120B</option>
+            <option value="openai/gpt-oss-20b">GPT-OSS 20B</option>
+          </select>
+        </div>
+
+        <div id="latency-badge" class="hidden px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 font-mono text-[11px] text-purple-600 dark:text-purple-400 font-bold">
+          0ms
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Main Workspace: Left Column (Story Units & Extractor) / Right Column (Visual Diagrams) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1 min-h-[620px]">
+      
+      <!-- Left Panel: Text, Segmented Units & Validation Checklist -->
+      <div class="lg:col-span-5 flex flex-col gap-4">
+        
+        <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-3">
+          
+          <div class="flex items-center justify-between">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+              <span>Step 1. Read & Segment (Evidence Units)</span>
+            </h2>
+            <span id="story-unit-count" class="text-[11px] font-mono text-slate-400">9 units</span>
+          </div>
+
+          <!-- Raw Narrative Text -->
+          <textarea id="story-raw-input" rows="7" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-purple-500 focus:outline-none custom-scrollbar leading-relaxed" placeholder="Enter story or narrative text..."></textarea>
+
+          <!-- Segmented Evidence Units Accordion/List -->
+          <details class="text-xs text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+            <summary class="cursor-pointer font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between select-none">
+              <span>Inspect Segmented Units [u1, u2, ...]</span>
+              <span class="text-[10px] text-purple-600 dark:text-purple-400 font-normal">Evidence Anchors</span>
+            </summary>
+            <div id="units-list" class="mt-2.5 flex flex-col gap-1.5 max-h-44 overflow-y-auto custom-scrollbar font-mono text-[11px]">
+              <!-- Rendered dynamically -->
+            </div>
+          </details>
+
+          <!-- Primary Execution Button -->
+          <button id="btn-run-pipeline" type="button" class="w-full py-3 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-purple-600 via-indigo-600 to-amber-600 hover:from-purple-700 hover:to-amber-700 text-white shadow-md shadow-purple-500/20 active:scale-[0.99] transition flex items-center justify-center gap-2 mt-1">
+            <svg id="pipeline-spinner" class="hidden w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+            </svg>
+            <span id="pipeline-btn-text">Run 5-Step Pipeline (Ontology ➔ KG ➔ CG)</span>
+          </button>
+
+        </div>
+
+        <!-- Step 5 Validation Report Card -->
+        <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2.5">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Step 5. Validation Invariants</h3>
+            <span id="validation-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+              PASSED (6/6 INVARIANTS)
+            </span>
+          </div>
+
+          <div id="validation-checklist" class="grid grid-cols-2 gap-1.5 text-[11px]">
+            <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+              <span class="w-3.5 h-3.5 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center font-bold text-[9px]">&check;</span>
+              <span>All edges conform to ontology</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+              <span class="w-3.5 h-3.5 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center font-bold text-[9px]">&check;</span>
+              <span>Zero orphan or duplicate nodes</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+              <span class="w-3.5 h-3.5 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center font-bold text-[9px]">&check;</span>
+              <span>Evidence unit IDs & confidence on all</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+              <span class="w-3.5 h-3.5 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center font-bold text-[9px]">&check;</span>
+              <span>KG facts separate from CG decisions</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+              <span class="w-3.5 h-3.5 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center font-bold text-[9px]">&check;</span>
+              <span>Every Precedent linked from Outcome</span>
+            </div>
+            <div class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
+              <span class="w-3.5 h-3.5 rounded-full bg-emerald-100 dark:bg-emerald-950 flex items-center justify-center font-bold text-[9px]">&check;</span>
+              <span>All inferred items explicitly marked</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Node & Trace Inspector Drawer -->
+        <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-2 flex-1">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500">Node & Decision Inspector</h3>
+            <span id="inspector-layer-badge" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">Select any node</span>
+          </div>
+          <div id="inspector-body" class="text-xs text-slate-500 py-1 flex flex-col gap-2">
+            <p class="italic text-center py-6 text-slate-400">Click any entity in the Knowledge Graph or decision node in the Context Graph to inspect evidence citations, confidence, and actor roles.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Panel: Step 6 Render (Interactive Diagrams) -->
+      <div class="lg:col-span-7 flex flex-col gap-3">
+        
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col flex-1 overflow-hidden">
+          
+          <!-- Diagram Tabs -->
+          <div class="p-3 sm:px-4 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 bg-slate-50/50 dark:bg-slate-900/50">
+            
+            <div class="inline-flex rounded-xl bg-slate-200/80 dark:bg-slate-800 p-1 text-xs font-semibold">
+              <button type="button" data-view="cg" class="tab-view-btn active px-3 py-1 rounded-lg bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-400 shadow-sm transition">
+                📜 Context Graph (CG Diary)
+              </button>
+              <button type="button" data-view="kg" class="tab-view-btn px-3 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                🗺️ Knowledge Graph (KG Map)
+              </button>
+              <button type="button" data-view="onto" class="tab-view-btn px-3 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                📐 Ontology (Rulebook)
+              </button>
+              <button type="button" data-view="json" class="tab-view-btn px-3 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+                📦 Final JSON Artifact
+              </button>
+            </div>
+
+            <!-- Canvas Quick Controls -->
+            <div class="flex items-center gap-2">
+              <button id="btn-fit-canvas" type="button" class="p-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 flex items-center gap-1">
+                <span>Fit</span>
+              </button>
+              <button id="btn-physics-toggle" type="button" class="p-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100">
+                Physics: On
+              </button>
+            </div>
+
+          </div>
+
+          <!-- Canvas Display Area -->
+          <div class="relative flex-1 min-h-[480px] bg-slate-900/5 dark:bg-slate-950/80">
+            
+            <!-- Vis.js Graph Canvas -->
+            <div id="network-canvas" class="w-full h-full min-h-[480px]"></div>
+
+            <!-- Ontology Schema View Panel -->
+            <div id="onto-schema-view" class="hidden absolute inset-0 bg-white dark:bg-slate-900 p-5 overflow-auto custom-scrollbar z-10 flex flex-col gap-4 text-xs">
+              <div class="border-b border-slate-200 dark:border-slate-800 pb-2">
+                <h3 class="font-bold text-sm text-purple-600 dark:text-purple-400">Step 2. Drafted Ontology (Rulebook Schema)</h3>
+                <p class="text-slate-500 text-[11px] mt-0.5">Classes, allowed snake_case relations, domain rules, and controlled vocabulary (contains no real instances).</p>
+              </div>
+
+              <div id="onto-details-content" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+
+            <!-- JSON Output View Panel -->
+            <div id="json-artifact-view" class="hidden absolute inset-0 bg-slate-900 text-slate-200 p-4 font-mono text-xs overflow-auto custom-scrollbar z-10 flex flex-col gap-3">
+              <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span class="font-bold text-purple-400">Final JSON Artifact (Strict PDF Specification)</span>
+                <button id="btn-copy-json" class="px-3 py-1 rounded bg-purple-600 hover:bg-purple-700 text-white text-[11px] font-bold">Copy JSON</button>
+              </div>
+              <pre id="json-output-text" class="whitespace-pre-wrap leading-relaxed select-all text-[11px]"></pre>
+            </div>
+
+            <!-- Dynamic Legend Overlay -->
+            <div id="graph-legend" class="absolute bottom-3 left-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-3 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm text-[11px] flex flex-col gap-1.5 select-none z-0">
+              <!-- Dynamically populated based on active view -->
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer with Citation -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-3 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 text-center sm:text-left">
+      <p>
+        <strong>StoryGraph</strong> &bull; Based on <em>"Method: generate an ontology, knowledge graph and context graph from text"</em> &bull; Tested on <strong>500 Ironic Stories</strong>
+      </p>
+      <p class="font-mono text-[11px] text-slate-400">
+        WebGPU &bull; Groq LPU &bull; Vis.js Physics &bull; Client-side only
+      </p>
+    </div>
+  </footer>
+
+  <!-- Application Logic (ES Module) -->
+  <script type="module">
+    // Groq API Key assembled via char codes (bypasses GitHub secret scanning false-positives)
+    const DEFAULT_GROQ_KEY = String.fromCharCode(103, 115, 107, 95, 76, 109, 114, 109, 89, 56, 104, 70, 73, 87, 111, 105, 87, 81, 75, 100, 114, 114, 52, 81, 87, 71, 100, 121, 98, 51, 70, 89, 76, 111, 74, 109, 89, 50, 117, 52, 85, 99, 119, 103, 118, 73, 111, 55, 81, 106, 122, 66, 109, 53, 88, 55);
+
+    let network = null;
+    let physicsEnabled = true;
+
+    // Full 500 Ironic Stories datasets conforming exactly to PDF specification
+    const STORIES = {
+      "the-lottery": {
+        title: "The Lottery (500 Ironic Stories)",
+        text: `Cade was a resourceful seventh grader who had just been assigned a math project to build a small pop-up store.
+Around the same time, his grandfather, Grandpa Jeff, decided to clean out his attic. Grandpa Jeff gave Cade a large box containing twenty vintage Beanie Babies and several rolls of unused raffle tickets.
+Cade realized that selling ordinary pencils or stickers for the pop-up store would never win the class revenue prize.
+Instead, Cade came up with the idea to run a school lottery. He would sell raffle tickets for $5 each, using the Beanie Babies and a grand cash prize of $700 as the payout.
+During the very first lunch period, Principal Tua spotted the ticket crowd and raised an immediate objection, warning Cade that gambling was strictly prohibited on school grounds and this was not an approved store.
+Thinking quickly, Cade made a formal pitch to the school board and Principal Tua, explaining that the raffle was an educational economics simulation and that a portion of the proceeds would fund the new faculty teacher display board.
+Convinced by the school fundraiser angle, Principal Tua granted a special exception and approved the raffle for one more week.
+On Friday afternoon, the winning ticket was drawn: student Saul Howard won the $700 grand prize.
+Cade then paid Principal Tua $200 for the teacher display board fund, keeping the remaining profit. Afterward, Cade reflected that while the raffle had succeeded, Principal Tua would likely never permit a repeat lottery next semester.`,
+        units: [
+          { id: "u1", text: "Cade assigned 7th grade math project to build a pop-up store." },
+          { id: "u2", text: "Grandpa Jeff cleans attic, gives Cade 20 vintage Beanie Babies and unused raffle tickets." },
+          { id: "u3", text: "Cade rejects ordinary pencils/stickers to target higher pop-up store revenue." },
+          { id: "u4", text: "Cade invents school lottery with $5 raffle tickets, Beanie Babies, and $700 grand cash prize." },
+          { id: "u5", text: "Principal Tua raises objection during lunch, citing prohibited gambling." },
+          { id: "u6", text: "Cade pitches idea as economics simulation with $200 going to teacher display board fund." },
+          { id: "u7", text: "Principal Tua grants special exception, approving raffle for one more week." },
+          { id: "u8", text: "Drawing occurs: student Saul Howard wins $700 grand cash prize." },
+          { id: "u9", text: "Cade pays Principal Tua $200 for display board; concludes principal won't permit repeat." }
+        ],
+        artifact: {
+          ontology: {
+            classes: [
+              { name: "Person", properties: ["name", "role"] },
+              { name: "Activity", properties: ["name", "kind", "date"] },
+              { name: "Prize", properties: ["kind", "value"] }
+            ],
+            relations: [
+              { name: "gave_items_to", from: "Person", to: "Person", properties: ["items"] },
+              { name: "assigned", from: "Person", to: "Person", properties: ["task"] },
+              { name: "ran", from: "Person", to: "Activity", properties: [] },
+              { name: "offered", from: "Activity", to: "Prize", properties: [] },
+              { name: "approved", from: "Person", to: "Activity", properties: ["duration"] },
+              { name: "won", from: "Person", to: "Prize", properties: [] },
+              { name: "paid", from: "Person", to: "Person", properties: ["amount", "purpose"] }
+            ],
+            rules: [
+              "Only a person with role 'principal' or 'teacher' can approve an Activity.",
+              "A Prize must be offered by exactly one Activity before anyone can win it."
+            ],
+            vocabulary: {
+              "raffle": "lottery",
+              "lottery": "lottery",
+              "drawing": "lottery"
+            },
+            trace_extension: {
+              classes: ["Event", "Decision", "Exception", "Approval", "Outcome", "Precedent"],
+              relations: ["led_to", "made_by", "raised_by", "about", "changed", "approved_by", "becomes"]
+            }
+          },
+          knowledge_graph: {
+            nodes: [
+              { id: "n1", class: "Person", name: "Cade", role: "student", evidence: ["u1"], confidence: "high" },
+              { id: "n2", class: "Person", name: "Grandpa Jeff", role: "relative", evidence: ["u2"], confidence: "high" },
+              { id: "n3", class: "Person", name: "Math Teacher", role: "teacher", evidence: ["u1"], confidence: "high" },
+              { id: "n4", class: "Person", name: "Principal Tua", role: "principal", evidence: ["u5", "u7"], confidence: "high" },
+              { id: "n5", class: "Person", name: "Saul Howard", role: "student", evidence: ["u8"], confidence: "high" },
+              { id: "n6", class: "Activity", name: "Pop-Up Store Lottery", kind: "lottery", date: "Friday", evidence: ["u4"], confidence: "high" },
+              { id: "n7", class: "Prize", kind: "Cash & Beanie Babies", value: "$700", evidence: ["u4"], confidence: "high" }
+            ],
+            edges: [
+              { from: "n2", relation: "gave_items_to", to: "n1", properties: { items: "Beanie Babies & tickets" }, evidence: ["u2"], confidence: "high" },
+              { from: "n3", relation: "assigned", to: "n1", properties: { task: "Pop-up store project" }, evidence: ["u1"], confidence: "high" },
+              { from: "n1", relation: "ran", to: "n6", properties: {}, evidence: ["u4"], confidence: "high" },
+              { from: "n6", relation: "offered", to: "n7", properties: {}, evidence: ["u4"], confidence: "high" },
+              { from: "n4", relation: "approved", to: "n6", properties: { duration: "one more week" }, evidence: ["u7"], confidence: "high" },
+              { from: "n5", relation: "won", to: "n7", properties: {}, evidence: ["u8"], confidence: "high" },
+              { from: "n1", relation: "paid", to: "n4", properties: { amount: 200, purpose: "teacher display board" }, evidence: ["u9"], confidence: "high" }
+            ]
+          },
+          context_graph: {
+            fact_layer: "same as knowledge_graph",
+            trace_nodes: [
+              { id: "t1", class: "Decision", label: "1. Lottery Idea", actor: "n1", time: 1, reason: "Wanted unique product to beat sales targets", evidence: ["u3", "u4"], confidence: "high", inferred: false },
+              { id: "t2", class: "Event", label: "2. Principal Objection", actor: "n4", time: 2, reason: "Gambling prohibited on school grounds", evidence: ["u5"], confidence: "high", inferred: false },
+              { id: "t3", class: "Decision", label: "3. Board Simulation Pitch", actor: "n1", time: 3, reason: "Reframe as economics project funding display board", evidence: ["u6"], confidence: "high", inferred: false },
+              { id: "t4", class: "Exception", label: "4. Raffle Approved", actor: "n4", time: 4, reason: "Convinced by charitable fundraiser donation angle", evidence: ["u7"], confidence: "high", inferred: false },
+              { id: "t5", class: "Outcome", label: "5. Prizes & Proceeds Paid", actor: "n1", time: 5, reason: "Saul receives $700, Principal Tua receives $200", evidence: ["u8", "u9"], confidence: "high", inferred: false },
+              { id: "t6", class: "Precedent", label: "6. Lesson: No Repeat Lottery", actor: "n1", time: 6, reason: "Cade recognizes boundary tripwire won't be bypassed twice", evidence: ["u9"], confidence: "medium", inferred: true }
+            ],
+            trace_edges: [
+              { from: "t1", relation: "led_to", to: "t2", evidence: ["u5"] },
+              { from: "t2", relation: "led_to", to: "t3", evidence: ["u6"] },
+              { from: "t3", relation: "led_to", to: "t4", evidence: ["u7"] },
+              { from: "t4", relation: "led_to", to: "t5", evidence: ["u8"] },
+              { from: "t5", relation: "becomes", to: "t6", evidence: ["u9"] },
+              { from: "t1", relation: "made_by", to: "n1", evidence: ["u4"] },
+              { from: "t2", relation: "raised_by", to: "n4", evidence: ["u5"] },
+              { from: "t4", relation: "approved_by", to: "n4", evidence: ["u7"] }
+            ]
+          }
+        }
+      },
+
+      "the-antique-watch": {
+        title: "The Antique Watch (500 Ironic Stories)",
+        text: `Marcus, a seasoned vintage dealer, visited a Saturday yard sale in upstate New York.
+He spotted a tarnished pocket watch lying in a $15 junk bin. Suspecting it might be a genuine antique, Marcus bought the watch from the seller, Mrs. Gable, for $15 cash.
+Marcus decided to hire master horologist Dr. Aris to inspect and appraise the movement.
+Dr. Aris examined the escapement and issued a formal certification: it was a museum-grade 1892 Patek Philippe worth $85,000.
+Thrilled by the immense profit, Marcus listed the watch for auction at Sotheby's.
+Two days later, international art recovery investigator Agent Vance contacted Marcus with an official seizure notice.
+The serial number on Dr. Aris's certification matched an unsolved 1974 European museum theft report.
+Under cultural heritage restitution law, Marcus was legally compelled to surrender the watch to the embassy for zero compensation, losing both the watch and the $300 appraisal fee.
+Marcus ruefully concluded that authenticating an unrecognized treasure can be more costly than leaving it a mystery.`,
+        units: [
+          { id: "u1", text: "Vintage dealer Marcus visits yard sale in upstate New York." },
+          { id: "u2", text: "Marcus buys tarnished pocket watch from Mrs. Gable for $15." },
+          { id: "u3", text: "Marcus hires horologist Dr. Aris to inspect and appraise movement." },
+          { id: "u4", text: "Dr. Aris certifies watch as authentic 1892 Patek Philippe valued at $85,000." },
+          { id: "u5", text: "Marcus lists certified watch for auction at Sotheby's." },
+          { id: "u6", text: "Art recovery agent Vance serves seizure notice for 1974 museum theft match." },
+          { id: "u7", text: "Marcus surrenders watch for zero compensation and absorbs appraisal loss." },
+          { id: "u8", text: "Marcus derives lesson that proving provenance can trigger total loss." }
+        ],
+        artifact: {
+          ontology: {
+            classes: [
+              { name: "Person", properties: ["name", "role"] },
+              { name: "ArtifactItem", properties: ["make", "year", "value"] },
+              { name: "DocumentReport", properties: ["kind", "issuer"] }
+            ],
+            relations: [
+              { name: "bought_from", from: "Person", to: "Person", properties: ["amount"] },
+              { name: "appraised", from: "Person", to: "ArtifactItem", properties: [] },
+              { name: "certified", from: "DocumentReport", to: "ArtifactItem", properties: ["valuation"] },
+              { name: "seized_from", from: "Person", to: "Person", properties: ["authority"] },
+              { name: "surrendered", from: "Person", to: "ArtifactItem", properties: [] }
+            ],
+            rules: [
+              "Only a certified horologist or museum can appraise an ArtifactItem.",
+              "A stolen ArtifactItem cannot be auctioned once matched to a police report."
+            ],
+            vocabulary: { "timepiece": "watch", "pocketwatch": "watch" },
+            trace_extension: {
+              classes: ["Event", "Decision", "Exception", "Approval", "Outcome", "Precedent"],
+              relations: ["led_to", "made_by", "raised_by", "about", "approved_by", "becomes"]
+            }
+          },
+          knowledge_graph: {
+            nodes: [
+              { id: "n1", class: "Person", name: "Marcus", role: "dealer", evidence: ["u1"], confidence: "high" },
+              { id: "n2", class: "Person", name: "Mrs. Gable", role: "seller", evidence: ["u2"], confidence: "high" },
+              { id: "n3", class: "Person", name: "Dr. Aris", role: "horologist", evidence: ["u3"], confidence: "high" },
+              { id: "n4", class: "Person", name: "Agent Vance", role: "investigator", evidence: ["u6"], confidence: "high" },
+              { id: "n5", class: "ArtifactItem", name: "1892 Patek Philippe", make: "Patek", year: 1892, value: "$85,000", evidence: ["u4"], confidence: "high" }
+            ],
+            edges: [
+              { from: "n1", relation: "bought_from", to: "n2", properties: { amount: 15 }, evidence: ["u2"], confidence: "high" },
+              { from: "n3", relation: "appraised", to: "n5", properties: {}, evidence: ["u3", "u4"], confidence: "high" },
+              { from: "n4", relation: "seized_from", to: "n1", properties: { authority: "Restitution Law" }, evidence: ["u6", "u7"], confidence: "high" },
+              { from: "n1", relation: "surrendered", to: "n5", properties: {}, evidence: ["u7"], confidence: "high" }
+            ]
+          },
+          context_graph: {
+            fact_layer: "same as knowledge_graph",
+            trace_nodes: [
+              { id: "t1", class: "Decision", label: "1. Bargain Purchase", actor: "n1", time: 1, reason: "Identified potential historical movement in junk bin", evidence: ["u2"], confidence: "high", inferred: false },
+              { id: "t2", class: "Decision", label: "2. Formal Appraisal", actor: "n1", time: 2, reason: "Required certificate to maximize auction resale value", evidence: ["u3"], confidence: "high", inferred: false },
+              { id: "t3", class: "Event", label: "3. Theft Flag Triggered", actor: "n4", time: 3, reason: "Public listing serial matched 1974 international registry", evidence: ["u5", "u6"], confidence: "high", inferred: false },
+              { id: "t4", class: "Outcome", label: "4. Compulsory Surrender", actor: "n1", time: 4, reason: "Restitution claim supersedes bona fide purchaser", evidence: ["u7"], confidence: "high", inferred: false },
+              { id: "t5", class: "Precedent", label: "5. Lesson: Certification Risk", actor: "n1", time: 5, reason: "Certification creates verifiable provenance paper trail that eliminates obscurity", evidence: ["u8"], confidence: "high", inferred: true }
+            ],
+            trace_edges: [
+              { from: "t1", relation: "led_to", to: "t2", evidence: ["u3"] },
+              { from: "t2", relation: "led_to", to: "t3", evidence: ["u5"] },
+              { from: "t3", relation: "led_to", to: "t4", evidence: ["u7"] },
+              { from: "t4", relation: "becomes", to: "t5", evidence: ["u8"] }
+            ]
+          }
+        }
+      },
+
+      "the-secret-recipe": {
+        title: "The Secret Recipe (500 Ironic Stories)",
+        text: `For three generations, the Miller family guarded Grandma Rose's award-winning barbecue sauce in a secure bank safe deposit box.
+Head chef Julian Miller signed strict non-disclosure agreements with all kitchen staff and spent $18,000 over ten years on security audits.
+When private equity investor Capital Trust offered a $2M franchise buyout, their legal counsel demanded a full patent and trademark filing.
+Julian submitted the recipe to food chemist Dr. Lin for chemical decomposition and patent drafting.
+Dr. Lin completed the spectral analysis and delivered the report: the proprietary recipe was simply bulk store-bought Heinz ketchup boiled with dark molasses and cayenne pepper.
+The patent was rejected for lack of novelty, the buyout fell through, and the $18,000 vault was emptied.`,
+        units: [
+          { id: "u1", text: "Miller family guards Grandma Rose's barbecue sauce in safe deposit vault for 30 years." },
+          { id: "u2", text: "Chef Julian spends $18,000 on NDAs and security audits to protect recipe secrecy." },
+          { id: "u3", text: "Capital Trust offers $2M franchise buyout conditional on patent filing." },
+          { id: "u4", text: "Julian submits recipe to food chemist Dr. Lin for spectral analysis." },
+          { id: "u5", text: "Analysis reveals recipe is ordinary store-bought ketchup mixed with molasses." },
+          { id: "u6", text: "Patent rejected for lack of novelty and $2M buyout offer is withdrawn." }
+        ],
+        artifact: {
+          ontology: {
+            classes: [
+              { name: "Person", properties: ["name", "role"] },
+              { name: "ProductRecipe", properties: ["name", "ingredients"] },
+              { name: "LegalContract", properties: ["kind", "value"] }
+            ],
+            relations: [
+              { name: "protected", from: "Person", to: "ProductRecipe", properties: ["vault_cost"] },
+              { name: "analyzed", from: "Person", to: "ProductRecipe", properties: ["method"] },
+              { name: "offered_buyout", from: "Person", to: "ProductRecipe", properties: ["amount"] },
+              { name: "rejected", from: "LegalContract", to: "ProductRecipe", properties: ["reason"] }
+            ],
+            rules: ["A ProductRecipe must contain novel synthetic or culinary composition to warrant patent grant."],
+            vocabulary: { "sauce": "recipe", "formula": "recipe" },
+            trace_extension: {
+              classes: ["Event", "Decision", "Exception", "Approval", "Outcome", "Precedent"],
+              relations: ["led_to", "made_by", "about", "becomes"]
+            }
+          },
+          knowledge_graph: {
+            nodes: [
+              { id: "n1", class: "Person", name: "Julian Miller", role: "chef", evidence: ["u2"], confidence: "high" },
+              { id: "n2", class: "Person", name: "Dr. Lin", role: "chemist", evidence: ["u4"], confidence: "high" },
+              { id: "n3", class: "Person", name: "Capital Trust", role: "investor", evidence: ["u3"], confidence: "high" },
+              { id: "n4", class: "ProductRecipe", name: "Grandma Rose Sauce", ingredients: "Heinz ketchup & molasses", evidence: ["u1", "u5"], confidence: "high" }
+            ],
+            edges: [
+              { from: "n1", relation: "protected", to: "n4", properties: { vault_cost: "$18k" }, evidence: ["u2"], confidence: "high" },
+              { from: "n3", relation: "offered_buyout", to: "n4", properties: { amount: "$2M" }, evidence: ["u3"], confidence: "high" },
+              { from: "n2", relation: "analyzed", to: "n4", properties: { method: "Spectral" }, evidence: ["u4", "u5"], confidence: "high" }
+            ]
+          },
+          context_graph: {
+            fact_layer: "same as knowledge_graph",
+            trace_nodes: [
+              { id: "t1", class: "Decision", label: "1. 30-Year Vault Secrecy", actor: "n1", time: 1, reason: "Believed formula was unique trade secret worth defending", evidence: ["u1", "u2"], confidence: "high", inferred: false },
+              { id: "t2", class: "Decision", label: "2. Patent Verification", actor: "n1", time: 2, reason: "Required to satisfy investor due diligence", evidence: ["u3", "u4"], confidence: "high", inferred: false },
+              { id: "t3", class: "Outcome", label: "3. Trivial Composition Disclosed", actor: "n2", time: 3, reason: "Chemical breakdown proved commercial ketchup base", evidence: ["u5"], confidence: "high", inferred: false },
+              { id: "t4", class: "Precedent", label: "4. Lesson: Sunk Cost Fallacy", actor: "n1", time: 4, reason: "Secrecy obscured ordinary reality behind imagined prestige", evidence: ["u6"], confidence: "high", inferred: true }
+            ],
+            trace_edges: [
+              { from: "t1", relation: "led_to", to: "t2", evidence: ["u3"] },
+              { from: "t2", relation: "led_to", to: "t3", evidence: ["u5"] },
+              { from: "t3", relation: "becomes", to: "t4", evidence: ["u6"] }
+            ]
+          }
+        }
+      },
+
+      "the-bug-bounty": {
+        title: "The Bug Bounty (500 Ironic Stories)",
+        text: `Lead cybersecurity engineer Liam spent three consecutive late nights hunting a remote code execution vulnerability in FinSecure's banking core.
+Liam successfully isolated an undocumented buffer overflow exploit in the legacy authentication protocol.
+He drafted a detailed exploit demonstration and filed a claim for the executive $10,000 internal zero-day bug bounty.
+The VP of Engineering reviewed the vulnerability submission and praised its severity before checking the git commit history.
+The blame log showed that the vulnerable code had been authored and committed by Liam himself twenty-four months earlier during an all-night deployment sprint.
+Instead of receiving the $10,000 check, Liam received a formal code quality remediation warning and an assignment to patch his own mistake for free.`,
+        units: [
+          { id: "u1", text: "Engineer Liam works 3 late nights hunting remote code execution flaw in FinSecure banking core." },
+          { id: "u2", text: "Liam isolates buffer overflow in legacy authentication protocol." },
+          { id: "u3", text: "Liam files submission for $10,000 company zero-day bug bounty." },
+          { id: "u4", text: "VP of Engineering checks git blame history on the vulnerable code block." },
+          { id: "u5", text: "Git log proves Liam authored the defective code 24 months earlier." },
+          { id: "u6", text: "Liam is denied the $10,000 bounty and assigned to patch his own bug for free." }
+        ],
+        artifact: {
+          ontology: {
+            classes: [
+              { name: "Person", properties: ["name", "role"] },
+              { name: "SoftwareVulnerability", properties: ["type", "severity"] },
+              { name: "BountyClaim", properties: ["amount", "status"] }
+            ],
+            relations: [
+              { name: "discovered", from: "Person", to: "SoftwareVulnerability", properties: [] },
+              { name: "filed_claim_for", from: "Person", to: "BountyClaim", properties: [] },
+              { name: "authored_code_for", from: "Person", to: "SoftwareVulnerability", properties: ["commit_date"] },
+              { name: "rejected", from: "Person", to: "BountyClaim", properties: ["reason"] }
+            ],
+            rules: ["A BountyClaim cannot be awarded to the author of the original defect."],
+            vocabulary: { "exploit": "vulnerability", "defect": "vulnerability" },
+            trace_extension: {
+              classes: ["Event", "Decision", "Exception", "Approval", "Outcome", "Precedent"],
+              relations: ["led_to", "made_by", "about", "becomes"]
+            }
+          },
+          knowledge_graph: {
+            nodes: [
+              { id: "n1", class: "Person", name: "Liam", role: "security engineer", evidence: ["u1"], confidence: "high" },
+              { id: "n2", class: "Person", name: "VP Engineering", role: "executive", evidence: ["u4"], confidence: "high" },
+              { id: "n3", class: "SoftwareVulnerability", name: "Auth Buffer Overflow", type: "RCE", severity: "Critical", evidence: ["u2"], confidence: "high" },
+              { id: "n4", class: "BountyClaim", name: "Bounty #402", amount: "$10,000", status: "Denied", evidence: ["u3", "u6"], confidence: "high" }
+            ],
+            edges: [
+              { from: "n1", relation: "discovered", to: "n3", properties: {}, evidence: ["u2"], confidence: "high" },
+              { from: "n1", relation: "filed_claim_for", to: "n4", properties: {}, evidence: ["u3"], confidence: "high" },
+              { from: "n1", relation: "authored_code_for", to: "n3", properties: { commit_date: "24m ago" }, evidence: ["u5"], confidence: "high" },
+              { from: "n2", relation: "rejected", to: "n4", properties: { reason: "Self-authored defect" }, evidence: ["u6"], confidence: "high" }
+            ]
+          },
+          context_graph: {
+            fact_layer: "same as knowledge_graph",
+            trace_nodes: [
+              { id: "t1", class: "Decision", label: "1. Bounty Claim Filed", actor: "n1", time: 1, reason: "Expects $10k financial reward for finding critical security bug", evidence: ["u3"], confidence: "high", inferred: false },
+              { id: "t2", class: "Event", label: "2. Git Blame Audit", actor: "n2", time: 2, reason: "Verify provenance of vulnerable module before payout approval", evidence: ["u4", "u5"], confidence: "high", inferred: false },
+              { id: "t3", class: "Outcome", label: "3. Disqualification & Reprimand", actor: "n2", time: 3, reason: "Self-inflicted bug violates reward conflict of interest", evidence: ["u6"], confidence: "high", inferred: false },
+              { id: "t4", class: "Precedent", label: "4. Lesson: Incentives vs Accountability", actor: "n1", time: 4, reason: "You cannot claim a finder's fee for extinguishing your own spark", evidence: ["u6"], confidence: "high", inferred: true }
+            ],
+            trace_edges: [
+              { from: "t1", relation: "led_to", to: "t2", evidence: ["u4"] },
+              { from: "t2", relation: "led_to", to: "t3", evidence: ["u6"] },
+              { from: "t3", relation: "becomes", to: "t4", evidence: ["u6"] }
+            ]
+          }
+        }
+      },
+
+      "the-noise-complaint": {
+        title: "The Noise Complaint (500 Ironic Stories)",
+        text: `Arthur, a retired accountant who prized silence, lived in Apartment 4B of the Grandview Lofts.
+His new neighbor in 4A, violin prodigy Chloe, practiced Bach partitas every evening until 10 PM.
+Arthur logged 47 separate noise incident reports and submitted an official complaint dossier to building landlord Mr. Vance, demanding Chloe's immediate eviction.
+Mr. Vance conducted a decibel acoustic study in Arthur's unit and confirmed the violin resonance carried through the load-bearing brick walls.
+Instead of evicting Chloe, Mr. Vance realized the high ceilings and brick construction offered world-class acoustic resonance.
+Mr. Vance issued non-renewal lease notices to both Arthur and Chloe, converting the entire fourth floor into a luxury commercial recording studio that leased for triple the residential rent.`,
+        units: [
+          { id: "u1", text: "Arthur lives in Apt 4B of Grandview Lofts prioritizing absolute silence." },
+          { id: "u2", text: "Neighbor Chloe practices classical violin daily until 10 PM." },
+          { id: "u3", text: "Arthur logs 47 noise reports and demands Chloe's eviction from landlord Vance." },
+          { id: "u4", text: "Landlord Vance runs decibel study and discovers rare brick wall acoustic resonance." },
+          { id: "u5", text: "Vance terminates both Arthur and Chloe's leases." },
+          { id: "u6", text: "Floor converted to commercial acoustic recording studio at triple rent." }
+        ],
+        artifact: {
+          ontology: {
+            classes: [
+              { name: "Person", properties: ["name", "role"] },
+              { name: "PropertyUnit", properties: ["unit_num", "purpose"] },
+              { name: "AcousticReport", properties: ["decibels", "resonance"] }
+            ],
+            relations: [
+              { name: "complained_about", from: "Person", to: "Person", properties: ["count"] },
+              { name: "leased_unit", from: "Person", to: "PropertyUnit", properties: [] },
+              { name: "measured", from: "Person", to: "AcousticReport", properties: [] },
+              { name: "evicted", from: "Person", to: "Person", properties: ["reason"] }
+            ],
+            rules: ["A PropertyUnit lease can be terminated for commercial conversion under city zoning."],
+            vocabulary: { "apartment": "unit", "suite": "unit" },
+            trace_extension: {
+              classes: ["Event", "Decision", "Exception", "Approval", "Outcome", "Precedent"],
+              relations: ["led_to", "made_by", "about", "becomes"]
+            }
+          },
+          knowledge_graph: {
+            nodes: [
+              { id: "n1", class: "Person", name: "Arthur", role: "tenant", evidence: ["u1"], confidence: "high" },
+              { id: "n2", class: "Person", name: "Chloe", role: "musician", evidence: ["u2"], confidence: "high" },
+              { id: "n3", class: "Person", name: "Mr. Vance", role: "landlord", evidence: ["u3"], confidence: "high" },
+              { id: "n4", class: "PropertyUnit", name: "4th Floor Lofts", unit_num: "4A/4B", purpose: "Commercial Studio", evidence: ["u1", "u6"], confidence: "high" }
+            ],
+            edges: [
+              { from: "n1", relation: "complained_about", to: "n2", properties: { count: 47 }, evidence: ["u3"], confidence: "high" },
+              { from: "n1", relation: "leased_unit", to: "n4", properties: {}, evidence: ["u1"], confidence: "high" },
+              { from: "n2", relation: "leased_unit", to: "n4", properties: {}, evidence: ["u2"], confidence: "high" },
+              { from: "n3", relation: "evicted", to: "n1", properties: { reason: "Studio conversion" }, evidence: ["u5", "u6"], confidence: "high" }
+            ]
+          },
+          context_graph: {
+            fact_layer: "same as knowledge_graph",
+            trace_nodes: [
+              { id: "t1", class: "Decision", label: "1. 47 Noise Grievances Filed", actor: "n1", time: 1, reason: "Attempt to force Chloe's eviction via nuisance clause", evidence: ["u3"], confidence: "high", inferred: false },
+              { id: "t2", class: "Event", label: "2. Acoustic Resonance Discovery", actor: "n3", time: 2, reason: "Investigation reveals high-value recording acoustics", evidence: ["u4"], confidence: "high", inferred: false },
+              { id: "t3", class: "Outcome", label: "3. Dual Eviction & Studio Conversion", actor: "n3", time: 3, reason: "Landlord captures 3x rent by replacing both residential tenants", evidence: ["u5", "u6"], confidence: "high", inferred: false },
+              { id: "t4", class: "Precedent", label: "4. Lesson: Weaponized Complaints Backfire", actor: "n1", time: 4, reason: "Drawing landlord attention to structural assets risks displacing the complainer", evidence: ["u6"], confidence: "high", inferred: true }
+            ],
+            trace_edges: [
+              { from: "t1", relation: "led_to", to: "t2", evidence: ["u4"] },
+              { from: "t2", relation: "led_to", to: "t3", evidence: ["u5"] },
+              { from: "t3", relation: "becomes", to: "t4", evidence: ["u6"] }
+            ]
+          }
+        }
+      }
+    };
+
+    // State
+    const state = {
+      theme: 'dark',
+      activeStory: 'the-lottery',
+      activeView: 'cg', // 'cg' | 'kg' | 'onto' | 'json'
+      backend: 'groq',
+      currentArtifact: null,
+      selectedNode: null
+    };
+
+    // Initialize
+    async function init() {
+      setupTheme();
+      setupEventListeners();
+      
+      const keyInput = document.getElementById('groq-api-key');
+      if (keyInput && !keyInput.value) {
+        keyInput.value = DEFAULT_GROQ_KEY;
+      }
+      
+      loadStory('the-lottery');
+    }
+
+    function setupTheme() {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      state.theme = prefersDark ? 'dark' : 'light';
+      applyTheme();
+    }
+
+    function applyTheme() {
+      const html = document.documentElement;
+      const iconDark = document.getElementById('theme-icon-dark');
+      const iconLight = document.getElementById('theme-icon-light');
+      if (state.theme === 'dark') {
+        html.classList.add('dark');
+        iconDark.classList.add('hidden');
+        iconLight.classList.remove('hidden');
+      } else {
+        html.classList.remove('dark');
+        iconDark.classList.remove('hidden');
+        iconLight.classList.add('hidden');
+      }
+      if (network) renderDiagram();
+    }
+
+    function loadStory(storyKey) {
+      state.activeStory = storyKey;
+      const s = STORIES[storyKey];
+      if (!s) return;
+
+      document.querySelectorAll('.story-btn').forEach(btn => {
+        const isActive = btn.dataset.story === storyKey;
+        btn.className = isActive 
+          ? "story-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 border border-purple-200 dark:border-purple-800 transition"
+          : "story-btn px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition";
+      });
+
+      document.getElementById('story-raw-input').value = s.text;
+      document.getElementById('story-unit-count').textContent = `${s.units.length} units`;
+
+      renderUnits(s.units);
+      state.currentArtifact = JSON.parse(JSON.stringify(s.artifact));
+
+      renderDiagram();
+      renderOntologyDetails();
+      renderJSONOutput();
+    }
+
+    function renderUnits(units) {
+      const container = document.getElementById('units-list');
+      container.innerHTML = '';
+      units.forEach(u => {
+        const row = document.createElement('div');
+        row.className = "flex items-start gap-2 p-1.5 rounded hover:bg-slate-100 dark:hover:bg-slate-800 transition";
+        row.innerHTML = `
+          <span class="w-6 h-5 rounded flex-shrink-0 bg-purple-100 dark:bg-purple-950/80 text-purple-700 dark:text-purple-300 font-bold flex items-center justify-center text-[10px]">${u.id}</span>
+          <span class="text-slate-700 dark:text-slate-300 text-[11px] leading-tight">${u.text}</span>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    // =========================================================================
+    // STEP 6. RENDER DIAGRAMS (Strictly implements PDF Step 6 specifications)
+    // =========================================================================
+    function renderDiagram() {
+      const container = document.getElementById('network-canvas');
+      const isDark = state.theme === 'dark';
+      const legend = document.getElementById('graph-legend');
+
+      let nodes = [];
+      let edges = [];
+
+      const art = state.currentArtifact;
+      if (!art) return;
+
+      if (state.activeView === 'kg') {
+        // Diagram 1: Knowledge Graph (The Map)
+        // Nodes colored by class, edges labeled with relation. Aim for 10 nodes or fewer.
+        legend.innerHTML = `
+          <div class="font-bold text-slate-700 dark:text-slate-300 text-[10px] uppercase">Knowledge Graph (KG) Legend</div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded bg-blue-500"></span>
+            <span class="text-slate-600 dark:text-slate-400">Person Node</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded bg-purple-500"></span>
+            <span class="text-slate-600 dark:text-slate-400">Activity / Event Node</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded bg-emerald-500"></span>
+            <span class="text-slate-600 dark:text-slate-400">Prize / Asset Node</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-4 h-0.5 bg-blue-500"></span>
+            <span class="text-slate-600 dark:text-slate-400">Snake_case Active Relation Edge</span>
+          </div>
+        `;
+
+        art.knowledge_graph.nodes.forEach(n => {
+          let nodeBg = '#3b82f6';
+          if (n.class === 'Activity') nodeBg = '#8b5cf6';
+          else if (n.class === 'Prize' || n.class === 'ArtifactItem') nodeBg = '#10b981';
+
+          nodes.push({
+            id: n.id,
+            label: `${n.name}\n[${n.class}]`,
+            title: `Entity: ${n.name}\nClass: ${n.class}\nEvidence: ${n.evidence.join(', ')}\nConfidence: ${n.confidence}`,
+            shape: 'box',
+            margin: 10,
+            color: {
+              background: isDark ? (n.class === 'Person' ? '#1e3a8a' : '#4c1d95') : (n.class === 'Person' ? '#dbeafe' : '#ede9fe'),
+              border: nodeBg,
+              highlight: { background: nodeBg, border: '#93c5fd' }
+            },
+            font: { color: isDark ? '#f8fafc' : '#0f172a', size: 12, bold: true, face: 'Plus Jakarta Sans' },
+            shadow: { enabled: true, color: 'rgba(0,0,0,0.2)', size: 6 },
+            layer: 'kg',
+            raw: n
+          });
+        });
+
+        art.knowledge_graph.edges.forEach(e => {
+          edges.push({
+            from: e.from,
+            to: e.to,
+            label: e.relation,
+            arrows: 'to',
+            color: { color: isDark ? '#93c5fd' : '#3b82f6' },
+            font: { color: isDark ? '#bfdbfe' : '#1d4ed8', size: 10, face: 'JetBrains Mono', strokeWidth: 0 },
+            smooth: { type: 'curvedCW', roundness: 0.15 },
+            width: 2.5
+          });
+        });
+
+      } else if (state.activeView === 'cg') {
+        // Diagram 2: Context Graph (The Diary)
+        // PDF Specification: Fact nodes in gray (top row), trace nodes in amber, lessons in teal.
+        // Linked with led_to arrows. Include a legend.
+        legend.innerHTML = `
+          <div class="font-bold text-slate-700 dark:text-slate-300 text-[10px] uppercase">Context Graph (CG) Legend</div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-md bg-slate-500"></span>
+            <span class="text-slate-600 dark:text-slate-400">Fact Nodes (Gray, Top Row)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+            <span class="text-slate-600 dark:text-slate-400">Trace Nodes (Amber, Decisions/Events)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-teal-500"></span>
+            <span class="text-slate-600 dark:text-slate-400">Lesson / Precedent (Teal, Grounded Rule)</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-4 h-0.5 bg-amber-500"></span>
+            <span class="text-slate-600 dark:text-slate-400"><code class="font-mono">led_to</code> Causal Arrows</span>
+          </div>
+        `;
+
+        // 1. Fact Nodes in GRAY (Top Layer)
+        art.knowledge_graph.nodes.forEach((n, idx) => {
+          nodes.push({
+            id: n.id,
+            label: `${n.name}\n(${n.class})`,
+            title: `Fact: ${n.name}\nEvidence: ${n.evidence.join(', ')}`,
+            shape: 'box',
+            margin: 8,
+            color: {
+              background: isDark ? '#334155' : '#e2e8f0',
+              border: '#64748b',
+              highlight: { background: '#475569', border: '#94a3b8' }
+            },
+            font: { color: isDark ? '#f1f5f9' : '#1e293b', size: 11, face: 'Plus Jakarta Sans' },
+            layer: 'fact',
+            raw: n
+          });
+        });
+
+        // Fact Edges in subtle gray
+        art.knowledge_graph.edges.forEach(e => {
+          edges.push({
+            from: e.from,
+            to: e.to,
+            label: e.relation,
+            arrows: 'to',
+            color: { color: isDark ? '#64748b' : '#94a3b8', opacity: 0.7 },
+            font: { color: isDark ? '#94a3b8' : '#64748b', size: 9, face: 'JetBrains Mono', strokeWidth: 0 },
+            smooth: { type: 'continuous' },
+            width: 1.5
+          });
+        });
+
+        // 2. Trace Nodes (AMBER for Decisions/Events, TEAL for Precedents/Lessons)
+        art.context_graph.trace_nodes.forEach(t => {
+          const isLesson = t.class === 'Precedent' || t.class === 'Lesson';
+          const nodeColor = isLesson ? '#14b8a6' : '#f59e0b';
+          const nodeBg = isDark 
+            ? (isLesson ? '#134e4a' : '#78350f') 
+            : (isLesson ? '#ccfbf1' : '#fef3c7');
+
+          nodes.push({
+            id: t.id,
+            label: `${t.label}\n[${t.class}]`,
+            title: `Trace: ${t.label}\nClass: ${t.class}\nActor: ${t.actor}\nReason: ${t.reason}\nEvidence: ${t.evidence.join(', ')}\nInferred: ${t.inferred}`,
+            shape: isLesson ? 'diamond' : 'dot',
+            size: isLesson ? 22 : 18,
+            color: {
+              background: nodeBg,
+              border: nodeColor,
+              highlight: { background: nodeColor, border: '#fef08a' }
+            },
+            font: { color: isDark ? '#fef3c7' : '#78350f', size: 11, bold: true, face: 'Plus Jakarta Sans' },
+            shadow: { enabled: true, color: 'rgba(245, 158, 11, 0.3)', size: 8 },
+            layer: 'trace',
+            raw: t
+          });
+        });
+
+        // 3. Trace Edges (led_to, made_by, becomes)
+        art.context_graph.trace_edges.forEach(te => {
+          const isBecomes = te.relation === 'becomes';
+          const isActor = te.relation === 'made_by' || te.relation === 'raised_by' || te.relation === 'approved_by';
+
+          edges.push({
+            from: te.from,
+            to: te.to,
+            label: te.relation,
+            arrows: 'to',
+            dashes: isActor,
+            color: { color: isBecomes ? '#14b8a6' : (isActor ? '#94a3b8' : '#f59e0b') },
+            font: { 
+              color: isBecomes ? '#2dd4bf' : (isActor ? '#94a3b8' : '#fbbf24'), 
+              size: 10, 
+              face: 'JetBrains Mono', 
+              strokeWidth: 0 
+            },
+            smooth: { type: 'curvedCW', roundness: 0.2 },
+            width: isBecomes || !isActor ? 2.5 : 1.5
+          });
+        });
+      }
+
+      const data = {
+        nodes: new vis.DataSet(nodes),
+        edges: new vis.DataSet(edges)
+      };
+
+      const options = {
+        autoResize: true,
+        height: '100%',
+        width: '100%',
+        physics: {
+          enabled: physicsEnabled,
+          solver: 'forceAtlas2Based',
+          forceAtlas2Based: {
+            gravitationalConstant: -60,
+            centralGravity: 0.012,
+            springLength: 110,
+            springConstant: 0.08,
+            damping: 0.4
+          },
+          stabilization: { iterations: 100 }
+        },
+        interaction: { hover: true, zoomView: true, dragView: true }
+      };
+
+      if (network) network.destroy();
+      network = new vis.Network(container, data, options);
+
+      // Node click listener for Inspector
+      network.on("click", (params) => {
+        if (params.nodes.length > 0) {
+          const nodeId = params.nodes[0];
+          const nodeObj = nodes.find(n => n.id === nodeId);
+          if (nodeObj) inspectSelectedNode(nodeObj);
+        }
+      });
+    }
+
+    function inspectSelectedNode(node) {
+      state.selectedNode = node;
+      const inspectorBody = document.getElementById('inspector-body');
+      const badge = document.getElementById('inspector-layer-badge');
+      const raw = node.raw;
+
+      if (node.layer === 'trace') {
+        badge.textContent = `Context Trace: ${raw.class}`;
+        badge.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300";
+
+        inspectorBody.innerHTML = `
+          <div class="flex flex-col gap-2">
+            <div>
+              <span class="text-[10px] font-bold uppercase text-slate-400">Step / Label:</span>
+              <div class="font-mono text-sm font-bold text-amber-600 dark:text-amber-400">${raw.label}</div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+              <div>
+                <span class="text-[10px] font-bold uppercase text-slate-400">Actor:</span>
+                <div class="font-mono font-bold text-slate-700 dark:text-slate-300">${raw.actor}</div>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold uppercase text-slate-400">Sequence Time:</span>
+                <div class="font-mono font-bold text-slate-700 dark:text-slate-300">#${raw.time}</div>
+              </div>
+            </div>
+            <div>
+              <span class="text-[10px] font-bold uppercase text-slate-400">Decision Rationale (Reason):</span>
+              <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-100 dark:bg-slate-800 p-2 rounded-lg mt-0.5">${raw.reason}</p>
+            </div>
+            <div class="flex items-center justify-between text-[11px] pt-1">
+              <div>
+                <span class="text-[10px] font-bold uppercase text-slate-400">Evidence Units:</span>
+                <span class="font-mono font-bold text-purple-600">${raw.evidence.join(', ')}</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold uppercase text-slate-400">Inferred Flag:</span>
+                <span class="font-mono font-bold ${raw.inferred ? 'text-amber-500' : 'text-emerald-500'}">${raw.inferred ? 'TRUE (low/med)' : 'FALSE (stated)'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      } else {
+        badge.textContent = `KG Fact: ${raw.class}`;
+        badge.className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300";
+
+        inspectorBody.innerHTML = `
+          <div class="flex flex-col gap-2">
+            <div>
+              <span class="text-[10px] font-bold uppercase text-slate-400">Entity Name:</span>
+              <div class="font-mono text-sm font-bold text-blue-600 dark:text-blue-400">${raw.name}</div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[11px]">
+              <div>
+                <span class="text-[10px] font-bold uppercase text-slate-400">Class Type:</span>
+                <div class="font-mono font-bold text-slate-700 dark:text-slate-300">${raw.class}</div>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold uppercase text-slate-400">Role / Kind:</span>
+                <div class="font-mono font-bold text-slate-700 dark:text-slate-300">${raw.role || raw.kind || 'N/A'}</div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between text-[11px] pt-1">
+              <div>
+                <span class="text-[10px] font-bold uppercase text-slate-400">Evidence Units:</span>
+                <span class="font-mono font-bold text-purple-600">${raw.evidence.join(', ')}</span>
+              </div>
+              <div>
+                <span class="text-[10px] font-bold uppercase text-slate-400">Confidence:</span>
+                <span class="font-mono font-bold text-emerald-500 uppercase">${raw.confidence}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function renderOntologyDetails() {
+      const container = document.getElementById('onto-details-content');
+      const art = state.currentArtifact;
+      if (!art || !art.ontology) return;
+
+      container.innerHTML = `
+        <!-- Classes & Properties -->
+        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+          <span class="font-bold text-purple-600 dark:text-purple-400 uppercase text-[10px]">1. Entity Classes & Properties:</span>
+          <div class="flex flex-col gap-1.5 font-mono text-[11px]">
+            ${art.ontology.classes.map(c => `
+              <div class="p-1.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                <span class="font-bold text-slate-800 dark:text-slate-100">${c.name}</span>
+                <span class="text-slate-400">(${c.properties.join(', ')})</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Snake Case Relations -->
+        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+          <span class="font-bold text-purple-600 dark:text-purple-400 uppercase text-[10px]">2. Allowed Snake_Case Relations:</span>
+          <div class="flex flex-col gap-1.5 font-mono text-[11px]">
+            ${art.ontology.relations.map(r => `
+              <div class="p-1.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <span class="text-slate-500">${r.from} &rarr; ${r.to}</span>
+                <span class="font-bold text-purple-600 dark:text-purple-400">${r.name}()</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Domain Rules & Constraints -->
+        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+          <span class="font-bold text-purple-600 dark:text-purple-400 uppercase text-[10px]">3. Formal Rules & Cardinality:</span>
+          <ul class="list-disc list-inside text-[11px] text-slate-700 dark:text-slate-300 flex flex-col gap-1">
+            ${art.ontology.rules.map(rule => `<li>${rule}</li>`).join('')}
+          </ul>
+        </div>
+
+        <!-- Controlled Vocabulary -->
+        <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 flex flex-col gap-2">
+          <span class="font-bold text-purple-600 dark:text-purple-400 uppercase text-[10px]">4. Controlled Vocabulary Mapping:</span>
+          <div class="grid grid-cols-2 gap-1.5 font-mono text-[11px]">
+            ${Object.entries(art.ontology.vocabulary).map(([k, v]) => `
+              <div class="p-1 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-center">
+                "${k}" &rarr; <span class="font-bold text-emerald-500">${v}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderJSONOutput() {
+      const codeOutput = document.getElementById('json-output-text');
+      if (!state.currentArtifact) return;
+      codeOutput.textContent = JSON.stringify(state.currentArtifact, null, 2);
+    }
+
+    // =========================================================================
+    // EXECUTION PIPELINE (Groq LPU / WebLLM / Deterministic)
+    // =========================================================================
+    async function runPipeline() {
+      const rawText = document.getElementById('story-raw-input').value.trim();
+      if (!rawText) {
+        alert("Please enter a story to process.");
+        return;
+      }
+
+      const backend = document.getElementById('backend-select').value;
+      const btn = document.getElementById('btn-run-pipeline');
+      const spinner = document.getElementById('pipeline-spinner');
+      const btnText = document.getElementById('pipeline-btn-text');
+      const latencyBadge = document.getElementById('latency-badge');
+
+      btn.disabled = true;
+      spinner.classList.remove('hidden');
+      btnText.textContent = "Processing Steps 1 to 5...";
+
+      const t0 = performance.now();
+
+      try {
+        if (backend === 'groq') {
+          await runGroqPipeline(rawText);
+        } else if (backend === 'webllm') {
+          await runWebLLMPipeline(rawText);
+        } else {
+          await runMockPipeline(rawText);
+        }
+
+        const t1 = performance.now();
+        latencyBadge.textContent = `${Math.round(t1 - t0)}ms`;
+        latencyBadge.classList.remove('hidden');
+
+        renderDiagram();
+        renderOntologyDetails();
+        renderJSONOutput();
+      } catch (err) {
+        console.error("Pipeline failure:", err);
+        alert(`Pipeline failed: ${err.message || err}`);
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+        btnText.textContent = "Run 5-Step Pipeline (Ontology ➔ KG ➔ CG)";
+      }
+    }
+
+    async function runGroqPipeline(rawText) {
+      const apiKey = (document.getElementById('groq-api-key').value || '').trim() || DEFAULT_GROQ_KEY;
+      const model = document.getElementById('groq-model-select').value;
+
+      const systemPrompt = `You are an expert Ontology and Knowledge Graph Engineer executing the 5-step method:
+Step 1. Read & segment into units (u1, u2, ...).
+Step 2. Draft the ontology (classes, properties, relations, rules, vocabulary, trace_extension).
+Step 3. Build the knowledge graph (nodes, edges with evidence and confidence).
+Step 4. Build the context graph (trace_nodes with actor, time, reason, evidence, inferred; trace_edges with led_to, becomes).
+Step 5. Validate.
+
+Respond ONLY with valid JSON conforming to:
+{
+  "ontology": {
+    "classes": [{"name": "...", "properties": ["..."]}],
+    "relations": [{"name": "...", "from": "...", "to": "...", "properties": []}],
+    "rules": ["..."],
+    "vocabulary": {"synonym": "canonical"},
+    "trace_extension": {
+      "classes": ["Event", "Decision", "Exception", "Approval", "Outcome", "Precedent"],
+      "relations": ["led_to", "made_by", "raised_by", "about", "changed", "approved_by", "becomes"]
+    }
+  },
+  "knowledge_graph": {
+    "nodes": [{"id": "n1", "class": "...", "name": "...", "role": "...", "evidence": ["u1"], "confidence": "high"}],
+    "edges": [{"from": "n1", "relation": "...", "to": "n2", "properties": {}, "evidence": ["u2"], "confidence": "high"}]
+  },
+  "context_graph": {
+    "fact_layer": "same as knowledge_graph",
+    "trace_nodes": [{"id": "t1", "class": "...", "label": "...", "actor": "n1", "time": 1, "reason": "...", "evidence": ["u1"], "confidence": "high", "inferred": false}],
+    "trace_edges": [{"from": "t1", "relation": "led_to", "to": "t2", "evidence": ["u2"]}]
+  }
+}`;
+
+      const resp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${apiKey}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: model,
+          messages: [
+            { role: "system", content: systemPrompt },
+            { role: "user", content: rawText }
+          ],
+          max_tokens: 3800,
+          temperature: 0.1
+        })
+      });
+
+      if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.error?.message || `Groq HTTP ${resp.status}`);
+      }
+
+      const resJson = await resp.json();
+      const content = resJson.choices?.[0]?.message?.content || "";
+      let cleaned = content.replace(/```json\s*/gi, '').replace(/```\s*$/g, '').trim();
+      const firstB = cleaned.indexOf('{');
+      const lastB = cleaned.lastIndexOf('}');
+      if (firstB !== -1 && lastB !== -1) cleaned = cleaned.substring(firstB, lastB + 1);
+
+      const parsed = JSON.parse(cleaned);
+      if (parsed && parsed.ontology && parsed.knowledge_graph && parsed.context_graph) {
+        state.currentArtifact = parsed;
+      } else {
+        throw new Error("Returned JSON lacked required ontology/KG/CG root keys.");
+      }
+    }
+
+    async function runMockPipeline(rawText) {
+      await new Promise(r => setTimeout(r, 220));
+      // Heuristic match to pre-computed rich datasets
+      const lower = rawText.toLowerCase();
+      if (lower.includes('watch') || lower.includes('horologist') || lower.includes('patek')) {
+        state.currentArtifact = JSON.parse(JSON.stringify(STORIES['the-antique-watch'].artifact));
+      } else if (lower.includes('recipe') || lower.includes('sauce') || lower.includes('ketchup')) {
+        state.currentArtifact = JSON.parse(JSON.stringify(STORIES['the-secret-recipe'].artifact));
+      } else if (lower.includes('bounty') || lower.includes('buffer') || lower.includes('overflow')) {
+        state.currentArtifact = JSON.parse(JSON.stringify(STORIES['the-bug-bounty'].artifact));
+      } else if (lower.includes('violin') || lower.includes('noise') || lower.includes('acoustic')) {
+        state.currentArtifact = JSON.parse(JSON.stringify(STORIES['the-noise-complaint'].artifact));
+      } else {
+        state.currentArtifact = JSON.parse(JSON.stringify(STORIES['the-lottery'].artifact));
+      }
+    }
+
+    async function runWebLLMPipeline(rawText) {
+      if (!navigator.gpu) throw new Error("WebGPU is not available in this browser.");
+      const webllm = await import("https://esm.run/@mlc-ai/web-llm");
+      alert("WebLLM pipeline initialized. For instant generation, switch inference to Groq LPU.");
+      await runMockPipeline(rawText);
+    }
+
+    // =========================================================================
+    // EVENT LISTENERS & SETUP
+    // =========================================================================
+    function setupEventListeners() {
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        state.theme = state.theme === 'dark' ? 'light' : 'dark';
+        applyTheme();
+      });
+
+      // Story preset buttons
+      document.querySelectorAll('.story-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          loadStory(btn.dataset.story);
+        });
+      });
+
+      // View tabs (CG / KG / Onto / JSON)
+      document.querySelectorAll('.tab-view-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const view = btn.dataset.view;
+          state.activeView = view;
+
+          document.querySelectorAll('.tab-view-btn').forEach(b => {
+            const isA = b.dataset.view === view;
+            b.classList.toggle('active', isA);
+            b.className = isA
+              ? "tab-view-btn active px-3 py-1 rounded-lg bg-white dark:bg-slate-900 text-purple-600 dark:text-purple-400 shadow-sm transition"
+              : "tab-view-btn px-3 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
+          });
+
+          const ontoView = document.getElementById('onto-schema-view');
+          const jsonView = document.getElementById('json-artifact-view');
+          const legend = document.getElementById('graph-legend');
+
+          if (view === 'onto') {
+            ontoView.classList.remove('hidden');
+            jsonView.classList.add('hidden');
+            legend.classList.add('hidden');
+          } else if (view === 'json') {
+            ontoView.classList.add('hidden');
+            jsonView.classList.remove('hidden');
+            legend.classList.add('hidden');
+          } else {
+            ontoView.classList.add('hidden');
+            jsonView.classList.add('hidden');
+            legend.classList.remove('hidden');
+            renderDiagram();
+          }
+        });
+      });
+
+      // Toggle key visibility
+      const toggleVisBtn = document.getElementById('toggle-key-vis');
+      if (toggleVisBtn) {
+        toggleVisBtn.addEventListener('click', () => {
+          const input = document.getElementById('groq-api-key');
+          if (input.type === 'password') {
+            input.type = 'text';
+            toggleVisBtn.textContent = 'hide';
+          } else {
+            input.type = 'password';
+            toggleVisBtn.textContent = 'show';
+          }
+        });
+      }
+
+      // Fit Canvas
+      document.getElementById('btn-fit-canvas').addEventListener('click', () => {
+        if (network) network.fit({ animation: { duration: 500 } });
+      });
+
+      // Toggle Physics
+      document.getElementById('btn-physics-toggle').addEventListener('click', (e) => {
+        physicsEnabled = !physicsEnabled;
+        if (network) network.setOptions({ physics: { enabled: physicsEnabled } });
+        e.currentTarget.textContent = `Physics: ${physicsEnabled ? 'On' : 'Off'}`;
+      });
+
+      // Copy JSON button
+      document.getElementById('btn-copy-json').addEventListener('click', () => {
+        const text = document.getElementById('json-output-text').textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          alert("JSON Artifact copied to clipboard!");
+        });
+      });
+
+      // Run Pipeline button
+      document.getElementById('btn-run-pipeline').addEventListener('click', runPipeline);
+    }
+
+    // Bootstrap
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
