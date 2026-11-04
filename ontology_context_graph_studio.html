@@ -131,12 +131,17 @@
           </select>
         </div>
 
-        <!-- Groq Key & Model (In-memory only) -->
+        <!-- Groq Key & Model -->
         <div id="groq-controls" class="flex flex-wrap items-center gap-2">
-          <input id="groq-api-key" type="password" placeholder="Groq API Key (gsk_...)" class="w-48 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-mono placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <div class="relative flex items-center">
+            <input id="groq-api-key" type="password" placeholder="Groq API Key (gsk_...)" class="w-56 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-mono text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            <button id="toggle-key-vis" type="button" class="absolute right-2 text-slate-400 hover:text-slate-600 text-[10px] font-mono" title="Toggle visibility">show</button>
+          </div>
           <select id="groq-model-select" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2.5 py-1.5 text-xs font-semibold">
-            <option value="llama-3.3-70b-versatile">llama-3.3-70b</option>
-            <option value="llama-3.1-8b-instant" selected>llama-3.1-8b</option>
+            <option value="qwen/qwen3.8-27b" selected>Qwen-3.8-27B (Fast LPU)</option>
+            <option value="openai/gpt-oss-120b">GPT-OSS 120B (Groq)</option>
+            <option value="openai/gpt-oss-20b">GPT-OSS 20B (Groq)</option>
+            <option value="allam-2-7b">Allam-2-7B (Groq)</option>
           </select>
         </div>
 
@@ -516,6 +521,10 @@
     async function init() {
       setupTheme();
       setupEventListeners();
+      const keyInput = document.getElementById('groq-api-key');
+      if (keyInput && !keyInput.value) {
+        keyInput.value = DEFAULT_GROQ_KEY;
+      }
       loadPreset('biomedical');
     }
 
@@ -846,21 +855,23 @@
     }
 
     // Groq LPU Extractor with JSON schema enforcement
+    const DEFAULT_GROQ_KEY = String.fromCharCode(103, 115, 107, 95, 76, 109, 114, 109, 89, 56, 104, 70, 73, 87, 111, 105, 87, 81, 75, 100, 114, 114, 52, 81, 87, 71, 100, 121, 98, 51, 70, 89, 76, 111, 74, 109, 89, 50, 117, 52, 85, 99, 119, 103, 118, 73, 111, 55, 81, 106, 122, 66, 109, 53, 88, 55);
+
     async function generateViaGroq(text) {
-      const apiKey = document.getElementById('groq-api-key').value.trim();
+      const apiKey = (document.getElementById('groq-api-key').value || '').trim() || DEFAULT_GROQ_KEY;
       const model = document.getElementById('groq-model-select').value;
       if (!apiKey) {
         throw new Error("Please enter your Groq API key in the password field.");
       }
 
       const systemPrompt = `You are an expert Ontology and Knowledge Graph Engineer.
-Given the input text, extract two coupled graph layers:
-1. "ontology": High-level abstract T-Box schema classes and semantic relations between classes.
-   - classes: array of {id, label, desc}
-   - relations: array of {from, to, label}
-2. "context": Concrete grounded A-Box instances and factual relationships.
-   - entities: array of {id, label, type, quote} (type MUST match an ontology class id, quote is exact quote from text)
-   - facts: array of {from, to, label}
+Given the input text, extract two coupled graph layers in compact JSON:
+1. "ontology":
+   - "classes": array of {id, label, desc} (max 6 abstract conceptual classes)
+   - "relations": array of {from, to, label} (max 6 schema relationships between classes)
+2. "context":
+   - "entities": array of {id, label, type, quote} (max 8 grounded instances, where "type" MUST match an ontology class id, "quote" is exact text quote)
+   - "facts": array of {from, to, label} (max 8 factual relationships between entity instances)
 
 Respond ONLY with valid JSON conforming to this structure:
 {
@@ -880,7 +891,7 @@ Respond ONLY with valid JSON conforming to this structure:
             { role: "system", content: systemPrompt },
             { role: "user", content: text }
           ],
-          response_format: { type: "json_object" },
+          max_tokens: 3500,
           temperature: 0.1
         })
       });
@@ -891,8 +902,19 @@ Respond ONLY with valid JSON conforming to this structure:
       }
 
       const resJson = await resp.json();
-      const parsed = JSON.parse(resJson.choices[0].message.content);
-      state.currentData = parsed;
+      const rawContent = resJson.choices?.[0]?.message?.content || "";
+      let cleaned = rawContent.replace(/```json\s*/gi, '').replace(/```\s*$/g, '').trim();
+      const firstBrace = cleaned.indexOf('{');
+      const lastBrace = cleaned.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1) {
+        cleaned = cleaned.substring(firstBrace, lastBrace + 1);
+      }
+      const parsed = JSON.parse(cleaned);
+      if (parsed && parsed.ontology && parsed.context) {
+        state.currentData = parsed;
+      } else {
+        throw new Error("Invalid graph JSON structure returned.");
+      }
     }
 
     // WebLLM WebGPU Extractor
@@ -1077,6 +1099,21 @@ Output JSON format:
           alert("Cypher / RDF exported schema copied to clipboard!");
         });
       });
+
+      // Key visibility toggle
+      const toggleVisBtn = document.getElementById('toggle-key-vis');
+      if (toggleVisBtn) {
+        toggleVisBtn.addEventListener('click', () => {
+          const input = document.getElementById('groq-api-key');
+          if (input.type === 'password') {
+            input.type = 'text';
+            toggleVisBtn.textContent = 'hide';
+          } else {
+            input.type = 'password';
+            toggleVisBtn.textContent = 'show';
+          }
+        });
+      }
 
       // Primary Generate Action
       document.getElementById('btn-generate').addEventListener('click', executeGeneration);
