@@ -1,0 +1,1789 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SemIf-lite | Jev-Style Typed Decision Tool</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.3);
+      border-radius: 9999px;
+    }
+  </style>
+</head>
+<body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 transition-colors duration-200 flex flex-col">
+
+  <!-- Top App Navigation Bar -->
+  <header class="border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Logo & Subtitle -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-500 to-sky-400 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-500/20 text-lg">
+          λ
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">SemIf<span class="text-indigo-600 dark:text-indigo-400">-lite</span></h1>
+            <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/50 dark:border-indigo-800/50">Jev-Style Typed Decisions</span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Zero-generation typed decisions via token logprobs & empirical calibration</p>
+        </div>
+      </div>
+
+      <!-- Right Header Actions: Backend Status & Theme Toggle -->
+      <div class="flex items-center gap-3">
+        <!-- Privacy Badge -->
+        <div id="privacy-badge" class="hidden md:flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+          <svg class="w-3.5 h-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+          </svg>
+          <span>Local WebGPU (No data leaves browser)</span>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" type="button" class="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-slate-100 dark:bg-slate-800 focus:outline-none">
+          <svg id="theme-icon-dark" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+          </svg>
+          <svg id="theme-icon-light" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Banner Notice for WebGPU / Groq Fallback -->
+  <div id="gpu-alert-banner" class="hidden bg-amber-500/10 border-b border-amber-500/20 px-4 py-2.5 text-xs text-amber-800 dark:text-amber-200">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <span id="gpu-alert-text">WebGPU is not enabled or available in this browser. Switched default backend to Groq API.</span>
+      </div>
+      <button onclick="document.getElementById('gpu-alert-banner').classList.add('hidden')" class="text-amber-600 dark:text-amber-400 hover:underline">Dismiss</button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+
+    <!-- Top Toolbar: Preset Selector & Main View Switcher -->
+    <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      
+      <!-- Preset Buttons -->
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mr-1">Presets:</span>
+        <button type="button" data-preset="claim" class="preset-btn px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 hover:text-indigo-600 dark:hover:text-indigo-300 border border-slate-200 dark:border-slate-700 transition">
+          1. Claim Routing
+        </button>
+        <button type="button" data-preset="field" class="preset-btn px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 hover:text-indigo-600 dark:hover:text-indigo-300 border border-slate-200 dark:border-slate-700 transition">
+          2. Field Mapping
+        </button>
+        <button type="button" data-preset="yesno" class="preset-btn px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 hover:text-indigo-600 dark:hover:text-indigo-300 border border-slate-200 dark:border-slate-700 transition">
+          3. Policy Cancel (Y/N)
+        </button>
+        <button type="button" data-preset="score" class="preset-btn px-3 py-1.5 text-xs font-medium rounded-lg bg-slate-100 hover:bg-indigo-50 dark:bg-slate-800 dark:hover:bg-indigo-950/60 hover:text-indigo-600 dark:hover:text-indigo-300 border border-slate-200 dark:border-slate-700 transition">
+          4. Urgency Score (1-5)
+        </button>
+      </div>
+
+      <!-- Navigation Tabs (Decision Studio vs Calibration Lab) -->
+      <div class="inline-flex rounded-xl bg-slate-100 dark:bg-slate-800 p-1 self-start sm:self-auto border border-slate-200/80 dark:border-slate-700/80">
+        <button id="tab-btn-decision" type="button" class="tab-main-btn active px-4 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm transition">
+          ⚡ Decision Engine
+        </button>
+        <button id="tab-btn-calibration" type="button" class="tab-main-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+          🧪 Calibration Lab
+        </button>
+      </div>
+    </div>
+
+    <!-- Backend Configuration Panel -->
+    <div class="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+        
+        <!-- Left: Backend Selection -->
+        <div class="flex flex-wrap items-center gap-4">
+          <div class="flex items-center gap-2">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Backend:</label>
+            <select id="backend-select" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <option value="webllm">WebLLM (Local WebGPU)</option>
+              <option value="groq">Groq Cloud (OpenAI-compatible)</option>
+              <option value="mock">Simulated / Benchmark Mode</option>
+            </select>
+          </div>
+
+          <!-- WebLLM Model Selector -->
+          <div id="webllm-controls" class="flex flex-wrap items-center gap-2">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Model:</label>
+            <select id="webllm-model-select" class="max-w-xs bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <option value="Llama-3.2-1B-Instruct-q4f16_1-MLC">Llama-3.2-1B-Instruct (q4f16, ~870MB)</option>
+              <option value="SmolLM2-1.7B-Instruct-q4f16_1-MLC">SmolLM2-1.7B-Instruct (q4f16, ~1.0GB)</option>
+              <option value="Qwen2.5-0.5B-Instruct-q4f16_1-MLC">Qwen2.5-0.5B-Instruct (q4f16, ~400MB)</option>
+              <option value="Qwen2.5-1.5B-Instruct-q4f16_1-MLC">Qwen2.5-1.5B-Instruct (q4f16, ~1.1GB)</option>
+              <option value="Llama-3.2-3B-Instruct-q4f16_1-MLC">Llama-3.2-3B-Instruct (q4f16, ~2.2GB)</option>
+            </select>
+            <button id="btn-load-webllm" type="button" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+              </svg>
+              <span>Load Model</span>
+            </button>
+          </div>
+
+          <!-- Groq Controls -->
+          <div id="groq-controls" class="hidden flex flex-wrap items-center gap-3">
+            <div class="relative">
+              <input id="groq-api-key" type="password" placeholder="Paste Groq API Key (gsk_...)" class="w-64 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+            </div>
+            <select id="groq-model-select" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <option value="llama-3.1-8b-instant">llama-3.1-8b-instant</option>
+              <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile</option>
+              <option value="gemma2-9b-it">gemma2-9b-it</option>
+              <option value="mixtral-8x7b-32768">mixtral-8x7b-32768</option>
+            </select>
+            <div class="flex items-center gap-1.5">
+              <label class="text-[11px] font-semibold text-slate-500">Votes (N):</label>
+              <select id="groq-sample-n" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-2 py-1.5 text-xs text-slate-800 dark:text-slate-100">
+                <option value="5">5 calls</option>
+                <option value="10" selected>10 calls</option>
+                <option value="15">15 calls</option>
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: Status / Latency indicator -->
+        <div class="flex items-center gap-3 text-xs">
+          <div id="backend-status-pill" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+            <span id="status-indicator-dot" class="w-2 h-2 rounded-full bg-slate-400"></span>
+            <span id="status-indicator-text" class="font-mono text-slate-600 dark:text-slate-300">Ready</span>
+          </div>
+          <div id="latency-tag" class="hidden font-mono text-[11px] text-slate-400 dark:text-slate-500">
+            0ms
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Groq Disclaimer / Warning Box (Revealed when Groq is selected) -->
+      <div id="groq-warning-card" class="hidden mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-800 dark:text-amber-300">
+        <div class="flex items-start gap-2.5">
+          <svg class="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <div>
+            <p class="font-semibold">Groq API Logprobs Notice & Security Note:</p>
+            <p class="mt-0.5 text-slate-600 dark:text-slate-300">
+              1. <strong>Logprobs Unsupported:</strong> The Groq Cloud completions API does not return token <code class="px-1 py-0.5 bg-amber-200/50 dark:bg-amber-950/60 rounded font-mono">logprobs</code>. SemIf-lite automatically falls back to <strong>Sampling Mode</strong> (<span id="warn-sample-n">10</span> calls at <code class="px-1 py-0.5 bg-amber-200/50 dark:bg-amber-950/60 rounded font-mono">temperature=1</code>, <code class="px-1 py-0.5 bg-amber-200/50 dark:bg-amber-950/60 rounded font-mono">max_tokens=1</code>) and calculates empirical vote shares labeled <em>"vote shares, not logits"</em>.<br>
+              2. <strong>Memory-Only Key:</strong> Your key is held strictly in JavaScript heap memory and never written to localStorage. Warning: any key in a browser page is exposed to client memory.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- WebLLM Download Progress Bar -->
+      <div id="webllm-progress-container" class="hidden mt-3">
+        <div class="flex justify-between items-center mb-1 text-xs">
+          <span id="webllm-progress-text" class="text-slate-600 dark:text-slate-400 font-mono">Initializing engine...</span>
+          <span id="webllm-progress-pct" class="font-mono font-bold text-indigo-600 dark:text-indigo-400">0%</span>
+        </div>
+        <div class="w-full bg-slate-100 dark:bg-slate-800 rounded-full h-2 overflow-hidden">
+          <div id="webllm-progress-bar" class="bg-indigo-600 h-2 rounded-full transition-all duration-150" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 1: DECISION ENGINE (Main Tab) -->
+    <!-- ========================================================================= -->
+    <section id="view-decision" class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+      <!-- Left Column: Input Formulation (State, Question, Type, Options) -->
+      <div class="lg:col-span-7 flex flex-col gap-5">
+        
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-4">
+          
+          <!-- Decision Sub-Type Navigation (Choice, Yes/No, Score) -->
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-500">Decision Type:</label>
+            <div class="inline-flex rounded-lg bg-slate-100 dark:bg-slate-800 p-0.5">
+              <button type="button" data-dtype="choice" class="dtype-btn active px-3 py-1 text-xs font-semibold rounded-md bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm">
+                Choice (N)
+              </button>
+              <button type="button" data-dtype="yesno" class="dtype-btn px-3 py-1 text-xs font-semibold rounded-md text-slate-500 hover:text-slate-900 dark:hover:text-white">
+                Yes / No
+              </button>
+              <button type="button" data-dtype="score" class="dtype-btn px-3 py-1 text-xs font-semibold rounded-md text-slate-500 hover:text-slate-900 dark:hover:text-white">
+                Score (1-5)
+              </button>
+            </div>
+          </div>
+
+          <!-- Context / State -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                State (Context & Evidence)
+              </label>
+              <span class="text-[11px] text-slate-400">Contextual facts for the decision</span>
+            </div>
+            <textarea id="input-state" rows="3" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:outline-none custom-scrollbar" placeholder="Enter case details, policy facts, or data payload..."></textarea>
+          </div>
+
+          <!-- Question -->
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Question
+              </label>
+              <span class="text-[11px] text-slate-400">Target decision query</span>
+            </div>
+            <input id="input-question" type="text" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:outline-none" placeholder="e.g. Which triage path should handle this case?">
+          </div>
+
+          <!-- Dynamic Options Section -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <label class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                Options (<span id="options-count-label">3</span> / max 5)
+              </label>
+              <div id="option-controls" class="flex items-center gap-1">
+                <button id="btn-add-option" type="button" class="px-2 py-0.5 rounded text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300">
+                  + Add Option
+                </button>
+              </div>
+            </div>
+            
+            <div id="options-container" class="flex flex-col gap-2">
+              <!-- Rendered dynamically -->
+            </div>
+            <p id="options-max-warning" class="hidden mt-1 text-[11px] text-rose-500">Maximum 5 options permitted for token logprobs extraction limit.</p>
+          </div>
+
+          <!-- Position Bias Reduction & Temperature Options -->
+          <div class="pt-2 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
+            <label class="flex items-center gap-2 cursor-pointer select-none">
+              <input id="opt-debias" type="checkbox" class="w-4 h-4 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500">
+              <span class="font-medium text-slate-700 dark:text-slate-300">Reduce Position Bias</span>
+              <span class="text-[11px] text-slate-400">(Shuffles option order K=3 times)</span>
+            </label>
+
+            <div class="flex items-center gap-2">
+              <label class="text-[11px] font-semibold text-slate-500">Calibrated Temp (T):</label>
+              <input id="active-temp-input" type="number" step="0.05" min="0.1" max="5.0" value="1.00" class="w-16 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2 py-1 text-xs font-mono text-center text-slate-800 dark:text-slate-100">
+            </div>
+          </div>
+
+          <!-- Primary Execute Button -->
+          <div class="mt-2">
+            <button id="btn-decide" type="button" class="w-full py-3 px-4 rounded-xl font-bold text-sm bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white shadow-md shadow-indigo-500/20 active:scale-[0.99] transition flex items-center justify-center gap-2">
+              <svg id="decide-spinner" class="hidden w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
+              <span id="decide-btn-label">Evaluate Typed Decision</span>
+              <span class="text-xs font-mono font-normal opacity-75">(max_tokens=1)</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- The "Typed Answer Trick" System & User Prompt Preview Card -->
+        <div class="bg-slate-100 dark:bg-slate-900/60 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400">
+          <div class="flex items-center justify-between mb-2">
+            <span class="font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5 text-indigo-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+              </svg>
+              SemIf Core Protocol: The Typed Answer Trick
+            </span>
+            <span class="text-[11px] font-mono text-slate-400">Zero-free-text generation</span>
+          </div>
+          <p class="leading-relaxed text-[11px]">
+            The model receives <code class="px-1 py-0.5 bg-slate-200 dark:bg-slate-800 rounded font-mono">max_tokens = 1, temperature = 0, logprobs = true, top_logprobs = 5</code> with system constraint: <em class="text-slate-800 dark:text-slate-200">"Reply with exactly one option letter and nothing else."</em> Probabilities are extracted from logprob logits, renormalized over valid option letters only (<code class="font-mono">P = exp(logit) / Σ exp(logit)</code>), discarding free text hallucinations.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Decision Output, Probability Distribution & Safety Gate -->
+      <div class="lg:col-span-5 flex flex-col gap-5">
+        
+        <!-- Safety Gate Configuration & Badge -->
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-4">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Autonomous Execution Gate</h2>
+            <span class="text-[11px] px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono text-slate-600 dark:text-slate-300">Calibrated Routing</span>
+          </div>
+
+          <!-- Sliders: Confidence & Margin -->
+          <div class="flex flex-col gap-3">
+            <div>
+              <div class="flex justify-between items-center text-xs mb-1">
+                <span class="font-semibold text-slate-700 dark:text-slate-300">Confidence Threshold (θ_conf):</span>
+                <span id="conf-val" class="font-mono font-bold text-indigo-600 dark:text-indigo-400">80%</span>
+              </div>
+              <input id="conf-slider" type="range" min="50" max="99" value="80" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+            </div>
+
+            <div>
+              <div class="flex justify-between items-center text-xs mb-1">
+                <span class="font-semibold text-slate-700 dark:text-slate-300">Margin Threshold (Top − 2nd):</span>
+                <span id="margin-val" class="font-mono font-bold text-indigo-600 dark:text-indigo-400">20%</span>
+              </div>
+              <input id="margin-slider" type="range" min="0" max="50" value="20" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+            </div>
+          </div>
+
+          <!-- Gate Outcome Badge -->
+          <div id="gate-outcome-card" class="p-4 rounded-xl border flex flex-col items-center justify-center text-center gap-1.5 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700 transition-all">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Gate Decision</span>
+            <div id="gate-badge" class="px-4 py-1.5 rounded-full text-sm font-extrabold tracking-wide uppercase bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
+              Awaiting Decision
+            </div>
+            <p id="gate-reason" class="text-xs text-slate-500 mt-0.5">Run inference to evaluate confidence against calibrated thresholds.</p>
+          </div>
+        </div>
+
+        <!-- Decision Results & Probability Distribution Card -->
+        <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-4 flex-1">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Decision Probabilities</h2>
+            <span id="prob-type-badge" class="text-[11px] font-mono px-2 py-0.5 rounded bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">Logit Renormalization</span>
+          </div>
+
+          <!-- Winning Option Highlight -->
+          <div id="winner-banner" class="hidden p-3.5 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-between">
+            <div>
+              <span class="text-[11px] font-bold uppercase text-indigo-600 dark:text-indigo-400">Chosen Decision:</span>
+              <div id="winner-text" class="text-sm font-bold text-slate-900 dark:text-white mt-0.5">--</div>
+            </div>
+            <div class="text-right">
+              <span class="text-[11px] text-slate-500">Confidence</span>
+              <div id="winner-prob" class="text-lg font-mono font-extrabold text-indigo-600 dark:text-indigo-400">--%</div>
+            </div>
+          </div>
+
+          <!-- Score Mode Expected Value Banner (Shown only for score dtype) -->
+          <div id="expected-value-banner" class="hidden p-3 rounded-xl bg-sky-500/10 border border-sky-500/20 flex items-center justify-between">
+            <span class="text-xs font-semibold text-sky-700 dark:text-sky-300">Expected Score E[X]:</span>
+            <span id="expected-value-text" class="font-mono font-extrabold text-base text-sky-600 dark:text-sky-400">-- / 5.00</span>
+          </div>
+
+          <!-- Probabilities Bar Chart -->
+          <div id="prob-bars-container" class="flex flex-col gap-2.5 my-1">
+            <div class="text-center text-xs text-slate-400 py-8">
+              Click <span class="font-semibold text-indigo-500">"Evaluate Typed Decision"</span> to compute probabilities.
+            </div>
+          </div>
+
+          <!-- Summary Metrics: Confidence, Margin, Entropy, Consistency -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800 text-center">
+            <div class="p-2 rounded-lg bg-slate-50 dark:bg-slate-800">
+              <div class="text-[10px] font-bold uppercase text-slate-400">Confidence</div>
+              <div id="stat-confidence" class="font-mono font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">--</div>
+            </div>
+            <div class="p-2 rounded-lg bg-slate-50 dark:bg-slate-800">
+              <div class="text-[10px] font-bold uppercase text-slate-400">Margin</div>
+              <div id="stat-margin" class="font-mono font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">--</div>
+            </div>
+            <div class="p-2 rounded-lg bg-slate-50 dark:bg-slate-800">
+              <div class="text-[10px] font-bold uppercase text-slate-400">Entropy</div>
+              <div id="stat-entropy" class="font-mono font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">--</div>
+            </div>
+            <div class="p-2 rounded-lg bg-slate-50 dark:bg-slate-800">
+              <div class="text-[10px] font-bold uppercase text-slate-400">Consistency</div>
+              <div id="stat-consistency" class="font-mono font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200">--</div>
+            </div>
+          </div>
+
+          <!-- Raw Tokens Inspection Drawer / Toggle -->
+          <details class="text-xs text-slate-500 dark:text-slate-400">
+            <summary class="cursor-pointer font-semibold hover:text-indigo-500 select-none">
+              Inspect Raw Top Logprobs & Normalization
+            </summary>
+            <div id="raw-logprob-dump" class="mt-2 p-2.5 rounded-lg bg-slate-900 text-slate-200 font-mono text-[11px] overflow-x-auto max-h-40 custom-scrollbar">
+              No inference data yet.
+            </div>
+          </details>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- VIEW 2: CALIBRATION LAB (Second Tab) -->
+    <!-- ========================================================================= -->
+    <section id="view-calibration" class="hidden flex flex-col gap-6">
+
+      <!-- Disclaimer Banner -->
+      <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-start gap-3">
+        <svg class="w-5 h-5 text-amber-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div class="text-xs text-amber-900 dark:text-amber-200">
+          <p class="font-bold text-sm">Critical Calibration Invariant:</p>
+          <p class="mt-0.5 leading-relaxed">
+            <strong>"Probabilities from raw logits are NOT guaranteed to be calibrated. Check them on your own labeled cases before gating anything."</strong> Raw LLM logits are typically overconfident due to pretraining loss dynamics. The Calibration Lab computes Expected Calibration Error (ECE), draws an empirical reliability diagram, and fits temperature scaling \(T\) to align confidence with observed ground truth accuracy.
+          </p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left: Dataset Input & Evaluation Trigger -->
+        <div class="lg:col-span-5 flex flex-col gap-4">
+          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Labeled Test Cases</h2>
+              <div class="flex items-center gap-2">
+                <button id="btn-load-sample-dataset" type="button" class="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+                  Load Standard Benchmark
+                </button>
+              </div>
+            </div>
+            
+            <p class="text-[11px] text-slate-500">
+              Paste JSON or CSV cases format: <code class="px-1 py-0.5 bg-slate-100 dark:bg-slate-800 rounded font-mono">[{state, question, options: [...], correct: 0}, ...]</code>
+            </p>
+
+            <textarea id="calibration-dataset-input" rows="9" class="w-full bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl p-3 text-xs font-mono text-slate-800 dark:text-slate-100 custom-scrollbar"></textarea>
+
+            <div class="flex items-center gap-3 pt-2">
+              <button id="btn-run-calibration" type="button" class="flex-1 py-2.5 px-3 rounded-xl font-bold text-xs bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition flex items-center justify-center gap-2">
+                <svg id="calib-spinner" class="hidden w-3.5 h-3.5 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                  <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                </svg>
+                <span>Run Calibration Test Suite</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Temperature Scaling Optimization Card -->
+          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-3">
+            <div class="flex items-center justify-between">
+              <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Temperature Scaling (T)</h2>
+              <span class="text-[11px] font-mono text-indigo-500 font-bold">Platt / Softmax Rescaling</span>
+            </div>
+            <p class="text-[11px] text-slate-500 leading-relaxed">
+              Grid-searches scalar \(T \in [0.1, 5.0]\) minimizing Negative Log-Loss on labeled validation cases. Divides logits by \(T\) before probability renormalization.
+            </p>
+            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+              <div>
+                <span class="text-[11px] text-slate-400">Current Temp:</span>
+                <div id="calib-temp-disp" class="text-base font-mono font-bold text-slate-800 dark:text-slate-200">1.00</div>
+              </div>
+              <div>
+                <span class="text-[11px] text-slate-400">ECE Impact:</span>
+                <div id="calib-ece-delta" class="text-xs font-mono font-semibold text-emerald-600 dark:text-emerald-400">--</div>
+              </div>
+              <button id="btn-fit-temperature" type="button" class="py-1.5 px-3 rounded-lg text-xs font-bold bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm transition">
+                Fit Temperature (T*)
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Metrics & Reliability Diagram -->
+        <div class="lg:col-span-7 flex flex-col gap-4">
+          <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col gap-4">
+            
+            <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+              <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500">Reliability Diagram & Calibration Metrics</h2>
+              <span class="text-[11px] font-mono text-slate-400">5-Bin Calibration Curve</span>
+            </div>
+
+            <!-- Calibration Metrics Grid -->
+            <div class="grid grid-cols-3 gap-3">
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-center">
+                <span class="text-[10px] font-bold uppercase text-slate-400">Observed Accuracy</span>
+                <div id="metric-accuracy" class="text-lg font-mono font-extrabold text-slate-800 dark:text-slate-100 mt-0.5">--%</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-center">
+                <span class="text-[10px] font-bold uppercase text-slate-400">Brier Score</span>
+                <div id="metric-brier" class="text-lg font-mono font-extrabold text-indigo-600 dark:text-indigo-400 mt-0.5">--</div>
+              </div>
+              <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 text-center">
+                <span class="text-[10px] font-bold uppercase text-slate-400">Expected Calib. Error (ECE)</span>
+                <div id="metric-ece" class="text-lg font-mono font-extrabold text-sky-600 dark:text-sky-400 mt-0.5">--%</div>
+              </div>
+            </div>
+
+            <!-- Reliability Diagram Pure SVG Container -->
+            <div class="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800">
+              <div id="reliability-diagram-svg" class="w-full max-w-md h-64 flex items-center justify-center">
+                <span class="text-xs text-slate-400">Click "Run Calibration Test Suite" to render the reliability curve.</span>
+              </div>
+              <div class="flex items-center gap-4 text-[11px] text-slate-500 mt-2">
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-indigo-500 rounded-sm"></span> Accuracy per Bin</span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-0.5 border-t border-dashed border-slate-400"></span> Perfect Calibration (y = x)</span>
+                <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 bg-rose-500/30 rounded-sm"></span> ECE Gap</span>
+              </div>
+            </div>
+
+            <!-- Results Table -->
+            <div class="overflow-x-auto max-h-56 custom-scrollbar border border-slate-200 dark:border-slate-800 rounded-xl">
+              <table class="w-full text-left text-xs font-mono">
+                <thead class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 sticky top-0">
+                  <tr>
+                    <th class="p-2.5">#</th>
+                    <th class="p-2.5">Question</th>
+                    <th class="p-2.5">Predicted</th>
+                    <th class="p-2.5">Conf</th>
+                    <th class="p-2.5">True</th>
+                    <th class="p-2.5">Status</th>
+                  </tr>
+                </thead>
+                <tbody id="calib-table-body" class="divide-y divide-slate-100 dark:divide-slate-800">
+                  <tr>
+                    <td colspan="6" class="p-4 text-center text-slate-400 font-sans">No test cases executed yet.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Footer with Jev Disclaimer & System Information -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-4 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 dark:text-slate-400 text-center sm:text-left">
+      <p>
+        Interface pattern inspired by Jev-style decision models. This is not TypeSafe's Jev and has no RLCD training.
+      </p>
+      <p class="font-mono text-[11px] text-slate-400">
+        SemIf-lite v1.2 &bull; Client-side typed inference
+      </p>
+    </div>
+  </footer>
+
+  <!-- Application Logic (ES Module) -->
+  <script type="module">
+    let webllm = null;
+    let mlcEngine = null;
+    let isWebGPUAvailable = false;
+
+    async function getWebLLMModule() {
+      if (!webllm) {
+        webllm = await import("https://esm.run/@mlc-ai/web-llm");
+      }
+      return webllm;
+    }
+
+    // App State
+    const state = {
+      theme: 'dark',
+      activeTab: 'decision', // 'decision' | 'calibration'
+      decisionType: 'choice', // 'choice' | 'yesno' | 'score'
+      backend: 'webllm',     // 'webllm' | 'groq' | 'mock'
+      temperature: 1.0,
+      groqKey: '',
+      groqModel: 'llama-3.1-8b-instant',
+      groqSampleN: 10,
+      options: [
+        'Auto-approve (< $1k standard claim)',
+        'Send to senior adjuster (routine investigation)',
+        'Flag for Special Investigations Unit (fraud risk)'
+      ],
+      currentProbabilities: {},
+      lastRawResponse: null,
+      calibrationCases: []
+    };
+
+    const OPTION_LETTERS = ['A', 'B', 'C', 'D', 'E'];
+
+    // Preset Definitions
+    const PRESETS = {
+      claim: {
+        type: 'choice',
+        state: 'Claim #9821: Water leak damage reported 2 hours after policy inception with contradictory repair estimates and mismatched photo EXIF metadata.',
+        question: 'Route claim to optimal triage tier:',
+        options: [
+          'Auto-approve (< $1k standard claim)',
+          'Send to senior adjuster (routine investigation)',
+          'Flag for Special Investigations Unit (fraud risk)'
+        ]
+      },
+      field: {
+        type: 'choice',
+        state: 'Incoming customer payroll CSV header contains field string "contrib_amt_ytd". Values are non-negative decimal currency amounts matching year-to-date employee contributions.',
+        question: 'Map "contrib_amt_ytd" to standard enterprise schema:',
+        options: [
+          'employee_ytd_contributions',
+          'employer_match_amount',
+          'current_period_deduction',
+          'taxable_gross_income'
+        ]
+      },
+      yesno: {
+        type: 'yesno',
+        state: 'Customer ticket #419: "I am extremely frustrated with the recent rate hike. If this bill cannot be adjusted, please terminate my policy immediately as of next month."',
+        question: 'Does this message ask to cancel a policy?',
+        options: [
+          'Yes (Cancellation requested)',
+          'No (General inquiry / pricing feedback)'
+        ]
+      },
+      score: {
+        type: 'score',
+        state: 'Production incident #4041: Intermittent 502 Bad Gateway errors observed on EU checkout endpoint. Error rate is 3.8% affecting roughly 420 orders over the past 15 minutes. Core database CPU at 31%.',
+        question: 'Assign triage urgency score (1=Trivial, 2=Low, 3=Moderate, 4=High, 5=Critical):',
+        options: [
+          '1 - Trivial (No customer impact)',
+          '2 - Low (Minor degraded experience)',
+          '3 - Moderate (Localized checkout retry needed)',
+          '4 - High (Active transaction revenue drop)',
+          '5 - Critical (System-wide unrecoverable outage)'
+        ]
+      }
+    };
+
+    // Standard Calibration Test Benchmark Dataset
+    const SAMPLE_CALIBRATION_CASES = [
+      {
+        state: "Customer states: 'I am moving abroad permanently next Friday, please cancel my account immediately.'",
+        question: "Does customer ask for cancellation?",
+        options: ["Yes", "No"],
+        correct: 0
+      },
+      {
+        state: "Customer asks: 'Can you tell me what my premium will be if I renew in July?'",
+        question: "Does customer ask for cancellation?",
+        options: ["Yes", "No"],
+        correct: 1
+      },
+      {
+        state: "Receipt shows total amount of $24.50 at local diner. Policyholder submitted as $245.00 with blurred zero.",
+        question: "Triage classification:",
+        options: ["Auto-approve", "Routine Adjuster", "SIU Fraud Investigation"],
+        correct: 2
+      },
+      {
+        state: "Glass windshield chip repair bill of $85 from certified Safelite vendor with timestamped dashcam proof.",
+        question: "Triage classification:",
+        options: ["Auto-approve", "Routine Adjuster", "SIU Fraud Investigation"],
+        correct: 0
+      },
+      {
+        state: "Incoming column header is 'dob_client'. Values are '1984-05-12', '1991-11-20'.",
+        question: "Map to target schema:",
+        options: ["birth_date", "policy_effective_date", "claim_filing_date", "account_id"],
+        correct: 0
+      },
+      {
+        state: "Server telemetry: CPU at 99%, 85% packet loss on payment gateway, 25,000 transactions failing per minute.",
+        question: "Urgency rating 1-5:",
+        options: ["1 - Trivial", "2 - Low", "3 - Moderate", "4 - High", "5 - Critical"],
+        correct: 4
+      },
+      {
+        state: "Typo in footer copyright year ('2025' instead of '2026') on marketing landing page.",
+        question: "Urgency rating 1-5:",
+        options: ["1 - Trivial", "2 - Low", "3 - Moderate", "4 - High", "5 - Critical"],
+        correct: 0
+      },
+      {
+        state: "Customer email: 'I want to upgrade my coverage to include roadside assistance. Please do not cancel anything.'",
+        question: "Does customer ask for cancellation?",
+        options: ["Yes", "No"],
+        correct: 1
+      }
+    ];
+
+    // =========================================================================
+    // INITIALIZATION & HARDWARE DETECTION
+    // =========================================================================
+    async function init() {
+      setupTheme();
+      checkWebGPU();
+      renderOptions();
+      loadPreset('claim');
+      setupEventListeners();
+      loadSampleCalibration();
+    }
+
+    function setupTheme() {
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      state.theme = prefersDark ? 'dark' : 'light';
+      applyTheme();
+    }
+
+    function applyTheme() {
+      const html = document.documentElement;
+      const iconDark = document.getElementById('theme-icon-dark');
+      const iconLight = document.getElementById('theme-icon-light');
+
+      if (state.theme === 'dark') {
+        html.classList.add('dark');
+        iconDark.classList.add('hidden');
+        iconLight.classList.remove('hidden');
+      } else {
+        html.classList.remove('dark');
+        iconDark.classList.remove('hidden');
+        iconLight.classList.add('hidden');
+      }
+    }
+
+    function checkWebGPU() {
+      isWebGPUAvailable = !!navigator.gpu;
+      const banner = document.getElementById('gpu-alert-banner');
+      const backendSelect = document.getElementById('backend-select');
+      const privacyBadge = document.getElementById('privacy-badge');
+
+      if (!isWebGPUAvailable) {
+        banner.classList.remove('hidden');
+        document.getElementById('gpu-alert-text').textContent =
+          "WebGPU is not enabled or supported on this system. Preselecting Groq Cloud API as active backend.";
+        state.backend = 'groq';
+        backendSelect.value = 'groq';
+        privacyBadge.classList.add('hidden');
+        toggleBackendUI();
+      } else {
+        banner.classList.add('hidden');
+        state.backend = 'webllm';
+        backendSelect.value = 'webllm';
+        privacyBadge.classList.remove('hidden');
+        toggleBackendUI();
+      }
+    }
+
+    function toggleBackendUI() {
+      const webllmControls = document.getElementById('webllm-controls');
+      const groqControls = document.getElementById('groq-controls');
+      const groqWarning = document.getElementById('groq-warning-card');
+      const privacyBadge = document.getElementById('privacy-badge');
+      const probTypeBadge = document.getElementById('prob-type-badge');
+
+      if (state.backend === 'webllm') {
+        webllmControls.classList.remove('hidden');
+        groqControls.classList.add('hidden');
+        groqWarning.classList.add('hidden');
+        if (isWebGPUAvailable) privacyBadge.classList.remove('hidden');
+        probTypeBadge.textContent = "Logprobs Renormalization";
+        updateStatus("WebLLM Ready", "slate");
+      } else if (state.backend === 'groq') {
+        webllmControls.classList.add('hidden');
+        groqControls.classList.remove('hidden');
+        groqWarning.classList.remove('hidden');
+        privacyBadge.classList.add('hidden');
+        probTypeBadge.textContent = "Vote shares, not logits";
+        updateStatus("Groq API Mode", "amber");
+      } else {
+        webllmControls.classList.add('hidden');
+        groqControls.classList.add('hidden');
+        groqWarning.classList.add('hidden');
+        privacyBadge.classList.add('hidden');
+        probTypeBadge.textContent = "Deterministic Benchmark Mode";
+        updateStatus("Benchmark Mode", "sky");
+      }
+    }
+
+    function updateStatus(text, color = "slate") {
+      const dot = document.getElementById('status-indicator-dot');
+      const label = document.getElementById('status-indicator-text');
+      label.textContent = text;
+      
+      dot.className = "w-2 h-2 rounded-full";
+      if (color === "green") dot.classList.add("bg-emerald-500", "animate-pulse");
+      else if (color === "indigo") dot.classList.add("bg-indigo-500", "animate-pulse");
+      else if (color === "amber") dot.classList.add("bg-amber-500");
+      else if (color === "sky") dot.classList.add("bg-sky-500");
+      else if (color === "rose") dot.classList.add("bg-rose-500");
+      else dot.classList.add("bg-slate-400");
+    }
+
+    // =========================================================================
+    // PRESETS & FORM HANDLING
+    // =========================================================================
+    function loadPreset(presetKey) {
+      const p = PRESETS[presetKey];
+      if (!p) return;
+
+      state.decisionType = p.type;
+      document.querySelectorAll('.dtype-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.dtype === p.type);
+        if (b.dataset.dtype === p.type) {
+          b.className = "dtype-btn active px-3 py-1 text-xs font-semibold rounded-md bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm";
+        } else {
+          b.className = "dtype-btn px-3 py-1 text-xs font-semibold rounded-md text-slate-500 hover:text-slate-900 dark:hover:text-white";
+        }
+      });
+
+      document.getElementById('input-state').value = p.state;
+      document.getElementById('input-question').value = p.question;
+      state.options = [...p.options];
+      renderOptions();
+
+      // Clear previous decision highlights
+      clearDecisionResults();
+    }
+
+    function renderOptions() {
+      const container = document.getElementById('options-container');
+      const countLabel = document.getElementById('options-count-label');
+      const addBtn = document.getElementById('btn-add-option');
+      const maxWarning = document.getElementById('options-max-warning');
+
+      countLabel.textContent = state.options.length;
+      container.innerHTML = '';
+
+      state.options.forEach((opt, idx) => {
+        const letter = OPTION_LETTERS[idx];
+        const row = document.createElement('div');
+        row.className = "flex items-center gap-2";
+
+        const letterBadge = document.createElement('span');
+        letterBadge.className = "w-7 h-7 flex-shrink-0 rounded-lg bg-indigo-50 dark:bg-indigo-950/70 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 font-mono font-bold text-xs flex items-center justify-center";
+        letterBadge.textContent = letter;
+
+        const input = document.createElement('input');
+        input.type = "text";
+        input.value = opt;
+        input.className = "flex-1 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:ring-2 focus:ring-indigo-500 focus:outline-none";
+        input.addEventListener('input', (e) => {
+          state.options[idx] = e.target.value;
+        });
+
+        row.appendChild(letterBadge);
+        row.appendChild(input);
+
+        // Remove button (only if more than 2 options and not yes/no)
+        if (state.options.length > 2 && state.decisionType === 'choice') {
+          const rmBtn = document.createElement('button');
+          rmBtn.type = "button";
+          rmBtn.className = "w-7 h-7 rounded-lg flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition";
+          rmBtn.innerHTML = "&times;";
+          rmBtn.addEventListener('click', () => {
+            state.options.splice(idx, 1);
+            renderOptions();
+          });
+          row.appendChild(rmBtn);
+        }
+
+        container.appendChild(row);
+      });
+
+      if (state.options.length >= 5 || state.decisionType !== 'choice') {
+        addBtn.classList.add('hidden');
+        if (state.options.length >= 5) maxWarning.classList.remove('hidden');
+        else maxWarning.classList.add('hidden');
+      } else {
+        addBtn.classList.remove('hidden');
+        maxWarning.classList.add('hidden');
+      }
+    }
+
+    function clearDecisionResults() {
+      document.getElementById('winner-banner').classList.add('hidden');
+      document.getElementById('expected-value-banner').classList.add('hidden');
+      document.getElementById('stat-confidence').textContent = '--';
+      document.getElementById('stat-margin').textContent = '--';
+      document.getElementById('stat-entropy').textContent = '--';
+      document.getElementById('stat-consistency').textContent = '--';
+      document.getElementById('raw-logprob-dump').textContent = 'No inference data yet.';
+      
+      const gateBadge = document.getElementById('gate-badge');
+      gateBadge.className = "px-4 py-1.5 rounded-full text-sm font-extrabold tracking-wide uppercase bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300";
+      gateBadge.textContent = "Awaiting Decision";
+      document.getElementById('gate-reason').textContent = "Run inference to evaluate confidence against calibrated thresholds.";
+      
+      document.getElementById('prob-bars-container').innerHTML = `
+        <div class="text-center text-xs text-slate-400 py-8">
+          Click <span class="font-semibold text-indigo-500">"Evaluate Typed Decision"</span> to compute probabilities.
+        </div>
+      `;
+    }
+
+    // =========================================================================
+    // CORE DECISION PROTOCOL: THE TYPED ANSWER TRICK
+    // =========================================================================
+    function buildPrompts(stateText, questionText, optionsList) {
+      const systemPrompt = "You are a decision function. Reply with exactly one option letter and nothing else.";
+      
+      let userPrompt = `STATE:\n${stateText}\n\nQUESTION:\n${questionText}\n\nOPTIONS:\n`;
+      optionsList.forEach((opt, idx) => {
+        userPrompt += `${OPTION_LETTERS[idx]}: ${opt}\n`;
+      });
+      userPrompt += `\nDECISION:`;
+
+      return { systemPrompt, userPrompt };
+    }
+
+    // Mathematical logprob parser & renormalizer
+    function parseLogprobsToProbabilities(topLogprobs, validLetters, temperature = 1.0) {
+      const weights = {};
+      validLetters.forEach(l => { weights[l] = 1e-6; }); // tiny epsilon for missing letters
+
+      if (topLogprobs && Array.isArray(topLogprobs)) {
+        for (const item of topLogprobs) {
+          const rawToken = item.token || '';
+          const clean = rawToken.trim().toUpperCase();
+          if (validLetters.includes(clean)) {
+            // Apply temperature scaling: logprob / T
+            const scaledLogprob = item.logprob / temperature;
+            const prob = Math.exp(scaledLogprob);
+            weights[clean] = (weights[clean] === 1e-6) ? prob : weights[clean] + prob;
+          }
+        }
+      }
+
+      // Renormalize over valid option letters only
+      const totalWeight = Object.values(weights).reduce((sum, w) => sum + w, 0);
+      const probabilities = {};
+      validLetters.forEach(l => {
+        probabilities[l] = totalWeight > 0 ? (weights[l] / totalWeight) : (1.0 / validLetters.length);
+      });
+
+      return { probabilities, rawWeights: weights };
+    }
+
+    // Execute typed decision (Handles WebLLM, Groq Sampling Mode, Mock)
+    async function executeDecision() {
+      const stateText = document.getElementById('input-state').value.trim();
+      const questionText = document.getElementById('input-question').value.trim();
+      const debias = document.getElementById('opt-debias').checked;
+      const activeTemp = parseFloat(document.getElementById('active-temp-input').value) || 1.0;
+
+      if (!stateText || !questionText) {
+        alert("Please enter both State context and Question.");
+        return;
+      }
+
+      if (state.options.length < 2) {
+        alert("At least 2 options are required.");
+        return;
+      }
+
+      const btn = document.getElementById('btn-decide');
+      const spinner = document.getElementById('decide-spinner');
+      const btnLabel = document.getElementById('decide-btn-label');
+      const latencyTag = document.getElementById('latency-tag');
+
+      btn.disabled = true;
+      spinner.classList.remove('hidden');
+      btnLabel.textContent = debias ? "Running Debias Permutations..." : "Evaluating...";
+
+      const startTime = performance.now();
+
+      try {
+        let finalProbs = {};
+        let consistencyScore = 1.0;
+        let rawDebugInfo = {};
+
+        if (debias && state.options.length <= 4) {
+          // Permute options K=3 times to reduce positional bias
+          const K = 3;
+          const permutedResults = [];
+
+          for (let k = 0; k < K; k++) {
+            // Generate shuffle
+            const indices = state.options.map((_, i) => i);
+            indices.sort(() => Math.random() - 0.5);
+
+            const shuffledOptions = indices.map(i => state.options[i]);
+            const validLetters = indices.map((_, i) => OPTION_LETTERS[i]);
+
+            const runRes = await callModelInference(stateText, questionText, shuffledOptions, validLetters, activeTemp);
+            
+            // Map back to original option order
+            const mappedProbs = {};
+            state.options.forEach((_, origIdx) => {
+              const letterAssigned = OPTION_LETTERS[indices.indexOf(origIdx)];
+              mappedProbs[OPTION_LETTERS[origIdx]] = runRes.probabilities[letterAssigned] || 0.0;
+            });
+            permutedResults.push(mappedProbs);
+            rawDebugInfo[`run_${k + 1}`] = runRes;
+          }
+
+          // Average probabilities
+          state.options.forEach((_, idx) => {
+            const letter = OPTION_LETTERS[idx];
+            const sumP = permutedResults.reduce((sum, r) => sum + r[letter], 0);
+            finalProbs[letter] = sumP / K;
+          });
+
+          // Calculate variance across runs for consistency metric
+          let totalVar = 0;
+          state.options.forEach((_, idx) => {
+            const letter = OPTION_LETTERS[idx];
+            const mean = finalProbs[letter];
+            const variance = permutedResults.reduce((acc, r) => acc + Math.pow(r[letter] - mean, 2), 0) / K;
+            totalVar += Math.sqrt(variance);
+          });
+          consistencyScore = Math.max(0, 1.0 - (totalVar / state.options.length));
+
+        } else {
+          // Single direct pass
+          const validLetters = state.options.map((_, idx) => OPTION_LETTERS[idx]);
+          const res = await callModelInference(stateText, questionText, state.options, validLetters, activeTemp);
+          finalProbs = res.probabilities;
+          rawDebugInfo = res;
+          consistencyScore = 1.0;
+        }
+
+        const endTime = performance.now();
+        const durationMs = Math.round(endTime - startTime);
+        latencyTag.textContent = `${durationMs}ms`;
+        latencyTag.classList.remove('hidden');
+
+        // Present results
+        presentResults(finalProbs, consistencyScore, rawDebugInfo);
+
+      } catch (err) {
+        console.error("Inference Error:", err);
+        alert(`Inference failed: ${err.message || err}`);
+      } finally {
+        btn.disabled = false;
+        spinner.classList.add('hidden');
+        btnLabel.textContent = "Evaluate Typed Decision";
+      }
+    }
+
+    // Backend dispatch router
+    async function callModelInference(stateText, questionText, optionsList, validLetters, temperature) {
+      const activeBackend = document.getElementById('backend-select').value;
+      if (activeBackend === 'webllm') {
+        return await callWebLLM(stateText, questionText, optionsList, validLetters, temperature);
+      } else if (activeBackend === 'groq') {
+        return await callGroqSampling(stateText, questionText, optionsList, validLetters);
+      } else {
+        return await callMockInference(stateText, questionText, optionsList, validLetters, temperature);
+      }
+    }
+
+    // =========================================================================
+    // BACKEND 1: WEBLLM (WebGPU Local)
+    // =========================================================================
+    async function ensureWebLLMReady() {
+      if (mlcEngine) return mlcEngine;
+
+      if (!isWebGPUAvailable) {
+        throw new Error("WebGPU is not supported in this browser. Please use Groq or Mock mode.");
+      }
+
+      const selectedModel = document.getElementById('webllm-model-select').value;
+      const progressContainer = document.getElementById('webllm-progress-container');
+      const progressBar = document.getElementById('webllm-progress-bar');
+      const progressText = document.getElementById('webllm-progress-text');
+      const progressPct = document.getElementById('webllm-progress-pct');
+
+      progressContainer.classList.remove('hidden');
+      updateStatus("Loading WebLLM Model...", "indigo");
+
+      try {
+        const mlc = await getWebLLMModule();
+        mlcEngine = await mlc.CreateMLCEngine(selectedModel, {
+          initProgressCallback: (report) => {
+            progressText.textContent = report.text;
+            const pct = Math.round((report.progress || 0) * 100);
+            progressBar.style.width = `${pct}%`;
+            progressPct.textContent = `${pct}%`;
+          }
+        });
+        progressContainer.classList.add('hidden');
+        updateStatus("WebLLM Active", "green");
+        return mlcEngine;
+      } catch (e) {
+        progressContainer.classList.add('hidden');
+        updateStatus("WebLLM Failed", "rose");
+        throw e;
+      }
+    }
+
+    async function callWebLLM(stateText, questionText, optionsList, validLetters, temperature) {
+      const engine = await ensureWebLLMReady();
+      const { systemPrompt, userPrompt } = buildPrompts(stateText, questionText, optionsList);
+
+      const requestPayload = {
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: userPrompt }
+        ],
+        max_tokens: 1,
+        temperature: 0,
+        logprobs: true,
+        top_logprobs: 5
+      };
+
+      const reply = await engine.chat.completions.create(requestPayload);
+      const choice = reply.choices[0];
+      const topLogprobs = choice.logprobs?.content?.[0]?.top_logprobs || [];
+
+      const { probabilities } = parseLogprobsToProbabilities(topLogprobs, validLetters, temperature);
+      return { probabilities, topLogprobs, rawReply: reply };
+    }
+
+    // =========================================================================
+    // BACKEND 2: GROQ CLOUD (Sampling Fallback Mode)
+    // =========================================================================
+    async function callGroqSampling(stateText, questionText, optionsList, validLetters) {
+      const apiKey = document.getElementById('groq-api-key').value.trim();
+      const model = document.getElementById('groq-model-select').value;
+      const nVotes = parseInt(document.getElementById('groq-sample-n').value) || 10;
+
+      if (!apiKey) {
+        throw new Error("Please enter your Groq API key in the password field.");
+      }
+
+      const { systemPrompt, userPrompt } = buildPrompts(stateText, questionText, optionsList);
+      updateStatus(`Sampling Groq (N=${nVotes})...`, "indigo");
+
+      const votes = {};
+      validLetters.forEach(l => { votes[l] = 0; });
+
+      // Parallel sampling calls at T=1, max_tokens=1
+      const fetchPromises = Array.from({ length: nVotes }).map(async () => {
+        const resp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: model,
+            messages: [
+              { role: "system", content: systemPrompt },
+              { role: "user", content: userPrompt }
+            ],
+            max_tokens: 1,
+            temperature: 1.0
+          })
+        });
+
+        if (!resp.ok) {
+          const errData = await resp.json().catch(() => ({}));
+          throw new Error(errData.error?.message || `Groq API HTTP error ${resp.status}`);
+        }
+
+        const data = await resp.json();
+        const letter = (data.choices?.[0]?.message?.content || '').trim().toUpperCase();
+        return letter;
+      });
+
+      const sampledLetters = await Promise.all(fetchPromises);
+      sampledLetters.forEach(l => {
+        if (validLetters.includes(l)) {
+          votes[l] = (votes[l] || 0) + 1;
+        }
+      });
+
+      // Compute empirical vote share probabilities with Laplace smoothing
+      const totalVotes = Object.values(votes).reduce((a, b) => a + b, 0);
+      const probabilities = {};
+      validLetters.forEach(l => {
+        probabilities[l] = totalVotes > 0 ? (votes[l] / totalVotes) : (1.0 / validLetters.length);
+      });
+
+      updateStatus("Groq Sample Complete", "green");
+      return {
+        probabilities,
+        votes,
+        mode: "Groq Empirical Vote Shares (not logits)",
+        samples: sampledLetters
+      };
+    }
+
+    // =========================================================================
+    // BACKEND 3: SIMULATED / DETERMINISTIC BENCHMARK
+    // =========================================================================
+    async function callMockInference(stateText, questionText, optionsList, validLetters, temperature) {
+      await new Promise(r => setTimeout(r, 180)); // realistic latency
+
+      // Deterministic pseudo-logprobs based on keyword semantic alignment
+      const combined = (stateText + " " + questionText).toLowerCase();
+      const rawLogits = {};
+
+      validLetters.forEach((l, idx) => {
+        const optText = optionsList[idx].toLowerCase();
+        let score = -3.0; // base prior
+
+        // Semantic heuristics for preset alignment
+        if (combined.includes('fraud') || combined.includes('water leak') || combined.includes('contradictory')) {
+          if (optText.includes('fraud') || optText.includes('siu')) score = 1.8;
+          else if (optText.includes('adjuster')) score = -0.4;
+          else score = -2.5;
+        } else if (combined.includes('contrib_amt_ytd')) {
+          if (optText.includes('employee_ytd')) score = 2.4;
+          else if (optText.includes('employer_match')) score = -0.8;
+          else score = -2.1;
+        } else if (combined.includes('cancel') || combined.includes('terminate')) {
+          if (optText.includes('yes')) score = 2.1;
+          else score = -1.5;
+        } else if (combined.includes('502') || combined.includes('outage') || combined.includes('420 orders')) {
+          if (optText.includes('4') || optText.includes('high')) score = 2.2;
+          else if (optText.includes('3') || optText.includes('moderate')) score = 0.5;
+          else if (optText.includes('5') || optText.includes('critical')) score = 0.1;
+          else score = -3.0;
+        } else {
+          // general distribution
+          score = idx === 0 ? 1.0 : -0.5 * idx;
+        }
+
+        rawLogits[l] = score;
+      });
+
+      // Construct simulated top_logprobs
+      const topLogprobs = validLetters.map(l => ({
+        token: l,
+        logprob: rawLogits[l]
+      }));
+
+      const { probabilities } = parseLogprobsToProbabilities(topLogprobs, validLetters, temperature);
+      return { probabilities, topLogprobs, simulated: true };
+    }
+
+    // =========================================================================
+    // METRICS, GATING & PRESENTATION
+    // =========================================================================
+    function presentResults(probabilities, consistencyScore, debugData) {
+      state.currentProbabilities = probabilities;
+
+      // Sort options by probability descending
+      const sortedEntries = Object.entries(probabilities).sort((a, b) => b[1] - a[1]);
+      const [topLetter, topProb] = sortedEntries[0];
+      const secondProb = sortedEntries[1] ? sortedEntries[1][1] : 0.0;
+      const margin = topProb - secondProb;
+
+      // Entropy calculation: -Σ p * ln(p)
+      const entropy = -Object.values(probabilities).reduce((acc, p) => {
+        return acc + (p > 1e-10 ? p * Math.log(p) : 0);
+      }, 0);
+
+      // 1. Display Winner Banner
+      const winnerIdx = OPTION_LETTERS.indexOf(topLetter);
+      const winnerTitle = state.options[winnerIdx] || `Option ${topLetter}`;
+      document.getElementById('winner-text').textContent = `${topLetter}: ${winnerTitle}`;
+      document.getElementById('winner-prob').textContent = `${(topProb * 100).toFixed(1)}%`;
+      document.getElementById('winner-banner').classList.remove('hidden');
+
+      // 2. Score Mode Expected Value
+      if (state.decisionType === 'score') {
+        let expectedVal = 0;
+        state.options.forEach((_, idx) => {
+          const l = OPTION_LETTERS[idx];
+          const scoreNum = idx + 1;
+          expectedVal += scoreNum * (probabilities[l] || 0);
+        });
+        document.getElementById('expected-value-text').textContent = `${expectedVal.toFixed(2)} / 5.00`;
+        document.getElementById('expected-value-banner').classList.remove('hidden');
+      } else {
+        document.getElementById('expected-value-banner').classList.add('hidden');
+      }
+
+      // 3. Render Probability Bars
+      const barsContainer = document.getElementById('prob-bars-container');
+      barsContainer.innerHTML = '';
+
+      sortedEntries.forEach(([letter, prob]) => {
+        const optIndex = OPTION_LETTERS.indexOf(letter);
+        const optText = state.options[optIndex] || letter;
+        const isWinner = letter === topLetter;
+        const pctString = (prob * 100).toFixed(1) + '%';
+
+        const barCard = document.createElement('div');
+        barCard.className = `p-3 rounded-xl border transition-all ${
+          isWinner 
+            ? 'bg-indigo-50/60 dark:bg-indigo-950/40 border-indigo-300 dark:border-indigo-800/80 shadow-sm' 
+            : 'bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-800'
+        }`;
+
+        barCard.innerHTML = `
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <div class="flex items-center gap-2 overflow-hidden">
+              <span class="w-5 h-5 rounded flex-shrink-0 flex items-center justify-center font-mono font-bold text-[11px] ${
+                isWinner ? 'bg-indigo-600 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
+              }">${letter}</span>
+              <span class="font-medium truncate text-slate-800 dark:text-slate-200">${optText}</span>
+            </div>
+            <span class="font-mono font-bold ${isWinner ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-600 dark:text-slate-400'}">${pctString}</span>
+          </div>
+          <div class="w-full bg-slate-200 dark:bg-slate-700/60 rounded-full h-2 overflow-hidden">
+            <div class="${isWinner ? 'bg-indigo-600' : 'bg-slate-400 dark:bg-slate-500'} h-2 rounded-full transition-all duration-300" style="width: ${pctString}"></div>
+          </div>
+        `;
+        barsContainer.appendChild(barCard);
+      });
+
+      // 4. Update Summary Stats
+      document.getElementById('stat-confidence').textContent = `${(topProb * 100).toFixed(1)}%`;
+      document.getElementById('stat-margin').textContent = `+${(margin * 100).toFixed(1)}%`;
+      document.getElementById('stat-entropy').textContent = `${entropy.toFixed(3)} nats`;
+      document.getElementById('stat-consistency').textContent = `${(consistencyScore * 100).toFixed(0)}%`;
+
+      // 5. Update Safety Gate
+      evaluateSafetyGate(topProb, margin);
+
+      // 6. Raw Debug Dump
+      document.getElementById('raw-logprob-dump').textContent = JSON.stringify(debugData, null, 2);
+    }
+
+    function evaluateSafetyGate(confidence, margin) {
+      const confThreshold = (parseInt(document.getElementById('conf-slider').value) || 80) / 100;
+      const marginThreshold = (parseInt(document.getElementById('margin-slider').value) || 20) / 100;
+
+      const passesConf = confidence >= confThreshold;
+      const passesMargin = margin >= marginThreshold;
+      const autoAct = passesConf && passesMargin;
+
+      const badge = document.getElementById('gate-badge');
+      const reason = document.getElementById('gate-reason');
+      const card = document.getElementById('gate-outcome-card');
+
+      if (autoAct) {
+        badge.className = "px-5 py-2 rounded-full text-sm font-black tracking-wider uppercase bg-emerald-500 text-white shadow-lg shadow-emerald-500/30 animate-pulse";
+        badge.textContent = "AUTO-ACT";
+        card.className = "p-4 rounded-xl border flex flex-col items-center justify-center text-center gap-1.5 bg-emerald-500/10 border-emerald-500/30 transition-all";
+        reason.textContent = `Confidence ${(confidence * 100).toFixed(1)}% ≥ ${(confThreshold * 100).toFixed(0)}% threshold and Margin ${(margin * 100).toFixed(1)}% ≥ ${(marginThreshold * 100).toFixed(0)}% threshold. Safe for autonomous execution.`;
+      } else {
+        badge.className = "px-5 py-2 rounded-full text-sm font-black tracking-wider uppercase bg-rose-500 text-white shadow-lg shadow-rose-500/30";
+        badge.textContent = "ASK A HUMAN";
+        card.className = "p-4 rounded-xl border flex flex-col items-center justify-center text-center gap-1.5 bg-rose-500/10 border-rose-500/30 transition-all";
+        
+        let failReasons = [];
+        if (!passesConf) failReasons.push(`Confidence ${(confidence * 100).toFixed(1)}% < ${(confThreshold * 100).toFixed(0)}%`);
+        if (!passesMargin) failReasons.push(`Margin ${(margin * 100).toFixed(1)}% < ${(marginThreshold * 100).toFixed(0)}%`);
+        reason.textContent = `Gate closed: ${failReasons.join(' and ')}. Diverted to human reviewer.`;
+      }
+    }
+
+    // =========================================================================
+    // CALIBRATION LAB, METRICS, RELIABILITY DIAGRAM & TEMPERATURE FITTING
+    // =========================================================================
+    function loadSampleCalibration() {
+      const textarea = document.getElementById('calibration-dataset-input');
+      textarea.value = JSON.stringify(SAMPLE_CALIBRATION_CASES, null, 2);
+    }
+
+    async function runCalibrationSuite() {
+      const input = document.getElementById('calibration-dataset-input').value.trim();
+      let cases = [];
+      try {
+        cases = JSON.parse(input);
+      } catch (e) {
+        alert("Invalid JSON format in test cases. Please ensure it is valid JSON.");
+        return;
+      }
+
+      state.calibrationCases = cases;
+      const spinner = document.getElementById('calib-spinner');
+      const runBtn = document.getElementById('btn-run-calibration');
+      spinner.classList.remove('hidden');
+      runBtn.disabled = true;
+
+      const results = [];
+      const tbody = document.getElementById('calib-table-body');
+      tbody.innerHTML = '';
+
+      const activeTemp = parseFloat(document.getElementById('active-temp-input').value) || 1.0;
+
+      for (let i = 0; i < cases.length; i++) {
+        const item = cases[i];
+        const validLetters = item.options.map((_, idx) => OPTION_LETTERS[idx]);
+        
+        // Execute inference for this test case
+        const res = await callModelInference(item.state, item.question, item.options, validLetters, activeTemp);
+        const probs = res.probabilities;
+
+        // Sort probabilities to identify prediction
+        const sorted = Object.entries(probs).sort((a, b) => b[1] - a[1]);
+        const predLetter = sorted[0][0];
+        const predIndex = OPTION_LETTERS.indexOf(predLetter);
+        const confidence = sorted[0][1];
+        const isCorrect = predIndex === item.correct;
+
+        results.push({
+          caseIndex: i + 1,
+          question: item.question,
+          predLetter,
+          confidence,
+          trueLetter: OPTION_LETTERS[item.correct],
+          isCorrect,
+          probs,
+          correctIndex: item.correct
+        });
+
+        // Add row to table
+        const tr = document.createElement('tr');
+        tr.className = isCorrect ? "hover:bg-slate-50 dark:hover:bg-slate-800/40" : "bg-rose-500/5 hover:bg-rose-500/10";
+        tr.innerHTML = `
+          <td class="p-2.5 font-bold text-slate-500">${i + 1}</td>
+          <td class="p-2.5 truncate max-w-xs font-sans text-slate-800 dark:text-slate-200" title="${item.question}">${item.question}</td>
+          <td class="p-2.5 font-bold">${predLetter}</td>
+          <td class="p-2.5 font-bold ${confidence >= 0.8 ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-500'}">${(confidence * 100).toFixed(1)}%</td>
+          <td class="p-2.5 font-bold text-slate-500">${OPTION_LETTERS[item.correct]}</td>
+          <td class="p-2.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${
+              isCorrect ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300'
+            }">
+              ${isCorrect ? 'CORRECT' : 'ERROR'}
+            </span>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      spinner.classList.add('hidden');
+      runBtn.disabled = false;
+
+      // Compute Global Metrics
+      const totalCases = results.length;
+      const correctCases = results.filter(r => r.isCorrect).length;
+      const accuracy = correctCases / totalCases;
+
+      // Multi-class Brier score
+      let brierSum = 0;
+      results.forEach(r => {
+        Object.entries(r.probs).forEach(([letter, p]) => {
+          const isTarget = OPTION_LETTERS.indexOf(letter) === r.correctIndex ? 1 : 0;
+          brierSum += Math.pow(p - isTarget, 2);
+        });
+      });
+      const brierScore = brierSum / totalCases;
+
+      // Expected Calibration Error (ECE) with 5 Bins
+      const eceData = computeECE(results, 5);
+
+      document.getElementById('metric-accuracy').textContent = `${(accuracy * 100).toFixed(1)}%`;
+      document.getElementById('metric-brier').textContent = brierScore.toFixed(3);
+      document.getElementById('metric-ece').textContent = `${(eceData.ece * 100).toFixed(1)}%`;
+
+      // Render Pure SVG Reliability Diagram
+      renderReliabilityDiagram(eceData.bins);
+      state.calibrationResults = results;
+    }
+
+    function computeECE(results, numBins = 5) {
+      const bins = Array.from({ length: numBins }, (_, i) => ({
+        binIndex: i,
+        minConf: i / numBins,
+        maxConf: (i + 1) / numBins,
+        count: 0,
+        sumAccuracy: 0,
+        sumConfidence: 0
+      }));
+
+      results.forEach(r => {
+        let bIdx = Math.floor(r.confidence * numBins);
+        if (bIdx >= numBins) bIdx = numBins - 1;
+        bins[bIdx].count++;
+        bins[bIdx].sumAccuracy += r.isCorrect ? 1 : 0;
+        bins[bIdx].sumConfidence += r.confidence;
+      });
+
+      let totalEce = 0;
+      const N = results.length;
+
+      bins.forEach(b => {
+        if (b.count > 0) {
+          b.avgAcc = b.sumAccuracy / b.count;
+          b.avgConf = b.sumConfidence / b.count;
+          b.calibGap = Math.abs(b.avgAcc - b.avgConf);
+          totalEce += (b.count / N) * b.calibGap;
+        } else {
+          b.avgAcc = 0;
+          b.avgConf = (b.minConf + b.maxConf) / 2;
+          b.calibGap = 0;
+        }
+      });
+
+      return { ece: totalEce, bins };
+    }
+
+    // Pure SVG Reliability Diagram Generator
+    function renderReliabilityDiagram(bins) {
+      const svgContainer = document.getElementById('reliability-diagram-svg');
+      const w = 380;
+      const h = 240;
+      const pad = 40;
+      const plotW = w - pad * 2;
+      const plotH = h - pad * 2;
+
+      let svg = `
+        <svg viewBox="0 0 ${w} ${h}" class="w-full h-full font-mono text-[10px] select-none">
+          <!-- Background Grid & Axes -->
+          <rect x="${pad}" y="${pad}" width="${plotW}" height="${plotH}" fill="none" stroke="currentColor" stroke-opacity="0.1" stroke-width="1"/>
+          
+          <!-- Diagonal Perfect Calibration Line (y = x) -->
+          <line x1="${pad}" y1="${pad + plotH}" x2="${pad + plotW}" y2="${pad}" stroke="#94a3b8" stroke-dasharray="4 4" stroke-width="1.5"/>
+
+          <!-- Axis Labels -->
+          <text x="${pad + plotW / 2}" y="${h - 8}" text-anchor="middle" fill="#64748b" font-weight="bold">Confidence Bin</text>
+          <text x="12" y="${pad + plotH / 2}" text-anchor="middle" fill="#64748b" font-weight="bold" transform="rotate(-90 12 ${pad + plotH / 2})">Accuracy</text>
+      `;
+
+      // Bin Bars and Calibration Gap
+      const numBins = bins.length;
+      const barWidth = plotW / numBins;
+
+      bins.forEach((b, i) => {
+        const x = pad + i * barWidth;
+        const binCenterConf = (b.minConf + b.maxConf) / 2;
+        const accY = pad + plotH - (b.avgAcc * plotH);
+        const barH = b.avgAcc * plotH;
+        const perfectY = pad + plotH - (binCenterConf * plotH);
+
+        if (b.count > 0) {
+          // Accuracy Bar
+          svg += `
+            <rect x="${x + 4}" y="${accY}" width="${barWidth - 8}" height="${barH}" fill="#6366f1" rx="3" opacity="0.85"/>
+          `;
+
+          // Calibration Gap (Overconfident or Underconfident)
+          const gapTop = Math.min(accY, perfectY);
+          const gapHeight = Math.abs(accY - perfectY);
+          svg += `
+            <rect x="${x + 6}" y="${gapTop}" width="${barWidth - 12}" height="${gapHeight}" fill="#f43f5e" opacity="0.3" rx="2"/>
+          `;
+
+          // Sample Count Badge inside bin
+          svg += `
+            <text x="${x + barWidth / 2}" y="${accY - 5}" text-anchor="middle" fill="#4f46e5" font-weight="bold">n=${b.count}</text>
+          `;
+        }
+
+        // X Axis Tick
+        svg += `
+          <text x="${x + barWidth / 2}" y="${pad + plotH + 16}" text-anchor="middle" fill="#94a3b8">${(b.maxConf * 100).toFixed(0)}%</text>
+        `;
+      });
+
+      // Y Axis Ticks (0, 0.5, 1.0)
+      svg += `
+        <text x="${pad - 6}" y="${pad + plotH}" text-anchor="end" fill="#94a3b8" dominant-baseline="middle">0%</text>
+        <text x="${pad - 6}" y="${pad + plotH / 2}" text-anchor="end" fill="#94a3b8" dominant-baseline="middle">50%</text>
+        <text x="${pad - 6}" y="${pad}" text-anchor="end" fill="#94a3b8" dominant-baseline="middle">100%</text>
+      `;
+
+      svg += `</svg>`;
+      svgContainer.innerHTML = svg;
+    }
+
+    // Fit Temperature scaling T on labeled calibration cases
+    function fitTemperatureOptimization() {
+      if (!state.calibrationResults || state.calibrationResults.length === 0) {
+        alert("Please run the Calibration Test Suite first to generate validation cases.");
+        return;
+      }
+
+      const results = state.calibrationCases;
+      let bestT = 1.0;
+      let minLoss = Infinity;
+
+      // Grid search T in [0.1, 4.0] with step 0.05
+      for (let t = 0.2; t <= 3.5; t += 0.05) {
+        let totalLoss = 0;
+
+        state.calibrationResults.forEach(r => {
+          // Re-scale raw probabilities by T
+          const scaledWeights = {};
+          let sumW = 0;
+          Object.entries(r.probs).forEach(([l, p]) => {
+            const w = Math.pow(Math.max(p, 1e-12), 1.0 / t);
+            scaledWeights[l] = w;
+            sumW += w;
+          });
+
+          const targetLetter = OPTION_LETTERS[r.correctIndex];
+          const pTarget = (scaledWeights[targetLetter] || 1e-12) / sumW;
+          totalLoss -= Math.log(pTarget);
+        });
+
+        if (totalLoss < minLoss) {
+          minLoss = totalLoss;
+          bestT = t;
+        }
+      }
+
+      bestT = Math.round(bestT * 100) / 100;
+      state.temperature = bestT;
+
+      document.getElementById('calib-temp-disp').textContent = bestT.toFixed(2);
+      document.getElementById('active-temp-input').value = bestT.toFixed(2);
+
+      // Re-evaluate ECE with calibrated temperature
+      const recalibratedResults = state.calibrationResults.map(r => {
+        const scaledWeights = {};
+        let sumW = 0;
+        Object.entries(r.probs).forEach(([l, p]) => {
+          const w = Math.pow(Math.max(p, 1e-12), 1.0 / bestT);
+          scaledWeights[l] = w;
+          sumW += w;
+        });
+
+        const sorted = Object.entries(scaledWeights).sort((a, b) => b[1] - a[1]);
+        const topL = sorted[0][0];
+        const newConf = sorted[0][1] / sumW;
+        return {
+          ...r,
+          confidence: newConf,
+          isCorrect: OPTION_LETTERS.indexOf(topL) === r.correctIndex
+        };
+      });
+
+      const beforeECE = computeECE(state.calibrationResults, 5).ece;
+      const afterECE = computeECE(recalibratedResults, 5).ece;
+
+      document.getElementById('calib-ece-delta').textContent = 
+        `ECE: ${(beforeECE * 100).toFixed(1)}% → ${(afterECE * 100).toFixed(1)}%`;
+      document.getElementById('metric-ece').textContent = `${(afterECE * 100).toFixed(1)}%`;
+
+      renderReliabilityDiagram(computeECE(recalibratedResults, 5).bins);
+      alert(`Fitted Optimal Temperature T* = ${bestT.toFixed(2)}.\nApplied to future decision evaluations. ECE improved from ${(beforeECE * 100).toFixed(1)}% to ${(afterECE * 100).toFixed(1)}%.`);
+    }
+
+    // =========================================================================
+    // EVENT LISTENERS & SETUP
+    // =========================================================================
+    function setupEventListeners() {
+      // Theme Toggle
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        state.theme = state.theme === 'dark' ? 'light' : 'dark';
+        applyTheme();
+      });
+
+      // Backend Select Change
+      document.getElementById('backend-select').addEventListener('change', (e) => {
+        state.backend = e.target.value;
+        toggleBackendUI();
+      });
+
+      // Groq Sample N input change
+      document.getElementById('groq-sample-n').addEventListener('change', (e) => {
+        document.getElementById('warn-sample-n').textContent = e.target.value;
+      });
+
+      // Presets
+      document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          loadPreset(btn.dataset.preset);
+        });
+      });
+
+      // Decision Type Switcher
+      document.querySelectorAll('.dtype-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const dtype = btn.dataset.dtype;
+          if (dtype === 'yesno') {
+            loadPreset('yesno');
+          } else if (dtype === 'score') {
+            loadPreset('score');
+          } else {
+            loadPreset('claim');
+          }
+        });
+      });
+
+      // Add Option Button
+      document.getElementById('btn-add-option').addEventListener('click', () => {
+        if (state.options.length < 5) {
+          state.options.push(`New Option ${OPTION_LETTERS[state.options.length]}`);
+          renderOptions();
+        }
+      });
+
+      // Main Navigation Tabs (Decision vs Calibration)
+      document.getElementById('tab-btn-decision').addEventListener('click', () => {
+        document.getElementById('view-decision').classList.remove('hidden');
+        document.getElementById('view-calibration').classList.add('hidden');
+        document.getElementById('tab-btn-decision').className = "tab-main-btn active px-4 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm transition";
+        document.getElementById('tab-btn-calibration').className = "tab-main-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
+      });
+
+      document.getElementById('tab-btn-calibration').addEventListener('click', () => {
+        document.getElementById('view-decision').classList.add('hidden');
+        document.getElementById('view-calibration').classList.remove('hidden');
+        document.getElementById('tab-btn-calibration').className = "tab-main-btn active px-4 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm transition";
+        document.getElementById('tab-btn-decision').className = "tab-main-btn px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
+      });
+
+      // Sliders
+      document.getElementById('conf-slider').addEventListener('input', (e) => {
+        document.getElementById('conf-val').textContent = `${e.target.value}%`;
+        if (state.currentProbabilities && Object.keys(state.currentProbabilities).length > 0) {
+          const sorted = Object.values(state.currentProbabilities).sort((a, b) => b - a);
+          evaluateSafetyGate(sorted[0], sorted[0] - (sorted[1] || 0));
+        }
+      });
+
+      document.getElementById('margin-slider').addEventListener('input', (e) => {
+        document.getElementById('margin-val').textContent = `${e.target.value}%`;
+        if (state.currentProbabilities && Object.keys(state.currentProbabilities).length > 0) {
+          const sorted = Object.values(state.currentProbabilities).sort((a, b) => b - a);
+          evaluateSafetyGate(sorted[0], sorted[0] - (sorted[1] || 0));
+        }
+      });
+
+      // Load WebLLM button
+      document.getElementById('btn-load-webllm').addEventListener('click', () => {
+        ensureWebLLMReady().catch(err => alert(`Failed to load WebLLM: ${err.message}`));
+      });
+
+      // Primary Decision Evaluate
+      document.getElementById('btn-decide').addEventListener('click', executeDecision);
+
+      // Calibration Actions
+      document.getElementById('btn-load-sample-dataset').addEventListener('click', loadSampleCalibration);
+      document.getElementById('btn-run-calibration').addEventListener('click', runCalibrationSuite);
+      document.getElementById('btn-fit-temperature').addEventListener('click', fitTemperatureOptimization);
+    }
+
+    // Bootstrap
+    if (document.readyState === 'loading') {
+      window.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  </script>
+</body>
+</html>
