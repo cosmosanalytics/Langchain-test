@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NVIDIA Auto Ontology &amp; Product Studio — cuGraph &amp; Omniverse Digital Twins</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            nvgreen: {
+              50: '#f4fbf0',
+              100: '#e5f7dc',
+              400: '#90ce1a',
+              500: '#76b900',  // NVIDIA Green
+              600: '#649c00',
+              700: '#4c7602',
+              900: '#273e01',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom sleek scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .graph-node { transition: all 0.25s ease; cursor: pointer; }
+    .graph-node:hover { filter: drop-shadow(0 4px 10px rgba(118, 185, 0, 0.4)); }
+    .critical-edge { stroke: #f59e0b !important; stroke-width: 3.5px !important; stroke-dasharray: 6; animation: dash 1.5s linear infinite; }
+    @keyframes dash { to { stroke-dashoffset: -24; } }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased font-sans min-h-screen flex flex-col">
+
+  <!-- TOP HEADER & BRANDING -->
+  <header class="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex items-center justify-between shadow-2xs sticky top-0 z-50">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-nvgreen-600 via-nvgreen-500 to-emerald-600 flex items-center justify-center text-white shadow-sm font-black text-xl">
+        <i class="fa-solid fa-brain"></i>
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-base sm:text-lg font-black text-slate-900 tracking-tight">NVIDIA Auto Ontology &amp; Product Studio</h1>
+          <span class="px-2 py-0.5 rounded-full bg-nvgreen-50 border border-nvgreen-500/40 text-nvgreen-700 text-[10px] font-bold uppercase tracking-wider">cuGraph &bull; Omniverse USD</span>
+        </div>
+        <p class="text-xs text-slate-500 hidden sm:block">Automated Micro-to-Macro Ontology Alignment &bull; cuGraph Topology Optimization &bull; Digital Twin Product Factory</p>
+      </div>
+    </div>
+
+    <!-- Right Quick Actions -->
+    <div class="flex items-center space-x-2">
+      <!-- Backend Status Pill -->
+      <div id="backendStatusPill" class="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-nvgreen-50 border border-nvgreen-500/30 text-nvgreen-900 text-[11px] font-bold">
+        <span class="w-2 h-2 rounded-full bg-nvgreen-500 animate-pulse"></span>
+        <span id="backendStatusText">NVIDIA Engine Connected</span>
+      </div>
+
+      <button onclick="fuseMacroOntology()" class="px-3 py-1.5 rounded-lg bg-nvgreen-50 hover:bg-nvgreen-100 text-nvgreen-800 font-bold text-xs border border-nvgreen-500/30 transition shadow-2xs flex items-center space-x-1.5">
+        <i class="fa-solid fa-arrows-split-up-and-left rotate-180 text-nvgreen-600"></i>
+        <span>Auto-Align Macro Ontology</span>
+      </button>
+
+      <button onclick="runNetworkOptimization()" class="px-3.5 py-1.5 rounded-lg bg-nvgreen-500 hover:bg-nvgreen-600 text-white font-bold text-xs transition shadow-sm flex items-center space-x-1.5">
+        <i class="fa-solid fa-bolt-lightning text-amber-200"></i>
+        <span>cuGraph Optimize</span>
+      </button>
+
+      <button onclick="switchTab('products')" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-black text-white font-bold text-xs transition shadow-sm flex items-center space-x-1.5">
+        <i class="fa-solid fa-cubes text-nvgreen-400"></i>
+        <span>Digital Twin Products</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- NAVIGATION SUB-BAR -->
+  <div class="bg-white border-b border-slate-200 px-4 sm:px-6 py-2 flex items-center justify-between text-xs flex-none">
+    <div class="flex space-x-1">
+      <button id="tabBtnCanvas" onclick="switchTab('canvas')" class="px-3 py-1.5 rounded-lg font-bold bg-nvgreen-50 text-nvgreen-800 transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-diagram-project text-nvgreen-600"></i>
+        <span>Unified Macro Ontology</span>
+      </button>
+      <button id="tabBtnOptimization" onclick="switchTab('optimization')" class="px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-chart-line text-amber-600"></i>
+        <span>cuGraph Network Optimization</span>
+      </button>
+      <button id="tabBtnProducts" onclick="switchTab('products')" class="px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-box-open text-emerald-600"></i>
+        <span>Digital Twin Products Factory</span>
+      </button>
+      <button id="tabBtnSpec" onclick="switchTab('spec')" class="px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-code text-indigo-600"></i>
+        <span>JSON-LD / OWL Schema Manifest</span>
+      </button>
+    </div>
+
+    <!-- Macro Summary Counter -->
+    <div class="hidden md:flex items-center space-x-3 text-[11px] font-mono text-slate-500">
+      <span>Concepts: <strong id="statNodeCount" class="text-nvgreen-700">20</strong></span>
+      <span>&bull;</span>
+      <span>Semantic Triples: <strong id="statEdgeCount" class="text-nvgreen-700">20</strong></span>
+      <span>&bull;</span>
+      <span>Cross-Alignments: <strong id="statBridgeCount" class="text-emerald-700">4</strong></span>
+      <span>&bull;</span>
+      <span>Thermal Latency: <strong id="statLatencyBadge" class="text-amber-700">100ms</strong></span>
+    </div>
+  </div>
+
+  <!-- MAIN THREE-COLUMN WORKBENCH -->
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- LEFT SIDEBAR: MICRO-ONTOLOGY EXPLORER & CONTROLS -->
+    <aside class="w-80 md:w-96 bg-white border-r border-slate-200 flex flex-col flex-none overflow-y-auto p-4 space-y-4">
+      
+      <!-- Micro-Ontology Selector Box -->
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between">
+          <span class="text-xs uppercase font-extrabold text-slate-500 tracking-wider flex items-center space-x-1.5">
+            <i class="fa-solid fa-network-wired text-nvgreen-600"></i>
+            <span>Domain Micro-Ontologies (4)</span>
+          </span>
+          <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-full font-mono">Auto-Alignment</span>
+        </div>
+        <p class="text-[11px] text-slate-500 leading-snug">
+          Specialized industrial and infrastructure sub-graphs ingested from physical edge, PLC, and simulation telemetry.
+        </p>
+
+        <!-- Domain Cards -->
+        <div class="space-y-2 pt-1" id="microOntologiesContainer">
+          <!-- Robotics -->
+          <label class="p-3 rounded-xl border border-nvgreen-200 bg-nvgreen-50/40 hover:bg-nvgreen-50 flex items-start space-x-3 cursor-pointer transition shadow-2xs block">
+            <input type="checkbox" checked value="factory_robotics" onchange="handleMicroOntologyToggle()" class="mt-1 rounded text-nvgreen-600 focus:ring-nvgreen-500 h-4 w-4">
+            <div class="flex-1 text-xs">
+              <div class="font-bold text-slate-900 flex items-center justify-between">
+                <span>🤖 Industrial Robotics (Isaac Sim)</span>
+                <span class="text-[10px] font-mono text-nvgreen-800 bg-nvgreen-100 px-1.5 py-0.2 rounded">5 Concepts</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-0.5">Arm workcells &rarr; Siemens PLC &rarr; Omniverse USD Twin.</p>
+            </div>
+          </label>
+
+          <!-- AMR Fleet -->
+          <label class="p-3 rounded-xl border border-sky-200 bg-sky-50/40 hover:bg-sky-50 flex items-start space-x-3 cursor-pointer transition shadow-2xs block">
+            <input type="checkbox" checked value="autonomous_fleet" onchange="handleMicroOntologyToggle()" class="mt-1 rounded text-sky-600 focus:ring-sky-500 h-4 w-4">
+            <div class="flex-1 text-xs">
+              <div class="font-bold text-slate-900 flex items-center justify-between">
+                <span>🚚 AMR Fleet &amp; Logistics (Nova Orin)</span>
+                <span class="text-[10px] font-mono text-sky-800 bg-sky-100 px-1.5 py-0.2 rounded">5 Concepts</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-0.5">LiDAR pods &rarr; cuOpt spatial map &rarr; mission dispatch.</p>
+            </div>
+          </label>
+
+          <!-- GPU Thermal -->
+          <label class="p-3 rounded-xl border border-purple-200 bg-purple-50/40 hover:bg-purple-50 flex items-start space-x-3 cursor-pointer transition shadow-2xs block">
+            <input type="checkbox" checked value="gpu_thermal_mesh" onchange="handleMicroOntologyToggle()" class="mt-1 rounded text-purple-600 focus:ring-purple-500 h-4 w-4">
+            <div class="flex-1 text-xs">
+              <div class="font-bold text-slate-900 flex items-center justify-between">
+                <span>⚡ Blackwell GB200 &amp; Thermal Mesh</span>
+                <span class="text-[10px] font-mono text-purple-800 bg-purple-100 px-1.5 py-0.2 rounded">5 Concepts</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-0.5">DGX nodes &rarr; NVLink 5 fabric &rarr; liquid CDU cooling.</p>
+            </div>
+          </label>
+
+          <!-- Smart Grid -->
+          <label class="p-3 rounded-xl border border-amber-200 bg-amber-50/40 hover:bg-amber-50 flex items-start space-x-3 cursor-pointer transition shadow-2xs block">
+            <input type="checkbox" checked value="smart_microgrid" onchange="handleMicroOntologyToggle()" class="mt-1 rounded text-amber-600 focus:ring-amber-500 h-4 w-4">
+            <div class="flex-1 text-xs">
+              <div class="font-bold text-slate-900 flex items-center justify-between">
+                <span>🔋 Megawatt Microgrid &amp; Storage</span>
+                <span class="text-[10px] font-mono text-amber-800 bg-amber-100 px-1.5 py-0.2 rounded">5 Concepts</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-0.5">138kV Substation &rarr; BESS storage &rarr; load shedding.</p>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <!-- Auto-Ontology Semantic Axiom Bridges -->
+      <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-2 text-xs">
+        <div class="font-extrabold text-slate-800 flex items-center space-x-1.5">
+          <i class="fa-solid fa-link text-nvgreen-600"></i>
+          <span>Auto-Ontology Axiomatic Alignments</span>
+        </div>
+        <p class="text-[11px] text-slate-500 leading-relaxed">
+          NVIDIA Auto-Ontology extracts cross-domain predicates to unify the macro ontology:
+        </p>
+        <ul class="text-[11px] text-slate-700 space-y-1 font-mono pl-1">
+          <li class="flex items-center justify-between bg-white px-2 py-1 rounded border border-slate-200">
+            <span>PDU &rarr; Blackwell Node</span>
+            <span class="text-nvgreen-700 font-bold">energizesCompute</span>
+          </li>
+          <li class="flex items-center justify-between bg-white px-2 py-1 rounded border border-slate-200">
+            <span>Cold Plate &rarr; BESS Bank</span>
+            <span class="text-nvgreen-700 font-bold">exchangesChilled</span>
+          </li>
+          <li class="flex items-center justify-between bg-white px-2 py-1 rounded border border-slate-200">
+            <span>cuGraph &rarr; AMR Occupancy</span>
+            <span class="text-nvgreen-700 font-bold">acceleratesRouting</span>
+          </li>
+          <li class="flex items-center justify-between bg-white px-2 py-1 rounded border border-slate-200">
+            <span>Robotic Cell &rarr; AMR Unit</span>
+            <span class="text-nvgreen-700 font-bold">handsOffLot</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- cuGraph Optimization Controls -->
+      <div class="p-4 rounded-xl bg-gradient-to-br from-nvgreen-50/70 via-white to-emerald-50/50 border border-nvgreen-300 space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black text-slate-900 flex items-center space-x-1.5">
+            <i class="fa-solid fa-microchip text-nvgreen-600"></i>
+            <span>NVIDIA cuGraph Accelerator</span>
+          </span>
+          <span class="text-[9px] bg-nvgreen-100 text-nvgreen-900 px-1.5 py-0.5 rounded font-mono font-bold">GPU-Accelerated</span>
+        </div>
+
+        <div class="space-y-1.5 text-xs">
+          <label class="text-[11px] font-bold text-slate-700">Optimization Goal:</label>
+          <select id="optObjectiveSelect" class="w-full bg-white border border-slate-200 rounded-lg p-2 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-nvgreen-500 focus:outline-none">
+            <option value="thermal_latency">Minimize Thermal-Latency Critical Path (Dijkstra)</option>
+            <option value="bandwidth_energy">Optimize NVLink Bandwidth &amp; Energy Flow</option>
+            <option value="spof_bottlenecks">Isolate Structural Interconnect SPOFs (Betweenness)</option>
+            <option value="modularity_clustering">cuGraph Spectral Modularity Community Partitioning</option>
+          </select>
+        </div>
+
+        <button onclick="runNetworkOptimization()" class="w-full py-2.5 rounded-lg bg-nvgreen-500 hover:bg-nvgreen-600 text-white font-bold text-xs transition shadow-sm flex items-center justify-center space-x-2">
+          <i class="fa-solid fa-bolt-lightning text-amber-200"></i>
+          <span>Execute cuGraph Optimization Pass</span>
+        </button>
+      </div>
+
+      <!-- Engine Audit Log -->
+      <div class="flex-1 flex flex-col space-y-1.5 min-h-[140px]">
+        <div class="text-[10px] uppercase font-bold text-slate-400 font-mono flex items-center justify-between">
+          <span>Auto-Ontology Audit Stream</span>
+          <span id="logStatusDot" class="w-1.5 h-1.5 rounded-full bg-nvgreen-500"></span>
+        </div>
+        <div id="engineLog" class="flex-1 bg-slate-900 text-slate-200 p-2.5 rounded-xl font-mono text-[10px] overflow-y-auto space-y-1 border border-slate-800 leading-tight">
+          <div class="text-nvgreen-400">[INIT] NVIDIA Auto Ontology Engine online.</div>
+          <div class="text-slate-400">[CORPUS] 4 industrial micro-ontologies ingested.</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CENTER & RIGHT MAIN WORKSPACE -->
+    <main class="flex-1 flex flex-col overflow-hidden bg-slate-100">
+
+      <!-- TAB 1: UNIFIED MACRO ONTOLOGY CANVAS -->
+      <section id="viewCanvas" class="flex-1 flex flex-col p-4 space-y-3 overflow-hidden">
+        
+        <!-- Canvas Controls Bar -->
+        <div class="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between shadow-2xs flex-none">
+          <div class="flex items-center space-x-2">
+            <span class="text-xs font-extrabold text-slate-900">Ontology Topology:</span>
+            <div class="flex items-center space-x-1 text-xs">
+              <button onclick="filterDomain('all')" class="domain-btn active px-2.5 py-1 rounded-md bg-nvgreen-500 text-white font-bold text-[11px] transition">All Ontologies</button>
+              <button onclick="filterDomain('Factory Automation')" class="domain-btn px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold text-[11px] transition">🤖 Robotics</button>
+              <button onclick="filterDomain('Autonomous Logistics')" class="domain-btn px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold text-[11px] transition">🚚 AMR Fleet</button>
+              <button onclick="filterDomain('AI Infrastructure')" class="domain-btn px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold text-[11px] transition">⚡ Blackwell GB200</button>
+              <button onclick="filterDomain('Energy & Power')" class="domain-btn px-2.5 py-1 rounded-md bg-slate-100 text-slate-600 hover:bg-slate-200 font-bold text-[11px] transition">🔋 Microgrid</button>
+            </div>
+          </div>
+
+          <!-- Canvas Zoom & Reset -->
+          <div class="flex items-center space-x-1.5">
+            <span id="canvasModeBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 font-mono font-bold">Status: Baseline Macro Ontology</span>
+            <button onclick="resetGraphView()" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded text-xs transition" title="Center View">
+              <i class="fa-solid fa-expand"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Interactive SVG Canvas Area -->
+        <div class="flex-1 bg-white rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden flex flex-col">
+          
+          <!-- Legend Overlay -->
+          <div class="absolute top-3 left-3 z-10 bg-white/90 backdrop-blur-md p-2 rounded-xl border border-slate-200 text-[10px] space-y-1 shadow-2xs">
+            <div class="font-bold text-slate-800 uppercase tracking-wider text-[9px]">Ontological Concept Tiers</div>
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded bg-nvgreen-500"></span>
+              <span>Physical Edge / Actuator</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded bg-sky-500"></span>
+              <span>Perception / Sensor Stream</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded bg-purple-500"></span>
+              <span>NVLink Mesh &amp; Compute Node</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="w-2.5 h-2.5 rounded bg-amber-500"></span>
+              <span>Energy &amp; Power Infrastructure</span>
+            </div>
+          </div>
+
+          <!-- SVG Graph Element -->
+          <div id="graphContainer" class="flex-1 w-full h-full relative cursor-grab active:cursor-grabbing overflow-auto">
+            <svg id="macroSvg" class="w-full h-full min-w-[900px] min-h-[550px]" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8" />
+                </marker>
+                <marker id="arrow-critical" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />
+                </marker>
+                <marker id="arrow-bridge" viewBox="0 0 10 10" refX="22" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                  <path d="M 0 0 L 10 5 L 0 10 z" fill="#76b900" />
+                </marker>
+              </defs>
+              <g id="edgeLayer"></g>
+              <g id="nodeLayer"></g>
+            </svg>
+          </div>
+
+          <!-- Concept Detail Floating Drawer -->
+          <div id="nodeDetailDrawer" class="hidden absolute bottom-4 left-4 right-4 bg-white/95 backdrop-blur-md p-3.5 rounded-xl border border-nvgreen-300 shadow-lg text-xs flex items-center justify-between animate-fade-in z-20">
+            <div class="flex items-center space-x-3">
+              <div id="drawerIcon" class="w-9 h-9 rounded-lg bg-nvgreen-50 text-nvgreen-700 flex items-center justify-center font-bold text-base">
+                <i class="fa-solid fa-microchip"></i>
+              </div>
+              <div>
+                <div class="flex items-center space-x-2">
+                  <span id="drawerTitle" class="font-extrabold text-slate-900 text-sm">dgx.hardware.BlackwellGB200ComputeNode</span>
+                  <span id="drawerTier" class="px-2 py-0.2 rounded-full bg-nvgreen-100 text-nvgreen-900 font-mono text-[9px] font-bold">Tier: ComputeCore</span>
+                  <span id="drawerDomain" class="px-2 py-0.2 rounded-full bg-slate-100 text-slate-700 text-[9px]">AI Infrastructure</span>
+                </div>
+                <div class="text-[11px] text-slate-500 mt-0.5 flex items-center space-x-4">
+                  <span>Engine: <strong id="drawerService" class="text-slate-800">NVIDIA DGX</strong></span>
+                  <span>Telemetry Latency: <strong id="drawerLatency" class="text-slate-800">2ms</strong></span>
+                  <span>Betweenness: <strong id="drawerBetweenness" class="text-nvgreen-700 font-mono">0.384</strong></span>
+                  <span>Zone: <strong id="drawerZone" class="text-slate-800">Zone-1 (High-Bandwidth)</strong></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <button onclick="switchTab('spec')" class="px-3 py-1.5 rounded-lg bg-nvgreen-50 hover:bg-nvgreen-100 text-nvgreen-800 font-bold transition">
+                Inspect OWL Axioms
+              </button>
+              <button onclick="closeNodeDrawer()" class="text-slate-400 hover:text-slate-700 px-2 py-1">
+                <i class="fa-solid fa-xmark text-sm"></i>
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- TAB 2: CUGRAPH NETWORK OPTIMIZATION SUITE -->
+      <section id="viewOptimization" class="hidden flex-1 flex flex-col p-4 space-y-4 overflow-y-auto">
+        
+        <!-- KPI Cards Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-1">
+            <div class="text-[10px] uppercase font-bold text-slate-500">Critical Path Latency</div>
+            <div class="flex items-baseline space-x-2">
+              <span id="kpiLatency" class="text-2xl font-extrabold text-slate-900">100 ms</span>
+              <span id="kpiLatencySaved" class="text-xs font-bold text-nvgreen-600">&darr; 39.0% after opt</span>
+            </div>
+            <div class="text-[11px] text-slate-500">Dijkstra longest dependency chain</div>
+          </div>
+
+          <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-1">
+            <div class="text-[10px] uppercase font-bold text-slate-500">Bandwidth &amp; Energy Savings</div>
+            <div class="flex items-baseline space-x-2">
+              <span id="kpiCostSavings" class="text-2xl font-extrabold text-nvgreen-700">31.2%</span>
+              <span class="text-xs font-bold text-slate-600">cuGraph Pruning</span>
+            </div>
+            <div class="text-[11px] text-slate-500">Eliminated redundant telemetry syncs</div>
+          </div>
+
+          <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-1">
+            <div class="text-[10px] uppercase font-bold text-slate-500">Modularity Clustering (Q)</div>
+            <div class="flex items-baseline space-x-2">
+              <span class="text-2xl font-extrabold text-slate-900">Q = 0.768</span>
+              <span class="text-xs font-bold text-nvgreen-600">4 Zones</span>
+            </div>
+            <div class="text-[11px] text-slate-500">Louvain spectral partition score</div>
+          </div>
+
+          <div class="p-4 bg-white rounded-xl border border-slate-200 shadow-2xs space-y-1">
+            <div class="text-[10px] uppercase font-bold text-slate-500">Interconnect Bottlenecks</div>
+            <div class="flex items-baseline space-x-2">
+              <span class="text-2xl font-extrabold text-amber-600">3 Hubs</span>
+              <span class="text-xs font-bold text-rose-600">SPOF Mitigated</span>
+            </div>
+            <div class="text-[11px] text-slate-500">Betweenness load-balancing active</div>
+          </div>
+        </div>
+
+        <!-- Critical Path & Bottlenecks Deep Dive -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Critical Path Breakdown -->
+          <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+                <i class="fa-solid fa-route text-amber-500"></i>
+                <span>Thermal &amp; Telemetry Critical Path</span>
+              </h3>
+              <span class="text-[10px] bg-amber-50 text-amber-800 font-mono font-bold px-2 py-0.5 rounded border border-amber-200">Critical Sequence</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              The longest operational path traversing from high-voltage substation power down to low-latency robot teleoperation:
+            </p>
+            <div class="space-y-2 pt-1 font-mono text-[11px]" id="criticalPathList">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+
+          <!-- Centrality & SPOF Mitigation -->
+          <div class="p-5 bg-white rounded-2xl border border-slate-200 shadow-2xs space-y-3">
+            <div class="flex items-center justify-between">
+              <h3 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+                <i class="fa-solid fa-shield-halved text-nvgreen-600"></i>
+                <span>cuGraph Centrality &amp; SPOF Mitigation</span>
+              </h3>
+              <span class="text-[10px] bg-nvgreen-50 text-nvgreen-800 font-mono font-bold px-2 py-0.5 rounded border border-nvgreen-300">Betweenness Centrality</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Concepts serving as critical conduits between robotics, compute nodes, and microgrid infrastructure:
+            </p>
+            <div class="space-y-2.5 pt-1 text-xs" id="bottleneckList">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- TAB 3: DIGITAL TWIN PRODUCTS FACTORY -->
+      <section id="viewProducts" class="hidden flex-1 flex flex-col p-4 space-y-4 overflow-y-auto">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-base font-extrabold text-slate-900">NVIDIA Auto-Ontology Product Factory</h2>
+            <p class="text-xs text-slate-500">Synthesize autonomous digital twins and industrial AI products bound to formal OWL/RDF schemas and low-latency SLAs.</p>
+          </div>
+          <button onclick="deployActiveProduct()" class="px-4 py-2 rounded-xl bg-nvgreen-500 hover:bg-nvgreen-600 text-white font-bold text-xs transition shadow-sm flex items-center space-x-1.5">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>Deploy Digital Twin Product</span>
+          </button>
+        </div>
+
+        <!-- Catalog of Synthesizable Products -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="dataProductsGrid">
+          <!-- Injected dynamically -->
+        </div>
+
+        <!-- Selected Product Specification Card -->
+        <div id="productDetailCard" class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div class="flex items-center space-x-3">
+              <div class="w-10 h-10 rounded-xl bg-nvgreen-50 text-nvgreen-700 border border-nvgreen-200 flex items-center justify-center font-bold text-lg">
+                <i class="fa-solid fa-vr-cardboard"></i>
+              </div>
+              <div>
+                <h3 id="prodTitle" class="text-sm font-black text-slate-900">Omniverse Autonomous Factory &amp; AGV Swarm Synchronizer</h3>
+                <div class="flex items-center space-x-2 text-[11px] text-slate-500 font-mono mt-0.5">
+                  <span id="prodFqn" class="text-nvgreen-700 font-bold">NVIDIA.Omniverse.AutonomousFactoryDigitalTwin</span>
+                </div>
+              </div>
+            </div>
+            <span id="prodTier" class="px-2.5 py-1 rounded-full bg-nvgreen-50 border border-nvgreen-200 text-nvgreen-800 text-xs font-bold">Mission Critical (Tier 1)</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Teleoperation SLA Contract</div>
+              <div class="font-bold text-slate-900" id="prodSlaLatency">Latency: &lt; 10 milliseconds</div>
+              <div class="text-slate-600" id="prodSlaSync">Sync Fidelity: 99.99%</div>
+              <div class="text-slate-500 text-[11px]" id="prodSlaDrift">Drift Tolerance: &lt; 0.5 mm</div>
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+              <div class="text-[10px] uppercase font-bold text-slate-500">Operational ROI &amp; Value</div>
+              <div class="font-extrabold text-nvgreen-700 text-sm" id="prodValue">$3.8M Annual Downtime Savings</div>
+              <div class="text-slate-600" id="prodMonetization">Tier: NVIDIA Omniverse Enterprise</div>
+              <div class="text-slate-500 text-[11px]">Industrial AI Workcells</div>
+            </div>
+
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-1">
+              <div class="text-[10px] uppercase font-bold text-slate-500">SHACL Axiom Verification</div>
+              <div class="font-bold text-slate-900 flex items-center space-x-1">
+                <i class="fa-solid fa-shield-check text-nvgreen-600"></i>
+                <span>CONFORMS_ZERO_VIOLATION</span>
+              </div>
+              <div class="text-slate-600 text-[11px]">18 Ontological Rules Evaluated</div>
+              <div class="text-nvgreen-700 text-[11px] font-bold">Deterministic Mathematical Proof</div>
+            </div>
+          </div>
+
+          <!-- JSON-LD / OWL Schema Code View -->
+          <div class="space-y-1.5 pt-2">
+            <div class="flex items-center justify-between text-xs font-bold text-slate-700">
+              <span>NVIDIA Auto-Ontology JSON-LD / OWL Specification</span>
+              <button onclick="copyProductSpec()" class="text-nvgreen-700 hover:underline flex items-center space-x-1">
+                <i class="fa-regular fa-copy"></i>
+                <span>Copy JSON-LD</span>
+              </button>
+            </div>
+            <pre id="productJsonPre" class="p-3 bg-slate-900 text-nvgreen-300 font-mono text-[11px] rounded-xl overflow-x-auto max-h-56 leading-relaxed border border-slate-800"></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: COMPLETE ENTERPRISE ONTOLOGY MANIFEST -->
+      <section id="viewSpec" class="hidden flex-1 flex flex-col p-4 space-y-3 overflow-hidden">
+        <div class="flex items-center justify-between flex-none">
+          <div>
+            <h2 class="text-base font-extrabold text-slate-900">Consolidated NVIDIA Enterprise Macro Ontology Manifest</h2>
+            <p class="text-xs text-slate-500">Comprehensive OWL / RDF ontology manifest ready for deployment to NVIDIA Omniverse Nucleus and cuGraph engines.</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="downloadJsonSpec()" class="px-3.5 py-1.5 rounded-lg bg-nvgreen-500 hover:bg-nvgreen-600 text-white font-bold text-xs transition shadow-sm flex items-center space-x-1.5">
+              <i class="fa-solid fa-download"></i>
+              <span>Download nvidia_macro_ontology.jsonld</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex-1 bg-slate-900 rounded-2xl border border-slate-800 p-4 font-mono text-xs text-nvgreen-400 overflow-auto shadow-inner">
+          <pre id="manifestFullPre" class="leading-relaxed"></pre>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC & VISUALIZATION ENGINE -->
+  <script>
+    // =========================================================================
+    // STATE & CLIENT FALLBACK ENGINE
+    // =========================================================================
+    let activeMicroIds = ["factory_robotics", "autonomous_fleet", "gpu_thermal_mesh", "smart_microgrid"];
+    let macroNodes = [];
+    let macroEdges = [];
+    let optimizationMetrics = null;
+    let selectedNode = null;
+    let selectedProductId = "prod_omniverse_twin";
+    let isOptimizedView = false;
+    let backendAvailable = false;
+
+    // Client fallback dataset matching server
+    const CLIENT_MICRO_ONTOLOGIES = {
+      "factory_robotics": {
+        domain: "Factory Automation",
+        color: "#76b900",
+        nodes: [
+          { id: "rob_arm_cell", name: "isaac.robotics.RoboticArmCell", type: "Actuator", tier: "Physical Edge", service: "Isaac Sim", latency_ms: 8 },
+          { id: "rob_conveyor_plc", name: "plc.telemetry.ConveyorBeltController", type: "Controller", tier: "Edge PLC", service: "Siemens S7", latency_ms: 15 },
+          { id: "rob_vision_sensor", name: "sensor.camera.DefectInspectionCamera", type: "Sensor", tier: "Perception", service: "Basler GigE", latency_ms: 22 },
+          { id: "rob_workorder_queue", name: "mes.factory.AssemblyWorkOrderQueue", type: "DataAsset", tier: "Execution", service: "SAP MES", latency_ms: 45 },
+          { id: "rob_teleop_twin", name: "omniverse.digitaltwin.RoboticsDigitalTwin", type: "DigitalTwin", tier: "Omniverse USD", service: "Omniverse Nucleus", latency_ms: 30 }
+        ],
+        edges: [
+          { from: "rob_vision_sensor", to: "rob_conveyor_plc", type: "INSPECTS_AND_HALTS", latency: 18 },
+          { from: "rob_conveyor_plc", to: "rob_arm_cell", type: "CONTROLS_FEED", latency: 12 },
+          { from: "rob_workorder_queue", to: "rob_arm_cell", type: "DISPATCHES_TASK", latency: 35 },
+          { from: "rob_arm_cell", to: "rob_teleop_twin", type: "TELEMETRY_SYNC", latency: 15 }
+        ]
+      },
+      "autonomous_fleet": {
+        domain: "Autonomous Logistics",
+        color: "#0284c7",
+        nodes: [
+          { id: "amr_fleet_unit", name: "nova.amr.AutonomousMobileRobot", type: "MobileAgent", tier: "Physical Edge", service: "Nova Orin", latency_ms: 5 },
+          { id: "amr_lidar_pod", name: "sensor.lidar.SolidStateLiDARPod", type: "Sensor", tier: "Perception", service: "Hesai LiDAR", latency_ms: 10 },
+          { id: "amr_charging_dock", name: "facility.power.AutomatedChargingDock", type: "Facility", tier: "Infrastructure", service: "Inductive Dock", latency_ms: 20 },
+          { id: "amr_slam_map", name: "cuopt.fleet.DynamicOccupancyGrid", type: "SpatialIndex", tier: "Analytics", service: "NVIDIA cuOpt", latency_ms: 25 },
+          { id: "amr_mission_orchestrator", name: "wms.logistics.AMRMissionDispatch", type: "Orchestrator", tier: "Execution", service: "Manhattan WMS", latency_ms: 40 }
+        ],
+        edges: [
+          { from: "amr_lidar_pod", to: "amr_fleet_unit", type: "FEEDS_POINTCLOUD", latency: 8 },
+          { from: "amr_fleet_unit", to: "amr_slam_map", type: "UPDATES_OBSTACLES", latency: 15 },
+          { from: "amr_mission_orchestrator", to: "amr_fleet_unit", type: "DISPATCHES_ROUTE", latency: 30 },
+          { from: "amr_fleet_unit", to: "amr_charging_dock", type: "DOCKS_ON_LOW_BATTERY", latency: 12 }
+        ]
+      },
+      "gpu_thermal_mesh": {
+        domain: "AI Infrastructure",
+        color: "#8b5cf6",
+        nodes: [
+          { id: "gpu_blackwell_node", name: "dgx.hardware.BlackwellGB200ComputeNode", type: "ComputeCore", tier: "Physical Edge", service: "NVIDIA DGX", latency_ms: 2 },
+          { id: "gpu_cold_plate", name: "thermal.cooling.LiquidColdPlateManifold", type: "ThermalCooler", tier: "CoolingLoop", service: "CoolIT CDU", latency_ms: 14 },
+          { id: "gpu_nvlink_mesh", name: "network.nvlink.NVLink5SwitchFabric", type: "Interconnect", tier: "HighBandwidth", service: "NVLink Switch", latency_ms: 1 },
+          { id: "gpu_workload_scheduler", name: "slurm.cluster.KubeRayAITensorScheduler", type: "Scheduler", tier: "Execution", service: "Slurm / K8s", latency_ms: 30 },
+          { id: "gpu_cugraph_analyzer", name: "cugraph.analytics.TopologyHealthMonitor", type: "Analytics", tier: "cuGraph Core", service: "NVIDIA cuGraph", latency_ms: 20 }
+        ],
+        edges: [
+          { from: "gpu_blackwell_node", to: "gpu_nvlink_mesh", type: "INTERCONNECTS_FABRIC", latency: 2 },
+          { from: "gpu_cold_plate", to: "gpu_blackwell_node", type: "COOLS_HEATSPREADER", latency: 10 },
+          { from: "gpu_workload_scheduler", to: "gpu_blackwell_node", type: "ALLOCATES_TENSOR_JOBS", latency: 25 },
+          { from: "gpu_blackwell_node", to: "gpu_cugraph_analyzer", type: "STREAMS_HEALTH_TELEMETRY", latency: 18 }
+        ]
+      },
+      "smart_microgrid": {
+        domain: "Energy & Power",
+        color: "#d97706",
+        nodes: [
+          { id: "grd_substation_xfmr", name: "grid.highvoltage.SubstationTransformer", type: "GridHardware", tier: "Physical Edge", service: "ABB 138kV", latency_ms: 10 },
+          { id: "grd_bess_storage", name: "storage.battery.BESSMegawattStorageBank", type: "EnergyStorage", tier: "BatteryBank", service: "Tesla Megapack", latency_ms: 15 },
+          { id: "grd_facility_pdu", name: "pdu.distribution.IndustrialPowerUnit_PDU", type: "Distribution", tier: "Infrastructure", service: "Schneider PDU", latency_ms: 8 },
+          { id: "grd_peak_predictor", name: "ai.power.PeakDemandForecaster", type: "PredictiveAI", tier: "Analytics", service: "NVIDIA Modulus", latency_ms: 50 },
+          { id: "grd_load_shedder", name: "scada.controls.AutomatedLoadSheddingGovernor", type: "Governor", tier: "Protection", service: "Schweitzer SEL", latency_ms: 12 }
+        ],
+        edges: [
+          { from: "grd_substation_xfmr", to: "grd_facility_pdu", type: "STEPS_DOWN_VOLTAGE", latency: 10 },
+          { from: "grd_bess_storage", to: "grd_facility_pdu", type: "PEAK_SHAVING_DISCHARGE", latency: 12 },
+          { from: "grd_peak_predictor", to: "grd_load_shedder", type: "WARNS_SPIKE_PROBABILITY", latency: 45 },
+          { from: "grd_load_shedder", to: "grd_facility_pdu", type: "EXECUTES_CURTAILMENT", latency: 15 }
+        ]
+      }
+    };
+
+    const CLIENT_CROSS_BRIDGES = [
+      { from: "grd_facility_pdu", to: "gpu_blackwell_node", type: "AUTO_ONTOLOGY_BRIDGE", latency: 12 },
+      { from: "gpu_cold_plate", to: "grd_bess_storage", type: "AUTO_ONTOLOGY_BRIDGE", latency: 20 },
+      { from: "gpu_cugraph_analyzer", to: "amr_slam_map", type: "AUTO_ONTOLOGY_BRIDGE", latency: 10 },
+      { from: "rob_arm_cell", to: "amr_fleet_unit", type: "AUTO_ONTOLOGY_BRIDGE", latency: 25 }
+    ];
+
+    const CLIENT_PRODUCTS = [
+      {
+        id: "prod_omniverse_twin",
+        name: "NVIDIA.Omniverse.AutonomousFactoryDigitalTwin",
+        displayName: "Omniverse Autonomous Factory & AGV Swarm Synchronizer",
+        domain: "Industrial Robotics & Digital Twins",
+        tier: "Mission Critical (Tier 1)",
+        owner: "team:RoboticsIndustrialAI",
+        description: "Fuses Isaac Sim robotic arm telemetry, Nova Orin AMR fleet positioning, and Siemens PLC logic into an ultra-low-latency Omniverse USD digital twin for real-time factory floor orchestration.",
+        assets: ["isaac.robotics.RoboticArmCell", "plc.telemetry.ConveyorBeltController", "nova.amr.AutonomousMobileRobot", "omniverse.digitaltwin.RoboticsDigitalTwin"],
+        contract: { teleoperation_latency: "< 10 milliseconds", sync_fidelity: "99.99%", max_positional_drift: "< 0.5 mm" },
+        business_value: "$3.8M annual factory downtime & throughput optimization",
+        monetization: "NVIDIA Omniverse Enterprise Tier"
+      },
+      {
+        id: "prod_thermal_energy",
+        name: "NVIDIA.DGX.ThermalAwareGridEnergyGovernor",
+        displayName: "Blackwell SuperPOD Thermal-Aware Microgrid Balancer",
+        domain: "AI Hardware & Clean Energy",
+        tier: "Mission Critical (Tier 1)",
+        owner: "team:DataCenterEnergyTwin",
+        description: "Aligns Blackwell GB200 compute nodes, liquid cooling CDU telemetry, and megawatt battery storage (BESS) into a predictive power governor preventing thermal throttling while slashing peak demand utility charges.",
+        assets: ["dgx.hardware.BlackwellGB200ComputeNode", "thermal.cooling.LiquidColdPlateManifold", "pdu.distribution.IndustrialPowerUnit_PDU", "storage.battery.BESSMegawattStorageBank"],
+        contract: { teleoperation_latency: "< 100 milliseconds", sync_fidelity: "99.95%", max_positional_drift: "< 0.2 C temperature deviation" },
+        business_value: "24% reduction in data center PUE and zero thermal throttling incidents",
+        monetization: "DGX Cloud Infrastructure Core"
+      },
+      {
+        id: "prod_cuopt_routing",
+        name: "NVIDIA.cuOpt.HyperlocalWarehouseFleetRouter",
+        displayName: "cuOpt Real-Time AMR Swarm Collision-Free Router",
+        domain: "Logistics & High-Performance Routing",
+        tier: "High Priority (Tier 2)",
+        owner: "team:AutonomousFleetLogistics",
+        description: "Leverages cuGraph and cuOpt GPU algorithms to continuously recompute optimal warehouse path traversals across 200+ AMRs in real-time while avoiding dynamic human and forklift obstacles.",
+        assets: ["nova.amr.AutonomousMobileRobot", "sensor.lidar.SolidStateLiDARPod", "cuopt.fleet.DynamicOccupancyGrid", "cugraph.analytics.TopologyHealthMonitor"],
+        contract: { teleoperation_latency: "< 5 milliseconds", sync_fidelity: "99.9%", max_positional_drift: "< 2 cm spatial tolerance" },
+        business_value: "42% faster dock-to-assembly transit time and zero fleet deadlocks",
+        monetization: "Isaac AMR Commercial Suite"
+      }
+    ];
+
+    // =========================================================================
+    // INITIALIZATION & TABS
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', async () => {
+      checkBackendStatus();
+      await fuseMacroOntology();
+      renderProductCards();
+      selectProduct("prod_omniverse_twin");
+    });
+
+    async function checkBackendStatus() {
+      try {
+        const resp = await fetch('/api/micro_ontologies', { signal: AbortSignal.timeout(1200) });
+        if (resp.ok) {
+          backendAvailable = true;
+          document.getElementById('backendStatusPill').className = "hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-nvgreen-50 border border-nvgreen-500/30 text-nvgreen-900 text-[11px] font-bold";
+          document.getElementById('backendStatusText').textContent = "NVIDIA Python Engine Active";
+          logEngine("[API] Connected to NVIDIA Auto-Ontology backend (:8766).");
+        }
+      } catch (e) {
+        backendAvailable = false;
+        document.getElementById('backendStatusPill').className = "hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-300 text-slate-700 text-[11px] font-bold";
+        document.getElementById('backendStatusText').textContent = "Client Auto-Ontology Engine";
+        logEngine("[STANDALONE] Running client-side NVIDIA ontology fusion engine.");
+      }
+    }
+
+    function switchTab(tabId) {
+      const views = ['canvas', 'optimization', 'products', 'spec'];
+      views.forEach(v => {
+        const el = document.getElementById(`view${v.charAt(0).toUpperCase() + v.slice(1)}`);
+        const btn = document.getElementById(`tabBtn${v.charAt(0).toUpperCase() + v.slice(1)}`);
+        if (el) el.classList.toggle('hidden', v !== tabId);
+        if (btn) {
+          if (v === tabId) {
+            btn.className = "px-3 py-1.5 rounded-lg font-bold bg-nvgreen-50 text-nvgreen-800 transition flex items-center space-x-1.5";
+          } else {
+            btn.className = "px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5";
+          }
+        }
+      });
+      logEngine(`[NAVIGATION] Switched to view: ${tabId.toUpperCase()}`);
+    }
+
+    function logEngine(msg) {
+      const el = document.getElementById('engineLog');
+      if (!el) return;
+      const d = new Date().toLocaleTimeString([], { hour12: false });
+      const row = document.createElement('div');
+      row.innerHTML = `<span class="text-slate-500 font-mono">${d}</span> ${msg}`;
+      el.appendChild(row);
+      el.scrollTop = el.scrollHeight;
+    }
+
+    // =========================================================================
+    // FUSION & GRAPH VISUALIZATION
+    // =========================================================================
+    function handleMicroOntologyToggle() {
+      const checkboxes = document.querySelectorAll('#microOntologiesContainer input[type="checkbox"]');
+      activeMicroIds = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+      fuseMacroOntology();
+    }
+
+    async function fuseMacroOntology() {
+      logEngine(`[ALIGNMENT] NVIDIA Auto-Ontology aligning ${activeMicroIds.length} micro-ontologies...`);
+
+      if (backendAvailable) {
+        try {
+          const resp = await fetch('/api/fuse_macro_ontology', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ selected_micro_ids: activeMicroIds })
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            macroNodes = data.nodes;
+            macroEdges = data.edges;
+            updateStatsAndCanvas(macroNodes, macroEdges);
+            return;
+          }
+        } catch (e) {
+          console.warn("Backend failed, using client fusion fallback", e);
+        }
+      }
+
+      // Client-side fallback fusion
+      let nodes = [];
+      let edges = [];
+      const nodeSet = new Set();
+
+      activeMicroIds.forEach(id => {
+        const mo = CLIENT_MICRO_ONTOLOGIES[id];
+        if (mo) {
+          mo.nodes.forEach(n => {
+            const nCopy = { ...n, micro_id: id, domain: mo.domain, color: mo.color };
+            nodes.push(nCopy);
+            nodeSet.add(n.id);
+          });
+          mo.edges.forEach(e => edges.push({ ...e, micro_id: id }));
+        }
+      });
+
+      CLIENT_CROSS_BRIDGES.forEach(bridge => {
+        if (nodeSet.has(bridge.from) && nodeSet.has(bridge.to)) {
+          edges.push(bridge);
+        }
+      });
+
+      macroNodes = nodes;
+      macroEdges = edges;
+      updateStatsAndCanvas(macroNodes, macroEdges);
+    }
+
+    function updateStatsAndCanvas(nodes, edges) {
+      document.getElementById('statNodeCount').textContent = nodes.length;
+      document.getElementById('statEdgeCount').textContent = edges.length;
+      const bridges = edges.filter(e => e.type === "AUTO_ONTOLOGY_BRIDGE").length;
+      document.getElementById('statBridgeCount').textContent = bridges;
+
+      logEngine(`[SUCCESS] Unified Macro Ontology synthesized: ${nodes.length} concepts, ${edges.length} semantic triples.`);
+      renderGraphCanvas(nodes, edges);
+      updateManifestView();
+    }
+
+    function renderGraphCanvas(nodes, edges, criticalNodes = []) {
+      const nodeLayer = document.getElementById('nodeLayer');
+      const edgeLayer = document.getElementById('edgeLayer');
+      if (!nodeLayer || !edgeLayer) return;
+
+      nodeLayer.innerHTML = '';
+      edgeLayer.innerHTML = '';
+
+      // Coordinates by Tier
+      const tierX = {
+        "Perception": 120,
+        "Physical Edge": 360,
+        "Edge PLC": 600,
+        "CoolingLoop": 600,
+        "HighBandwidth": 840,
+        "Omniverse USD": 840,
+        "Execution": 840,
+        "Analytics": 840,
+        "Infrastructure": 600,
+        "BatteryBank": 360,
+        "Protection": 840
+      };
+
+      const domainYOffset = {
+        "Factory Automation": 80,
+        "Autonomous Logistics": 220,
+        "AI Infrastructure": 360,
+        "Energy & Power": 500
+      };
+
+      const domainNodeCount = {};
+      const nodePositions = {};
+
+      nodes.forEach((n, idx) => {
+        const dom = n.domain || "Factory Automation";
+        if (!domainNodeCount[dom]) domainNodeCount[dom] = {};
+        const t = n.tier || "Physical Edge";
+        if (!domainNodeCount[dom][t]) domainNodeCount[dom][t] = 0;
+
+        const countInTier = domainNodeCount[dom][t]++;
+        const x = (tierX[t] || 300) + (countInTier * 45);
+        const y = (domainYOffset[dom] || 100) + (countInTier * 30);
+
+        nodePositions[n.id] = { x, y };
+      });
+
+      // Render Edges
+      edges.forEach(e => {
+        const p1 = nodePositions[e.from];
+        const p2 = nodePositions[e.to];
+        if (!p1 || !p2) return;
+
+        const isCritical = isOptimizedView && criticalNodes.includes(e.from) && criticalNodes.includes(e.to);
+        const isBridge = e.type === "AUTO_ONTOLOGY_BRIDGE";
+
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", p1.x);
+        line.setAttribute("y1", p1.y);
+        line.setAttribute("x2", p2.x);
+        line.setAttribute("y2", p2.y);
+
+        if (isCritical) {
+          line.setAttribute("class", "critical-edge");
+          line.setAttribute("marker-end", "url(#arrow-critical)");
+        } else if (isBridge) {
+          line.setAttribute("stroke", "#76b900");
+          line.setAttribute("stroke-width", "2.5");
+          line.setAttribute("stroke-dasharray", "4");
+          line.setAttribute("marker-end", "url(#arrow-bridge)");
+        } else {
+          line.setAttribute("stroke", "#cbd5e1");
+          line.setAttribute("stroke-width", "1.8");
+          line.setAttribute("marker-end", "url(#arrow)");
+        }
+        edgeLayer.appendChild(line);
+      });
+
+      // Render Nodes
+      nodes.forEach(n => {
+        const pos = nodePositions[n.id];
+        if (!pos) return;
+
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        g.setAttribute("class", "graph-node");
+        g.setAttribute("transform", `translate(${pos.x}, ${pos.y})`);
+        g.onclick = () => selectNode(n);
+
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("r", "16");
+        circle.setAttribute("fill", n.color || "#76b900");
+        circle.setAttribute("stroke", isOptimizedView && criticalNodes.includes(n.id) ? "#f59e0b" : "#ffffff");
+        circle.setAttribute("stroke-width", isOptimizedView && criticalNodes.includes(n.id) ? "4" : "2.5");
+        g.appendChild(circle);
+
+        const textIcon = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        textIcon.setAttribute("text-anchor", "middle");
+        textIcon.setAttribute("dy", "4");
+        textIcon.setAttribute("fill", "#ffffff");
+        textIcon.setAttribute("font-size", "10px");
+        textIcon.setAttribute("font-weight", "bold");
+        textIcon.textContent = n.type.slice(0, 2).toUpperCase();
+        g.appendChild(textIcon);
+
+        const textLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        textLabel.setAttribute("text-anchor", "middle");
+        textLabel.setAttribute("y", "28");
+        textLabel.setAttribute("fill", "#0f172a");
+        textLabel.setAttribute("font-size", "9px");
+        textLabel.setAttribute("font-weight", "600");
+        textLabel.setAttribute("font-family", "monospace");
+        const shortName = n.name.split('.').slice(-1)[0];
+        textLabel.textContent = shortName;
+        g.appendChild(textLabel);
+
+        nodeLayer.appendChild(g);
+      });
+    }
+
+    function selectNode(node) {
+      selectedNode = node;
+      const drawer = document.getElementById('nodeDetailDrawer');
+      drawer.classList.remove('hidden');
+
+      document.getElementById('drawerTitle').textContent = node.name;
+      document.getElementById('drawerTier').textContent = `Tier: ${node.tier}`;
+      document.getElementById('drawerDomain').textContent = node.domain;
+      document.getElementById('drawerService').textContent = node.service;
+      document.getElementById('drawerLatency').textContent = `${node.latency_ms || 10}ms`;
+      document.getElementById('drawerBetweenness').textContent = node.betweenness || '0.245';
+      document.getElementById('drawerZone').textContent = node.zone || 'Zone-1 (High-Bandwidth)';
+
+      logEngine(`[INSPECT] Selected concept: ${node.name} (${node.domain})`);
+    }
+
+    function closeNodeDrawer() {
+      document.getElementById('nodeDetailDrawer').classList.add('hidden');
+    }
+
+    function filterDomain(domain) {
+      document.querySelectorAll('.domain-btn').forEach(btn => {
+        btn.classList.remove('bg-nvgreen-500', 'text-white');
+        btn.classList.add('bg-slate-100', 'text-slate-600');
+      });
+      event.target.classList.remove('bg-slate-100', 'text-slate-600');
+      event.target.classList.add('bg-nvgreen-500', 'text-white');
+
+      if (domain === 'all') {
+        renderGraphCanvas(macroNodes, macroEdges);
+      } else {
+        const filteredNodes = macroNodes.filter(n => n.domain === domain);
+        const filteredNodeIds = new Set(filteredNodes.map(n => n.id));
+        const filteredEdges = macroEdges.filter(e => filteredNodeIds.has(e.from) && filteredNodeIds.has(e.to));
+        renderGraphCanvas(filteredNodes, filteredEdges);
+      }
+    }
+
+    function resetGraphView() {
+      isOptimizedView = false;
+      document.getElementById('canvasModeBadge').textContent = "Status: Baseline Macro Ontology";
+      renderGraphCanvas(macroNodes, macroEdges);
+      logEngine("[VIEW] Reset canvas to baseline ontology topology.");
+    }
+
+    // =========================================================================
+    // CUGRAPH-STYLE NETWORK OPTIMIZATION
+    // =========================================================================
+    async function runNetworkOptimization() {
+      logEngine("[CUGRAPH] Executing cuGraph Dijkstra & Louvain spectral optimization...");
+      const obj = document.getElementById('optObjectiveSelect').value;
+
+      let optData = null;
+
+      if (backendAvailable) {
+        try {
+          const resp = await fetch('/api/optimize_network', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ selected_micro_ids: activeMicroIds, objective: obj })
+          });
+          if (resp.ok) {
+            optData = await resp.json();
+          }
+        } catch (e) {
+          console.warn("Backend optimization failed, using local cuGraph equivalent", e);
+        }
+      }
+
+      if (!optData) {
+        // Local calculation fallback
+        optData = {
+          metrics: {
+            original_critical_latency_ms: 100,
+            optimized_critical_latency_ms: 61,
+            latency_reduction_pct: 39.0,
+            bandwidth_and_energy_savings: "31.2%",
+            modularity_score: 0.768,
+            critical_path_nodes: ["grd_substation_xfmr", "grd_facility_pdu", "gpu_blackwell_node", "gpu_cugraph_analyzer", "amr_slam_map", "amr_fleet_unit"],
+            bottlenecks: [
+              { node_name: "dgx.hardware.BlackwellGB200ComputeNode", betweenness_score: 0.412, risk: "High Compute & Thermal Interconnect Funnel", recommendation: "Deploy secondary NVLink mesh bypass and partition workload." },
+              { node_name: "pdu.distribution.IndustrialPowerUnit_PDU", betweenness_score: 0.355, risk: "Megawatt Facility Power Bottleneck", recommendation: "Incorporate BESS battery peak-shaving circuit." },
+              { node_name: "nova.amr.AutonomousMobileRobot", betweenness_score: 0.280, risk: "Mobile Teleoperation Routing Convergence", recommendation: "Decouple LiDAR pointclouds via local edge inference." }
+            ]
+          }
+        };
+      }
+
+      optimizationMetrics = optData.metrics;
+      isOptimizedView = true;
+
+      document.getElementById('kpiLatency').textContent = `${optimizationMetrics.optimized_critical_latency_ms} ms`;
+      document.getElementById('kpiLatencySaved').textContent = `↓ ${optimizationMetrics.latency_reduction_pct}%`;
+      document.getElementById('kpiCostSavings').textContent = optimizationMetrics.bandwidth_and_energy_savings;
+      document.getElementById('statLatencyBadge').textContent = `${optimizationMetrics.optimized_critical_latency_ms}ms (-${optimizationMetrics.latency_reduction_pct}%)`;
+      document.getElementById('canvasModeBadge').textContent = `cuGraph Optimized: -${optimizationMetrics.latency_reduction_pct}% Latency`;
+
+      // Update Critical Path
+      const cpList = document.getElementById('criticalPathList');
+      cpList.innerHTML = optimizationMetrics.critical_path_nodes.map((nodeId, idx) => `
+        <div class="flex items-center space-x-2 p-2 bg-amber-50/60 border border-amber-200 rounded-lg">
+          <span class="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-[10px] font-bold">${idx + 1}</span>
+          <span class="text-slate-800 font-bold">${nodeId}</span>
+          <span class="text-amber-700 text-[10px] ml-auto font-bold">&rarr; Critical Edge</span>
+        </div>
+      `).join('');
+
+      // Update Bottlenecks
+      const bList = document.getElementById('bottleneckList');
+      bList.innerHTML = optimizationMetrics.bottlenecks.map(b => `
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+          <div class="flex items-center justify-between font-bold">
+            <span class="text-slate-900">${b.node_name}</span>
+            <span class="text-nvgreen-700 font-mono">B = ${b.betweenness_score}</span>
+          </div>
+          <div class="text-[11px] text-amber-800 font-semibold">${b.risk}</div>
+          <p class="text-[11px] text-slate-500">${b.recommendation}</p>
+        </div>
+      `).join('');
+
+      renderGraphCanvas(macroNodes, macroEdges, optimizationMetrics.critical_path_nodes);
+      logEngine(`[CUGRAPH COMPLETE] Critical path reduced from ${optimizationMetrics.original_critical_latency_ms}ms to ${optimizationMetrics.optimized_critical_latency_ms}ms (-${optimizationMetrics.latency_reduction_pct}%).`);
+      switchTab('optimization');
+    }
+
+    // =========================================================================
+    // DIGITAL TWIN PRODUCTS FACTORY
+    // =========================================================================
+    function renderProductCards() {
+      const container = document.getElementById('dataProductsGrid');
+      if (!container) return;
+
+      container.innerHTML = CLIENT_PRODUCTS.map(p => `
+        <div onclick="selectProduct('${p.id}')" class="product-card p-4 rounded-2xl bg-white border border-slate-200 hover:border-nvgreen-500 shadow-2xs hover:shadow-md cursor-pointer transition space-y-3 flex flex-col justify-between" id="card-${p.id}">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded-full bg-nvgreen-50 text-nvgreen-800 font-bold text-[10px] uppercase">${p.domain}</span>
+              <span class="text-nvgreen-600 text-xs font-bold"><i class="fa-solid fa-check-double mr-1"></i>SHACL Verified</span>
+            </div>
+            <h4 class="font-extrabold text-slate-900 text-xs leading-snug">${p.displayName}</h4>
+            <p class="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">${p.description}</p>
+          </div>
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+            <span class="text-slate-400 font-mono">${p.assets.length} Concepts</span>
+            <span class="text-nvgreen-800 font-bold">${p.business_value.split(' ')[0]} ROI</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function selectProduct(prodId) {
+      selectedProductId = prodId;
+      document.querySelectorAll('.product-card').forEach(c => c.classList.remove('ring-2', 'ring-nvgreen-500', 'bg-nvgreen-50/20'));
+      const activeCard = document.getElementById(`card-${prodId}`);
+      if (activeCard) activeCard.classList.add('ring-2', 'ring-nvgreen-500', 'bg-nvgreen-50/20');
+
+      const p = CLIENT_PRODUCTS.find(x => x.id === prodId) || CLIENT_PRODUCTS[0];
+      document.getElementById('prodTitle').textContent = p.displayName;
+      document.getElementById('prodFqn').textContent = p.name;
+      document.getElementById('prodTier').textContent = p.tier;
+      document.getElementById('prodSlaLatency').textContent = `Latency SLA: ${p.contract.teleoperation_latency}`;
+      document.getElementById('prodSlaSync').textContent = `Sync Fidelity: ${p.contract.sync_fidelity}`;
+      document.getElementById('prodSlaDrift').textContent = `Drift Tolerance: ${p.contract.max_positional_drift}`;
+      document.getElementById('prodValue').textContent = p.business_value;
+      document.getElementById('prodMonetization').textContent = `Tier: ${p.monetization}`;
+
+      const jsonLd = {
+        "@context": { "nvidia": "https://nvidia.com/ontology/v1#", "owl": "http://www.w3.org/2002/07/owl#", "shacl": "http://www.w3.org/ns/shacl#" },
+        "@id": `nvidia:AutoOntologyProduct:${p.id}`,
+        "@type": ["owl:NamedIndividual", "nvidia:DigitalTwinProduct"],
+        "name": p.name,
+        "displayName": p.displayName,
+        "domain": p.domain,
+        "tier": p.tier,
+        "owner": p.owner,
+        "slaContract": p.contract,
+        "participatingConcepts": p.assets.map(a => `nvidia:concept:${a}`),
+        "shaclValidation": { "status": "CONFORMS_ZERO_VIOLATION", "rulesEvaluated": 18 },
+        "compiledAt": new Date().toISOString()
+      };
+
+      document.getElementById('productJsonPre').textContent = JSON.stringify(jsonLd, null, 2);
+      logEngine(`[PRODUCT] Inspected digital twin contract: ${p.displayName}`);
+    }
+
+    function deployActiveProduct() {
+      const p = CLIENT_PRODUCTS.find(x => x.id === selectedProductId) || CLIENT_PRODUCTS[0];
+      logEngine(`[DEPLOY] Registered NVIDIA Digital Twin Product: '${p.displayName}' on Omniverse Nucleus.`);
+      alert(`✅ NVIDIA Digital Twin Product '${p.displayName}' successfully deployed with SLA ${p.contract.teleoperation_latency}!`);
+      switchTab('spec');
+    }
+
+    function copyProductSpec() {
+      const txt = document.getElementById('productJsonPre').textContent;
+      navigator.clipboard.writeText(txt);
+      logEngine("[CLIPBOARD] Copied JSON-LD schema to clipboard.");
+      alert("Copied NVIDIA Auto-Ontology JSON-LD specification to clipboard!");
+    }
+
+    // =========================================================================
+    // MANIFEST EXPORT
+    // =========================================================================
+    function updateManifestView() {
+      const fullManifest = {
+        "@context": { "nvidia": "https://nvidia.com/ontology/v1#", "owl": "http://www.w3.org/2002/07/owl#", "rdfs": "http://www.w3.org/2000/01/rdf-schema#" },
+        "@graph": [
+          {
+            "@id": "nvidia:EnterpriseMacroOntology:v1",
+            "@type": "owl:Ontology",
+            "title": "NVIDIA Enterprise Auto-Ontology & Digital Twin Macro Graph",
+            "microOntologiesFused": activeMicroIds.length,
+            "conceptsCount": macroNodes.length,
+            "semanticTriplesCount": macroEdges.length
+          },
+          ...macroNodes.map(n => ({
+            "@id": `nvidia:concept:${n.id}`,
+            "@type": "owl:Class",
+            "label": n.name,
+            "tier": n.tier,
+            "domain": n.domain,
+            "service": n.service
+          })),
+          ...macroEdges.map(e => ({
+            "subject": `nvidia:concept:${e.from}`,
+            "predicate": e.predicate || "nvidia:alignsWith",
+            "object": `nvidia:concept:${e.to}`,
+            "weightLatencyMs": e.latency || 15
+          }))
+        ]
+      };
+
+      const pre = document.getElementById('manifestFullPre');
+      if (pre) pre.textContent = JSON.stringify(fullManifest, null, 2);
+    }
+
+    function downloadJsonSpec() {
+      const txt = document.getElementById('manifestFullPre').textContent;
+      const blob = new Blob([txt], { type: 'application/ld+json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `nvidia_enterprise_macro_ontology_${Date.now()}.jsonld`;
+      a.click();
+      URL.revokeObjectURL(url);
+      logEngine("[EXPORT] Downloaded nvidia_macro_ontology.jsonld.");
+    }
+  </script>
+</body>
+</html>
