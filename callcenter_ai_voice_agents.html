@@ -164,167 +164,183 @@
     <div class="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden flex flex-col relative">
 
       <!-- ================================================================= -->
-      <!-- VIEW 1: AGENT HIERARCHICAL STRUCTURE -->
+      <!-- VIEW 1: GRAPH SYNTHESIS HIERARCHY (KG + CG -> BG -> 4 IMPACTS)  -->
       <!-- ================================================================= -->
-      <div id="view-hierarchy" class="view-panel flex-1 overflow-y-auto p-5 sm:p-7">
-        <div class="max-w-4xl mx-auto space-y-6">
+      <div id="view-hierarchy" class="view-panel flex-1 overflow-y-auto p-4 sm:p-6 flex flex-col justify-between">
+        <div class="max-w-5xl w-full mx-auto flex-1 flex flex-col justify-between space-y-6">
 
-          <!-- Section Title -->
-          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <!-- Section Title & Legend -->
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
             <div>
               <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Architecture Diagram</span>
-              <h2 class="text-lg font-black text-slate-900 dark:text-white">Call Center Multi-Agent Hierarchy</h2>
-              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">How specialized AI agents coordinate synchronously during a live customer voice call.</p>
+              <h2 class="text-base sm:text-lg font-black text-slate-900 dark:text-white">Triad Graph Synthesis Hierarchy</h2>
+              <p class="text-xs text-slate-500 dark:text-slate-400">Reconciling What SHOULD happen (SOPs) with What ACTUALLY happened (Call Records) to drive business value.</p>
             </div>
-            <span class="px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-xs font-bold border border-emerald-200 dark:border-emerald-800">
-              4 Sub-Agents &bull; 1 Supervisor
-            </span>
-          </div>
-
-          <!-- LEVEL 1: SUPERVISOR ORCHESTRATOR AGENT -->
-          <div class="flex justify-center">
-            <div class="w-full max-w-xl bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 text-white rounded-2xl p-4 shadow-md border border-indigo-700/60 relative">
-              <div class="flex items-start justify-between">
-                <div class="flex items-center space-x-3">
-                  <div class="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white text-lg font-bold shadow-sm">
-                    <i class="fa-solid fa-crown"></i>
-                  </div>
-                  <div>
-                    <div class="flex items-center space-x-2">
-                      <h3 class="font-black text-sm">Lead Orchestrator &amp; Supervisor Agent</h3>
-                      <span class="px-1.5 py-0.5 rounded bg-indigo-500/40 text-indigo-200 text-[9px] font-bold uppercase">Root Tier-1</span>
-                    </div>
-                    <p class="text-xs text-slate-300 mt-0.5">Manages caller state machine, delegates sub-tasks, enforces global SLA &amp; business goals.</p>
-                  </div>
-                </div>
-                <span class="font-mono text-emerald-400 text-xs font-bold">State: Active</span>
-              </div>
-              <div class="mt-3 pt-2.5 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-300">
-                <span>Tools: Session Context Manager &bull; Sub-Agent Bus &bull; Fallback Router</span>
-                <span class="text-indigo-400 font-mono">P99 Latency: 25ms</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- CONNECTING STEM -->
-          <div class="flex justify-center -my-2">
-            <div class="w-0.5 h-6 bg-slate-300 dark:bg-slate-700"></div>
-          </div>
-
-          <!-- LEVEL 2: 4 SPECIALIZED SUB-AGENTS GRID -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-            <!-- Sub-Agent 1: Voice Concierge -->
-            <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 hover:border-sky-400 transition shadow-2xs">
-              <div class="flex items-start justify-between">
-                <div class="flex items-center space-x-2.5">
-                  <div class="w-8 h-8 rounded-lg bg-sky-600 text-white flex items-center justify-center text-sm font-bold">
-                    <i class="fa-solid fa-microphone-lines"></i>
-                  </div>
-                  <div>
-                    <h4 class="font-black text-xs text-slate-900 dark:text-white">1. Voice Concierge Agent</h4>
-                    <span class="text-[10px] text-sky-600 dark:text-sky-400 font-semibold">Inbound Speech &amp; Intent Classifier</span>
-                  </div>
-                </div>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-sky-100 dark:bg-sky-950 text-sky-800 dark:text-sky-200">Streaming Turn</span>
-              </div>
-              <p class="text-xs text-slate-600 dark:text-slate-300 mt-2.5 leading-relaxed">
-                Manages real-time bi-directional voice streaming, caller greeting, ANI/PIN identity authentication, and intent extraction.
-              </p>
-              <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-                <span>Input: Live Audio Stream</span>
-                <span>Output: Structured Intent Payload</span>
-              </div>
-            </div>
-
-            <!-- Sub-Agent 2: SOP Compliance & Knowledge Agent -->
-            <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 hover:border-blue-400 transition shadow-2xs">
-              <div class="flex items-start justify-between">
-                <div class="flex items-center space-x-2.5">
-                  <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center text-sm font-bold">
-                    <i class="fa-solid fa-book-bookmark"></i>
-                  </div>
-                  <div>
-                    <h4 class="font-black text-xs text-slate-900 dark:text-white">2. SOP Policy &amp; Knowledge Agent</h4>
-                    <span class="text-[10px] text-blue-600 dark:text-blue-400 font-semibold">Knowledge Graph (KG) Rulebook Evaluator</span>
-                  </div>
-                </div>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-950 text-blue-800 dark:text-blue-200">Rule Engine</span>
-              </div>
-              <p class="text-xs text-slate-600 dark:text-slate-300 mt-2.5 leading-relaxed">
-                Queries the official SOP Knowledge Graph for allowed policy actions, financial limits, and exception conditions (e.g. max $150 credit).
-              </p>
-              <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-                <span>Input: Policy Query</span>
-                <span>Output: Validated Boundary Rules</span>
-              </div>
-            </div>
-
-            <!-- Sub-Agent 3: Action & CRM Execution Agent -->
-            <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 hover:border-emerald-400 transition shadow-2xs">
-              <div class="flex items-start justify-between">
-                <div class="flex items-center space-x-2.5">
-                  <div class="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm font-bold">
-                    <i class="fa-solid fa-bolt-lightning"></i>
-                  </div>
-                  <div>
-                    <h4 class="font-black text-xs text-slate-900 dark:text-white">3. Action &amp; CRM Execution Agent</h4>
-                    <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">Transactional Tool Calling</span>
-                  </div>
-                </div>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-200">Read / Write</span>
-              </div>
-              <p class="text-xs text-slate-600 dark:text-slate-300 mt-2.5 leading-relaxed">
-                Interacts with backend systems: executes bill adjustments, dispatches field technician tickets, or issues customer credits.
-              </p>
-              <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-                <span>Input: Action Directive</span>
-                <span>Output: API Confirmation / ID</span>
-              </div>
-            </div>
-
-            <!-- Sub-Agent 4: QA & Business Intelligence Agent -->
-            <div class="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 hover:border-purple-400 transition shadow-2xs">
-              <div class="flex items-start justify-between">
-                <div class="flex items-center space-x-2.5">
-                  <div class="w-8 h-8 rounded-lg bg-purple-600 text-white flex items-center justify-center text-sm font-bold">
-                    <i class="fa-solid fa-clipboard-check"></i>
-                  </div>
-                  <div>
-                    <h4 class="font-black text-xs text-slate-900 dark:text-white">4. QA &amp; Business Graph Agent</h4>
-                    <span class="text-[10px] text-purple-600 dark:text-purple-400 font-semibold">Call Record (CG) &amp; Goals (BG) Evaluator</span>
-                  </div>
-                </div>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-100 dark:bg-purple-950 text-purple-800 dark:text-purple-200">Post-Call Audit</span>
-              </div>
-              <p class="text-xs text-slate-600 dark:text-slate-300 mt-2.5 leading-relaxed">
-                Synthesizes the Context Graph call diary, scores compliance against SOP rules, and calculates business ROI and AHT/FCR metrics.
-              </p>
-              <div class="mt-3 pt-2 border-t border-slate-200 dark:border-slate-700 flex justify-between text-[10px] text-slate-500 dark:text-slate-400 font-mono">
-                <span>Input: Completed Dialogue</span>
-                <span>Output: Context &amp; Business Graph</span>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- Bottom Visual Flow Banner -->
-          <div class="bg-slate-100 dark:bg-slate-800/80 rounded-xl p-3 border border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
             <div class="flex items-center space-x-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span>Execution Pipeline:</span>
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
+                Live Reconciler Active
+              </span>
             </div>
-            <div class="flex items-center space-x-2 text-[11px] font-mono overflow-x-auto">
-              <span>Customer Utterance</span>
-              <span class="text-slate-400">&rarr;</span>
-              <span class="text-sky-600 font-bold">Voice Concierge</span>
-              <span class="text-slate-400">&rarr;</span>
-              <span class="text-blue-600 font-bold">SOP Policy</span>
-              <span class="text-slate-400">&rarr;</span>
-              <span class="text-emerald-600 font-bold">Action Engine</span>
-              <span class="text-slate-400">&rarr;</span>
-              <span class="text-purple-600 font-bold">QA &amp; Business Graph</span>
+          </div>
+
+          <!-- THE VISUAL HIERARCHY DIAGRAM CONTAINER (SVG CONNECTORS + CARDS) -->
+          <div class="relative w-full py-4 select-none">
+
+            <!-- SVG Background Lines & Connectors Layer -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <marker id="arrowhead" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                  <polygon points="0 0, 7 3.5, 0 7" fill="#64748b" />
+                </marker>
+                <marker id="arrowhead-loop" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
+                  <polygon points="0 0, 7 3.5, 0 7" fill="#6366f1" />
+                </marker>
+              </defs>
+
+              <!-- Line KG -> BG -->
+              <path d="M 240 68 L 440 148" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+              
+              <!-- Line CG -> BG -->
+              <path d="M 720 68 L 520 148" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+              <!-- 4 Fan-out Lines from BG to Bottom Cards -->
+              <path d="M 420 220 L 150 285" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+              <path d="M 460 220 L 380 285" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+              <path d="M 500 220 L 600 285" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+              <path d="M 540 220 L 820 285" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+
+              <!-- Policy Drift Feedback Loop (Dashed Arrow looping from bottom left up back to KG) -->
+              <path d="M 60 330 C -20 330, -20 38, 70 38" stroke="#6366f1" stroke-width="2.5" stroke-dasharray="5 5" fill="none" marker-end="url(#arrowhead-loop)"/>
+            </svg>
+
+            <!-- TIER 1: TOP ROW (KG & CG) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-24 relative z-10 px-4 sm:px-12">
+              
+              <!-- TOP LEFT: Knowledge Graph (KG) -->
+              <div onclick="switchTab('kg')" class="cursor-pointer group rounded-2xl p-4 sm:p-5 bg-indigo-50/90 dark:bg-indigo-950/70 border-2 border-indigo-300 dark:border-indigo-700 hover:border-indigo-500 shadow-md transition hover:-translate-y-0.5">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full bg-indigo-600"></span>
+                    <h3 class="font-extrabold text-sm sm:text-base text-indigo-950 dark:text-indigo-200">Knowledge Graph (KG)</h3>
+                  </div>
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-200/60 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-300 font-bold">Rulebook</span>
+                </div>
+                <p class="text-xs sm:text-sm font-semibold text-indigo-700 dark:text-indigo-300 mt-1">What SHOULD happen (SOPs)</p>
+                <div class="mt-2.5 pt-2 border-t border-indigo-200/60 dark:border-indigo-800/60 flex items-center justify-between text-[11px] text-indigo-600 dark:text-indigo-400">
+                  <span>Policies &bull; Thresholds &bull; Roles</span>
+                  <span class="group-hover:underline font-bold">View Graph &rarr;</span>
+                </div>
+              </div>
+
+              <!-- TOP RIGHT: Context Graph (CG) -->
+              <div onclick="switchTab('cg')" class="cursor-pointer group rounded-2xl p-4 sm:p-5 bg-emerald-50/90 dark:bg-emerald-950/70 border-2 border-emerald-300 dark:border-emerald-700 hover:border-emerald-500 shadow-md transition hover:-translate-y-0.5">
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full bg-emerald-600"></span>
+                    <h3 class="font-extrabold text-sm sm:text-base text-emerald-950 dark:text-emerald-200">Context Graph (CG)</h3>
+                  </div>
+                  <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-200/60 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-300 font-bold">Diary</span>
+                </div>
+                <p class="text-xs sm:text-sm font-semibold text-emerald-700 dark:text-emerald-300 mt-1">What ACTUALLY happened (calls)</p>
+                <div class="mt-2.5 pt-2 border-t border-emerald-200/60 dark:border-emerald-800/60 flex items-center justify-between text-[11px] text-emerald-600 dark:text-emerald-400">
+                  <span>Events &bull; Decisions &bull; Outcomes</span>
+                  <span class="group-hover:underline font-bold">View Graph &rarr;</span>
+                </div>
+              </div>
+
             </div>
+
+            <!-- TIER 2: MIDDLE ROW (Business Graph / BG) -->
+            <div class="flex justify-center my-8 sm:my-10 relative z-10 px-4">
+              <div onclick="switchTab('bg')" class="cursor-pointer group w-full max-w-md rounded-2xl p-4 sm:p-5 bg-amber-50/95 dark:bg-amber-950/80 border-2 border-amber-400 dark:border-amber-700 hover:border-amber-500 shadow-lg text-center transition hover:-translate-y-0.5">
+                <div class="flex items-center justify-center space-x-2">
+                  <span class="w-3 h-3 rounded-full bg-amber-600"></span>
+                  <h3 class="font-black text-base sm:text-lg text-amber-950 dark:text-amber-100">Business Graph (BG)</h3>
+                </div>
+                <p class="text-xs sm:text-sm font-semibold text-amber-800 dark:text-amber-200 mt-0.5">Compares should vs actual</p>
+                <p class="text-[11px] text-amber-700 dark:text-amber-300/80 mt-1">Fuses SOP policies with live call decisions to compute business impact and compliance</p>
+              </div>
+            </div>
+
+            <!-- TIER 3: BOTTOM ROW (4 OUTCOME PILLARS) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 relative z-10 px-2 sm:px-4">
+
+              <!-- Card 1: Policy Drift -->
+              <div class="rounded-2xl p-3.5 bg-slate-100/90 dark:bg-slate-800/80 border-2 border-slate-300 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Policy drift</h4>
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold">Feedback Loop</span>
+                  </div>
+                  <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">Updates the KG</p>
+                  <p class="text-xs text-slate-700 dark:text-slate-300 mt-2 font-medium leading-snug" id="hier-drift-text">
+                    Supervisor granted 47 exceptions to $50 limit &rarr; Recommends updating SOP-04 limit to $150.
+                  </p>
+                </div>
+                <div class="mt-3 pt-1.5 border-t border-slate-200 dark:border-slate-700 text-[10px] text-indigo-600 dark:text-indigo-400 font-bold flex items-center">
+                  <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Loops back to Knowledge Graph
+                </div>
+              </div>
+
+              <!-- Card 2: Compliance Gap -->
+              <div class="rounded-2xl p-3.5 bg-slate-100/90 dark:bg-slate-800/80 border-2 border-slate-300 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Compliance gap</h4>
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold">Audit</span>
+                  </div>
+                  <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">Policy followed?</p>
+                  <p class="text-xs text-slate-700 dark:text-slate-300 mt-2 font-medium leading-snug" id="hier-compliance-text">
+                    100% Validated &bull; Exception authorized by Supervisor role per section 4.2 of SOP.
+                  </p>
+                </div>
+                <div class="mt-3 pt-1.5 border-t border-slate-200 dark:border-slate-700 text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">
+                  Status: Compliant Exception
+                </div>
+              </div>
+
+              <!-- Card 3: Net Value -->
+              <div class="rounded-2xl p-3.5 bg-slate-100/90 dark:bg-slate-800/80 border-2 border-slate-300 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Net value</h4>
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold">ROI</span>
+                  </div>
+                  <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">Value vs cost</p>
+                  <p class="text-xs text-slate-700 dark:text-slate-300 mt-2 font-medium leading-snug" id="hier-netvalue-text">
+                    +$2,250 Net Value &bull; Retained $2,400 LTV account against -$150 concession fee.
+                  </p>
+                </div>
+                <div class="mt-3 pt-1.5 border-t border-slate-200 dark:border-slate-700 text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">
+                  ROI Ratio: 15.0x
+                </div>
+              </div>
+
+              <!-- Card 4: Bottlenecks -->
+              <div class="rounded-2xl p-3.5 bg-slate-100/90 dark:bg-slate-800/80 border-2 border-slate-300 dark:border-slate-700 shadow-sm flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Bottlenecks</h4>
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-bold">Latency</span>
+                  </div>
+                  <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">Where steps stall</p>
+                  <p class="text-xs text-slate-700 dark:text-slate-300 mt-2 font-medium leading-snug" id="hier-bottleneck-text">
+                    Step 2 initial offer stalled for 45s &bull; Recommend direct automated VIP screen-pop.
+                  </p>
+                </div>
+                <div class="mt-3 pt-1.5 border-t border-slate-200 dark:border-slate-700 text-[10px] text-amber-600 dark:text-amber-400 font-bold">
+                  AHT Impact: -45s potential
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- Bottom Notice -->
+          <div class="bg-indigo-50/50 dark:bg-slate-850 p-3 rounded-xl border border-indigo-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
+            <span><i class="fa-solid fa-circle-info text-indigo-500 mr-1.5"></i> Click any card above to open its dedicated graph view, or change the scenario preset below to see how inputs and outcomes update dynamically.</span>
           </div>
 
         </div>
@@ -437,6 +453,12 @@
       "billing_dispute": {
         title: "Billing Dispute & Overcharge Waiver",
         summary: "High-LTV customer billed $150 in disputed roaming fees. SOP limits agent to $50, but supervisor grants exception to protect $2,400 customer LTV.",
+        outcomes: {
+          drift: "Supervisor granted 47 exceptions to $50 limit -> Recommends updating SOP-04 limit to $150 for LTV > $2k.",
+          compliance: "100% Validated • Exception authorized by Supervisor role per section 4.2 of SOP.",
+          netvalue: "+$2,250 Net Value • Retained $2,400 LTV account against -$150 concession fee.",
+          bottleneck: "Step 2 initial offer stalled for 45s • Recommend direct automated VIP screen-pop."
+        },
         kg: {
           nodes: [
             { id: "sop_billing", label: "SOP-04: Billing Disputes", color: "#3b82f6", shape: "box" },
@@ -492,6 +514,12 @@
       "tech_outage": {
         title: "Broadband Outage & Tech Dispatch",
         summary: "Customer experiencing complete fiber disconnect. SOP guides through remote ONT diagnostics. Automated truck roll dispatched in 180 seconds.",
+        outcomes: {
+          drift: "Zero SOP drift • Optical loss-of-signal diagnostic sequence followed strictly with zero manual deviations.",
+          compliance: "100% Policy Compliant • Truck roll dispatch triggered automatically per optical signal threshold rule.",
+          netvalue: "+$850 Net Value • Preempted repetitive call escalations, customer churn risk minimized, CSAT 5/5.",
+          bottleneck: "ONT red light check automated via remote telemetry in 12s vs 180s manual phone interrogation."
+        },
         kg: {
           nodes: [
             { id: "sop_tech", label: "SOP-12: Broadband Diagnostics", color: "#3b82f6", shape: "box" },
@@ -534,6 +562,12 @@
       "vip_retention": {
         title: "VIP Account Churn & Loyalty Retention",
         summary: "10-year enterprise account requests immediate cancellation. Voice Concierge detects high churn risk and pairs with loyalty incentive contract.",
+        outcomes: {
+          drift: "15% discount matches enterprise loyalty matrix; zero unauthorized margin erosion detected.",
+          compliance: "100% Policy Compliant • 2-year contract extension validated with legal terms approval.",
+          netvalue: "+$27,900 ARR Protected • Retained $18,000/yr enterprise account with high margin continuity.",
+          bottleneck: "Digital contract dispatch reduced closing cycle from 4 days to instant SMS e-signature."
+        },
         kg: {
           nodes: [
             { id: "sop_retention", label: "SOP-09: Enterprise Loyalty", color: "#3b82f6", shape: "box" },
@@ -693,6 +727,17 @@
       const s = SCENARIOS[scenarioKey];
       document.getElementById('scenario-title').textContent = `Scenario: ${s.title}`;
       document.getElementById('scenario-summary').textContent = s.summary;
+
+      if (s.outcomes) {
+        const driftEl = document.getElementById('hier-drift-text');
+        const compEl = document.getElementById('hier-compliance-text');
+        const netEl = document.getElementById('hier-netvalue-text');
+        const botEl = document.getElementById('hier-bottleneck-text');
+        if (driftEl) driftEl.textContent = s.outcomes.drift;
+        if (compEl) compEl.textContent = s.outcomes.compliance;
+        if (netEl) netEl.textContent = s.outcomes.netvalue;
+        if (botEl) botEl.textContent = s.outcomes.bottleneck;
+      }
 
       if (activeTab === 'kg') renderKG();
       else if (activeTab === 'cg') renderCG();
