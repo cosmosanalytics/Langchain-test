@@ -1,0 +1,25 @@
+================================================================================
+STANDARD OPERATING PROCEDURE: SOP-12 (REV. 5.1)
+TITLE: BROADBAND RESIDENTIAL OUTAGE TRIAGE & TRUCK ROLL PROTOCOL
+CLASSIFICATION: TECHNICAL OPERATIONS MANUAL
+EFFECTIVE DATE: 2026-02-01
+GOVERNANCE: NETWORK INFRASTRUCTURE OPERATIONS
+================================================================================
+
+1. PURPOSE & SCOPE
+Defines diagnostic sequences for residential fiber optical line terminal (ONT) and
+gateway faults prior to dispatching field technical personnel ("truck rolls").
+
+2. MANDATORY DIAGNOSTIC SEQUENCE
+2.1 Telemetry Verification:
+    - Agent must query the Area Optical Loop Telemetry.
+    - If Red Optical Alarm (Loss of Signal / LOS) is confirmed on the neighborhood hub,
+      remote modem reboot sequences are strictly counter-indicated.
+2.2 Step-by-Step Diagnostic Verification:
+    - Step 1: Query Hub Telemetry (Verify upstream attenuation).
+    - Step 2: In-Home Optical Cable Inspection (Direct customer to inspect green SC/APC connector).
+    - Step 3: Hardware Dispatch Decision:
+      * Standard truck roll fee: $120.00 USD.
+      * Clause 6.1 (Hardware Defect Waiver): If LOS is confirmed on upstream telemetry,
+        the dispatch fee is 100% waived, and an urgent field technician slot is scheduled within 4 hours.
+================================================================================

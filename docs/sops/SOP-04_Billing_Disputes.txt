@@ -1,0 +1,32 @@
+================================================================================
+STANDARD OPERATING PROCEDURE: SOP-04 (REV. 8.2)
+TITLE: TELECOM BILLING DISPUTES & INTERNATIONAL ROAMING WAIVERS
+CLASSIFICATION: INTERNAL COMPLIANCE - LEVEL 2
+EFFECTIVE DATE: 2026-01-15
+GOVERNANCE: CONSUMER OPERATIONS POLICY COMMITTEE
+================================================================================
+
+1. PURPOSE & SCOPE
+This document establishes the mandated operational parameters for Customer Service
+Representatives (CSRs) regarding billing fee disputes, with specific governance
+for international data/voice roaming assessments.
+
+2. STANDARD AUTHORIZATION THRESHOLDS
+2.1 Tier-1 Customer Care Representatives:
+    - Empowered to grant billing concessions up to a hard ceiling of $50.00 USD per billing cycle.
+    - Concessions between $50.01 and $200.00 USD strictly require Supervisory escalation (Form SUP-B9).
+2.2 Tier-2 Advanced Support:
+    - Authority ceiling up to $200.00 USD.
+
+3. SECTION 4.2: VIP CUSTOMER HARDSHIP & RETENTION CLAUSE (EXCEPTION PROVISION)
+3.1 Qualifications:
+    - The customer must hold an active account lifetime value (LTV) exceeding $1,500.00 USD.
+    - Zero prior roaming fee concessions in the preceding 12 months (clean dispute history).
+    - Account status must be in Good Standing (no active collections).
+3.2 Authority Grant:
+    - Tier-1 CSRs are granted expanded discretionary authority up to $250.00 USD waiver limit
+      WITHOUT requiring supervisor escalation, provided the sole objective is immediate First
+      Contact Resolution (FCR) and customer retention.
+3.3 Mandatory Audit Logging:
+    - The agent must record the exact justification code "VIP_HARDSHIP_4.2" in the CRM billing ledger.
+================================================================================

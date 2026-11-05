@@ -1,0 +1,17 @@
+================================================================================
+CALL RECORD & ASR TRANSCRIPT: CALL-1109
+CALLER ID: +1 (512) 555-0481 | CUSTOMER: Marcus Vance (CID: 819203)
+ACCOUNT METRICS: Tenured 2 Years | Plan: 1Gbps Fiber | Status: Service Degraded
+TIMESTAMP: 2026-11-05 10:28:10 EST | DURATION: 01m 58s
+AGENT: AI Voice Agent (Autonomous Technical Triage)
+================================================================================
+
+[00:02] AGENT: Hello, Apex Fiber technical assistance. How can I assist you with your internet today?
+[00:06] CUSTOMER (Marcus Vance): My optical ONT router is blinking red, and my entire home internet is dead. I already power-cycled it three times and checked the wall fiber cable. I need an emergency technician out here today.
+[00:18] AGENT: Let me run an instant diagnostic on your fiber line and our neighborhood distribution node.
+[00:25] [SYSTEM AUDIT: Telemetry Query... Upstream Hub 4-B reports Optical Signal Loss (LOS) alarm at feeder splice. Physical break confirmed.]
+[00:28] AGENT: I have confirmed a network-side physical optical loss on your neighborhood hub. Power-cycling will not resolve this. Under SOP-12 Clause 6.1, I am waiving the standard $120 technician dispatch fee and have booked our priority field engineering team to arrive at your address between 1:00 PM and 3:00 PM today.
+[00:46] CUSTOMER (Marcus Vance): Awesome, appreciate you not making me do repetitive troubleshooting steps.
+[00:51] AGENT: Absolutely, Marcus. You will receive an SMS tracking link when the technician is en route.
+[00:58] [CALL RESOLUTION: Redundant reboot avoided | Dispatch Fee: $0 ($120 waived) | Dispatch ETA: 2h]
+================================================================================

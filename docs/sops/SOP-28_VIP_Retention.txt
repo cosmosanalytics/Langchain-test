@@ -1,0 +1,22 @@
+================================================================================
+STANDARD OPERATING PROCEDURE: SOP-28 (REV. 4.0)
+TITLE: ENTERPRISE & HIGH-LTV RETENTION GOVERNANCE
+CLASSIFICATION: COMMERCIAL SALES & ACCOUNTS OPERATIONS
+EFFECTIVE DATE: 2026-03-01
+GOVERNANCE: ENTERPRISE REVENUE PROTECTION COMMITTEE
+================================================================================
+
+1. PURPOSE & SCOPE
+Defines contract renegotiation, discount ceilings, and multi-year extension terms for
+accounts with Annual Contract Value (ACV) exceeding $10,000.00 USD.
+
+2. RETENTION CEILINGS
+2.1 Standard Account Representatives:
+    - Maximum allowable discount on renewal: 5.0% without director sign-off.
+2.2 Executive Clause 3.1: High-Value Retention Allowance:
+    - Applicable only to accounts with verified ARR > $15,000.00 USD.
+    - Tier-1 Enterprise Specialists are authorized to offer up to 15.0% contract rate reduction
+      contingent on executing a 24-month contract lock.
+    - Financial Justification: Retaining $18,000 ARR with $2,700 concession yields +$15,300 net
+      annual retained value, preventing churn to competitors.
+================================================================================

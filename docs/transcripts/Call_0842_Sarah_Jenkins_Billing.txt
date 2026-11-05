@@ -1,0 +1,17 @@
+================================================================================
+CALL RECORD & ASR TRANSCRIPT: CALL-0842
+CALLER ID: +1 (312) 555-0192 | CUSTOMER: Sarah Jenkins (CID: 948102)
+ACCOUNT METRICS: Tenured 6 Years | LTV: $2,400.00 USD | Status: Good Standing
+TIMESTAMP: 2026-11-05 10:14:22 EST | DURATION: 02m 45s
+AGENT: AI Voice Agent (Autonomous Tier-1 CSR)
+================================================================================
+
+[00:02] AGENT: Thank you for calling Apex Telecom priority support. My name is Alex. How can I help you today?
+[00:07] CUSTOMER (Sarah Jenkins): Hi Alex. I just received my monthly statement, and there is a massive $150 international roaming charge from my trip to Montreal. I explicitly purchased an international add-on pass before leaving. This has to be a mistake, and I want it waived immediately.
+[00:23] AGENT: I completely understand your frustration with unexpected charges, Ms. Jenkins. Let me review your billing ledger and travel pass provisioning right now. One moment please.
+[00:31] [SYSTEM AUDIT: Querying Billing Ledger... Charge confirmed: $150.00 roaming fee on Oct 28. Querying Customer History... LTV: $2,400.00, Prior dispute count: 0.]
+[00:35] AGENT: Thank you for waiting, Sarah. I verified your account. Because you have been a valued customer with us for 6 years with an exceptional standing, I am applying our VIP Hardship Exception under SOP-04 Section 4.2 to waive the full $150 charge right now. Your balance has been adjusted to $0, and no supervisor transfer is required.
+[00:54] CUSTOMER (Sarah Jenkins): Wow, that was so fast and painless! Thank you so much Alex.
+[00:58] AGENT: You're very welcome, Sarah! A confirmation email has been dispatched to your address on file. Have a wonderful day!
+[01:05] [CALL RESOLUTION: FCR = 100% | Concession: $150.00 | Account Retained: $2,400.00 LTV | Justification: SOP-04 Sec 4.2]
+================================================================================

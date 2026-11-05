@@ -1,0 +1,17 @@
+================================================================================
+CALL RECORD & ASR TRANSCRIPT: CALL-2204
+CALLER ID: +1 (212) 555-0819 | CUSTOMER: Elena Rostova (CID: 704192)
+COMPANY: Apex Global Logistics | ACCOUNT METRICS: Enterprise Tier | ARR: $18,000.00 USD
+TIMESTAMP: 2026-11-05 10:45:00 EST | DURATION: 03m 12s
+AGENT: AI Voice Agent (Autonomous VIP Enterprise Retention)
+================================================================================
+
+[00:03] AGENT: Hello Elena, thank you for reaching out to Enterprise Dedicated Support. How can I assist Apex Global Logistics today?
+[00:09] CUSTOMER (Elena Rostova): We received a renewal quote from our account rep at our standard $18,000 annual rate, but a competitor has offered us equivalent fiber connectivity at a 15% discount. Unless you can match their rate, I am instructing my procurement team to terminate our service at contract expiry.
+[00:26] AGENT: I understand completely, Elena. Retaining our partnership with Apex Global Logistics is a high priority. Let me review your enterprise account metrics and commercial retention guidelines immediately.
+[00:36] [SYSTEM AUDIT: Enterprise Ledger Query... Annual Contract Value: $18,000. Account Tenure: 4 Years. Risk Level: Critical Churn.]
+[00:41] AGENT: Under SOP-28 Executive Clause 3.1, because your enterprise ARR exceeds $15,000 and you maintain an exceptional service track record, I am authorized to immediately apply a 15% rate reduction, lowering your annual contract from $18,000 to $15,300, bound to a renewed 24-month term lock. I can execute this contract modification right now.
+[01:05] CUSTOMER (Elena Rostova): That matches their proposal without the migration friction. Please execute that amendment and send the DocuSign.
+[01:12] AGENT: The digital agreement has been routed to your procurement email. Thank you for your continued partnership with Apex.
+[01:20] [CALL RESOLUTION: Churn Prevented | Retained ARR: $15,300 Net ($18k - $2.7k concession) | Term: 24mo lock]
+================================================================================
