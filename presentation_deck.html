@@ -40,7 +40,7 @@
       </button>
       
       <div class="text-xs font-mono font-bold px-2.5 py-1 rounded-md bg-slate-800/80 text-emerald-400 border border-slate-700">
-        Slide <span id="current-slide-num">1</span> / <span id="total-slides-num">10</span>
+        Slide <span id="current-slide-num">1</span> / <span id="total-slides-num">9</span>
       </div>
 
       <button onclick="nextSlide()" class="p-1.5 px-3 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-bold transition flex items-center space-x-1 cursor-pointer">
@@ -420,53 +420,6 @@
 
         <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between text-xs text-emerald-950 font-medium">
           <span><strong>Executive Summary:</strong> Self-healing SOPs eliminate policy drift and empower autonomous voice agents to act decisively within compliant boundaries.</span>
-        </div>
-      </section>
-
-      <!-- ============================================================= -->
-      <!-- SLIDE 10: ARCHITECTURE BLUEPRINT & ACCESS                     -->
-      <!-- ============================================================= -->
-      <section class="slide w-full h-full bg-slate-900 text-white p-6 sm:p-10 flex-col justify-between">
-        <div>
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">Roadmap &amp; Access</span>
-          <h2 class="text-xl sm:text-2xl font-black text-white mt-2">Production Architecture Blueprint &amp; Live Studio Access</h2>
-          <p class="text-xs sm:text-sm text-slate-400">Ready for enterprise deployment in AWS project "For Each and Every" (region us-east-2).</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 my-auto text-xs">
-          <!-- AWS Architecture Blueprint -->
-          <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 space-y-3">
-            <div class="flex items-center space-x-2 text-indigo-400">
-              <i class="fa-brands fa-aws text-xl"></i>
-              <h4 class="font-extrabold text-sm text-white">AWS Enterprise Blueprint (us-east-2)</h4>
-            </div>
-            <ul class="space-y-2 text-slate-300 text-[11px] leading-relaxed">
-              <li>&bull; <strong>Region:</strong> us-east-2 (Project: <em>For Each and Every</em>)</li>
-              <li>&bull; <strong>Document Ingestion:</strong> Amazon Bedrock (<code>anthropic.claude-3-5-sonnet</code>) extracts SOP PDFs into OWL/RDF ontologies.</li>
-              <li>&bull; <strong>Graph Database:</strong> Amazon Neptune (OpenCypher/SPARQL) stores Knowledge Graph and temporal Context Graph.</li>
-              <li>&bull; <strong>Runtime Voice Agent:</strong> Bedrock Nova-Lite / Llama-3.3-70B or Groq LPU for sub-250ms streaming voice reasoning.</li>
-              <li>&bull; <strong>Telephony Bridge:</strong> Amazon Connect / SIP Trunk with live ASR transcription.</li>
-            </ul>
-          </div>
-
-          <!-- Live Links -->
-          <div class="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 space-y-3">
-            <div class="flex items-center space-x-2 text-emerald-400">
-              <i class="fa-solid fa-link text-lg"></i>
-              <h4 class="font-extrabold text-sm text-white">Live Interactive Links</h4>
-            </div>
-            <ul class="space-y-2 text-slate-300 text-[11px] leading-relaxed">
-              <li>&bull; <strong>Live Web Studio:</strong><br><a href="https://cosmosanalytics.github.io/uat-copilot-local/callcenter_ai_voice_agents.html" target="_blank" class="text-emerald-400 hover:underline">cosmosanalytics.github.io/uat-copilot-local/callcenter_ai_voice_agents.html</a></li>
-              <li>&bull; <strong>Mirror Live Studio:</strong><br><a href="https://cosmosanalytics.github.io/Langchain-test/callcenter_ai_voice_agents.html" target="_blank" class="text-emerald-400 hover:underline">cosmosanalytics.github.io/Langchain-test/callcenter_ai_voice_agents.html</a></li>
-              <li>&bull; <strong>GitHub Repository:</strong><br><a href="https://github.com/cosmosanalytics/uat-copilot-local" target="_blank" class="text-emerald-400 hover:underline">github.com/cosmosanalytics/uat-copilot-local</a></li>
-              <li>&bull; <strong>PowerPoint Deck:</strong><br><a href="Call_Center_AI_Voice_Agents_Presentation.pptx" download class="text-amber-400 font-bold hover:underline">Download Call_Center_AI_Voice_Agents_Presentation.pptx</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between text-xs text-slate-500 border-t border-slate-800 pt-2 font-mono">
-          <span>Thank You &bull; Questions &amp; Discussion</span>
-          <span>Press [Esc] to exit Fullscreen</span>
         </div>
       </section>
 
