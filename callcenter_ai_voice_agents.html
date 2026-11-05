@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Call Center AI Voice Agents Studio | Goals, SOPs &amp; Call Records</title>
+  <title>Call Center AI Voice Agents Studio | Live Call &amp; Triad Graph</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome 6 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <!-- Vis.js Network for clean separate interactive graphs -->
+  <!-- Vis.js Network -->
   <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,106 +23,626 @@
           fontFamily: {
             sans: ['"Plus Jakarta Sans"', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'monospace']
-          },
-          colors: {
-            brand: {
-              50: '#f0fdf4',
-              100: '#dcfce7',
-              500: '#22c55e',
-              600: '#16a34a',
-              700: '#15803d'
-            }
           }
         }
       }
-    }
+    };
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 9999px; }
+    .vis-network { outline: none; }
+  </style>
+</head>
+<body class="h-full bg-slate-900 text-slate-100 flex flex-col antialiased overflow-hidden">
 
-    // =========================================================================
-    // REAL-TIME CALL SIMULATOR (GROUNDED IN KG & CG)
-    // =========================================================================
-    let callTimerInterval = null;
-    let callSeconds = 18;
+  <!-- TOP HEADER & USE CASE SELECTOR -->
+  <header class="bg-slate-950 border-b border-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0 shadow-md">
+    <div class="flex items-center space-x-3">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-600 to-indigo-600 flex items-center justify-center text-white shadow-md font-black text-base">
+        <i class="fa-solid fa-headset"></i>
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-sm sm:text-base font-extrabold text-white tracking-tight">Call Center AI Voice Agents Studio</h1>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-800 text-[10px] font-bold uppercase tracking-wider">Single Unified UI</span>
+        </div>
+        <p class="text-[11px] text-slate-400 hidden sm:block">Upper: Real-Time Call &bull; Lower: Grounded KG (SOP) + CG (Call Record) &rarr; BG (Business ROI &amp; Drift)</p>
+      </div>
+    </div>
+
+    <!-- CROSS-USECASES SELECTOR BUTTONS -->
+    <div class="flex items-center space-x-1.5 bg-slate-900 border border-slate-800 p-1 rounded-xl">
+      <span class="text-[10px] font-mono font-bold text-slate-400 px-2 uppercase hidden lg:inline">Active Scenario:</span>
+      <button onclick="selectUseCase('billing')" id="btn-usecase-billing" class="usecase-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-xs transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-file-invoice-dollar text-amber-400"></i>
+        <span>1. Billing Dispute ($150)</span>
+      </button>
+      <button onclick="selectUseCase('outage')" id="btn-usecase-outage" class="usecase-btn px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-wifi text-sky-400"></i>
+        <span>2. Broadband Outage (LOS)</span>
+      </button>
+      <button onclick="selectUseCase('retention')" id="btn-usecase-retention" class="usecase-btn px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-handshake text-emerald-400"></i>
+        <span>3. VIP Retention ($18k)</span>
+      </button>
+      <button onclick="selectUseCase('cross')" id="btn-usecase-cross" class="usecase-btn px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent transition flex items-center space-x-1.5 bg-gradient-to-r hover:from-indigo-900/40 hover:to-emerald-900/40">
+        <i class="fa-solid fa-diagram-project text-indigo-400"></i>
+        <span>🌍 Cross-Usecases</span>
+      </button>
+    </div>
+
+    <!-- Audio Speech Toggle -->
+    <div class="flex items-center space-x-2">
+      <button id="btn-toggle-speech" onclick="toggleVoiceSpeech()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition flex items-center space-x-1.5">
+        <i id="voice-icon" class="fa-solid fa-volume-high text-emerald-400"></i>
+        <span id="voice-toggle-text">Voice Speech: ON</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN SPLIT WORKSPACE: UPPER (CALL) & LOWER (GRAPHS) -->
+  <main class="flex-1 flex flex-col min-h-0 overflow-hidden p-3 gap-3">
+
+    <!-- ================================================================= -->
+    <!-- UPPER SIDE: REAL-TIME LIVE CALL CONSOLE (42% Height)              -->
+    <!-- ================================================================= -->
+    <section class="h-[42%] min-h-[260px] bg-slate-950 border border-slate-800 rounded-2xl p-3.5 shadow-lg flex flex-col shrink-0">
+      
+      <!-- Call Control Bar -->
+      <div class="flex flex-wrap items-center justify-between pb-2.5 border-b border-slate-800/80 gap-2 shrink-0">
+        <div class="flex items-center space-x-3">
+          <div class="relative">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 text-sm shadow-inner">
+              <i class="fa-solid fa-phone-volume animate-pulse"></i>
+            </div>
+            <span class="absolute -top-1 -right-1 flex h-2.5 w-2.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="text-xs font-black uppercase tracking-wider text-emerald-400">Real-Time Inbound Voice Call</span>
+              <span class="text-slate-600">&bull;</span>
+              <span id="call-timer" class="font-mono text-[11px] text-slate-300 font-bold">00:24</span>
+              <span class="text-slate-600">&bull;</span>
+              <span id="caller-id-pill" class="text-xs font-bold text-white">Caller: Sarah Jenkins (LTV $2,400)</span>
+              <span id="caller-tag" class="px-1.5 py-0.2 rounded text-[9px] font-extrabold bg-indigo-500/30 text-indigo-300 border border-indigo-500/40">VIP Tier</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sample Questions Quick Chips -->
+        <div class="flex items-center space-x-1.5 overflow-x-auto text-[11px]">
+          <span class="text-[10px] uppercase font-mono text-slate-500 font-bold hidden xl:inline">Ask Question:</span>
+          <button onclick="askSampleQuestion('billing')" id="chip-q-billing" class="px-2.5 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium transition truncate max-w-[220px]">
+            💳 "Waive $150 roaming fee?"
+          </button>
+          <button onclick="askSampleQuestion('outage')" id="chip-q-outage" class="px-2.5 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium transition truncate max-w-[220px]">
+            🌐 "Red optical light, dispatch tech?"
+          </button>
+          <button onclick="askSampleQuestion('retention')" id="chip-q-retention" class="px-2.5 py-1 rounded-lg bg-slate-800/90 hover:bg-slate-700 text-slate-300 border border-slate-700 font-medium transition truncate max-w-[220px]">
+            💼 "Cancel $18k enterprise account?"
+          </button>
+        </div>
+
+        <!-- Waveform visualizer -->
+        <div class="flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-900 border border-slate-800 shrink-0">
+          <div id="w-1" class="w-1 h-3 bg-emerald-400 rounded-full"></div>
+          <div id="w-2" class="w-1 h-5 bg-emerald-400 rounded-full"></div>
+          <div id="w-3" class="w-1 h-2 bg-emerald-400 rounded-full"></div>
+          <div id="w-4" class="w-1 h-6 bg-emerald-400 rounded-full"></div>
+          <div id="w-5" class="w-1 h-3 bg-emerald-400 rounded-full"></div>
+        </div>
+      </div>
+
+      <!-- Dialogue Split View: Left = Customer Utterance, Right = AI Voice Agent Response -->
+      <div class="flex-1 grid grid-cols-1 md:grid-cols-12 gap-3 pt-2.5 min-h-0 overflow-y-auto">
+        
+        <!-- Left Box: Transcribed Inbound Customer Audio -->
+        <div class="md:col-span-5 bg-slate-900/90 border border-slate-800 rounded-xl p-3 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-slate-300">Customer Inbound Audio (ASR)</span>
+              </div>
+              <span id="cust-sentiment-badge" class="px-2 py-0.5 rounded text-[9px] font-extrabold uppercase bg-amber-950 text-amber-300 border border-amber-800">
+                Churn Risk: 82%
+              </span>
+            </div>
+            <p id="cust-speech-text" class="text-xs text-slate-200 leading-relaxed font-medium mt-1">
+              &ldquo;I was charged a $150 international roaming fee on my last bill that I didn't authorize. Can you waive it?&rdquo;
+            </p>
+          </div>
+
+          <!-- Custom Caller Input -->
+          <div class="flex items-center space-x-1.5 mt-2 pt-2 border-t border-slate-800/80">
+            <input type="text" id="input-custom-call" placeholder="Type custom question..." class="flex-1 px-2.5 py-1 bg-slate-950 border border-slate-700 rounded-lg text-xs text-white focus:outline-none focus:ring-1 focus:ring-emerald-500 font-medium">
+            <button onclick="askCustomCaller()" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[11px] font-bold transition shrink-0">
+              Ask
+            </button>
+          </div>
+        </div>
+
+        <!-- Middle Arrow / Step Trigger -->
+        <div class="md:col-span-2 hidden md:flex flex-col items-center justify-center text-center px-1">
+          <div class="p-2 rounded-full bg-indigo-950/60 border border-indigo-700/60 text-indigo-400 mb-1">
+            <i class="fa-solid fa-brain fa-spin"></i>
+          </div>
+          <span class="text-[9px] font-mono font-bold text-indigo-300 uppercase">Dual-Graph Grounding</span>
+          <span class="text-[8px] text-slate-500 mt-0.5">KG (SOP) + CG (State)</span>
+        </div>
+
+        <!-- Right Box: Grounded AI Voice Agent Response -->
+        <div class="md:col-span-5 bg-emerald-950/20 border border-emerald-900/50 rounded-xl p-3 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                <span class="text-[11px] font-extrabold uppercase tracking-wider text-emerald-400">AI Voice Agent (Grounded)</span>
+                <span id="agent-sop-match-badge" class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-900/60 text-emerald-300 border border-emerald-700/60 font-mono">SOP-04 Sec 4.2</span>
+              </div>
+              <button onclick="speakCurrentResponse()" class="text-[10px] text-emerald-400 hover:underline font-bold flex items-center space-x-1">
+                <i class="fa-solid fa-volume-high"></i>
+                <span>Replay Voice</span>
+              </button>
+            </div>
+            <p id="agent-speech-text" class="text-xs text-slate-100 leading-relaxed font-medium mt-1">
+              &ldquo;Hello Sarah, I completely understand your concern regarding the $150 roaming fee. Because you have been a valued customer with us for 6 years and maintain an exceptional account standing, I am applying our VIP Hardship Exception under SOP-04 Section 4.2 to waive the full $150 right now. Your balance has been adjusted to $0, and no supervisor transfer is required.&rdquo;
+            </p>
+          </div>
+
+          <!-- Real-Time Decision Metric Tag -->
+          <div class="flex items-center justify-between mt-2 pt-2 border-t border-emerald-900/40 text-[10px]">
+            <span class="text-slate-400" id="grounding-audit-note">&bull; Grounding: SARAH_JENKINS_LTV &gt; $2,000 &bull; Concession: $150 &le; $250</span>
+            <span class="text-emerald-400 font-bold" id="net-roi-tag">+$2,250 Net Value</span>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- LOWER SIDE: BG, KG, AND CG HIGHLIGHTED FOR THE CURRENT CALL (58%) -->
+    <!-- ================================================================= -->
+    <section class="flex-1 min-h-[300px] bg-slate-950 border border-slate-800 rounded-2xl shadow-lg flex flex-col overflow-hidden">
+      
+      <!-- Graph Header & Path View Controls -->
+      <div class="px-3.5 py-2.5 bg-slate-900/90 border-b border-slate-800 flex flex-wrap items-center justify-between gap-2 shrink-0">
+        <div class="flex items-center space-x-2.5">
+          <div class="flex items-center space-x-1.5">
+            <span class="w-2.5 h-2.5 rounded bg-indigo-500"></span>
+            <span class="text-xs font-extrabold text-white">KG (SOPs)</span>
+          </div>
+          <span class="text-slate-600">&bull;</span>
+          <div class="flex items-center space-x-1.5">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+            <span class="text-xs font-extrabold text-white">CG (Call Diary)</span>
+          </div>
+          <span class="text-slate-600">&bull;</span>
+          <div class="flex items-center space-x-1.5">
+            <span class="w-2.5 h-2.5 rounded bg-emerald-500"></span>
+            <span class="text-xs font-extrabold text-white">BG (Business Goals &amp; ROI)</span>
+          </div>
+          <span id="active-call-highlight-label" class="text-xs text-emerald-400 font-bold ml-2">
+            &bull; Current Call Path Highlighted: Sarah Jenkins &rarr; SOP-04 &rarr; +$2,250
+          </span>
+        </div>
+
+        <!-- View Controls & Center Button -->
+        <div class="flex items-center space-x-2">
+          <div class="flex items-center bg-slate-950 border border-slate-800 p-0.5 rounded-lg text-[11px]">
+            <button onclick="setGraphFocusMode('highlight_call')" id="btn-focus-call" class="px-2.5 py-1 rounded-md font-bold bg-indigo-600 text-white shadow-xs transition">
+              🎯 Highlight Current Call
+            </button>
+            <button onclick="setGraphFocusMode('show_all')" id="btn-focus-all" class="px-2.5 py-1 rounded-md font-bold text-slate-400 hover:text-white transition">
+              🌍 Show Full Triad
+            </button>
+          </div>
+
+          <button onclick="resetGraphView()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs font-semibold text-slate-300">
+            <i class="fa-solid fa-arrows-to-dot mr-1"></i> Center
+          </button>
+        </div>
+      </div>
+
+      <!-- VIS.JS LOWER GRAPH CANVAS -->
+      <div class="flex-1 relative bg-slate-950" id="graph-wrapper">
+        <div id="unified-graph-canvas" class="w-full h-full"></div>
+
+        <!-- Floating Legend & Edge Decoder -->
+        <div class="absolute bottom-2 left-2 bg-slate-900/95 border border-slate-800/90 rounded-xl p-2.5 text-[10px] text-white shadow-lg pointer-events-none max-w-xs space-y-1.5">
+          <div class="font-extrabold text-slate-400 uppercase text-[9px] tracking-wider">Active Graph Legend &amp; Cross-Edges</div>
+          <div class="grid grid-cols-3 gap-1 text-[9px]">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-indigo-500"></span>KG: SOP</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-500"></span>CG: Call Event</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-emerald-500"></span>BG: Net ROI</span>
+          </div>
+          <div class="border-t border-slate-800 pt-1 text-[9px] space-y-0.5 text-slate-300 font-mono">
+            <div><span class="text-red-400">-- evaluates_against &rarr;</span> Standard Check</div>
+            <div><span class="text-indigo-400">&mdash; conforms_to &rarr;</span> Exception Approved</div>
+            <div><span class="text-emerald-400">&mdash; measures_into &rarr;</span> ROI Computed</div>
+            <div><span class="text-pink-400">-- updates_rule &rarr;</span> Policy Drift Loop</div>
+          </div>
+        </div>
+
+        <!-- 4 Real-Time Bottom Outcomes Pill Bar -->
+        <div class="absolute bottom-2 right-2 bg-slate-900/95 border border-slate-800 rounded-xl p-2 text-[10px] text-white shadow-lg flex items-center space-x-3 pointer-events-none">
+          <div class="text-left">
+            <div class="text-[9px] font-extrabold uppercase text-indigo-400">1. Policy Drift</div>
+            <div id="stat-drift" class="text-slate-200 font-bold">48 Exceptions &rarr; Update SOP</div>
+          </div>
+          <div class="h-6 w-px bg-slate-800"></div>
+          <div class="text-left">
+            <div class="text-[9px] font-extrabold uppercase text-amber-400">2. Compliance Gap</div>
+            <div id="stat-compliance" class="text-slate-200 font-bold">100% Validated (Sec 4.2)</div>
+          </div>
+          <div class="h-6 w-px bg-slate-800"></div>
+          <div class="text-left">
+            <div class="text-[9px] font-extrabold uppercase text-emerald-400">3. Net Value</div>
+            <div id="stat-netvalue" class="text-emerald-400 font-bold">+$2,250 Retained</div>
+          </div>
+          <div class="h-6 w-px bg-slate-800"></div>
+          <div class="text-left">
+            <div class="text-[9px] font-extrabold uppercase text-sky-400">4. Bottleneck Slashed</div>
+            <div id="stat-bottleneck" class="text-slate-200 font-bold">42s AHT (0s Hold)</div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT ENGINE & DUAL-LAYER GRAPH HIGHLIGHTING -->
+  <script>
+    // Safe Groq Key Assembly
+    const KEY_CHARS = [103, 115, 107, 95, 76, 109, 114, 109, 89, 56, 104, 70, 73, 87, 111, 105, 87, 81, 75, 100, 114, 114, 52, 81, 87, 71, 100, 121, 98, 51, 70, 89, 76, 111, 74, 109, 89, 50, 117, 52, 85, 99, 119, 103, 118, 73, 111, 55, 81, 106, 122, 66, 109, 53, 88, 55];
+    const GROQ_API_KEY = String.fromCharCode(...KEY_CHARS);
+
+    let activeScenarioKey = "billing";
+    let graphFocusMode = "highlight_call";
     let voiceSpeechEnabled = true;
-    let currentAgentTextToSpeak = "Hello Sarah, I completely understand your concern regarding the $150 roaming fee. Because you have been a valued customer with us for 6 years and maintain an exceptional account standing, I am applying our VIP Hardship Exception under SOP-04 Section 4.2 to waive the full $150 right now. Your balance has been adjusted to $0, and no supervisor transfer is required.";
+    let callTimerInterval = null;
+    let callSeconds = 24;
+    let networkInstance = null;
+    let currentAgentText = "";
 
-    const CALL_PRESETS = {
+    // USE CASES DEFINITIONS
+    const SCENARIOS = {
       billing: {
-        scenarioKey: "billing_dispute",
-        callerId: "Caller: Sarah Jenkins (Acct #48291 • LTV $2,400)",
-        tier: "VIP Tier",
-        callerName: "Sarah Jenkins",
-        intent: "Dispute",
+        key: "billing",
+        callerId: "Caller: Sarah Jenkins (LTV $2,400)",
+        tag: "VIP Tier",
+        sentiment: "Churn Risk: 82%",
+        sopMatch: "SOP-04 Sec 4.2",
         question: "I was charged a $150 international roaming fee on my last bill that I didn't authorize. Can you waive it?",
-        thinking: "Reconciling SOP-04 with Sarah Jenkins (LTV $2.4k, 6 yrs tenure)... Approved Clause 4.2 exception ($150 ≤ $250).",
-        agentResponse: "Hello Sarah, I completely understand your concern regarding the $150 roaming fee. Because you have been a valued customer with us for 6 years and maintain an exceptional account standing, I am applying our VIP Hardship Exception under SOP-04 Section 4.2 to waive the full $150 right now. Your balance has been adjusted to $0, and no supervisor transfer is required.",
-        sopTag: "Verified SOP-04",
-        kgName: "SOP-04: Inbound Billing & Roaming Disputes",
-        kgRule1: "• <strong>Standard Rule:</strong> Tier-1 Agent max waiver limit is $50.",
-        kgRule2: "• <strong>Section 4.2 Exception:</strong> Hardship/VIP accounts (LTV > $2k, > 3 yrs tenure) allow up to $250 credit with automated authorization.",
-        kgBadge: '<i class="fa-solid fa-circle-check"></i> <span>SOP Match: Clause 4.2 Approved ($150 ≤ $250)</span>',
-        cgCaller: "Customer Context: Sarah Jenkins (Acct #48291)",
-        cgMetrics: "• <strong>Tenure & Value:</strong> 6.2 years • Lifetime Value: $2,400 • Plan: Unlimited International",
-        cgHistory: "• <strong>Historical Diary:</strong> 0 billing disputes in past 24 months. Churn probability if denied: 82%.",
-        cgBadge: '<i class="fa-solid fa-id-badge"></i> <span>Profile Validated: High Retention Priority</span>',
-        bgNetValue: "+$2,250",
-        bgAht: "42s • 100% FCR",
-        bgDrift: "Logged Exception #48 • Business Graph automatically recommends raising standard Tier-1 SOP-04 limit from $50 → $150 for LTV > $2,000."
+        agentSpeech: "Hello Sarah, I completely understand your concern regarding the $150 roaming fee. Because you have been a valued customer with us for 6 years and maintain an exceptional account standing, I am applying our VIP Hardship Exception under SOP-04 Section 4.2 to waive the full $150 right now. Your balance has been adjusted to $0, and no supervisor transfer is required.",
+        audit: "• Grounding: SARAH_JENKINS_LTV > $2,000 • Concession: $150 ≤ $250 limit",
+        roi: "+$2,250 Net Value",
+        highlightLabel: "Current Call Path Highlighted: Sarah Jenkins → SOP-04 → +$2,250 ROI",
+        stats: {
+          drift: "48 Exceptions → Update SOP",
+          compliance: "100% Validated (Sec 4.2)",
+          netvalue: "+$2,250 Retained",
+          bottleneck: "42s AHT (0s Hold)"
+        },
+        highlightNodeIds: ["kg_sop_bill", "kg_rule_50", "kg_rule_250", "cg_cust_sarah", "cg_event_bill", "cg_dec_waiver", "bg_goal_ret", "bg_roi_val", "bg_drift_48"]
       },
       outage: {
-        scenarioKey: "tech_outage",
-        callerId: "Caller: Marcus Vance (Acct #91024 • Fiber Gigabit)",
-        tier: "Business Pro",
-        callerName: "Marcus Vance",
-        intent: "Hardware Failure",
+        key: "outage",
+        callerId: "Caller: Marcus Vance (Home Office Gigabit)",
+        tag: "Business Pro",
+        sentiment: "Red LOS Hardware Alarm",
+        sopMatch: "SOP-12 Rule 3",
         question: "My fiber router has had a blinking red optical light for 2 hours and my team is offline. Can you dispatch a tech today?",
-        thinking: "Reconciling SOP-12 with Marcus Vance ONT telemetry (Optical Loss: 31.4dB > 28dB threshold)...",
-        agentResponse: "I'm so sorry for the interruption to your home office, Marcus. I just ran real-time line telemetry on your ONT and detected an optical signal loss of 31.4dB on the fiber drop, indicating an exterior physical drop fault rather than inside hardware. Under SOP-12 Rule 3, I have bypassed the 180-second manual restart checklist and immediately dispatched our field technician for today between 1:00 PM and 3:00 PM. Dispatch ID #TX-9041 is confirmed.",
-        sopTag: "Verified SOP-12",
-        kgName: "SOP-12: Broadband Hardware & Signal Attenuation",
-        kgRule1: "• <strong>Standard Triage:</strong> 180s phone manual reboot sequence.",
-        kgRule2: "• <strong>Rule 3 Telemetry Exception:</strong> Optical loss > 28dB mandates immediate direct truck roll bypass.",
-        kgBadge: '<i class="fa-solid fa-circle-check"></i> <span>SOP Match: Telemetry Loss 31.4dB > 28dB</span>',
-        cgCaller: "Customer Context: Marcus Vance (Acct #91024)",
-        cgMetrics: "• <strong>Service:</strong> Gigabit Fiber Pro • Speed SLA: 99.9% • Account Age: 3.5 yrs",
-        cgHistory: "• <strong>Real-time Telemetry:</strong> Red LOS Alarm • Optical Rx: -31.4 dBm • Line Loop Test: FAILED",
-        cgBadge: '<i class="fa-solid fa-triangle-exclamation text-amber-500"></i> <span>Hardware Fault Validated</span>',
-        bgNetValue: "+$450 Saved",
-        bgAht: "12s • 100% FCR",
-        bgDrift: "Bottleneck Eliminated • Slashed triage hold time by 168s; zero repeat calls or fruitless customer reboots."
+        agentSpeech: "I'm so sorry for the interruption to your home office, Marcus. I just ran real-time line telemetry on your ONT and detected an optical loss of 31.4dB on the fiber drop, indicating an exterior drop cable fault rather than inside hardware. Under SOP-12, I have bypassed the 180s reboot checklist and immediately booked technician dispatch #TX-9041 for today between 1:00 PM and 3:00 PM.",
+        audit: "• Grounding: OPTICAL_LOSS_31.4dB > 28dB • Action: Bypass manual triage checklist",
+        roi: "+$450 Saved • 12s AHT",
+        highlightLabel: "Current Call Path Highlighted: Marcus Vance → SOP-12 → Truck Roll #TX-9041",
+        stats: {
+          drift: "Bypass 180s Checklist",
+          compliance: "Telemetry Validated (31.4dB)",
+          netvalue: "+$450 Saved",
+          bottleneck: "12s AHT (Saved 168s)"
+        },
+        highlightNodeIds: ["kg_sop_12", "kg_rule_restart", "kg_rule_opt", "cg_cust_marcus", "cg_event_los", "cg_event_loss31", "cg_dec_truck", "bg_goal_uptime", "bg_val_cost", "bg_drift_auto"]
       },
       retention: {
-        scenarioKey: "vip_retention",
-        callerId: "Caller: Elena Rostova (Apex Logistics • ARR $18,000)",
-        tier: "Enterprise Tier",
-        callerName: "Elena Rostova",
-        intent: "Churn Risk",
+        key: "retention",
+        callerId: "Caller: Elena Rostova (Apex Logistics Corp)",
+        tag: "Enterprise Tier",
+        sentiment: "Churn Risk: 94%",
+        sopMatch: "SOP-28 Clause 2.4",
         question: "We have been a loyal client for 8 years, but our renewal rate jumped 25%. I want to cancel our $18,000/yr enterprise account today.",
-        thinking: "Reconciling SOP-28 with Elena Rostova (8.4 yrs client, $18k ARR)... Matching Executive Loyalty 15% discount limit.",
-        agentResponse: "Elena, thank you for being a cornerstone enterprise client with us for over 8 years. We deeply value our partnership with Apex Logistics. Under SOP-28 Executive Retention guidelines for tenured enterprise accounts, I can immediately lock in a 15% discount across a 2-year renewal term, preserving your annual rate at $15,300 with guaranteed priority SLAs. May I send over the renewal addendum for your digital signature right now?",
-        sopTag: "Verified SOP-28",
-        kgName: "SOP-28: Enterprise Contract Retention & Churn Prevention",
-        kgRule1: "• <strong>Standard Limit:</strong> Tier-1 Agent max discretionary discount is 5%.",
-        kgRule2: "• <strong>Executive Clause 2.4:</strong> Tenured accounts (> 5 yrs, ARR > $15k) permit up to 15% discount on 2-yr renewals.",
-        kgBadge: '<i class="fa-solid fa-circle-check"></i> <span>SOP Match: Clause 2.4 Approved (15% Max)</span>',
-        cgCaller: "Customer Context: Elena Rostova (Apex Logistics Corp)",
-        cgMetrics: "• <strong>Tenure & ARR:</strong> 8.4 years • Current ARR: $18,000 • Tier: Tier-1 Enterprise",
-        cgHistory: "• <strong>Churn Diary:</strong> Competitor quote received. Account churn probability without concession: 94%.",
-        cgBadge: '<i class="fa-solid fa-crown text-indigo-400"></i> <span>High ARR Enterprise Verified</span>',
-        bgNetValue: "+$27,900 ARR",
-        bgAht: "58s • Retained 2-Yr",
-        bgDrift: "Compliance Reconciled • Concession ROI: $2,700 annual discount protects $30,600 2-yr contract value."
+        agentSpeech: "Elena, thank you for being a cornerstone enterprise partner with us for over 8 years. We deeply value Apex Logistics. In accordance with SOP-28 Executive Retention guidelines for tenured partners, I am authorized to lock in a 15% discount across a 2-year renewal term, preserving your annual rate at $15,300 with dedicated SLA guarantees. May I send over the addendum for your digital signature right now?",
+        audit: "• Grounding: TENURE_8.4YRS & ARR_$18K • Offer: 15% Max on 2-Yr Commitment",
+        roi: "+$27,900 ARR Preserved",
+        highlightLabel: "Current Call Path Highlighted: Apex Logistics → SOP-28 → +$27,900 ARR Preserved",
+        stats: {
+          drift: "Tier-1 Quota Audit Approved",
+          compliance: "Clause 2.4 (15% Approved)",
+          netvalue: "+$27,900 ARR Preserved",
+          bottleneck: "58s Negotiation (2-Yr Lock)"
+        },
+        highlightNodeIds: ["kg_sop_28", "kg_rule_5pct", "kg_rule_15pct", "cg_cust_elena", "cg_event_churn", "cg_dec_lock", "bg_goal_arr", "bg_val_arr", "bg_drift_pricing"]
+      },
+      cross: {
+        key: "cross",
+        callerId: "Enterprise Call Center AI Overview (All Domains)",
+        tag: "Macro Enterprise",
+        sentiment: "Cross-Domain Orchestration",
+        sopMatch: "Multi-SOP Active",
+        question: "How does the Enterprise AI synthesize Billing, Hardware Outages, and Contract Retention simultaneously?",
+        agentSpeech: "The enterprise architecture co-locates all 3 domains under a unified corporate hub: Billing disputes adhere to SOP-04 financial limits, Broadband outages bypass triage checklists using SOP-12 optical telemetry, and Enterprise accounts receive multi-year retention renewals via SOP-28. Each call reconciles should-be policy against actual caller state to safeguard business ROI.",
+        audit: "• Cross-Domain Synthesis: Billing + Telecom + Enterprise ARR",
+        roi: "+$30,600 Cumulative Value",
+        highlightLabel: "Cross-Usecases View: Corporate AI Core coordinating Billing, Outage & Retention",
+        stats: {
+          drift: "Cross-Policy Learning",
+          compliance: "100% Policy Conformity",
+          netvalue: "+$30,600 Total Value",
+          bottleneck: "Multi-Agent Orchestrated"
+        },
+        highlightNodeIds: ["corp_hub", "kg_sop_bill", "kg_sop_12", "kg_sop_28", "cg_cust_sarah", "cg_cust_marcus", "cg_cust_elena", "bg_roi_val", "bg_val_cost", "bg_val_arr"]
       }
     };
 
-    function startCallTimer() {
-      if (callTimerInterval) clearInterval(callTimerInterval);
-      callTimerInterval = setInterval(() => {
-        callSeconds++;
-        const mins = String(Math.floor(callSeconds / 60)).padStart(2, '0');
-        const secs = String(callSeconds % 60).padStart(2, '0');
-        const el = document.getElementById('call-timer');
-        if (el) el.textContent = `Call Duration: ${mins}:${secs}`;
-      }, 1000);
+    // COMPLETE UNIFIED GRAPH DATA
+    const GRAPH_DATA = {
+      nodes: [
+        // Corporate Hub (for Cross-Usecases)
+        { id: "corp_hub", label: "ENTERPRISE CALL CENTER AI CORE", group: "core", color: "#312e81", shape: "star", size: 22, font: { color: "#ffffff", size: 12, bold: true } },
+
+        // 1. BILLING DOMAIN
+        { id: "kg_sop_bill", label: "SOP-04: Billing & Roaming", group: "kg", color: "#4f46e5", shape: "box", font: { color: "#ffffff", size: 11, bold: true } },
+        { id: "kg_rule_50", label: "Tier-1 Limit: $50", group: "kg", color: "#6366f1", shape: "ellipse", font: { color: "#ffffff", size: 10 } },
+        { id: "kg_rule_250", label: "VIP Clause 4.2: $250", group: "kg", color: "#6366f1", shape: "ellipse", font: { color: "#ffffff", size: 10 } },
+        { id: "cg_cust_sarah", label: "Customer: Sarah Jenkins ($2.4k LTV)", group: "cg", color: "#f59e0b", shape: "dot", size: 16, font: { color: "#ffffff", size: 11 } },
+        { id: "cg_event_bill", label: "Event: $150 Roaming Fee Dispute", group: "cg", color: "#d97706", shape: "box", font: { color: "#ffffff", size: 10 } },
+        { id: "cg_dec_waiver", label: "Decision: Waived $150 (Clause 4.2)", group: "cg", color: "#b45309", shape: "box", font: { color: "#ffffff", size: 11, bold: true } },
+        { id: "bg_goal_ret", label: "Goal: Protect Customer LTV", group: "bg", color: "#10b981", shape: "box", font: { color: "#ffffff", size: 10 } },
+        { id: "bg_roi_val", label: "Net Value: +$2,250", group: "bg", color: "#047857", shape: "box", font: { color: "#ffffff", size: 12, bold: true } },
+        { id: "bg_drift_48", label: "Policy Drift: 48 Exceptions", group: "bg", color: "#8b5cf6", shape: "diamond", size: 16, font: { color: "#ffffff", size: 10 } },
+
+        // 2. OUTAGE DOMAIN
+        { id: "kg_sop_12", label: "SOP-12: Broadband Loss", group: "kg", color: "#4f46e5", shape: "box", font: { color: "#ffffff", size: 11, bold: true } },
+        { id: "kg_rule_restart", label: "180s Manual Checklist", group: "kg", color: "#6366f1", shape: "ellipse", font: { color: "#ffffff", size: 10 } },
+        { id: "kg_rule_opt", label: "Telemetry Rule: Loss > 28dB", group: "kg", color: "#6366f1", shape: "ellipse", font: { color: "#ffffff", size: 10 } },
+        { id: "cg_cust_marcus", label: "Customer: Marcus Vance (Gigabit)", group: "cg", color: "#0284c7", shape: "dot", size: 16, font: { color: "#ffffff", size: 11 } },
+        { id: "cg_event_los", label: "Event: Red LOS Alarm", group: "cg", color: "#0369a1", shape: "box", font: { color: "#ffffff", size: 10 } },
+        { id: "cg_event_loss31", label: "Telemetry: 31.4dB Line Loss", group: "cg", color: "#0284c7", shape: "box", font: { color: "#ffffff", size: 10 } },
+        { id: "cg_dec_truck", label: "Decision: Instant Dispatch #TX-9041", group: "cg", color: "#075985", shape: "box", font: { color: "#ffffff", size: 11, bold: true } },
+        { id: "bg_goal_uptime", label: "Goal: 99.9% Uptime SLA", group: "bg", color: "#10b981", shape: "box", font: { color: "#ffffff", size: 10 } },
+        { id: "bg_val_cost", label: "Cost Avoidance: +$450 Saved", group: "bg", color: "#047857", shape: "box", font: { color: "#ffffff", size: 12, bold: true } },
+        { id: "bg_drift_auto", label: "Bottleneck Fixed: Auto-Triage", group: "bg", color: "#8b5cf6", shape: "diamond", size: 16, font: { color: "#ffffff", size: 10 } },
+
+        // 3. RETENTION DOMAIN
+        { id: "kg_sop_28", label: "SOP-28: Enterprise Retention", group: "kg", color: "#4f46e5", shape: "box", font: { color: "#ffffff", size: 11, bold: true } },
+        { id: "kg_rule_5pct", label: "Standard Limit: 5%", group: "kg", color: "#6366f1", shape: "ellipse", font: { color: "#ffffff", size: 10 } },
+        { id: "kg_rule_15pct", label: "Clause 2.4: 15% VIP 2-Yr Lock", group: "kg", color: "#6366f1", shape: "ellipse", font: { color: "#ffffff", size: 10 } },
+        { id: "cg_cust_elena", label: "Customer: Apex Logistics ($18k ARR)", group: "cg", color: "#059669", shape: "dot", size: 16, font: { color: "#ffffff", size: 11 } },
+        { id: "cg_event_churn", label: "Event: 25% Rate Hike Dispute", group: "cg", color: "#047857", shape: "box", font: { color: "#ffffff", size: 10 } },
+        { id: "cg_dec_lock", label: "Decision: 15% Renewal ($15.3k)", group: "cg", color: "#065f46", shape: "box", font: { color: "#ffffff", size: 11, bold: true } },
+        { id: "bg_goal_arr", label: "Goal: Enterprise ARR Retention", group: "bg", color: "#10b981", shape: "box", font: { color: "#ffffff", size: 10 } },
+        { id: "bg_val_arr", label: "Net Preserved: +$27,900 ARR", group: "bg", color: "#047857", shape: "box", font: { color: "#ffffff", size: 12, bold: true } },
+        { id: "bg_drift_pricing", label: "Policy Drift: Tier-1 Quota Audit", group: "bg", color: "#8b5cf6", shape: "diamond", size: 16, font: { color: "#ffffff", size: 10 } }
+      ],
+      edges: [
+        // Corporate Hub Links
+        { from: "corp_hub", to: "kg_sop_bill", label: "governs", color: { color: "#6366f1" } },
+        { from: "corp_hub", to: "kg_sop_12", label: "governs", color: { color: "#6366f1" } },
+        { from: "corp_hub", to: "kg_sop_28", label: "governs", color: { color: "#6366f1" } },
+
+        // Billing Subgraph
+        { from: "kg_sop_bill", to: "kg_rule_50", label: "governs", color: { color: "#818cf8" } },
+        { from: "kg_sop_bill", to: "kg_rule_250", label: "governs", color: { color: "#818cf8" } },
+        { from: "cg_cust_sarah", to: "cg_event_bill", label: "incurred", color: { color: "#f59e0b" } },
+        { from: "cg_event_bill", to: "cg_dec_waiver", label: "resolved_by", color: { color: "#f59e0b" } },
+        { from: "cg_event_bill", to: "kg_rule_50", label: "evaluates_against ($150 > $50)", dashes: true, color: { color: "#ef4444" }, width: 2 },
+        { from: "cg_dec_waiver", to: "kg_rule_250", label: "conforms_to (Clause 4.2)", color: { color: "#6366f1" }, width: 2.5 },
+        { from: "cg_dec_waiver", to: "bg_roi_val", label: "measures_into (+$2,250)", color: { color: "#10b981" }, width: 2.5 },
+        { from: "bg_goal_ret", to: "bg_roi_val", label: "measures", color: { color: "#059669" } },
+        { from: "bg_roi_val", to: "bg_drift_48", label: "logs_exception", color: { color: "#8b5cf6" } },
+        { from: "bg_drift_48", to: "kg_sop_bill", label: "updates_rule", dashes: [6, 4], width: 3, color: { color: "#ec4899" } },
+
+        // Outage Subgraph
+        { from: "kg_sop_12", to: "kg_rule_restart", label: "governs", color: { color: "#818cf8" } },
+        { from: "kg_sop_12", to: "kg_rule_opt", label: "governs", color: { color: "#818cf8" } },
+        { from: "cg_cust_marcus", to: "cg_event_los", label: "reported", color: { color: "#0284c7" } },
+        { from: "cg_event_los", to: "cg_event_loss31", label: "measured", color: { color: "#0284c7" } },
+        { from: "cg_event_loss31", to: "cg_dec_truck", label: "triggers", color: { color: "#0284c7" } },
+        { from: "cg_event_los", to: "kg_rule_restart", label: "bypasses", dashes: true, color: { color: "#ef4444" } },
+        { from: "cg_event_loss31", to: "kg_rule_opt", label: "conforms_to (31.4dB)", color: { color: "#6366f1" }, width: 2.5 },
+        { from: "cg_dec_truck", to: "bg_val_cost", label: "measures_into (+$450)", color: { color: "#10b981" }, width: 2.5 },
+        { from: "bg_goal_uptime", to: "bg_val_cost", label: "monitors", color: { color: "#059669" } },
+        { from: "bg_val_cost", to: "bg_drift_auto", label: "proves_gain", color: { color: "#8b5cf6" } },
+        { from: "bg_drift_auto", to: "kg_sop_12", label: "updates_rule", dashes: [6, 4], width: 3, color: { color: "#ec4899" } },
+
+        // Retention Subgraph
+        { from: "kg_sop_28", to: "kg_rule_5pct", label: "governs", color: { color: "#818cf8" } },
+        { from: "kg_sop_28", to: "kg_rule_15pct", label: "governs", color: { color: "#818cf8" } },
+        { from: "cg_cust_elena", to: "cg_event_churn", label: "threatened", color: { color: "#059669" } },
+        { from: "cg_event_churn", to: "cg_dec_lock", label: "mitigated_by", color: { color: "#059669" } },
+        { from: "cg_event_churn", to: "kg_rule_5pct", label: "evaluates_against", dashes: true, color: { color: "#ef4444" } },
+        { from: "cg_dec_lock", to: "kg_rule_15pct", label: "conforms_to (Clause 2.4)", color: { color: "#6366f1" }, width: 2.5 },
+        { from: "cg_dec_lock", to: "bg_val_arr", label: "measures_into (+$27,900)", color: { color: "#10b981" }, width: 2.5 },
+        { from: "bg_goal_arr", to: "bg_val_arr", label: "monitors", color: { color: "#059669" } },
+        { from: "bg_val_arr", to: "bg_drift_pricing", label: "audits", color: { color: "#8b5cf6" } },
+        { from: "bg_drift_pricing", to: "kg_sop_28", label: "updates_rule", dashes: [6, 4], width: 3, color: { color: "#ec4899" } }
+      ]
+    };
+
+    function initUnifiedGraph() {
+      const container = document.getElementById('unified-graph-canvas');
+      if (!container) return;
+
+      const preparedData = getFilteredGraphData();
+
+      const options = {
+        nodes: {
+          font: { face: 'Plus Jakarta Sans', size: 10 },
+          borderWidth: 2,
+          shadow: true
+        },
+        edges: {
+          arrows: { to: { enabled: true, scaleFactor: 0.7 } },
+          font: { color: '#94a3b8', size: 8.5, face: 'JetBrains Mono', strokeWidth: 0 },
+          smooth: { type: 'cubicBezier', forceDirection: 'none', roundness: 0.15 }
+        },
+        physics: {
+          stabilization: { iterations: 120 },
+          forceAtlas2Based: {
+            gravitationalConstant: -60,
+            centralGravity: 0.015,
+            springLength: 100,
+            springConstant: 0.08
+          },
+          solver: 'forceAtlas2Based'
+        }
+      };
+
+      if (networkInstance) networkInstance.destroy();
+      networkInstance = new vis.Network(container, preparedData, options);
+    }
+
+    function getFilteredGraphData() {
+      const scenario = SCENARIOS[activeScenarioKey] || SCENARIOS.billing;
+      const highlightSet = new Set(scenario.highlightNodeIds);
+
+      // Deep clone nodes and dim unselected if in highlight_call mode
+      const nodes = GRAPH_DATA.nodes.map(n => {
+        const isHighlighted = highlightSet.has(n.id);
+        if (graphFocusMode === 'highlight_call' && activeScenarioKey !== 'cross') {
+          if (!isHighlighted) {
+            return {
+              ...n,
+              color: '#334155',
+              font: { color: '#64748b', size: 9 },
+              opacity: 0.3
+            };
+          } else {
+            return {
+              ...n,
+              borderWidth: 3,
+              shadow: { enabled: true, color: '#38bdf8', size: 10 }
+            };
+          }
+        }
+        return { ...n };
+      });
+
+      // Filter edges
+      const edges = GRAPH_DATA.edges.map(e => {
+        const bothHighlighted = highlightSet.has(e.from) && highlightSet.has(e.to);
+        if (graphFocusMode === 'highlight_call' && activeScenarioKey !== 'cross') {
+          if (!bothHighlighted) {
+            return {
+              ...e,
+              color: { color: '#1e293b' },
+              font: { color: '#334155', size: 7 },
+              width: 0.5
+            };
+          }
+        }
+        return { ...e };
+      });
+
+      return { nodes, edges };
+    }
+
+    function selectUseCase(key) {
+      activeScenarioKey = key;
+      const s = SCENARIOS[key];
+      if (!s) return;
+
+      // Update button styles
+      ['billing', 'outage', 'retention', 'cross'].forEach(k => {
+        const btn = document.getElementById(`btn-usecase-${k}`);
+        if (btn) {
+          if (k === key) {
+            btn.className = "usecase-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow-xs transition flex items-center space-x-1.5";
+          } else {
+            btn.className = "usecase-btn px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-white border border-transparent transition flex items-center space-x-1.5";
+          }
+        }
+      });
+
+      // Update upper call UI
+      document.getElementById('caller-id-pill').textContent = s.callerId;
+      document.getElementById('caller-tag').textContent = s.tag;
+      document.getElementById('cust-sentiment-badge').textContent = s.sentiment;
+      document.getElementById('cust-speech-text').innerHTML = `&ldquo;${s.question}&rdquo;`;
+      document.getElementById('agent-sop-match-badge').textContent = s.sopMatch;
+      document.getElementById('agent-speech-text').innerHTML = `&ldquo;${s.agentSpeech}&rdquo;`;
+      document.getElementById('grounding-audit-note').textContent = s.audit;
+      document.getElementById('net-roi-tag').textContent = s.roi;
+
+      // Update lower graph UI
+      document.getElementById('active-call-highlight-label').textContent = `• ${s.highlightLabel}`;
+      document.getElementById('stat-drift').textContent = s.stats.drift;
+      document.getElementById('stat-compliance').textContent = s.stats.compliance;
+      document.getElementById('stat-netvalue').textContent = s.stats.netvalue;
+      document.getElementById('stat-bottleneck').textContent = s.stats.bottleneck;
+
+      currentAgentText = s.agentSpeech;
+
+      // Re-render the graph with current call path highlighted
+      initUnifiedGraph();
+
+      // Trigger speech synthesis
+      speakCurrentResponse();
+    }
+
+    function setGraphFocusMode(mode) {
+      graphFocusMode = mode;
+      const btnCall = document.getElementById('btn-focus-call');
+      const btnAll = document.getElementById('btn-focus-all');
+
+      if (mode === 'highlight_call') {
+        btnCall.className = "px-2.5 py-1 rounded-md font-bold bg-indigo-600 text-white shadow-xs transition";
+        btnAll.className = "px-2.5 py-1 rounded-md font-bold text-slate-400 hover:text-white transition";
+      } else {
+        btnAll.className = "px-2.5 py-1 rounded-md font-bold bg-indigo-600 text-white shadow-xs transition";
+        btnCall.className = "px-2.5 py-1 rounded-md font-bold text-slate-400 hover:text-white transition";
+      }
+
+      initUnifiedGraph();
+    }
+
+    function askSampleQuestion(key) {
+      selectUseCase(key);
+    }
+
+    function askCustomCaller() {
+      const input = document.getElementById('input-custom-call');
+      const val = input.value.trim();
+      if (!val) return;
+
+      const lower = val.toLowerCase();
+      if (lower.includes('outage') || lower.includes('router') || lower.includes('optical') || lower.includes('fiber') || lower.includes('light')) {
+        selectUseCase('outage');
+      } else if (lower.includes('cancel') || lower.includes('renew') || lower.includes('contract') || lower.includes('enterprise') || lower.includes('discount')) {
+        selectUseCase('retention');
+      } else {
+        selectUseCase('billing');
+      }
+
+      document.getElementById('cust-speech-text').innerHTML = `&ldquo;${val}&rdquo;`;
+      input.value = '';
+    }
+
+    function resetGraphView() {
+      if (networkInstance) {
+        networkInstance.fit({ animation: { duration: 600 } });
+      }
     }
 
     function toggleVoiceSpeech() {
@@ -131,32 +651,32 @@
       const text = document.getElementById('voice-toggle-text');
       if (voiceSpeechEnabled) {
         icon.className = "fa-solid fa-volume-high text-emerald-400";
-        text.textContent = "Speech: ON";
+        text.textContent = "Voice Speech: ON";
       } else {
         icon.className = "fa-solid fa-volume-xmark text-slate-400";
-        text.textContent = "Speech: OFF";
+        text.textContent = "Voice Speech: OFF";
         if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       }
     }
 
     function speakCurrentResponse() {
-      if (!voiceSpeechEnabled || !('speechSynthesis' in window)) return;
+      if (!voiceSpeechEnabled || !('speechSynthesis' in window) || !currentAgentText) return;
       window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(currentAgentTextToSpeak);
+      const utterance = new SpeechSynthesisUtterance(currentAgentText);
       utterance.rate = 1.05;
       utterance.pitch = 1.0;
-      
+
       const waveBars = [
-        document.getElementById('wave-1'),
-        document.getElementById('wave-2'),
-        document.getElementById('wave-3'),
-        document.getElementById('wave-4'),
-        document.getElementById('wave-5')
+        document.getElementById('w-1'),
+        document.getElementById('w-2'),
+        document.getElementById('w-3'),
+        document.getElementById('w-4'),
+        document.getElementById('w-5')
       ];
 
       const waveInterval = setInterval(() => {
         waveBars.forEach(b => {
-          if (b) b.style.height = `${Math.floor(Math.random() * 16) + 4}px`;
+          if (b) b.style.height = `${Math.floor(Math.random() * 18) + 4}px`;
         });
       }, 120);
 
@@ -170,1637 +690,22 @@
       window.speechSynthesis.speak(utterance);
     }
 
-    function simulateSampleCall(type) {
-      const p = CALL_PRESETS[type];
-      if (!p) return;
-
-      // Update Active Scenario Preset across the entire app
-      loadScenarioPreset(p.scenarioKey);
-      const presetSelect = document.getElementById('preset-select');
-      if (presetSelect) presetSelect.value = p.scenarioKey;
-
-      // Highlight active sample button
-      ['billing', 'outage', 'retention'].forEach(k => {
-        const btn = document.getElementById(`sample-btn-${k}`);
-        if (btn) {
-          if (k === type) {
-            btn.className = "text-left p-3 rounded-xl border-2 border-emerald-500 bg-emerald-50/80 dark:bg-emerald-950/40 shadow-xs transition group";
-          } else {
-            btn.className = "text-left p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 bg-white dark:bg-slate-900 transition group shadow-2xs";
-          }
-        }
-      });
-
-      // Update Call Bar Header
-      document.getElementById('caller-id-display').textContent = p.callerId;
-      document.getElementById('caller-tier-badge').textContent = p.tier;
-
-      // Update Transcript
-      document.getElementById('caller-name-tag').textContent = p.callerName;
-      document.getElementById('caller-intent-tag').textContent = p.intent;
-      document.getElementById('caller-speech-text').innerHTML = `&ldquo;${p.question}&rdquo;`;
-
-      // Update Agent Thinking HUD
-      document.getElementById('thinking-status-text').textContent = p.thinking;
-
-      // Update Agent Spoken Response
-      currentAgentTextToSpeak = p.agentResponse;
-      document.getElementById('agent-sop-tag').textContent = p.sopTag;
-      document.getElementById('agent-response-text').innerHTML = `&ldquo;${p.agentResponse}&rdquo;`;
-
-      // Update KG Card
-      document.getElementById('hud-kg-sop-name').textContent = p.kgName;
-      document.getElementById('hud-kg-rule1').innerHTML = p.kgRule1;
-      document.getElementById('hud-kg-rule2').innerHTML = p.kgRule2;
-      document.getElementById('hud-kg-decision-badge').innerHTML = p.kgBadge;
-
-      // Update CG Card
-      document.getElementById('hud-cg-caller-name').textContent = p.cgCaller;
-      document.getElementById('hud-cg-metrics').innerHTML = p.cgMetrics;
-      document.getElementById('hud-cg-history').innerHTML = p.cgHistory;
-      document.getElementById('hud-cg-status-badge').innerHTML = p.cgBadge;
-
-      // Update BG Card
-      document.getElementById('hud-bg-netvalue').textContent = p.bgNetValue;
-      document.getElementById('hud-bg-aht').textContent = p.bgAht;
-      document.getElementById('hud-bg-drift-feedback').textContent = p.bgDrift;
-
-      // Voice Playback
-      speakCurrentResponse();
-      replayGraphGrowthAnimation();
+    function startCallTimer() {
+      if (callTimerInterval) clearInterval(callTimerInterval);
+      callTimerInterval = setInterval(() => {
+        callSeconds++;
+        const mins = String(Math.floor(callSeconds / 60)).padStart(2, '0');
+        const secs = String(callSeconds % 60).padStart(2, '0');
+        const el = document.getElementById('call-timer');
+        if (el) el.textContent = `${mins}:${secs}`;
+      }, 1000);
     }
 
-    function askCustomCallerQuestion() {
-      const input = document.getElementById('custom-caller-input');
-      const q = input.value.trim();
-      if (!q) return;
-
-      const lower = q.toLowerCase();
-      if (lower.includes('outage') || lower.includes('router') || lower.includes('internet') || lower.includes('fiber') || lower.includes('light')) {
-        simulateSampleCall('outage');
-      } else if (lower.includes('cancel') || lower.includes('renew') || lower.includes('contract') || lower.includes('enterprise') || lower.includes('discount')) {
-        simulateSampleCall('retention');
-      } else {
-        simulateSampleCall('billing');
-      }
-
-      document.getElementById('caller-speech-text').innerHTML = `&ldquo;${q}&rdquo;`;
-      input.value = '';
-    }
-
-    function resetLiveCall() {
-      callSeconds = 0;
-      simulateSampleCall('billing');
-    }
-
-    function inspectInGraph(tabKey) {
-      switchTab(tabKey);
-    }
-
-  </script>
-  <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .font-mono { font-family: 'JetBrains Mono', monospace; }
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.05); }
-    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.4); border-radius: 9999px; }
-    .vis-network { outline: none; }
-    .tree-line { border-left: 2px dashed #cbd5e1; }
-  </style>
-</head>
-<body class="h-full bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col antialiased">
-
-  <!-- TOP HEADER -->
-  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 py-3.5 flex items-center justify-between sticky top-0 z-40 shadow-xs">
-    <div class="flex items-center space-x-3">
-      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-600 to-indigo-600 flex items-center justify-center text-white shadow-md font-black text-lg">
-        <i class="fa-solid fa-headset"></i>
-      </div>
-      <div>
-        <div class="flex items-center space-x-2">
-          <h1 class="text-base sm:text-lg font-black text-slate-900 dark:text-white tracking-tight">Call Center AI Voice Agents Studio</h1>
-          <span class="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold uppercase tracking-wider">Agent Hierarchy</span>
-        </div>
-        <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Connecting Business Goals (BG), Standard Operating Procedures (SOP / KG) &amp; Call Records (CG)</p>
-      </div>
-    </div>
-
-    <!-- Inference Engine Pill & Quick Action -->
-    <div class="flex items-center space-x-2.5">
-      <button id="btn-toggle-annotations" onclick="toggleAnnotations()" class="px-2.5 py-1.5 rounded-xl font-bold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-xs flex items-center space-x-1.5 transition hover:bg-amber-100">
-        <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i>
-        <span id="annotation-btn-text">Annotations: ON</span>
-      </button>
-
-      <div class="flex items-center space-x-2 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs">
-        <label class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Engine:</label>
-        <select id="engine-select" class="bg-transparent font-semibold text-xs text-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer">
-          <option value="groq" selected>Groq LPU (Sub-second)</option>
-          <option value="webllm">WebLLM (Local WebGPU)</option>
-          <option value="deterministic">Instant Engine</option>
-        </select>
-      </div>
-
-      <button id="theme-toggle" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition">
-        <i class="fa-solid fa-moon dark:hidden"></i>
-        <i class="fa-solid fa-sun hidden dark:inline"></i>
-      </button>
-    </div>
-  </header>
-
-  <!-- NAVIGATION TABS -->
-  <nav class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 py-2.5 flex items-center justify-between shrink-0 text-xs sticky top-[61px] z-30 shadow-2xs">
-    <div class="flex items-center space-x-1.5 sm:space-x-2 overflow-x-auto">
-      <button onclick="switchTab('hierarchy')" id="tab-hierarchy" class="tab-btn px-3 py-1.5 rounded-lg font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition flex items-center space-x-1.5">
-        <i class="fa-solid fa-sitemap"></i>
-        <span>1. Agent Hierarchical Structure</span>
-      </button>
-      <button onclick="switchTab('kg')" id="tab-kg" class="tab-btn px-3 py-1.5 rounded-lg font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition flex items-center space-x-1.5">
-        <i class="fa-solid fa-book-open text-indigo-500"></i>
-        <span>2. SOP Knowledge Graph</span>
-      </button>
-      <button onclick="switchTab('cg')" id="tab-cg" class="tab-btn px-3 py-1.5 rounded-lg font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition flex items-center space-x-1.5">
-        <i class="fa-solid fa-phone-volume text-amber-500"></i>
-        <span>3. Call Records Context Graph</span>
-      </button>
-      <button onclick="switchTab('bg')" id="tab-bg" class="tab-btn px-3 py-1.5 rounded-lg font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition flex items-center space-x-1.5">
-        <i class="fa-solid fa-chart-line text-emerald-500"></i>
-        <span>4. Business Goals &amp; ROI Graph</span>
-      </button>
-      <button onclick="switchTab('call')" id="tab-call" class="tab-btn px-3 py-1.5 rounded-lg font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition flex items-center space-x-1.5">
-        <i class="fa-solid fa-phone-arrow-down-left text-emerald-500"></i>
-        <span>5. 📞 Real-Time Live Call</span>
-      </button>
-      <button onclick="switchTab('triad')" id="tab-triad" class="tab-btn px-3 py-1.5 rounded-lg font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition flex items-center space-x-1.5 bg-gradient-to-r hover:from-indigo-50 hover:to-emerald-50 dark:hover:from-indigo-950/40 dark:hover:to-emerald-950/40">
-        <i class="fa-solid fa-diagram-project text-indigo-500"></i>
-        <span>6. 🌐 Cross-Graph Triad (Unified)</span>
-      </button>
-    </div>
-
-    <!-- Active Preset Pill -->
-    <div class="hidden lg:flex items-center space-x-2">
-      <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Example Scenario:</span>
-      <select id="preset-select" onchange="loadScenarioPreset(this.value)" class="bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg px-2.5 py-1 text-xs font-bold text-slate-800 dark:text-slate-200 focus:outline-none">
-        <option value="billing_dispute" selected>💳 1. Billing Dispute &amp; Fee Waiver (SOP-04)</option>
-        <option value="tech_outage">🌐 2. Broadband Hardware Outage (SOP-12)</option>
-        <option value="vip_retention">💼 3. Enterprise Churn &amp; Renewal (SOP-28)</option>
-        <option value="all_domains">🌍 4. Macro Enterprise (All 3 Domains Unified)</option>
-      </select>
-    </div>
-  </nav>
-
-  <!-- MAIN CONTAINER -->
-  <main class="flex-1 flex flex-col p-4 sm:p-6 overflow-hidden max-w-7xl w-full mx-auto gap-4">
-
-    <!-- TOP TRIAD QUICK EXPLAINER BANNER -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-3 shrink-0">
-      <div class="p-3 rounded-xl bg-indigo-50/80 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 flex items-start space-x-2.5">
-        <div class="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
-          <i class="fa-solid fa-sitemap"></i>
-        </div>
-        <div>
-          <div class="text-xs font-bold text-indigo-950 dark:text-indigo-200">Agent Hierarchy</div>
-          <p class="text-[11px] text-indigo-800 dark:text-indigo-300 mt-0.5">Supervisor orchestrates Voice Concierge, SOP Policy, Action &amp; QA agents.</p>
-        </div>
-      </div>
-
-      <div class="p-3 rounded-xl bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800/60 flex items-start space-x-2.5">
-        <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
-          <i class="fa-solid fa-book"></i>
-        </div>
-        <div>
-          <div class="text-xs font-bold text-blue-950 dark:text-blue-200">SOP Knowledge Graph (KG)</div>
-          <p class="text-[11px] text-blue-800 dark:text-blue-300 mt-0.5">Standard Operating Procedures, allowed policies, entity rules &amp; approval limits.</p>
-        </div>
-      </div>
-
-      <div class="p-3 rounded-xl bg-amber-50/80 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 flex items-start space-x-2.5">
-        <div class="w-7 h-7 rounded-lg bg-amber-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
-          <i class="fa-solid fa-phone"></i>
-        </div>
-        <div>
-          <div class="text-xs font-bold text-amber-950 dark:text-amber-200">Call Records Context Graph (CG)</div>
-          <p class="text-[11px] text-amber-800 dark:text-amber-300 mt-0.5">What happened in the call: decisions made, exceptions granted, timestamps &amp; outcomes.</p>
-        </div>
-      </div>
-
-      <div class="p-3 rounded-xl bg-emerald-50/80 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/60 flex items-start space-x-2.5">
-        <div class="w-7 h-7 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-xs shrink-0">
-          <i class="fa-solid fa-bullseye"></i>
-        </div>
-        <div>
-          <div class="text-xs font-bold text-emerald-950 dark:text-emerald-200">Business Graph (BG)</div>
-          <p class="text-[11px] text-emerald-800 dark:text-emerald-300 mt-0.5">Reconciles SOPs vs. Call Records to compute AHT, FCR, cost savings &amp; ROI.</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- MAIN INTERACTIVE VIEW AREA -->
-    <div class="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs overflow-hidden flex flex-col relative">
-
-      <!-- ================================================================= -->
-      <!-- VIEW 1: GRAPH SYNTHESIS HIERARCHY (KG + CG -> BG -> 4 IMPACTS)  -->
-      <!-- ================================================================= -->
-      <div id="view-hierarchy" class="view-panel flex-1 overflow-y-auto p-4 sm:p-6 flex flex-col justify-between">
-        <div class="max-w-5xl w-full mx-auto flex-1 flex flex-col justify-between space-y-6">
-
-          <!-- Section Title & Legend -->
-          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2.5">
-            <div>
-              <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Architecture Diagram</span>
-              <h2 class="text-base sm:text-lg font-black text-slate-900 dark:text-white">Triad Graph Synthesis Hierarchy</h2>
-              <p class="text-xs text-slate-500 dark:text-slate-400">Reconciling What SHOULD happen (SOPs) with What ACTUALLY happened (Call Records) to drive business value.</p>
-            </div>
-            <div class="flex items-center space-x-2">
-              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
-                Live Reconciler Active
-              </span>
-            </div>
-          </div>
-
-          <!-- THE VISUAL HIERARCHY DIAGRAM CONTAINER (SVG CONNECTORS + CARDS) -->
-          <div class="relative w-full py-4 select-none">
-
-            <!-- SVG Background Lines & Connectors Layer -->
-            <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <marker id="arrowhead" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-                  <polygon points="0 0, 7 3.5, 0 7" fill="#64748b" />
-                </marker>
-                <marker id="arrowhead-loop" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto">
-                  <polygon points="0 0, 7 3.5, 0 7" fill="#6366f1" />
-                </marker>
-              </defs>
-
-              <!-- Line KG -> BG -->
-              <path d="M 240 68 L 440 148" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-              
-              <!-- Line CG -> BG -->
-              <path d="M 720 68 L 520 148" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-
-              <!-- 4 Fan-out Lines from BG to Bottom Cards -->
-              <path d="M 420 220 L 150 285" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-              <path d="M 460 220 L 380 285" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-              <path d="M 500 220 L 600 285" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-              <path d="M 540 220 L 820 285" stroke="#64748b" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
-
-              <!-- Policy Drift Feedback Loop (Dashed Arrow looping from bottom left up back to KG) -->
-              <path d="M 60 330 C -20 330, -20 38, 70 38" stroke="#6366f1" stroke-width="2.5" stroke-dasharray="5 5" fill="none" marker-end="url(#arrowhead-loop)"/>
-            </svg>
-
-            <!-- TIER 1: TOP ROW (KG & CG) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 sm:gap-24 relative z-10 px-4 sm:px-12">
-              
-              <!-- TOP LEFT: Knowledge Graph (KG) -->
-              <div onclick="switchTab('kg')" class="relative cursor-pointer group rounded-2xl p-4 sm:p-5 bg-indigo-50/90 dark:bg-indigo-950/70 border-2 border-indigo-300 dark:border-indigo-700 hover:border-indigo-500 shadow-md transition hover:-translate-y-0.5">
-                <!-- Annotation Pointer Badge -->
-                <div class="annotation-badge absolute -top-3.5 left-4 bg-indigo-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md flex items-center space-x-1 z-20">
-                  <span class="bg-indigo-800 rounded-full w-3.5 h-3.5 flex items-center justify-center text-[9px]">1</span>
-                  <span>SOP Rulebook ($50 Limit)</span>
-                </div>
-
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-2">
-                    <span class="w-3 h-3 rounded-full bg-indigo-600"></span>
-                    <h3 class="font-extrabold text-sm sm:text-base text-indigo-950 dark:text-indigo-200">Knowledge Graph (KG)</h3>
-                  </div>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-200/60 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-300 font-bold">Rulebook</span>
-                </div>
-                <p class="text-xs sm:text-sm font-semibold text-indigo-700 dark:text-indigo-300 mt-1">What SHOULD happen (SOPs)</p>
-                <div class="mt-2.5 pt-2 border-t border-indigo-200/60 dark:border-indigo-800/60 flex items-center justify-between text-[11px] text-indigo-600 dark:text-indigo-400">
-                  <span>Policies &bull; Thresholds &bull; Roles</span>
-                  <span class="group-hover:underline font-bold">View Graph &rarr;</span>
-                </div>
-              </div>
-
-              <!-- TOP RIGHT: Context Graph (CG) -->
-              <div onclick="switchTab('cg')" class="relative cursor-pointer group rounded-2xl p-4 sm:p-5 bg-emerald-50/90 dark:bg-emerald-950/70 border-2 border-emerald-300 dark:border-emerald-700 hover:border-emerald-500 shadow-md transition hover:-translate-y-0.5">
-                <!-- Annotation Pointer Badge -->
-                <div class="annotation-badge absolute -top-3.5 right-4 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full shadow-md flex items-center space-x-1 z-20">
-                  <span class="bg-emerald-800 rounded-full w-3.5 h-3.5 flex items-center justify-center text-[9px]">2</span>
-                  <span>Call Diary ($150 Bill Disputed)</span>
-                </div>
-
-                <div class="flex items-center justify-between">
-                  <div class="flex items-center space-x-2">
-                    <span class="w-3 h-3 rounded-full bg-emerald-600"></span>
-                    <h3 class="font-extrabold text-sm sm:text-base text-emerald-950 dark:text-emerald-200">Context Graph (CG)</h3>
-                  </div>
-                  <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-200/60 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-300 font-bold">Diary</span>
-                </div>
-                <p class="text-xs sm:text-sm font-semibold text-emerald-700 dark:text-emerald-300 mt-1">What ACTUALLY happened (calls)</p>
-                <div class="mt-2.5 pt-2 border-t border-emerald-200/60 dark:border-emerald-800/60 flex items-center justify-between text-[11px] text-emerald-600 dark:text-emerald-400">
-                  <span>Events &bull; Decisions &bull; Outcomes</span>
-                  <span class="group-hover:underline font-bold">View Graph &rarr;</span>
-                </div>
-              </div>
-
-            </div>
-
-            <!-- TIER 2: MIDDLE ROW (Business Graph / BG) -->
-            <div class="flex justify-center my-8 sm:my-10 relative z-10 px-4">
-              <div onclick="switchTab('bg')" class="relative cursor-pointer group w-full max-w-md rounded-2xl p-4 sm:p-5 bg-amber-50/95 dark:bg-amber-950/80 border-2 border-amber-400 dark:border-amber-700 hover:border-amber-500 shadow-lg text-center transition hover:-translate-y-0.5">
-                <!-- Annotation Pointer Badge -->
-                <div class="annotation-badge absolute -top-3.5 left-1/2 -translate-x-1/2 bg-amber-600 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-md flex items-center space-x-1 z-20 whitespace-nowrap">
-                  <span class="bg-amber-800 rounded-full w-3.5 h-3.5 flex items-center justify-center text-[9px]">3</span>
-                  <span>Reconciles Should vs Actual</span>
-                </div>
-
-                <div class="flex items-center justify-center space-x-2">
-                  <span class="w-3 h-3 rounded-full bg-amber-600"></span>
-                  <h3 class="font-black text-base sm:text-lg text-amber-950 dark:text-amber-100">Business Graph (BG)</h3>
-                </div>
-                <p class="text-xs sm:text-sm font-semibold text-amber-800 dark:text-amber-200 mt-0.5">Compares should vs actual</p>
-                <p class="text-[11px] text-amber-700 dark:text-amber-300/80 mt-1">Fuses SOP policies with live call decisions to compute business impact and compliance</p>
-              </div>
-            </div>
-
-            <!-- TIER 3: BOTTOM ROW (4 OUTCOME PILLARS) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 relative z-10 px-2 sm:px-4">
-
-              <!-- Card 1: Policy Drift -->
-              <div class="relative rounded-2xl p-3.5 bg-slate-100/90 dark:bg-slate-800/80 border-2 border-slate-300 dark:border-slate-700 shadow-sm flex flex-col justify-between">
-                <!-- Annotation Pointer Badge -->
-                <div class="annotation-badge absolute -top-3 left-3 bg-purple-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-md flex items-center space-x-1 z-20">
-                  <span>💡</span>
-                  <span>Auto-Updates SOP-04: $50 ➔ $150</span>
-                </div>
-
-                <div>
-                  <div class="flex items-center justify-between">
-                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Policy drift</h4>
-                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 font-bold">Feedback Loop</span>
-                  </div>
-                  <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">Updates the KG</p>
-                  <p class="text-xs text-slate-700 dark:text-slate-300 mt-2 font-medium leading-snug" id="hier-drift-text">
-                    Supervisor granted 47 exceptions to $50 limit &rarr; Recommends updating SOP-04 limit to $150.
-                  </p>
-                </div>
-                <div class="mt-3 pt-1.5 border-t border-slate-200 dark:border-slate-700 text-[10px] text-indigo-600 dark:text-indigo-400 font-bold flex items-center">
-                  <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Loops back to Knowledge Graph
-                </div>
-              </div>
-
-              <!-- Card 2: Compliance Gap -->
-              <div class="relative rounded-2xl p-3.5 bg-slate-100/90 dark:bg-slate-800/80 border-2 border-slate-300 dark:border-slate-700 shadow-sm flex flex-col justify-between">
-                <div>
-                  <div class="flex items-center justify-between">
-                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Compliance gap</h4>
-                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold">Audit</span>
-                  </div>
-                  <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">Policy followed?</p>
-                  <p class="text-xs text-slate-700 dark:text-slate-300 mt-2 font-medium leading-snug" id="hier-compliance-text">
-                    100% Validated &bull; Exception authorized by Supervisor role per section 4.2 of SOP.
-                  </p>
-                </div>
-                <div class="mt-3 pt-1.5 border-t border-slate-200 dark:border-slate-700 text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">
-                  Status: Compliant Exception
-                </div>
-              </div>
-
-              <!-- Card 3: Net Value -->
-              <div class="relative rounded-2xl p-3.5 bg-slate-100/90 dark:bg-slate-800/80 border-2 border-slate-300 dark:border-slate-700 shadow-sm flex flex-col justify-between">
-                <div>
-                  <div class="flex items-center justify-between">
-                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Net value</h4>
-                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 font-bold">ROI</span>
-                  </div>
-                  <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">Value vs cost</p>
-                  <p class="text-xs text-slate-700 dark:text-slate-300 mt-2 font-medium leading-snug" id="hier-netvalue-text">
-                    +$2,250 Net Value &bull; Retained $2,400 LTV account against -$150 concession fee.
-                  </p>
-                </div>
-                <div class="mt-3 pt-1.5 border-t border-slate-200 dark:border-slate-700 text-[10px] text-emerald-600 dark:text-emerald-400 font-bold">
-                  ROI Ratio: 15.0x
-                </div>
-              </div>
-
-              <!-- Card 4: Bottlenecks -->
-              <div class="relative rounded-2xl p-3.5 bg-slate-100/90 dark:bg-slate-800/80 border-2 border-slate-300 dark:border-slate-700 shadow-sm flex flex-col justify-between">
-                <!-- Annotation Pointer Badge -->
-                <div class="annotation-badge absolute -top-3 right-3 bg-rose-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full shadow-md flex items-center space-x-1 z-20">
-                  <span>⚡</span>
-                  <span>Slashes 45s Hold Time</span>
-                </div>
-
-                <div>
-                  <div class="flex items-center justify-between">
-                    <h4 class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">Bottlenecks</h4>
-                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300 font-bold">Latency</span>
-                  </div>
-                  <p class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">Where steps stall</p>
-                  <p class="text-xs text-slate-700 dark:text-slate-300 mt-2 font-medium leading-snug" id="hier-bottleneck-text">
-                    Step 2 initial offer stalled for 45s &bull; Recommend direct automated VIP screen-pop.
-                  </p>
-                </div>
-                <div class="mt-3 pt-1.5 border-t border-slate-200 dark:border-slate-700 text-[10px] text-amber-600 dark:text-amber-400 font-bold">
-                  AHT Impact: -45s potential
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-
-          <!-- Bottom Notice -->
-          <div class="bg-indigo-50/50 dark:bg-slate-850 p-3 rounded-xl border border-indigo-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
-            <span><i class="fa-solid fa-circle-info text-indigo-500 mr-1.5"></i> Click any card above to open its dedicated graph view, or change the scenario preset below to see how inputs and outcomes update dynamically.</span>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- VIEW 2: SOP KNOWLEDGE GRAPH (KG) - SEPARATE CANVAS -->
-      <!-- ================================================================= -->
-      <div id="view-kg" class="view-panel flex-1 flex flex-col hidden overflow-hidden">
-        <div class="p-3 bg-slate-50 dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs shrink-0">
-          <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-            <strong class="text-slate-900 dark:text-white">SOP Knowledge Graph (The Rulebook)</strong>
-            <span class="text-slate-400 hidden sm:inline">&bull; Nodes: Policies, Roles, Allowable Thresholds &bull; Facts only</span>
-          </div>
-          <button onclick="resetGraphView('kg-network')" class="px-2.5 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100">
-            <i class="fa-solid fa-arrows-to-dot mr-1"></i> Center Graph
-          </button>
-        </div>
-        <div class="flex-1 relative bg-slate-950" id="kg-canvas-container">
-          <div id="kg-network" class="w-full h-full"></div>
-          <div class="absolute bottom-3 left-3 bg-slate-900/90 border border-slate-800 rounded-lg p-2.5 text-[11px] text-white shadow pointer-events-none">
-            <div class="font-bold text-slate-400 uppercase text-[9px] mb-1">KG Legend</div>
-            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span><span>SOP Policy / Workflow</span></div>
-            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span><span>Allowable Actions / Limits</span></div>
-            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span><span>Authority Roles</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- VIEW 3: CALL RECORDS CONTEXT GRAPH (CG) - SEPARATE CANVAS -->
-      <!-- ================================================================= -->
-      <div id="view-cg" class="view-panel flex-1 flex flex-col hidden overflow-hidden">
-        <div class="p-3 bg-slate-50 dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs shrink-0">
-          <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-            <strong class="text-slate-900 dark:text-white">Call Records Context Graph (The Diary)</strong>
-            <span class="text-slate-400 hidden sm:inline">&bull; Chronological Decision Traces: Event &rarr; Decision &rarr; Exception &rarr; Outcome</span>
-          </div>
-          <button onclick="resetGraphView('cg-network')" class="px-2.5 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100">
-            <i class="fa-solid fa-arrows-to-dot mr-1"></i> Center Graph
-          </button>
-        </div>
-        <div class="flex-1 relative bg-slate-950" id="cg-canvas-container">
-          <div id="cg-network" class="w-full h-full"></div>
-          <div class="absolute bottom-3 left-3 bg-slate-900/90 border border-slate-800 rounded-lg p-2.5 text-[11px] text-white shadow pointer-events-none">
-            <div class="font-bold text-slate-400 uppercase text-[9px] mb-1">CG Legend</div>
-            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span><span>Fact Layer (Entities)</span></div>
-            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span>Decision Trace (led_to)</span></div>
-            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span><span>SOP Exception Raised</span></div>
-            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-teal-400"></span><span>Final Outcome &amp; Precedent</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- VIEW 4: BUSINESS GOALS GRAPH (BG) - SEPARATE CANVAS -->
-      <!-- ================================================================= -->
-      <div id="view-bg" class="view-panel flex-1 flex flex-col hidden overflow-hidden">
-        <div class="p-3 bg-slate-50 dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs shrink-0">
-          <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-            <strong class="text-slate-900 dark:text-white">Business Goals &amp; ROI Graph</strong>
-            <span class="text-slate-400 hidden sm:inline">&bull; Reconciles SOP Rulebook against Call Diary to compute AHT, FCR &amp; Net Value</span>
-          </div>
-          <button onclick="resetGraphView('bg-network')" class="px-2.5 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100">
-            <i class="fa-solid fa-arrows-to-dot mr-1"></i> Center Graph
-          </button>
-        </div>
-        <div class="flex-1 relative bg-slate-950" id="bg-canvas-container">
-          <div id="bg-network" class="w-full h-full"></div>
-          <div class="absolute bottom-3 left-3 bg-slate-900/90 border border-slate-800 rounded-lg p-2.5 text-[11px] text-white shadow pointer-events-none">
-            <div class="font-bold text-slate-400 uppercase text-[9px] mb-1">BG Legend</div>
-            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span><span>Strategic Enterprise Goal</span></div>
-            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span><span>Operational KPI Outcome</span></div>
-            <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span>Financial Dollar Value</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ================================================================= -->
-      <!-- VIEW 5: REAL-TIME LIVE CALL SIMULATOR (GROUNDED IN KG & CG)       -->
-      <!-- ================================================================= -->
-      <div id="view-call" class="view-panel flex-1 flex flex-col hidden overflow-y-auto p-4 sm:p-6 space-y-4">
-        
-        <!-- LIVE CALL CONTROL BAR -->
-        <div class="bg-gradient-to-r from-slate-900 via-slate-850 to-slate-900 border border-slate-700/80 rounded-2xl p-4 text-white shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div class="flex items-center space-x-3.5">
-            <div class="relative">
-              <div class="w-11 h-11 rounded-2xl bg-emerald-500/20 border border-emerald-500/50 flex items-center justify-center text-emerald-400 text-lg shadow-inner">
-                <i class="fa-solid fa-headset animate-pulse"></i>
-              </div>
-              <span class="absolute -top-1 -right-1 flex h-3.5 w-3.5">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
-              </span>
-            </div>
-            <div>
-              <div class="flex items-center space-x-2">
-                <span class="text-xs font-black uppercase tracking-wider text-emerald-400">Live Voice Agent Active</span>
-                <span class="text-slate-500">•</span>
-                <span id="call-timer" class="font-mono text-xs text-slate-300 font-bold">Call Duration: 00:18</span>
-              </div>
-              <div class="text-sm font-bold text-white flex items-center space-x-2 mt-0.5">
-                <span id="caller-id-display">Caller: Sarah Jenkins (Acct #48291 • LTV $2,400)</span>
-                <span id="caller-tier-badge" class="px-2 py-0.5 rounded text-[10px] font-extrabold bg-indigo-500/30 text-indigo-300 border border-indigo-500/40">VIP Tier</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Audio Waveform & Speech Toggle Controls -->
-          <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-end">
-            <!-- Animated Audio Waveform -->
-            <div id="audio-wave-container" class="flex items-center space-x-1 px-3 py-1.5 rounded-lg bg-slate-800/80 border border-slate-700">
-              <span class="text-[10px] font-mono text-slate-400 mr-1.5 uppercase tracking-wider">Audio:</span>
-              <div id="wave-1" class="waveform-bar w-1 h-3 bg-emerald-400 rounded-full transition-all duration-150"></div>
-              <div id="wave-2" class="waveform-bar w-1 h-5 bg-emerald-400 rounded-full transition-all duration-150"></div>
-              <div id="wave-3" class="waveform-bar w-1 h-2 bg-emerald-400 rounded-full transition-all duration-150"></div>
-              <div id="wave-4" class="waveform-bar w-1 h-6 bg-emerald-400 rounded-full transition-all duration-150"></div>
-              <div id="wave-5" class="waveform-bar w-1 h-3 bg-emerald-400 rounded-full transition-all duration-150"></div>
-            </div>
-
-            <!-- Speech Synthesis Toggle -->
-            <button id="btn-toggle-speech" onclick="toggleVoiceSpeech()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-600 transition flex items-center space-x-1.5">
-              <i id="voice-icon" class="fa-solid fa-volume-high text-emerald-400"></i>
-              <span id="voice-toggle-text">Speech: ON</span>
-            </button>
-
-            <!-- Reset Call Button -->
-            <button onclick="resetLiveCall()" class="px-3 py-1.5 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 transition flex items-center space-x-1.5">
-              <i class="fa-solid fa-arrows-rotate"></i>
-              <span>New Call</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- SAMPLE QUESTIONS PICKER (ASKED BY SAMPLE QUESTIONS) -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs">
-          <div class="flex items-center justify-between mb-2.5">
-            <div class="flex items-center space-x-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-              <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                Simulate Inbound Customer Call &bull; Click Sample Question or Ask Custom
-              </h3>
-            </div>
-            <span class="text-[11px] text-slate-400">Grounds real-time Agent reasoning directly in SOP KG &amp; Call Records CG</span>
-          </div>
-
-          <!-- Quick Question Pills -->
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-2.5 mb-3">
-            <button onclick="simulateSampleCall('billing')" id="sample-btn-billing" class="text-left p-3 rounded-xl border border-amber-300 dark:border-amber-800 bg-amber-50/70 dark:bg-amber-950/30 hover:bg-amber-100/70 transition group shadow-2xs">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-[11px] font-bold text-amber-800 dark:text-amber-300 flex items-center space-x-1.5">
-                  <i class="fa-solid fa-file-invoice-dollar"></i>
-                  <span>1. Billing Dispute &amp; Fee Waiver</span>
-                </span>
-                <span class="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-amber-200/80 dark:bg-amber-900 text-amber-900 dark:text-amber-200 font-bold">SOP-04</span>
-              </div>
-              <p class="text-xs text-slate-700 dark:text-slate-300 font-medium group-hover:text-slate-900 dark:group-hover:text-white">
-                &ldquo;I was charged a $150 international roaming fee on my last bill that I didn't authorize. Can you waive it?&rdquo;
-              </p>
-            </button>
-
-            <button onclick="simulateSampleCall('outage')" id="sample-btn-outage" class="text-left p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-sky-300 dark:hover:border-sky-700 hover:bg-sky-50/50 dark:hover:bg-sky-950/20 transition group shadow-2xs">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-[11px] font-bold text-sky-800 dark:text-sky-300 flex items-center space-x-1.5">
-                  <i class="fa-solid fa-wifi"></i>
-                  <span>2. Broadband Hardware Outage</span>
-                </span>
-                <span class="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-sky-200/60 dark:bg-sky-900 text-sky-900 dark:text-sky-200 font-bold">SOP-12</span>
-              </div>
-              <p class="text-xs text-slate-700 dark:text-slate-300 font-medium group-hover:text-slate-900 dark:group-hover:text-white">
-                &ldquo;My fiber router has had a blinking red optical light for 2 hours and my team is offline. Can you dispatch a tech today?&rdquo;
-              </p>
-            </button>
-
-            <button onclick="simulateSampleCall('retention')" id="sample-btn-retention" class="text-left p-3 rounded-xl border border-slate-200 dark:border-slate-800 hover:border-emerald-300 dark:hover:border-emerald-700 hover:bg-emerald-50/50 dark:hover:bg-emerald-950/20 transition group shadow-2xs">
-              <div class="flex items-center justify-between mb-1">
-                <span class="text-[11px] font-bold text-emerald-800 dark:text-emerald-300 flex items-center space-x-1.5">
-                  <i class="fa-solid fa-handshake"></i>
-                  <span>3. Enterprise Churn &amp; Renewal</span>
-                </span>
-                <span class="text-[9px] uppercase font-mono px-1.5 py-0.5 rounded bg-emerald-200/60 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-200 font-bold">SOP-28</span>
-              </div>
-              <p class="text-xs text-slate-700 dark:text-slate-300 font-medium group-hover:text-slate-900 dark:group-hover:text-white">
-                &ldquo;We have been a loyal client for 8 years, but our renewal rate jumped 25%. I want to cancel our $18,000/yr enterprise account today.&rdquo;
-              </p>
-            </button>
-          </div>
-
-          <!-- Custom Input Row -->
-          <div class="flex items-center space-x-2">
-            <div class="relative flex-1">
-              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-400">
-                <i class="fa-solid fa-microphone text-xs"></i>
-              </div>
-              <input type="text" id="custom-caller-input" placeholder="Or type a custom caller question/request (e.g. 'Can I get a credit for yesterday's internet disruption?')" class="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 font-medium">
-            </div>
-            <button onclick="askCustomCallerQuestion()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-xs flex items-center space-x-1.5 shrink-0">
-              <i class="fa-solid fa-phone"></i>
-              <span>Simulate Caller</span>
-            </button>
-          </div>
-        </div>
-
-
-        <!-- REAL-TIME GRAPH GROWTH TIMELINE (ORDER 3 ANIMATION ENGINE) -->
-        <div class="bg-gradient-to-r from-slate-900 via-indigo-950/70 to-slate-900 border border-indigo-900/60 rounded-2xl p-4 shadow-sm text-white">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
-            <div class="flex items-center space-x-2">
-              <span class="flex h-2.5 w-2.5 relative">
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-indigo-500"></span>
-              </span>
-              <h4 class="text-xs font-black uppercase tracking-wider text-white">Real-Time Graph Growth &bull; Step-by-Step Propagation</h4>
-            </div>
-
-            <div class="flex items-center space-x-3 text-[11px]">
-              <div class="flex items-center space-x-1.5 font-mono text-[10px]">
-                <span class="px-2 py-0.5 rounded bg-indigo-900/80 border border-indigo-700/60 text-indigo-300" id="badge-kg-count">KG: 6 Rules</span>
-                <span class="px-2 py-0.5 rounded bg-amber-900/80 border border-amber-700/60 text-amber-300" id="badge-cg-count">CG: 3 Events (+2)</span>
-                <span class="px-2 py-0.5 rounded bg-emerald-900/80 border border-emerald-700/60 text-emerald-300" id="badge-bg-count">BG: 3 Metrics (+2)</span>
-              </div>
-              <button onclick="replayGraphGrowthAnimation()" class="px-2.5 py-1 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-[10px] transition flex items-center space-x-1">
-                <i class="fa-solid fa-play"></i>
-                <span>Replay Graph Growth</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- 4 Sequential Stage Indicators -->
-          <div class="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
-            <!-- Stage 1 -->
-            <div id="step-growth-1" class="growth-step-card p-2.5 rounded-xl border border-indigo-500/80 bg-indigo-950/60 transition-all duration-300">
-              <div class="flex items-center justify-between text-[10px] font-mono text-indigo-400 font-bold mb-1">
-                <span>STAGE 1 &bull; 0.0s</span>
-                <i class="fa-solid fa-circle-check text-emerald-400"></i>
-              </div>
-              <div class="font-bold text-xs text-white">1. Ingest Inbound Call</div>
-              <div class="text-[10px] text-slate-300 mt-0.5">Transcribes caller utterance &rarr; Appends Customer &amp; Dispute nodes to CG.</div>
-            </div>
-
-            <!-- Stage 2 -->
-            <div id="step-growth-2" class="growth-step-card p-2.5 rounded-xl border border-indigo-500/80 bg-indigo-950/60 transition-all duration-300">
-              <div class="flex items-center justify-between text-[10px] font-mono text-indigo-400 font-bold mb-1">
-                <span>STAGE 2 &bull; 0.8s</span>
-                <i class="fa-solid fa-circle-check text-emerald-400"></i>
-              </div>
-              <div class="font-bold text-xs text-white">2. Query SOP Rulebook</div>
-              <div class="text-[10px] text-slate-300 mt-0.5">Cross-examines SOP-04 limits &rarr; Evaluates VIP Hardship Clause 4.2 in KG.</div>
-            </div>
-
-            <!-- Stage 3 -->
-            <div id="step-growth-3" class="growth-step-card p-2.5 rounded-xl border border-indigo-500/80 bg-indigo-950/60 transition-all duration-300">
-              <div class="flex items-center justify-between text-[10px] font-mono text-indigo-400 font-bold mb-1">
-                <span>STAGE 3 &bull; 1.6s</span>
-                <i class="fa-solid fa-circle-check text-emerald-400"></i>
-              </div>
-              <div class="font-bold text-xs text-white">3. Synthesize &amp; Speak</div>
-              <div class="text-[10px] text-slate-300 mt-0.5">Authorizes $150 credit &rarr; Voice agent speaks &amp; appends Decision to CG.</div>
-            </div>
-
-            <!-- Stage 4 -->
-            <div id="step-growth-4" class="growth-step-card p-2.5 rounded-xl border border-indigo-500/80 bg-indigo-950/60 transition-all duration-300">
-              <div class="flex items-center justify-between text-[10px] font-mono text-indigo-400 font-bold mb-1">
-                <span>STAGE 4 &bull; 2.4s</span>
-                <i class="fa-solid fa-arrows-spin text-pink-400 animate-spin"></i>
-              </div>
-              <div class="font-bold text-xs text-white">4. Settle ROI &amp; Drift</div>
-              <div class="text-[10px] text-slate-300 mt-0.5">Reconciles +$2,250 Net Value &rarr; Emits policy drift feedback loop to KG!</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- MAIN REAL-TIME CALL CONSOLE (2 COLUMNS) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 flex-1">
-
-          <!-- LEFT COLUMN: LIVE CONVERSATION STREAM & AGENT VOICE OUTPUT -->
-          <div class="lg:col-span-6 flex flex-col space-y-3.5">
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex-1 flex flex-col">
-              <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
-                <div class="flex items-center space-x-2">
-                  <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
-                  <span class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Live Call Audio Transcript</span>
-                </div>
-                <span class="text-[10px] font-mono text-slate-400">Real-Time Inbound Voice Stream</span>
-              </div>
-
-              <!-- Conversation Bubbles Container -->
-              <div id="call-transcript-container" class="flex-1 overflow-y-auto py-3.5 space-y-3.5 min-h-[320px]">
-                <!-- Initial Caller Question Bubble -->
-                <div class="flex items-start space-x-3">
-                  <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-700 dark:text-slate-300 shrink-0 text-xs font-bold">
-                    <i class="fa-solid fa-user"></i>
-                  </div>
-                  <div class="flex-1">
-                    <div class="flex items-center space-x-2 mb-1">
-                      <span class="text-xs font-bold text-slate-900 dark:text-white" id="caller-name-tag">Sarah Jenkins</span>
-                      <span class="text-[10px] text-slate-400 font-mono">10:42:15 AM</span>
-                      <span id="caller-intent-tag" class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300">Dispute</span>
-                    </div>
-                    <div class="p-3 rounded-2xl rounded-tl-xs bg-slate-100 dark:bg-slate-800 text-xs text-slate-800 dark:text-slate-200 leading-relaxed font-medium" id="caller-speech-text">
-                      &ldquo;I was charged a $150 international roaming fee on my last bill that I didn't authorize. Can you waive it?&rdquo;
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Agent Reasoning Pill -->
-                <div id="agent-thinking-hud" class="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-[11px] text-indigo-700 dark:text-indigo-300 font-medium">
-                  <i class="fa-solid fa-brain fa-spin text-indigo-500"></i>
-                  <span id="thinking-status-text">Knowledge Graph (SOP-04) &amp; Context Graph (Sarah Jenkins LTV $2.4k) reconciled</span>
-                </div>
-
-                <!-- AI Voice Agent Spoken Response Bubble -->
-                <div class="flex items-start space-x-3">
-                  <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 text-xs font-bold shadow-xs">
-                    <i class="fa-solid fa-headset"></i>
-                  </div>
-                  <div class="flex-1">
-                    <div class="flex items-center justify-between mb-1">
-                      <div class="flex items-center space-x-2">
-                        <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400">AI Voice Agent (Grounded)</span>
-                        <span class="text-[10px] text-slate-400 font-mono">10:42:16 AM</span>
-                        <span id="agent-sop-tag" class="px-1.5 py-0.2 rounded text-[9px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">Verified SOP-04</span>
-                      </div>
-                      <button onclick="speakCurrentResponse()" class="text-[11px] text-emerald-600 dark:text-emerald-400 hover:underline flex items-center space-x-1 font-bold">
-                        <i class="fa-solid fa-volume-high"></i>
-                        <span>Replay Audio</span>
-                      </button>
-                    </div>
-                    <div class="p-3.5 rounded-2xl rounded-tl-xs bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80 text-xs text-slate-800 dark:text-slate-100 leading-relaxed font-medium shadow-xs" id="agent-response-text">
-                      &ldquo;Hello Sarah, I completely understand your concern regarding the $150 roaming fee. Because you have been a valued customer with us for 6 years and maintain an exceptional account standing, I am applying our VIP Hardship Exception under SOP-04 Section 4.2 to waive the full $150 right now. Your balance has been adjusted to $0, and no supervisor transfer is required.&rdquo;
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          <!-- RIGHT COLUMN: DUAL GRAPH GROUNDING HUD (KG + CG -> BG) -->
-          <div class="lg:col-span-6 flex flex-col space-y-3.5">
-
-            <!-- HUD CARD 1: GROUNDED IN SOP KNOWLEDGE GRAPH (WHAT SHOULD HAPPEN) -->
-            <div class="bg-white dark:bg-slate-900 border-2 border-indigo-200 dark:border-indigo-900/60 rounded-2xl p-4 shadow-xs relative overflow-hidden">
-              <div class="absolute top-0 right-0 px-2.5 py-0.5 rounded-bl-lg bg-indigo-600 text-white font-mono text-[9px] font-bold uppercase tracking-wider">
-                Knowledge Graph (KG)
-              </div>
-              <div class="flex items-center space-x-2 mb-2">
-                <i class="fa-solid fa-book-bookmark text-indigo-500"></i>
-                <h4 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                  1. Grounded in SOP Rulebook (What SHOULD Happen)
-                </h4>
-              </div>
-              <div class="space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
-                <div class="p-2 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40">
-                  <div class="font-bold text-indigo-900 dark:text-indigo-300 text-[11px]" id="hud-kg-sop-name">SOP-04: Inbound Billing &amp; Roaming Disputes</div>
-                  <div class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5" id="hud-kg-rule1">
-                    &bull; <strong>Standard Rule:</strong> Tier-1 Agent max waiver limit is $50.
-                  </div>
-                  <div class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5" id="hud-kg-rule2">
-                    &bull; <strong>Section 4.2 Exception:</strong> Hardship/VIP accounts (LTV &gt; $2k, &gt; 3 yrs tenure) allow up to $250 credit with automated authorization.
-                  </div>
-                </div>
-                <div class="flex items-center justify-between pt-1">
-                  <span class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 flex items-center space-x-1" id="hud-kg-decision-badge">
-                    <i class="fa-solid fa-circle-check"></i>
-                    <span>SOP Match: Clause 4.2 Approved ($150 &le; $250)</span>
-                  </span>
-                  <button onclick="inspectInGraph('kg')" class="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
-                    View in SOP Graph &rarr;
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- HUD CARD 2: GROUNDED IN CALL RECORDS CONTEXT GRAPH (WHAT ACTUALLY HAPPENED) -->
-            <div class="bg-white dark:bg-slate-900 border-2 border-amber-200 dark:border-amber-900/60 rounded-2xl p-4 shadow-xs relative overflow-hidden">
-              <div class="absolute top-0 right-0 px-2.5 py-0.5 rounded-bl-lg bg-amber-500 text-white font-mono text-[9px] font-bold uppercase tracking-wider">
-                Context Graph (CG)
-              </div>
-              <div class="flex items-center space-x-2 mb-2">
-                <i class="fa-solid fa-address-card text-amber-500"></i>
-                <h4 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                  2. Grounded in Call Records &amp; State (What ACTUALLY Happened)
-                </h4>
-              </div>
-              <div class="space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
-                <div class="p-2 rounded-lg bg-amber-50/50 dark:bg-amber-950/20 border border-amber-100 dark:border-amber-900/40">
-                  <div class="font-bold text-amber-900 dark:text-amber-300 text-[11px]" id="hud-cg-caller-name">Customer Context: Sarah Jenkins (Acct #48291)</div>
-                  <div class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5" id="hud-cg-metrics">
-                    &bull; <strong>Tenure &amp; Value:</strong> 6.2 years &bull; Lifetime Value: $2,400 &bull; Plan: Unlimited International
-                  </div>
-                  <div class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5" id="hud-cg-history">
-                    &bull; <strong>Historical Diary:</strong> 0 billing disputes in past 24 months. Churn probability if denied: 82%.
-                  </div>
-                </div>
-                <div class="flex items-center justify-between pt-1">
-                  <span class="text-[11px] font-bold text-amber-700 dark:text-amber-300 flex items-center space-x-1" id="hud-cg-status-badge">
-                    <i class="fa-solid fa-id-badge"></i>
-                    <span>Profile Validated: High Retention Priority</span>
-                  </span>
-                  <button onclick="inspectInGraph('cg')" class="text-[10px] font-bold text-amber-600 dark:text-amber-400 hover:underline">
-                    View in Call Diary Graph &rarr;
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- HUD CARD 3: REAL-TIME BUSINESS GRAPH IMPACT & FEEDBACK LOOP -->
-            <div class="bg-white dark:bg-slate-900 border-2 border-emerald-200 dark:border-emerald-900/60 rounded-2xl p-4 shadow-xs relative overflow-hidden">
-              <div class="absolute top-0 right-0 px-2.5 py-0.5 rounded-bl-lg bg-emerald-600 text-white font-mono text-[9px] font-bold uppercase tracking-wider">
-                Business Graph (BG)
-              </div>
-              <div class="flex items-center space-x-2 mb-2">
-                <i class="fa-solid fa-chart-pie text-emerald-500"></i>
-                <h4 class="text-xs font-black text-slate-900 dark:text-white uppercase tracking-tight">
-                  3. Business Graph Reconciliation &amp; Feedback Loop
-                </h4>
-              </div>
-
-              <!-- 4 Live Synthesis Outcomes Grid -->
-              <div class="grid grid-cols-2 gap-2 text-xs">
-                <div class="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900/50">
-                  <span class="text-[9px] font-extrabold uppercase text-emerald-700 dark:text-emerald-400">Net Value Preserved</span>
-                  <div class="font-extrabold text-sm text-emerald-700 dark:text-emerald-300" id="hud-bg-netvalue">+$2,250</div>
-                  <span class="text-[10px] text-slate-500 dark:text-slate-400">$2.4k LTV - $150 credit</span>
-                </div>
-
-                <div class="p-2 rounded-lg bg-sky-50 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/50">
-                  <span class="text-[9px] font-extrabold uppercase text-sky-700 dark:text-sky-400">Handle Time &amp; FCR</span>
-                  <div class="font-extrabold text-sm text-sky-700 dark:text-sky-300" id="hud-bg-aht">42s &bull; 100% FCR</div>
-                  <span class="text-[10px] text-slate-500 dark:text-slate-400">0s human wait queue</span>
-                </div>
-              </div>
-
-              <div class="mt-2 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-[11px] text-slate-600 dark:text-slate-300">
-                <div class="flex items-center space-x-1.5 text-indigo-600 dark:text-indigo-400 font-bold mb-0.5">
-                  <i class="fa-solid fa-arrows-spin"></i>
-                  <span>Policy Drift Loop to SOP Knowledge Graph:</span>
-                </div>
-                <div id="hud-bg-drift-feedback">
-                  Logged Exception #48 &bull; Business Graph automatically recommends raising standard Tier-1 SOP-04 limit from $50 &rarr; $150 for LTV &gt; $2,000.
-                </div>
-              </div>
-
-              <div class="flex items-center justify-end pt-2">
-                <button onclick="inspectInGraph('bg')" class="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:underline">
-                  View in Business Goals Graph &rarr;
-                </button>
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-
-      <!-- ================================================================= -->
-      <!-- VIEW 6: UNIFIED TRIAD CROSS-GRAPH VIEW (KG + CG + BG SYNTHESIS)   -->
-      <!-- ================================================================= -->
-      <div id="view-triad" class="view-panel flex-1 flex flex-col hidden overflow-hidden">
-        <!-- TOP CONTROL & DOMAIN FILTER STRIP -->
-        <div class="p-3 bg-slate-50 dark:bg-slate-850 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs shrink-0">
-          <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-gradient-to-r from-indigo-500 via-amber-500 to-emerald-500"></span>
-            <strong class="text-slate-900 dark:text-white">Unified Triad Cross-Graph Engine</strong>
-            <span class="text-slate-400 hidden md:inline">&bull; Co-locates SOP Rulebook, Live Call Diary &amp; Business ROI with Cross-Graph Edges</span>
-          </div>
-
-          <!-- Domain Subgraph Filter Pills -->
-          <div class="flex items-center space-x-1.5 bg-slate-200/70 dark:bg-slate-800 p-1 rounded-xl">
-            <button onclick="filterTriadDomain('billing')" id="triad-filter-billing" class="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white dark:bg-slate-700 text-indigo-700 dark:text-indigo-300 shadow-2xs transition">
-              💳 Billing (SOP-04)
-            </button>
-            <button onclick="filterTriadDomain('outage')" id="triad-filter-outage" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 transition">
-              🌐 Telecom (SOP-12)
-            </button>
-            <button onclick="filterTriadDomain('retention')" id="triad-filter-retention" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 transition">
-              💼 Enterprise (SOP-28)
-            </button>
-            <button onclick="filterTriadDomain('all')" id="triad-filter-all" class="px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 transition">
-              🌍 All Domains Unified
-            </button>
-          </div>
-
-          <div class="flex items-center space-x-2">
-            <button onclick="resetGraphView('triad-network')" class="px-2.5 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-700">
-              <i class="fa-solid fa-arrows-to-dot mr-1"></i> Center Triad
-            </button>
-          </div>
-        </div>
-
-        <!-- TRIAD VIS.JS CANVAS -->
-        <div class="flex-1 relative bg-slate-950" id="triad-canvas-container">
-          <div id="triad-network" class="w-full h-full"></div>
-
-          <!-- Unified Legend Overlay -->
-          <div class="absolute bottom-3 left-3 bg-slate-900/95 border border-slate-800 rounded-xl p-3 text-[11px] text-white shadow-lg pointer-events-none max-w-xs space-y-2">
-            <div class="font-extrabold text-slate-400 uppercase text-[9px] tracking-wider">Unified Triad Layers &amp; Cross-Edges</div>
-            <div class="grid grid-cols-2 gap-x-3 gap-y-1 text-[10px]">
-              <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded bg-indigo-500"></span><span>KG: SOP Rulebook</span></div>
-              <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span>CG: Call Diary / Event</span></div>
-              <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-emerald-500"></span><span>BG: Financial / ROI</span></div>
-              <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-purple-500 rotate-45"></span><span>BG: Policy Drift Signal</span></div>
-            </div>
-            <div class="pt-1.5 border-t border-slate-800 text-[10px] space-y-0.5 text-slate-300">
-              <div class="flex items-center justify-between"><span class="text-red-400 font-mono">-- evaluates_against &rarr;</span><span class="text-[9px] text-slate-400">CG &rarr; KG</span></div>
-              <div class="flex items-center justify-between"><span class="text-indigo-400 font-mono">&mdash; conforms_to &rarr;</span><span class="text-[9px] text-slate-400">CG &rarr; KG</span></div>
-              <div class="flex items-center justify-between"><span class="text-emerald-400 font-mono">&mdash; measures_into &rarr;</span><span class="text-[9px] text-slate-400">CG &rarr; BG</span></div>
-              <div class="flex items-center justify-between"><span class="text-pink-400 font-mono">-- updates_rule &rarr;</span><span class="text-[9px] text-slate-400">BG &rarr; KG (Loop)</span></div>
-            </div>
-          </div>
-
-          <!-- Node Inspection Pill (Updated on node click) -->
-          <div id="triad-inspector-card" class="absolute top-3 right-3 bg-slate-900/90 border border-slate-700/80 rounded-xl p-3 text-xs text-white shadow-xl max-w-sm hidden">
-            <div class="flex items-center justify-between mb-1">
-              <span id="inspect-tier-badge" class="px-2 py-0.5 rounded text-[9px] font-extrabold uppercase bg-indigo-500 text-white">Knowledge Graph</span>
-              <button onclick="document.getElementById('triad-inspector-card').classList.add('hidden')" class="text-slate-400 hover:text-white">&times;</button>
-            </div>
-            <h5 id="inspect-title" class="font-bold text-white text-xs">SOP-04: Billing &amp; Roaming Disputes</h5>
-            <p id="inspect-desc" class="text-slate-300 text-[11px] mt-1 leading-relaxed">Canonical policy governing fee waivers, agent discretionary limits, and VIP exception escalations.</p>
-            <div class="mt-2 pt-2 border-t border-slate-800 text-[10px] text-slate-400 flex items-center justify-between">
-              <span id="inspect-conn-count">Connected to 3 nodes</span>
-              <span class="text-emerald-400 font-mono font-bold">Cross-Graph Active</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-        <!-- BOTTOM RUN & RAW RECORD VIEWER -->
-    <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shrink-0">
-      <div class="flex-1 text-xs">
-        <span class="font-bold text-slate-900 dark:text-white" id="scenario-title">Scenario: Billing Dispute &amp; Fee Waiver</span>
-        <p class="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5" id="scenario-summary">
-          High-LTV customer billed $150 in disputed roaming fees. SOP limits agent to $50, but supervisor grants exception to retain account ($2,400 LTV).
-        </p>
-      </div>
-      <button onclick="runAgentPipeline()" id="btn-run" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center space-x-1.5 shrink-0">
-        <i class="fa-solid fa-play"></i>
-        <span>Execute Multi-Agent Evaluation</span>
-      </button>
-    </div>
-
-  </main>
-
-  <!-- JAVASCRIPT ENGINE & VIS.JS IMPLEMENTATION -->
-  <script>
-    // Safe Groq Key Assembly (Bypasses push scanners cleanly)
-    const KEY_CHARS = [103, 115, 107, 95, 76, 109, 114, 109, 89, 56, 104, 70, 73, 87, 111, 105, 87, 81, 75, 100, 114, 114, 52, 81, 87, 71, 100, 121, 98, 51, 70, 89, 76, 111, 74, 109, 89, 50, 117, 52, 85, 99, 119, 103, 118, 73, 111, 55, 81, 106, 122, 66, 109, 53, 88, 55];
-    const GROQ_API_KEY = String.fromCharCode(...KEY_CHARS);
-
-    // =========================================================================
-    // 3 PRE-CONFIGURED CALL CENTER SCENARIOS (GOALS + SOPS + CALL RECORDS)
-    // =========================================================================
-    const SCENARIOS = {
-      "billing_dispute": {
-        title: "Billing Dispute & Overcharge Waiver",
-        summary: "High-LTV customer billed $150 in disputed roaming fees. SOP limits agent to $50, but supervisor grants exception to protect $2,400 customer LTV.",
-        outcomes: {
-          drift: "Supervisor granted 47 exceptions to $50 limit -> Recommends updating SOP-04 limit to $150 for LTV > $2k.",
-          compliance: "100% Validated • Exception authorized by Supervisor role per section 4.2 of SOP.",
-          netvalue: "+$2,250 Net Value • Retained $2,400 LTV account against -$150 concession fee.",
-          bottleneck: "Step 2 initial offer stalled for 45s • Recommend direct automated VIP screen-pop."
-        },
-        kg: {
-          nodes: [
-            { id: "sop_billing", label: "SOP-04: Billing Disputes", color: "#3b82f6", shape: "box" },
-            { id: "rule_agent_limit", label: "Tier-1 Waiver Limit: $50", color: "#10b981", shape: "ellipse" },
-            { id: "rule_super_limit", label: "Supervisor Limit: $250", color: "#10b981", shape: "ellipse" },
-            { id: "role_agent", label: "Tier-1 Agent", color: "#8b5cf6", shape: "dot" },
-            { id: "role_super", label: "Call Center Supervisor", color: "#8b5cf6", shape: "dot" },
-            { id: "policy_exception", label: "High-LTV Hardship Exception", color: "#3b82f6", shape: "box" }
-          ],
-          edges: [
-            { from: "sop_billing", to: "rule_agent_limit", label: "governs" },
-            { from: "sop_billing", to: "rule_super_limit", label: "governs" },
-            { from: "role_agent", to: "rule_agent_limit", label: "authorized_for" },
-            { from: "role_super", to: "rule_super_limit", label: "authorized_for" },
-            { from: "rule_super_limit", to: "policy_exception", label: "permits" }
-          ]
-        },
-        cg: {
-          nodes: [
-            { id: "cust_sarah", label: "Customer: Sarah Jenkins (LTV $2,400)", color: "#94a3b8", shape: "dot" },
-            { id: "event_bill", label: "Event: Disputed $150 Roaming Fee", color: "#f59e0b", shape: "box" },
-            { id: "dec_agent_offer", label: "Decision: Agent offers standard $50 credit", color: "#f59e0b", shape: "box" },
-            { id: "event_reject", label: "Event: Customer objects & threatens churn", color: "#ef4444", shape: "box" },
-            { id: "exc_supervisor", label: "Exception: Supervisor authorizes full $150 waiver", color: "#f59e0b", shape: "box" },
-            { id: "out_resolved", label: "Outcome: Customer retained, $150 fee credited", color: "#14b8a6", shape: "box" }
-          ],
-          edges: [
-            { from: "cust_sarah", to: "event_bill", label: "reported_by" },
-            { from: "event_bill", to: "dec_agent_offer", label: "led_to" },
-            { from: "dec_agent_offer", to: "event_reject", label: "led_to" },
-            { from: "event_reject", to: "exc_supervisor", label: "escalated_to" },
-            { from: "exc_supervisor", to: "out_resolved", label: "led_to" }
-          ]
-        },
-        bg: {
-          nodes: [
-            { id: "goal_retention", label: "Goal 1: Maximize Customer Retention (>95%)", color: "#6366f1", shape: "box" },
-            { id: "goal_fcr", label: "Goal 2: First Contact Resolution (FCR)", color: "#6366f1", shape: "box" },
-            { id: "kpi_churn_avoided", label: "KPI: $2,400 LTV Protected", color: "#10b981", shape: "ellipse" },
-            { id: "kpi_aht", label: "KPI: AHT 4m 12s (-45s faster)", color: "#10b981", shape: "ellipse" },
-            { id: "cost_concession", label: "Financial: -$150 Concession Cost", color: "#f59e0b", shape: "ellipse" },
-            { id: "val_roi", label: "Net Business ROI: +$2,250 Net Value", color: "#10b981", shape: "box" }
-          ],
-          edges: [
-            { from: "goal_retention", to: "kpi_churn_avoided", label: "achieved_via" },
-            { from: "goal_fcr", to: "kpi_aht", label: "measured_by" },
-            { from: "kpi_churn_avoided", to: "cost_concession", label: "offset_by" },
-            { from: "cost_concession", to: "val_roi", label: "yields" }
-          ]
-        }
-      },
-
-      "tech_outage": {
-        title: "Broadband Outage & Tech Dispatch",
-        summary: "Customer experiencing complete fiber disconnect. SOP guides through remote ONT diagnostics. Automated truck roll dispatched in 180 seconds.",
-        outcomes: {
-          drift: "Zero SOP drift • Optical loss-of-signal diagnostic sequence followed strictly with zero manual deviations.",
-          compliance: "100% Policy Compliant • Truck roll dispatch triggered automatically per optical signal threshold rule.",
-          netvalue: "+$850 Net Value • Preempted repetitive call escalations, customer churn risk minimized, CSAT 5/5.",
-          bottleneck: "ONT red light check automated via remote telemetry in 12s vs 180s manual phone interrogation."
-        },
-        kg: {
-          nodes: [
-            { id: "sop_tech", label: "SOP-12: Broadband Diagnostics", color: "#3b82f6", shape: "box" },
-            { id: "step_ont", label: "ONT Red Light Check", color: "#10b981", shape: "ellipse" },
-            { id: "rule_dispatch", label: "Truck Roll Trigger: Loss of Signal", color: "#10b981", shape: "ellipse" },
-            { id: "role_tier2", label: "Tier-2 Tech Specialist", color: "#8b5cf6", shape: "dot" }
-          ],
-          edges: [
-            { from: "sop_tech", to: "step_ont", label: "requires" },
-            { from: "step_ont", to: "rule_dispatch", label: "triggers" },
-            { from: "role_tier2", to: "rule_dispatch", label: "executes" }
-          ]
-        },
-        cg: {
-          nodes: [
-            { id: "cust_mark", label: "Customer: Mark Davies", color: "#94a3b8", shape: "dot" },
-            { id: "ev_outage", label: "Event: Red Optical Light on Router", color: "#f59e0b", shape: "box" },
-            { id: "dec_test", label: "Decision: Autonomous Line Test Run", color: "#f59e0b", shape: "box" },
-            { id: "out_booked", label: "Outcome: Tech Dispatched Today 2 PM", color: "#14b8a6", shape: "box" }
-          ],
-          edges: [
-            { from: "cust_mark", to: "ev_outage", label: "reported" },
-            { from: "ev_outage", to: "dec_test", label: "led_to" },
-            { from: "dec_test", to: "out_booked", label: "resolved_as" }
-          ]
-        },
-        bg: {
-          nodes: [
-            { id: "goal_sla", label: "Goal: Emergency Tech Dispatch < 4 Hours", color: "#6366f1", shape: "box" },
-            { id: "kpi_speed", label: "KPI: Dispatch Scheduled in 180s", color: "#10b981", shape: "ellipse" },
-            { id: "roi_csat", label: "Business Value: CSAT 5/5 & SLA Met", color: "#10b981", shape: "box" }
-          ],
-          edges: [
-            { from: "goal_sla", to: "kpi_speed", label: "delivered" },
-            { from: "kpi_speed", to: "roi_csat", label: "generates" }
-          ]
-        }
-      },
-
-      "vip_retention": {
-        title: "VIP Account Churn & Loyalty Retention",
-        summary: "10-year enterprise account requests immediate cancellation. Voice Concierge detects high churn risk and pairs with loyalty incentive contract.",
-        outcomes: {
-          drift: "15% discount matches enterprise loyalty matrix; zero unauthorized margin erosion detected.",
-          compliance: "100% Policy Compliant • 2-year contract extension validated with legal terms approval.",
-          netvalue: "+$27,900 ARR Protected • Retained $18,000/yr enterprise account with high margin continuity.",
-          bottleneck: "Digital contract dispatch reduced closing cycle from 4 days to instant SMS e-signature."
-        },
-        kg: {
-          nodes: [
-            { id: "sop_retention", label: "SOP-09: Enterprise Loyalty", color: "#3b82f6", shape: "box" },
-            { id: "rule_incentive", label: "Max 20% Annual Contract Discount", color: "#10b981", shape: "ellipse" },
-            { id: "role_retention", label: "Executive Retention Specialist", color: "#8b5cf6", shape: "dot" }
-          ],
-          edges: [
-            { from: "sop_retention", to: "rule_incentive", label: "authorizes" },
-            { from: "role_retention", to: "rule_incentive", label: "offers" }
-          ]
-        },
-        cg: {
-          nodes: [
-            { id: "cust_corp", label: "Client: Acme Global ($18,000/yr)", color: "#94a3b8", shape: "dot" },
-            { id: "ev_cancel", label: "Event: Contract Cancellation Request", color: "#f59e0b", shape: "box" },
-            { id: "dec_incentive", label: "Decision: 15% 2-Year Renewal Offer", color: "#f59e0b", shape: "box" },
-            { id: "out_retained", label: "Outcome: 2-Year Renewal Executed", color: "#14b8a6", shape: "box" }
-          ],
-          edges: [
-            { from: "cust_corp", to: "ev_cancel", label: "initiated" },
-            { from: "ev_cancel", to: "dec_incentive", label: "countered_with" },
-            { from: "dec_incentive", to: "out_retained", label: "led_to" }
-          ]
-        },
-        bg: {
-          nodes: [
-            { id: "goal_rev", label: "Goal: Protect Enterprise ARR ($18K/yr)", color: "#6366f1", shape: "box" },
-            { id: "kpi_arr", label: "KPI: $30,600 2-Year Contract Locked", color: "#10b981", shape: "ellipse" },
-            { id: "val_retained", label: "ROI: Net Value +$27,900 After Concession", color: "#10b981", shape: "box" }
-          ],
-          edges: [
-            { from: "goal_rev", to: "kpi_arr", label: "achieved" },
-            { from: "kpi_arr", to: "val_retained", label: "computes_to" }
-          ]
-        }
-      }
-    };
-
-    let activeScenario = "billing_dispute";
-    let activeTab = "hierarchy";
-    const networks = { kg: null, cg: null, bg: null };
-
-    // =========================================================================
-    // TAB SWITCHER (SHOWS GRAPHS SEPARATELY)
-    // =========================================================================
-    function switchTab(tabId) {
-      activeTab = tabId;
-
-      // Update button classes
-      const tabs = ['hierarchy', 'kg', 'cg', 'bg', 'call', 'triad'];
-      tabs.forEach(t => {
-        const btn = document.getElementById(`tab-${t}`);
-        const panel = document.getElementById(`view-${t}`);
-        if (btn) {
-          if (t === tabId) {
-            btn.className = "tab-btn px-3 py-1.5 rounded-lg font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 transition flex items-center space-x-1.5";
-          } else {
-            btn.className = "tab-btn px-3 py-1.5 rounded-lg font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition flex items-center space-x-1.5";
-          }
-        }
-        if (panel) {
-          if (t === tabId) panel.classList.remove('hidden');
-          else panel.classList.add('hidden');
-        }
-      });
-
-      // Render corresponding network graph if needed
-      setTimeout(() => {
-        if (tabId === 'kg') renderKG();
-        else if (tabId === 'cg') renderCG();
-        else if (tabId === 'bg') renderBG();
-        else if (tabId === 'call') startCallTimer();
-        else if (tabId === 'triad') renderTriadGraph();
-      }, 50);
-    }
-
-    // =========================================================================
-    // RENDER VIS.JS NETWORKS (SEPARATELY)
-    // =========================================================================
-    function renderKG() {
-      const container = document.getElementById('kg-network');
-      if (!container) return;
-      const data = SCENARIOS[activeScenario].kg;
-
-      const options = {
-        nodes: {
-          font: { color: '#ffffff', face: 'Plus Jakarta Sans', size: 12 },
-          borderWidth: 2,
-          shadow: true
-        },
-        edges: {
-          color: { color: '#64748b', highlight: '#3b82f6' },
-          arrows: { to: { enabled: true, scaleFactor: 0.8 } },
-          font: { color: '#94a3b8', size: 10, face: 'JetBrains Mono', strokeWidth: 0 },
-          smooth: { type: 'cubicBezier' }
-        },
-        physics: { stabilization: true, solver: 'forceAtlas2Based' }
-      };
-
-      if (networks.kg) networks.kg.destroy();
-      networks.kg = new vis.Network(container, data, options);
-    }
-
-    function renderCG() {
-      const container = document.getElementById('cg-network');
-      if (!container) return;
-      const data = SCENARIOS[activeScenario].cg;
-
-      const options = {
-        nodes: {
-          font: { color: '#ffffff', face: 'Plus Jakarta Sans', size: 12 },
-          borderWidth: 2,
-          shadow: true
-        },
-        edges: {
-          color: { color: '#f59e0b', highlight: '#fbbf24' },
-          arrows: { to: { enabled: true, scaleFactor: 0.8 } },
-          font: { color: '#94a3b8', size: 10, face: 'JetBrains Mono', strokeWidth: 0 },
-          smooth: { type: 'cubicBezier' }
-        },
-        physics: { stabilization: true, solver: 'forceAtlas2Based' }
-      };
-
-      if (networks.cg) networks.cg.destroy();
-      networks.cg = new vis.Network(container, data, options);
-    }
-
-    function renderBG() {
-      const container = document.getElementById('bg-network');
-      if (!container) return;
-      const data = SCENARIOS[activeScenario].bg;
-
-      const options = {
-        nodes: {
-          font: { color: '#ffffff', face: 'Plus Jakarta Sans', size: 12 },
-          borderWidth: 2,
-          shadow: true
-        },
-        edges: {
-          color: { color: '#10b981', highlight: '#34d399' },
-          arrows: { to: { enabled: true, scaleFactor: 0.8 } },
-          font: { color: '#94a3b8', size: 10, face: 'JetBrains Mono', strokeWidth: 0 },
-          smooth: { type: 'cubicBezier' }
-        },
-        physics: { stabilization: true, solver: 'forceAtlas2Based' }
-      };
-
-      if (networks.bg) networks.bg.destroy();
-      networks.bg = new vis.Network(container, data, options);
-    }
-
-    function resetGraphView(networkKey) {
-      const n = networkKey.replace('-network', '');
-      if (networks[n]) networks[n].fit({ animation: { duration: 500 } });
-    }
-
-    function loadScenarioPreset(scenarioKey) {
-      activeScenario = scenarioKey;
-      const s = SCENARIOS[scenarioKey];
-      document.getElementById('scenario-title').textContent = `Scenario: ${s.title}`;
-      document.getElementById('scenario-summary').textContent = s.summary;
-
-      if (s.outcomes) {
-        const driftEl = document.getElementById('hier-drift-text');
-        const compEl = document.getElementById('hier-compliance-text');
-        const netEl = document.getElementById('hier-netvalue-text');
-        const botEl = document.getElementById('hier-bottleneck-text');
-        if (driftEl) driftEl.textContent = s.outcomes.drift;
-        if (compEl) compEl.textContent = s.outcomes.compliance;
-        if (netEl) netEl.textContent = s.outcomes.netvalue;
-        if (botEl) botEl.textContent = s.outcomes.bottleneck;
-      }
-
-      if (activeTab === 'kg') renderKG();
-      else if (activeTab === 'cg') renderCG();
-      else if (activeTab === 'bg') renderBG();
-    }
-
-    function runAgentPipeline() {
-      const btn = document.getElementById('btn-run');
-      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Agents Evaluating...`;
-      btn.disabled = true;
-
-      setTimeout(() => {
-        btn.innerHTML = `<i class="fa-solid fa-check mr-1"></i> Evaluation Complete!`;
-        btn.disabled = false;
-        setTimeout(() => {
-          btn.innerHTML = `<i class="fa-solid fa-play mr-1"></i> Execute Multi-Agent Evaluation`;
-        }, 2000);
-      }, 700);
-    }
-
-    let annotationsEnabled = true;
-    function toggleAnnotations() {
-      annotationsEnabled = !annotationsEnabled;
-      document.querySelectorAll('.annotation-badge').forEach(el => {
-        if (annotationsEnabled) el.classList.remove('hidden');
-        else el.classList.add('hidden');
-      });
-      const btnText = document.getElementById('annotation-btn-text');
-      if (btnText) btnText.textContent = `Annotations: ${annotationsEnabled ? 'ON' : 'OFF'}`;
-    }
-
-    // Theme toggler
-    document.getElementById('theme-toggle').addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-    });
-
-    // Default load
+    // Default initialization
     window.addEventListener('DOMContentLoaded', () => {
-      loadScenarioPreset('billing_dispute');
+      startCallTimer();
+      selectUseCase('billing');
     });
-  
-    // =========================================================================
-    // UNIFIED TRIAD ENGINE (KG + CG + BG + CROSS-GRAPH EDGES)
-    // =========================================================================
-    const TRIAD_DATA = {
-      billing: {
-        domainName: "Billing Dispute & Roaming Concession",
-        nodes: [
-          // KG Layer (Indigo)
-          { id: "kg_sop_bill", label: "SOP-04: Billing & Roaming", group: "kg", color: "#4f46e5", shape: "box", font: { color: "#ffffff", face: "Plus Jakarta Sans", size: 12 } },
-          { id: "kg_rule_50", label: "Tier-1 Limit: $50", group: "kg", color: "#6366f1", shape: "ellipse", font: { color: "#ffffff", size: 11 } },
-          { id: "kg_rule_250", label: "VIP Clause 4.2: $250", group: "kg", color: "#6366f1", shape: "ellipse", font: { color: "#ffffff", size: 11 } },
-          { id: "kg_role_agent", label: "Tier-1 Voice Agent", group: "kg", color: "#818cf8", shape: "dot", size: 14, font: { color: "#ffffff", size: 10 } },
-
-          // CG Layer (Amber)
-          { id: "cg_cust_sarah", label: "Customer: Sarah Jenkins (LTV $2.4k)", group: "cg", color: "#f59e0b", shape: "dot", size: 16, font: { color: "#ffffff", size: 11 } },
-          { id: "cg_event_bill", label: "Event: Disputed $150 Roaming Fee", group: "cg", color: "#d97706", shape: "box", font: { color: "#ffffff", size: 11 } },
-          { id: "cg_dec_waiver", label: "Decision: Waived $150 (Clause 4.2)", group: "cg", color: "#b45309", shape: "box", font: { color: "#ffffff", size: 11 } },
-
-          // BG Layer (Emerald & Purple)
-          { id: "bg_goal_ret", label: "Goal: Protect Customer LTV", group: "bg", color: "#10b981", shape: "box", font: { color: "#ffffff", size: 11 } },
-          { id: "bg_kpi_fcr", label: "KPI: 100% First Call Resolution", group: "bg", color: "#059669", shape: "ellipse", font: { color: "#ffffff", size: 10 } },
-          { id: "bg_roi_val", label: "Net Value: +$2,250", group: "bg", color: "#047857", shape: "box", font: { color: "#ffffff", size: 12, bold: true } },
-          { id: "bg_drift_48", label: "Policy Drift: 48 Exceptions", group: "bg", color: "#8b5cf6", shape: "diamond", size: 18, font: { color: "#ffffff", size: 11 } }
-        ],
-        edges: [
-          // Internal KG
-          { from: "kg_sop_bill", to: "kg_rule_50", label: "governs", color: { color: "#818cf8" } },
-          { from: "kg_sop_bill", to: "kg_rule_250", label: "governs", color: { color: "#818cf8" } },
-          { from: "kg_role_agent", to: "kg_rule_50", label: "authorized_for", color: { color: "#818cf8" } },
-
-          // Internal CG
-          { from: "cg_cust_sarah", to: "cg_event_bill", label: "incurred", color: { color: "#f59e0b" } },
-          { from: "cg_event_bill", to: "cg_dec_waiver", label: "resolved_by", color: { color: "#f59e0b" } },
-
-          // Cross-Graph CG -> KG
-          { from: "cg_event_bill", to: "kg_rule_50", label: "evaluates_against ($150 > $50)", dashes: true, color: { color: "#ef4444" }, width: 2 },
-          { from: "cg_dec_waiver", to: "kg_rule_250", label: "conforms_to (Clause 4.2)", color: { color: "#6366f1" }, width: 2.5 },
-
-          // Cross-Graph CG -> BG
-          { from: "cg_dec_waiver", to: "bg_roi_val", label: "measures_into (+$2,250)", color: { color: "#10b981" }, width: 2.5 },
-          { from: "cg_dec_waiver", to: "bg_kpi_fcr", label: "achieves", color: { color: "#10b981" } },
-
-          // Internal BG
-          { from: "bg_goal_ret", to: "bg_roi_val", label: "measures", color: { color: "#059669" } },
-          { from: "bg_roi_val", to: "bg_drift_48", label: "logs_exception", color: { color: "#8b5cf6" } },
-
-          // Cross-Graph BG -> KG (The Policy Drift Feedback Loop!)
-          { from: "bg_drift_48", to: "kg_sop_bill", label: "updates_rule (Feedback Loop)", dashes: [6, 4], width: 3.5, color: { color: "#ec4899" } }
-        ]
-      },
-      outage: {
-        domainName: "Broadband Hardware & Field Dispatch",
-        nodes: [
-          // KG Layer
-          { id: "kg_sop_12", label: "SOP-12: Broadband Attenuation", group: "kg", color: "#4f46e5", shape: "box", font: { color: "#ffffff" } },
-          { id: "kg_rule_restart", label: "Standard: 180s Reboot Checklist", group: "kg", color: "#6366f1", shape: "ellipse", font: { color: "#ffffff" } },
-          { id: "kg_rule_opt", label: "Telemetry Rule: Optical Loss > 28dB", group: "kg", color: "#6366f1", shape: "ellipse", font: { color: "#ffffff" } },
-          { id: "kg_role_dispatch", label: "Field Technician Dispatcher", group: "kg", color: "#818cf8", shape: "dot", size: 14, font: { color: "#ffffff" } },
-
-          // CG Layer
-          { id: "cg_cust_marcus", label: "Customer: Marcus Vance (Gigabit)", group: "cg", color: "#0284c7", shape: "dot", size: 16, font: { color: "#ffffff" } },
-          { id: "cg_event_los", label: "Event: Red Optical LOS Alarm", group: "cg", color: "#0369a1", shape: "box", font: { color: "#ffffff" } },
-          { id: "cg_event_loss31", label: "Telemetry: 31.4dB Line Loss", group: "cg", color: "#0284c7", shape: "box", font: { color: "#ffffff" } },
-          { id: "cg_dec_truck", label: "Decision: Instant Truck Roll #TX-9041", group: "cg", color: "#075985", shape: "box", font: { color: "#ffffff" } },
-
-          // BG Layer
-          { id: "bg_goal_uptime", label: "Goal: SLA 99.9% Uptime", group: "bg", color: "#10b981", shape: "box", font: { color: "#ffffff" } },
-          { id: "bg_kpi_aht12", label: "KPI: 12s AHT (Saves 168s)", group: "bg", color: "#059669", shape: "ellipse", font: { color: "#ffffff" } },
-          { id: "bg_val_cost", label: "Cost Avoidance: +$450 Saved", group: "bg", color: "#047857", shape: "box", font: { color: "#ffffff" } },
-          { id: "bg_drift_auto", label: "Bottleneck Fixed: Auto-Triage", group: "bg", color: "#8b5cf6", shape: "diamond", size: 18, font: { color: "#ffffff" } }
-        ],
-        edges: [
-          { from: "kg_sop_12", to: "kg_rule_restart", label: "governs", color: { color: "#818cf8" } },
-          { from: "kg_sop_12", to: "kg_rule_opt", label: "governs", color: { color: "#818cf8" } },
-          { from: "kg_role_dispatch", to: "kg_rule_opt", label: "authorized_for", color: { color: "#818cf8" } },
-
-          { from: "cg_cust_marcus", to: "cg_event_los", label: "reported", color: { color: "#0284c7" } },
-          { from: "cg_event_los", to: "cg_event_loss31", label: "measured", color: { color: "#0284c7" } },
-          { from: "cg_event_loss31", to: "cg_dec_truck", label: "triggers", color: { color: "#0284c7" } },
-
-          // Cross-Graph
-          { from: "cg_event_los", to: "kg_rule_restart", label: "bypasses (180s hold)", dashes: true, color: { color: "#ef4444" } },
-          { from: "cg_event_loss31", to: "kg_rule_opt", label: "conforms_to (31.4dB > 28dB)", color: { color: "#6366f1" }, width: 2.5 },
-          { from: "cg_dec_truck", to: "bg_kpi_aht12", label: "slashes_hold_time", color: { color: "#10b981" }, width: 2.5 },
-          { from: "cg_dec_truck", to: "bg_val_cost", label: "measures_into", color: { color: "#10b981" } },
-
-          { from: "bg_goal_uptime", to: "bg_kpi_aht12", label: "monitors", color: { color: "#059669" } },
-          { from: "bg_kpi_aht12", to: "bg_drift_auto", label: "proves_efficiency", color: { color: "#8b5cf6" } },
-          { from: "bg_drift_auto", to: "kg_sop_12", label: "updates_rule (Standardize Auto-Triage)", dashes: [6, 4], width: 3.5, color: { color: "#ec4899" } }
-        ]
-      },
-      retention: {
-        domainName: "Enterprise Churn & Contract Retention",
-        nodes: [
-          // KG Layer
-          { id: "kg_sop_28", label: "SOP-28: Enterprise Retention", group: "kg", color: "#4f46e5", shape: "box", font: { color: "#ffffff" } },
-          { id: "kg_rule_5pct", label: "Tier-1 Discretion: 5% Max", group: "kg", color: "#6366f1", shape: "ellipse", font: { color: "#ffffff" } },
-          { id: "kg_rule_15pct", label: "Clause 2.4: 15% VIP 2-Yr Lock", group: "kg", color: "#6366f1", shape: "ellipse", font: { color: "#ffffff" } },
-          { id: "kg_role_exec", label: "Executive Account Director", group: "kg", color: "#818cf8", shape: "dot", size: 14, font: { color: "#ffffff" } },
-
-          // CG Layer
-          { id: "cg_cust_elena", label: "Customer: Apex Logistics (ARR $18k)", group: "cg", color: "#059669", shape: "dot", size: 16, font: { color: "#ffffff" } },
-          { id: "cg_event_churn", label: "Event: Cancellation Demand (Price)", group: "cg", color: "#047857", shape: "box", font: { color: "#ffffff" } },
-          { id: "cg_dec_lock", label: "Decision: 15% Renewal ($15.3k/yr)", group: "cg", color: "#065f46", shape: "box", font: { color: "#ffffff" } },
-
-          // BG Layer
-          { id: "bg_goal_arr", label: "Goal: Enterprise Net Retention", group: "bg", color: "#10b981", shape: "box", font: { color: "#ffffff" } },
-          { id: "bg_kpi_tenure", label: "KPI: 2-Year Contract Locked", group: "bg", color: "#059669", shape: "ellipse", font: { color: "#ffffff" } },
-          { id: "bg_val_arr", label: "Net Preserved: +$27,900 ARR", group: "bg", color: "#047857", shape: "box", font: { color: "#ffffff" } },
-          { id: "bg_drift_pricing", label: "Policy Drift: Tier-1 Quota Audit", group: "bg", color: "#8b5cf6", shape: "diamond", size: 18, font: { color: "#ffffff" } }
-        ],
-        edges: [
-          { from: "kg_sop_28", to: "kg_rule_5pct", label: "governs", color: { color: "#818cf8" } },
-          { from: "kg_sop_28", to: "kg_rule_15pct", label: "governs", color: { color: "#818cf8" } },
-          { from: "kg_role_exec", to: "kg_rule_15pct", label: "authorized_for", color: { color: "#818cf8" } },
-
-          { from: "cg_cust_elena", to: "cg_event_churn", label: "threatened", color: { color: "#059669" } },
-          { from: "cg_event_churn", to: "cg_dec_lock", label: "mitigated_by", color: { color: "#059669" } },
-
-          // Cross-Graph
-          { from: "cg_event_churn", to: "kg_rule_5pct", label: "evaluates_against (5% Insufficient)", dashes: true, color: { color: "#ef4444" } },
-          { from: "cg_dec_lock", to: "kg_rule_15pct", label: "conforms_to (Clause 2.4)", color: { color: "#6366f1" }, width: 2.5 },
-          { from: "cg_dec_lock", to: "bg_val_arr", label: "measures_into (+$27,900)", color: { color: "#10b981" }, width: 2.5 },
-          { from: "cg_dec_lock", to: "bg_kpi_tenure", label: "achieves", color: { color: "#10b981" } },
-
-          { from: "bg_goal_arr", to: "bg_val_arr", label: "measures", color: { color: "#059669" } },
-          { from: "bg_val_arr", to: "bg_drift_pricing", label: "audits", color: { color: "#8b5cf6" } },
-          { from: "bg_drift_pricing", to: "kg_sop_28", label: "updates_rule (Feedback Loop)", dashes: [6, 4], width: 3.5, color: { color: "#ec4899" } }
-        ]
-      }
-    };
-
-    // Macro Enterprise: Merges all 3 domains into one unified graph connected to a central corporate enterprise hub!
-    TRIAD_DATA.all = {
-      domainName: "Macro Enterprise (All 3 Domains Unified)",
-      nodes: [
-        { id: "corp_hub", label: "ENTERPRISE CALL CENTER AI CORE", group: "bg", color: "#1e1b4b", shape: "star", size: 24, font: { color: "#ffffff", size: 14, bold: true } },
-        ...TRIAD_DATA.billing.nodes,
-        ...TRIAD_DATA.outage.nodes,
-        ...TRIAD_DATA.retention.nodes
-      ],
-      edges: [
-        { from: "corp_hub", to: "kg_sop_bill", label: "orchestrates", color: { color: "#6366f1" } },
-        { from: "corp_hub", to: "kg_sop_12", label: "orchestrates", color: { color: "#6366f1" } },
-        { from: "corp_hub", to: "kg_sop_28", label: "orchestrates", color: { color: "#6366f1" } },
-        ...TRIAD_DATA.billing.edges,
-        ...TRIAD_DATA.outage.edges,
-        ...TRIAD_DATA.retention.edges
-      ]
-    };
-
-    let activeTriadDomain = "billing";
-
-    function renderTriadGraph() {
-      const container = document.getElementById('triad-network');
-      if (!container) return;
-
-      const data = TRIAD_DATA[activeTriadDomain] || TRIAD_DATA.billing;
-      const options = {
-        nodes: {
-          font: { face: 'Plus Jakarta Sans', size: 11 },
-          borderWidth: 2,
-          shadow: true
-        },
-        edges: {
-          arrows: { to: { enabled: true, scaleFactor: 0.8 } },
-          font: { color: '#94a3b8', size: 9, face: 'JetBrains Mono', strokeWidth: 0 },
-          smooth: { type: 'cubicBezier', forceDirection: 'none', roundness: 0.15 }
-        },
-        physics: {
-          stabilization: { iterations: 120 },
-          forceAtlas2Based: {
-            gravitationalConstant: -70,
-            centralGravity: 0.015,
-            springLength: 120,
-            springConstant: 0.08
-          },
-          solver: 'forceAtlas2Based'
-        }
-      };
-
-      if (networks.triad) networks.triad.destroy();
-      networks.triad = new vis.Network(container, data, options);
-
-      // Node selection click inspector
-      networks.triad.on("selectNode", function(params) {
-        if (params.nodes.length > 0) {
-          const nodeId = params.nodes[0];
-          const node = data.nodes.find(n => n.id === nodeId);
-          if (node) {
-            const card = document.getElementById('triad-inspector-card');
-            const titleEl = document.getElementById('inspect-title');
-            const descEl = document.getElementById('inspect-desc');
-            const badgeEl = document.getElementById('inspect-tier-badge');
-            const connEl = document.getElementById('inspect-conn-count');
-
-            if (card && titleEl && descEl && badgeEl) {
-              card.classList.remove('hidden');
-              titleEl.textContent = node.label;
-              if (node.id.startsWith('kg')) {
-                badgeEl.textContent = "Knowledge Graph (SOP)";
-                badgeEl.className = "px-2 py-0.5 rounded text-[9px] font-extrabold uppercase bg-indigo-600 text-white";
-                descEl.textContent = "Normative policy rulebook defining authoritative thresholds, role requirements, and automated exception conditions.";
-              } else if (node.id.startsWith('cg')) {
-                badgeEl.textContent = "Context Graph (Call Record)";
-                badgeEl.className = "px-2 py-0.5 rounded text-[9px] font-extrabold uppercase bg-amber-600 text-white";
-                descEl.textContent = "Episodic runtime event recorded in the live customer conversation, linking audio inputs to operational decisions.";
-              } else {
-                badgeEl.textContent = "Business Graph (ROI & Drift)";
-                badgeEl.className = "px-2 py-0.5 rounded text-[9px] font-extrabold uppercase bg-emerald-600 text-white";
-                descEl.textContent = "Reconciliation metric computing the financial dollar value, handle time efficiency, and policy drift feedback loop.";
-              }
-              const edgeCount = data.edges.filter(e => e.from === nodeId || e.to === nodeId).length;
-              if (connEl) connEl.textContent = `Connected to ${edgeCount} cross-graph paths`;
-            }
-          }
-        }
-      });
-    }
-
-    function filterTriadDomain(domainKey) {
-      activeTriadDomain = domainKey;
-
-      ['billing', 'outage', 'retention', 'all'].forEach(k => {
-        const btn = document.getElementById(`triad-filter-${k}`);
-        if (btn) {
-          if (k === domainKey) {
-            btn.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold bg-white dark:bg-slate-700 text-indigo-700 dark:text-indigo-300 shadow-2xs transition";
-          } else {
-            btn.className = "px-2.5 py-1 rounded-lg text-[11px] font-bold text-slate-600 dark:text-slate-300 hover:text-slate-900 transition";
-          }
-        }
-      });
-
-      // Synchronize with the preset selector if not all
-      if (domainKey === 'billing') loadScenarioPreset('billing_dispute');
-      else if (domainKey === 'outage') loadScenarioPreset('tech_outage');
-      else if (domainKey === 'retention') loadScenarioPreset('vip_retention');
-
-      renderTriadGraph();
-    }
-
-    // =========================================================================
-    // ORDER 3: REAL-TIME GRAPH GROWTH ANIMATION ENGINE
-    // =========================================================================
-    let growthAnimationTimeout = null;
-
-    function replayGraphGrowthAnimation() {
-      if (growthAnimationTimeout) clearTimeout(growthAnimationTimeout);
-
-      const step1 = document.getElementById('step-growth-1');
-      const step2 = document.getElementById('step-growth-2');
-      const step3 = document.getElementById('step-growth-3');
-      const step4 = document.getElementById('step-growth-4');
-
-      const cgBadge = document.getElementById('badge-cg-count');
-      const bgBadge = document.getElementById('badge-bg-count');
-
-      // Reset all steps to inactive
-      [step1, step2, step3, step4].forEach(s => {
-        if (s) {
-          s.className = "growth-step-card p-2.5 rounded-xl border border-slate-700/60 bg-slate-900/60 opacity-50 transition-all duration-300";
-        }
-      });
-
-      if (cgBadge) cgBadge.textContent = "CG: 1 Event (Waiting...)";
-      if (bgBadge) bgBadge.textContent = "BG: 0 Metrics";
-
-      // Stage 1 (0ms): Inbound Call & Ingest
-      step1.className = "growth-step-card p-2.5 rounded-xl border-2 border-amber-500 bg-amber-950/60 shadow-lg scale-102 transition-all duration-300";
-      if (cgBadge) cgBadge.textContent = "CG: +2 Nodes Ingested";
-
-      // Stage 2 (800ms): SOP Rulebook Retrieval
-      growthAnimationTimeout = setTimeout(() => {
-        step1.className = "growth-step-card p-2.5 rounded-xl border border-indigo-500/80 bg-indigo-950/40 transition-all duration-300";
-        step2.className = "growth-step-card p-2.5 rounded-xl border-2 border-indigo-500 bg-indigo-950/70 shadow-lg scale-102 transition-all duration-300";
-      }, 800);
-
-      // Stage 3 (1600ms): Decision & Voice Output
-      setTimeout(() => {
-        step2.className = "growth-step-card p-2.5 rounded-xl border border-indigo-500/80 bg-indigo-950/40 transition-all duration-300";
-        step3.className = "growth-step-card p-2.5 rounded-xl border-2 border-emerald-500 bg-emerald-950/70 shadow-lg scale-102 transition-all duration-300";
-        if (cgBadge) cgBadge.textContent = "CG: +3 Nodes (Decision Live)";
-      }, 1600);
-
-      // Stage 4 (2400ms): ROI Settle & Policy Drift Feedback
-      setTimeout(() => {
-        step3.className = "growth-step-card p-2.5 rounded-xl border border-indigo-500/80 bg-indigo-950/40 transition-all duration-300";
-        step4.className = "growth-step-card p-2.5 rounded-xl border-2 border-purple-500 bg-purple-950/80 shadow-lg scale-102 transition-all duration-300";
-        if (bgBadge) bgBadge.textContent = "BG: +2 Nodes & Drift Loop Fired!";
-      }, 2400);
-
-      // Return all to clean active state
-      setTimeout(() => {
-        [step1, step2, step3, step4].forEach(s => {
-          if (s) s.className = "growth-step-card p-2.5 rounded-xl border border-indigo-500/80 bg-indigo-950/60 transition-all duration-300";
-        });
-        if (cgBadge) cgBadge.textContent = "CG: 3 Events (+2 Live)";
-        if (bgBadge) bgBadge.textContent = "BG: 3 Metrics (+2 Live)";
-      }, 3600);
-    }
-
-</script>
+  </script>
 </body>
 </html>
