@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CallCenter Macro Graph &amp; Operations Studio | OpenMetadata &amp; Network Optimization</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            },
+            callcenter: {
+              ivr: '#0284c7',       // Sky 600
+              bot: '#8b5cf6',       // Purple 500
+              acd: '#f59e0b',       // Amber 500
+              crm: '#10b981',       // Emerald 500
+              speech: '#ec4899',    // Pink 500
+              qa: '#06b6d4',        // Cyan 500
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom sleek scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    .graph-node { transition: all 0.25s ease; cursor: pointer; }
+    .graph-node:hover { filter: drop-shadow(0 4px 8px rgba(79, 70, 229, 0.4)); }
+    .critical-edge { stroke: #f59e0b !important; stroke-width: 3.5px !important; stroke-dasharray: 6; animation: dash 1.5s linear infinite; }
+    @keyframes dash { to { stroke-dashoffset: -24; } }
+    .pulse-glow { animation: pulseGlow 2s infinite; }
+    @keyframes pulseGlow { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased font-sans min-h-screen flex flex-col">
+
+  <!-- TOP HEADER & BRANDING -->
+  <header class="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex items-center justify-between shadow-xs sticky top-0 z-50">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-600 via-indigo-600 to-emerald-600 flex items-center justify-center text-white shadow-sm font-black text-lg">
+        <i class="fa-solid fa-headset"></i>
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-base sm:text-lg font-black text-slate-900 tracking-tight">CallCenter Macro Graph &amp; Operations Studio</h1>
+          <span class="px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-[10px] font-bold uppercase tracking-wider">OM 1.4+ Lineage</span>
+          <span class="hidden md:inline-flex px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-bold uppercase tracking-wider">Zero-Backend Client</span>
+        </div>
+        <p class="text-xs text-slate-500 hidden sm:block">Micro-App Lineage Fusion &bull; Voice &amp; AHT NetworkX Optimization &bull; Contact Center AI Products</p>
+      </div>
+    </div>
+
+    <!-- Right Quick Actions -->
+    <div class="flex items-center space-x-2">
+      <div id="backendPill" class="hidden sm:flex items-center space-x-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full text-xs font-semibold">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span id="backendStatusText">Deterministic Engine Active</span>
+      </div>
+
+      <button onclick="switchTab('optimization')" class="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs transition shadow-sm flex items-center space-x-1.5">
+        <i class="fa-solid fa-bolt"></i>
+        <span>Optimize Network</span>
+      </button>
+
+      <button onclick="switchTab('products')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition shadow-sm flex items-center space-x-1.5">
+        <i class="fa-solid fa-cube"></i>
+        <span>AI Products</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- NAVIGATION SUB-BAR -->
+  <nav class="bg-white border-b border-slate-200 px-4 sm:px-6 py-2 flex items-center justify-between text-xs sticky top-[57px] z-40">
+    <div class="flex items-center space-x-1 sm:space-x-2">
+      <button id="tabBtnCanvas" onclick="switchTab('canvas')" class="px-3 py-1.5 rounded-lg font-bold bg-indigo-50 text-indigo-700 transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-network-wired"></i>
+        <span>Macro Graph Canvas</span>
+      </button>
+      <button id="tabBtnOptimization" onclick="switchTab('optimization')" class="px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-gauge-high"></i>
+        <span>Contact Center Optimization</span>
+        <span class="px-1.5 py-0.2 bg-amber-100 text-amber-800 rounded-full text-[10px] font-black">-72% Latency</span>
+      </button>
+      <button id="tabBtnProducts" onclick="switchTab('products')" class="px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-boxes-stacked"></i>
+        <span>Call Center AI Products (3)</span>
+      </button>
+      <button id="tabBtnSpec" onclick="switchTab('spec')" class="px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5">
+        <i class="fa-solid fa-code"></i>
+        <span>OpenMetadata Manifest</span>
+      </button>
+    </div>
+
+    <!-- Active Lineage Status -->
+    <div class="hidden lg:flex items-center space-x-3 text-slate-500 font-medium">
+      <span>Fused Micro-Apps: <strong id="activeMicroCount" class="text-slate-800">6 / 6</strong></span>
+      <span class="text-slate-300">&bull;</span>
+      <span>Nodes: <strong id="totalNodeCount" class="text-slate-800">24</strong></span>
+      <span class="text-slate-300">&bull;</span>
+      <span>Lineage Edges: <strong id="totalEdgeCount" class="text-slate-800">28</strong></span>
+    </div>
+  </nav>
+
+  <!-- MAIN THREE-COLUMN WORKBENCH -->
+  <main class="flex-1 flex overflow-hidden">
+
+    <!-- LEFT SIDEBAR: CALL CENTER MICRO-APPS SELECTOR & TELEMETRY -->
+    <aside class="w-80 bg-white border-r border-slate-200 flex flex-col shrink-0 overflow-y-auto">
+      <div class="p-4 border-b border-slate-100">
+        <div class="flex items-center justify-between">
+          <h2 class="text-xs font-black uppercase tracking-wider text-slate-400">Call Center Micro-Apps</h2>
+          <span class="text-[11px] font-semibold text-indigo-600 cursor-pointer hover:underline" onclick="toggleAllMicroGraphs(true)">Select All</span>
+        </div>
+        <p class="text-xs text-slate-500 mt-1">Select isolated call center service sub-graphs to fuse into the enterprise macro journey.</p>
+      </div>
+
+      <div class="p-3 space-y-2.5 flex-1">
+
+        <!-- 1. IVR & Telephony Core -->
+        <div class="border border-slate-200 rounded-xl p-3 hover:border-sky-300 hover:bg-sky-50/20 transition">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-2">
+              <input type="checkbox" id="chk_ivr" checked onchange="handleMicroGraphToggle()" class="rounded text-sky-600 focus:ring-sky-500 h-4 w-4">
+              <label for="chk_ivr" class="font-bold text-xs text-slate-900 cursor-pointer">IVR &amp; Telephony Core</label>
+            </div>
+            <span class="px-1.5 py-0.5 rounded bg-sky-100 text-sky-800 text-[10px] font-bold">Amazon Connect / CVP</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1 ml-6">PSTN/SBC Ingress, DTMF self-service trees, dynamic TTS audio &amp; initial caller ANI/DNIS intent.</p>
+          <div class="flex items-center justify-between text-[10px] text-slate-400 mt-2 ml-6 pt-1 border-t border-slate-100">
+            <span>4 Nodes &bull; 4 Edges</span>
+            <span class="font-mono text-sky-700 font-bold">15-65ms latency</span>
+          </div>
+        </div>
+
+        <!-- 2. Conversational AI & Virtual Agent -->
+        <div class="border border-slate-200 rounded-xl p-3 hover:border-purple-300 hover:bg-purple-50/20 transition">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-2">
+              <input type="checkbox" id="chk_bot" checked onchange="handleMicroGraphToggle()" class="rounded text-purple-600 focus:ring-purple-500 h-4 w-4">
+              <label for="chk_bot" class="font-bold text-xs text-slate-900 cursor-pointer">Conversational AI &amp; Bot</label>
+            </div>
+            <span class="px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 text-[10px] font-bold">AWS Lex / Dialogflow</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1 ml-6">NLU intent classification, Vector RAG knowledge retrieval, self-service deflection &amp; escalation handoff.</p>
+          <div class="flex items-center justify-between text-[10px] text-slate-400 mt-2 ml-6 pt-1 border-t border-slate-100">
+            <span>4 Nodes &bull; 4 Edges</span>
+            <span class="font-mono text-purple-700 font-bold">30-110ms latency</span>
+          </div>
+        </div>
+
+        <!-- 3. Intelligent ACD & Skills-Based Routing -->
+        <div class="border border-slate-200 rounded-xl p-3 hover:border-amber-300 hover:bg-amber-50/20 transition">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-2">
+              <input type="checkbox" id="chk_acd" checked onchange="handleMicroGraphToggle()" class="rounded text-amber-600 focus:ring-amber-500 h-4 w-4">
+              <label for="chk_acd" class="font-bold text-xs text-slate-900 cursor-pointer">ACD &amp; Skills Routing</label>
+            </div>
+            <span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 text-[10px] font-bold">Genesys Cloud ACD</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1 ml-6">Priority queue ingress, skills-based agent matching, telephony presence &amp; SIP warm transfer switch.</p>
+          <div class="flex items-center justify-between text-[10px] text-slate-400 mt-2 ml-6 pt-1 border-t border-slate-100">
+            <span>4 Nodes &bull; 4 Edges</span>
+            <span class="font-mono text-amber-700 font-bold">20-85ms latency</span>
+          </div>
+        </div>
+
+        <!-- 4. Agent Desktop & CRM Orchestration -->
+        <div class="border border-slate-200 rounded-xl p-3 hover:border-emerald-300 hover:bg-emerald-50/20 transition">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-2">
+              <input type="checkbox" id="chk_crm" checked onchange="handleMicroGraphToggle()" class="rounded text-emerald-600 focus:ring-emerald-500 h-4 w-4">
+              <label for="chk_crm" class="font-bold text-xs text-slate-900 cursor-pointer">Agent Desktop &amp; CRM</label>
+            </div>
+            <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-bold">Salesforce CTI / Zendesk</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1 ml-6">CTI screen-pop, Snowflake Customer 360 profile, omnichannel case lifecycle &amp; predictive Next-Best-Action.</p>
+          <div class="flex items-center justify-between text-[10px] text-slate-400 mt-2 ml-6 pt-1 border-t border-slate-100">
+            <span>4 Nodes &bull; 4 Edges</span>
+            <span class="font-mono text-emerald-700 font-bold">40-95ms latency</span>
+          </div>
+        </div>
+
+        <!-- 5. Real-Time Speech Analytics & Agent Assist -->
+        <div class="border border-slate-200 rounded-xl p-3 hover:border-pink-300 hover:bg-pink-50/20 transition">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-2">
+              <input type="checkbox" id="chk_speech" checked onchange="handleMicroGraphToggle()" class="rounded text-pink-600 focus:ring-pink-500 h-4 w-4">
+              <label for="chk_speech" class="font-bold text-xs text-slate-900 cursor-pointer">Real-Time Speech &amp; Assist</label>
+            </div>
+            <span class="px-1.5 py-0.5 rounded bg-pink-100 text-pink-800 text-[10px] font-bold">Deepgram / Contact Lens</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1 ml-6">RTP audio tap, streaming live ASR (<4% WER), acoustic caller sentiment monitor &amp; live copilot assist.</p>
+          <div class="flex items-center justify-between text-[10px] text-slate-400 mt-2 ml-6 pt-1 border-t border-slate-100">
+            <span>4 Nodes &bull; 4 Edges</span>
+            <span class="font-mono text-pink-700 font-bold">12-180ms latency</span>
+          </div>
+        </div>
+
+        <!-- 6. Post-Call Wrap-up & Quality Management -->
+        <div class="border border-slate-200 rounded-xl p-3 hover:border-cyan-300 hover:bg-cyan-50/20 transition">
+          <div class="flex items-start justify-between">
+            <div class="flex items-center space-x-2">
+              <input type="checkbox" id="chk_qa" checked onchange="handleMicroGraphToggle()" class="rounded text-cyan-600 focus:ring-cyan-500 h-4 w-4">
+              <label for="chk_qa" class="font-bold text-xs text-slate-900 cursor-pointer">Post-Call QA &amp; Wrap-up</label>
+            </div>
+            <span class="px-1.5 py-0.5 rounded bg-cyan-100 text-cyan-800 text-[10px] font-bold">Verint / Auto-Summarizer</span>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-1 ml-6">Auto-call summarizer, zero-touch disposition classifier, PCI/PII audio redactor &amp; 100% QA audit scorecard.</p>
+          <div class="flex items-center justify-between text-[10px] text-slate-400 mt-2 ml-6 pt-1 border-t border-slate-100">
+            <span>4 Nodes &bull; 4 Edges</span>
+            <span class="font-mono text-cyan-700 font-bold">45-220ms latency</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live Pipeline Execution Log -->
+      <div class="p-3 border-t border-slate-200 bg-slate-900 text-slate-300 text-[11px] font-mono shrink-0">
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest"><i class="fa-solid fa-terminal mr-1"></i> Lineage Orchestrator</span>
+          <span id="logClearBtn" onclick="clearEngineLog()" class="text-[10px] text-slate-400 hover:text-white cursor-pointer">clear</span>
+        </div>
+        <div id="engineLogBox" class="h-28 overflow-y-auto space-y-1 font-mono text-[10px] leading-relaxed custom-scrollbar text-emerald-400">
+          <div>[00:00:00] Ingested 6 Call Center Micro-Apps into OpenMetadata catalog.</div>
+          <div>[00:00:01] Cross-app semantic bridge lineage resolved (28 edges).</div>
+          <div>[00:00:02] Network topology graph synthesized. Ready for optimization.</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CENTER & RIGHT MAIN WORKSPACE -->
+    <section class="flex-1 flex flex-col overflow-hidden bg-slate-100/60 relative">
+
+      <!-- =================================================================== -->
+      <!-- TAB 1: MACRO GRAPH CANVAS VIEW -->
+      <!-- =================================================================== -->
+      <div id="viewCanvas" class="flex-1 flex flex-col overflow-hidden">
+        
+        <!-- Canvas Top Toolbar -->
+        <div class="bg-white border-b border-slate-200 px-4 py-2.5 flex items-center justify-between shrink-0 shadow-2xs">
+          <div class="flex items-center space-x-2">
+            <span class="text-xs font-bold text-slate-700">Domain Filter:</span>
+            <button onclick="filterDomain('all')" class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold">All (6)</button>
+            <button onclick="filterDomain('ivr_telephony')" class="px-2 py-0.5 rounded bg-sky-50 text-sky-700 border border-sky-200 text-xs font-semibold">IVR Core</button>
+            <button onclick="filterDomain('conversational_ai')" class="px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 text-xs font-semibold">Virtual Bot</button>
+            <button onclick="filterDomain('acd_routing')" class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 text-xs font-semibold">ACD Queue</button>
+            <button onclick="filterDomain('agent_crm')" class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold">CRM Desk</button>
+            <button onclick="filterDomain('speech_assist')" class="px-2 py-0.5 rounded bg-pink-50 text-pink-700 border border-pink-200 text-xs font-semibold">Speech ASR</button>
+            <button onclick="filterDomain('post_call_qa')" class="px-2 py-0.5 rounded bg-cyan-50 text-cyan-700 border border-cyan-200 text-xs font-semibold">QA Wrap-up</button>
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <button onclick="toggleCriticalPath()" id="btnToggleCriticalPath" class="px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-lg text-xs font-bold transition flex items-center space-x-1">
+              <i class="fa-solid fa-route"></i>
+              <span id="criticalPathLabel">Show Voice Critical Path</span>
+            </button>
+            <button onclick="resetGraphView()" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold" title="Reset Zoom">
+              <i class="fa-solid fa-arrows-to-dot"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- SVG Visual Canvas Area -->
+        <div class="flex-1 relative overflow-hidden bg-slate-900 cursor-crosshair select-none" id="graphContainer">
+          
+          <svg id="macroGraphSvg" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="edgeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="#818cf8" stop-opacity="0.6"/>
+              </linearGradient>
+              <marker id="arrow" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#64748b" />
+              </marker>
+              <marker id="arrowCritical" viewBox="0 0 10 10" refX="24" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 1 L 10 5 L 0 9 z" fill="#f59e0b" />
+              </marker>
+            </defs>
+
+            <!-- Grid Background Lines -->
+            <g id="gridLayer" opacity="0.12"></g>
+
+            <!-- Lineage Edges Layer -->
+            <g id="edgesLayer"></g>
+
+            <!-- Nodes Layer -->
+            <g id="nodesLayer"></g>
+          </svg>
+
+          <!-- Floating Canvas Legend -->
+          <div class="absolute bottom-4 left-4 bg-slate-900/90 border border-slate-700/60 rounded-xl p-3 text-white text-[11px] shadow-lg backdrop-blur-xs flex flex-col space-y-1.5 pointer-events-none">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Call Center Service Layers</div>
+            <div class="flex items-center space-x-2">
+              <span class="w-3 h-3 rounded-full bg-sky-500"></span>
+              <span>1. IVR &amp; PSTN Ingress (CVP / Connect)</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="w-3 h-3 rounded-full bg-purple-500"></span>
+              <span>2. Conversational Bot (Lex / Dialogflow)</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+              <span>3. ACD Skills Routing (Genesys Cloud)</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+              <span>4. Agent Desktop CRM (Salesforce / C360)</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="w-3 h-3 rounded-full bg-pink-500"></span>
+              <span>5. Real-Time Speech Analytics (Deepgram ASR)</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="w-3 h-3 rounded-full bg-cyan-500"></span>
+              <span>6. Post-Call QA &amp; Wrap-up (Verint / LLM)</span>
+            </div>
+          </div>
+
+          <!-- Bottom Telemetry HUD -->
+          <div class="absolute bottom-4 right-4 bg-slate-900/90 border border-slate-700/60 rounded-xl p-3 text-white text-xs shadow-lg backdrop-blur-xs flex items-center space-x-4 pointer-events-none">
+            <div>
+              <div class="text-[10px] text-slate-400 font-bold uppercase">End-to-End Voice Latency</div>
+              <div class="text-sm font-black text-amber-400 font-mono" id="hudVoiceLatency">310 ms <span class="text-[10px] text-emerald-400 font-normal">(-72.3%)</span></div>
+            </div>
+            <div class="border-l border-slate-700 pl-4">
+              <div class="text-[10px] text-slate-400 font-bold uppercase">Avg Handle Time (AHT)</div>
+              <div class="text-sm font-black text-emerald-400 font-mono">195s <span class="text-[10px] text-slate-400 font-normal">(-65s saved)</span></div>
+            </div>
+            <div class="border-l border-slate-700 pl-4">
+              <div class="text-[10px] text-slate-400 font-bold uppercase">First Contact Res (FCR)</div>
+              <div class="text-sm font-black text-sky-400 font-mono">90.6% <span class="text-[10px] text-emerald-400 font-normal">(+19.4%)</span></div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- TAB 2: NETWORK OPTIMIZATION ENGINE -->
+      <!-- =================================================================== -->
+      <div id="viewOptimization" class="flex-1 overflow-y-auto p-4 sm:p-6 hidden">
+        <div class="max-w-6xl mx-auto space-y-6">
+
+          <!-- Top Optimization Directive Banner -->
+          <div class="bg-gradient-to-r from-indigo-900 via-slate-900 to-sky-950 rounded-2xl p-6 text-white shadow-md border border-indigo-800/50">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div>
+                <div class="flex items-center space-x-2">
+                  <span class="px-2.5 py-0.5 rounded-full bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 text-xs font-bold uppercase tracking-wider">Contact Center NetworkX Optimizer</span>
+                  <span class="text-xs text-slate-400">Topology &bull; Dijkstra Shortest Path &bull; Betweenness Centrality</span>
+                </div>
+                <h2 class="text-xl font-black mt-2">Enterprise Contact Center Graph Optimization</h2>
+                <p class="text-slate-300 text-xs sm:text-sm mt-1 max-w-2xl">
+                  Transforms fragmented telephony silos into an optimized end-to-end call journey. Eliminates transfer hops, slashes live voice/ASR latency, and prevents queue caller abandonment before drop-offs occur.
+                </p>
+              </div>
+
+              <div class="flex items-center space-x-3 shrink-0">
+                <select id="optObjectiveSelect" class="bg-slate-800 border border-slate-700 text-white rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                  <option value="latency">Minimize Voice &amp; Assist Latency (Dijkstra)</option>
+                  <option value="fcr">Maximize First Contact Resolution (FCR)</option>
+                  <option value="bottlenecks">Eliminate Queue Congestion (Betweenness)</option>
+                  <option value="cost">Optimize SIP Trunk &amp; Egress Bandwidth</option>
+                </select>
+                <button onclick="runNetworkOptimization()" class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white rounded-xl font-bold text-xs shadow-md transition flex items-center space-x-1.5">
+                  <i class="fa-solid fa-play"></i>
+                  <span>Execute Pass</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Optimization Metrics Summary Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs">
+              <div class="flex items-center justify-between text-slate-400">
+                <span class="text-[11px] font-bold uppercase tracking-wider">Voice &amp; Assist Latency</span>
+                <i class="fa-solid fa-stopwatch text-indigo-500"></i>
+              </div>
+              <div class="mt-2 flex items-baseline space-x-2">
+                <span class="text-2xl font-black text-slate-900 font-mono" id="optCritLatency">310 ms</span>
+                <span class="text-xs text-slate-400 line-through">1,120 ms</span>
+              </div>
+              <div class="mt-1 flex items-center text-xs font-bold text-emerald-600">
+                <i class="fa-solid fa-arrow-down mr-1"></i>
+                <span id="optCritPct">-72.3% end-to-end delay</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-2">Dijkstra critical path routing bypassing multi-tier transfer hops.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs">
+              <div class="flex items-center justify-between text-slate-400">
+                <span class="text-[11px] font-bold uppercase tracking-wider">Average Handle Time (AHT)</span>
+                <i class="fa-solid fa-clock text-emerald-500"></i>
+              </div>
+              <div class="mt-2 flex items-baseline space-x-2">
+                <span class="text-2xl font-black text-slate-900 font-mono">195 sec</span>
+                <span class="text-xs text-slate-400 line-through">260 sec</span>
+              </div>
+              <div class="mt-1 flex items-center text-xs font-bold text-emerald-600">
+                <i class="fa-solid fa-arrow-down mr-1"></i>
+                <span>-65s / call saved</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-2">Auto-summary &amp; zero-touch wrap-up eliminates manual ACW.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs">
+              <div class="flex items-center justify-between text-slate-400">
+                <span class="text-[11px] font-bold uppercase tracking-wider">First Contact Resolution</span>
+                <i class="fa-solid fa-circle-check text-sky-500"></i>
+              </div>
+              <div class="mt-2 flex items-baseline space-x-2">
+                <span class="text-2xl font-black text-slate-900 font-mono">90.6%</span>
+                <span class="text-xs text-slate-400 line-through">71.2%</span>
+              </div>
+              <div class="mt-1 flex items-center text-xs font-bold text-sky-600">
+                <i class="fa-solid fa-arrow-up mr-1"></i>
+                <span>+19.4% resolution</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-2">Precise skills-matching routes callers directly to certified experts.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-2xs">
+              <div class="flex items-center justify-between text-slate-400">
+                <span class="text-[11px] font-bold uppercase tracking-wider">Call Abandonment Rate</span>
+                <i class="fa-solid fa-phone-slash text-rose-500"></i>
+              </div>
+              <div class="mt-2 flex items-baseline space-x-2">
+                <span class="text-2xl font-black text-slate-900 font-mono">1.1%</span>
+                <span class="text-xs text-slate-400 line-through">8.4%</span>
+              </div>
+              <div class="mt-1 flex items-center text-xs font-bold text-emerald-600">
+                <i class="fa-solid fa-arrow-down mr-1"></i>
+                <span>-86.9% drop-off reduction</span>
+              </div>
+              <p class="text-[11px] text-slate-500 mt-2">Betweenness centrality bypass dynamically routes around queue bottlenecks.</p>
+            </div>
+
+          </div>
+
+          <!-- NetworkX Critical Path & Bottleneck Audit Table -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            <!-- Critical Path Nodes -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-2xs">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-black text-slate-900 uppercase tracking-wide">
+                  <i class="fa-solid fa-route text-amber-500 mr-1.5"></i> Shortest-Path Voice Critical Stream
+                </h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200">Dijkstra Weights = Latency ms</span>
+              </div>
+              <div class="space-y-2.5" id="criticalPathList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Bottleneck & Centrality Isolation -->
+            <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-2xs">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-black text-slate-900 uppercase tracking-wide">
+                  <i class="fa-solid fa-triangle-exclamation text-rose-500 mr-1.5"></i> Single Points of Failure &amp; Congestion
+                </h3>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200">Betweenness Centrality &gt; 0.25</span>
+              </div>
+              <div class="space-y-3" id="bottlenecksList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- TAB 3: CALL CENTER AI & DATA PRODUCTS -->
+      <!-- =================================================================== -->
+      <div id="viewProducts" class="flex-1 overflow-y-auto p-4 sm:p-6 hidden">
+        <div class="max-w-6xl mx-auto space-y-6">
+
+          <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold uppercase tracking-wider">Governed Data &amp; AI Products</span>
+                <span class="text-xs text-slate-400">OpenMetadata Data Contract Standard</span>
+              </div>
+              <h2 class="text-xl font-black text-slate-900 mt-2">Autonomous Contact Center AI Products</h2>
+              <p class="text-xs text-slate-500 mt-1 max-w-2xl">
+                Synthesized directly from fused micro-graphs. Each product binds formal SLAs, schema contracts, SHACL integrity rules, and tangible enterprise ROI.
+              </p>
+            </div>
+            <button onclick="synthesizeActiveProduct()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs shadow-md transition flex items-center space-x-1.5">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+              <span>Synthesize Product Contracts</span>
+            </button>
+          </div>
+
+          <!-- Product Cards Grid -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="productCardsContainer">
+            <!-- Dynamically populated -->
+          </div>
+
+          <!-- Product Inspection Drawer / Contract Details -->
+          <div id="activeProductDetailBox" class="bg-white rounded-2xl p-6 border border-slate-200 shadow-2xs">
+            <!-- Dynamically populated -->
+          </div>
+
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- TAB 4: OPENMETADATA SPEC & MANIFEST -->
+      <!-- =================================================================== -->
+      <div id="viewSpec" class="flex-1 overflow-y-auto p-4 sm:p-6 hidden">
+        <div class="max-w-6xl mx-auto space-y-4">
+          <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-2xs flex items-center justify-between">
+            <div>
+              <h2 class="text-base font-black text-slate-900">OpenMetadata 1.4+ Lineage &amp; Product Specification</h2>
+              <p class="text-xs text-slate-500 mt-0.5">Compliant with OpenMetadata Entity Lineage, Data Product, and JSON-LD standards.</p>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button onclick="copySpecJson()" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-bold transition">
+                <i class="fa-solid fa-copy mr-1"></i> Copy Manifest
+              </button>
+              <button onclick="downloadSpecJson()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition">
+                <i class="fa-solid fa-download mr-1"></i> Download JSON
+              </button>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 rounded-2xl p-5 text-slate-300 font-mono text-xs overflow-x-auto shadow-inner custom-scrollbar max-h-[580px]">
+            <pre id="specJsonCodeBlock">// Loading OpenMetadata JSON-LD Lineage Manifest...</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- NODE INSPECTION DRAWER (SLIDE-OVER) -->
+      <div id="nodeDrawer" class="absolute top-0 right-0 w-96 h-full bg-white border-l border-slate-200 shadow-2xl p-5 overflow-y-auto z-50 transform translate-x-full transition-transform duration-300 ease-in-out">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div class="flex items-center space-x-2">
+            <span id="drawerBadge" class="w-3 h-3 rounded-full bg-indigo-500"></span>
+            <span id="drawerDomain" class="text-xs font-bold text-slate-500 uppercase">IVR &amp; Telephony</span>
+          </div>
+          <button onclick="closeNodeDrawer()" class="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div class="mt-4">
+          <h3 id="drawerNodeName" class="text-base font-black text-slate-900 break-all font-mono">cisco_cvp.sbc_ingress</h3>
+          <p id="drawerNodeType" class="text-xs text-indigo-600 font-semibold mt-0.5">SIP Gateway / Telephony Service</p>
+        </div>
+
+        <div class="mt-5 space-y-3">
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 space-y-2">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Runtime Telemetry &amp; SLAs</div>
+            <div class="flex justify-between text-xs">
+              <span class="text-slate-500">Service Latency:</span>
+              <strong id="drawerLatency" class="font-mono text-slate-800">15 ms</strong>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-slate-500">Throughput:</span>
+              <strong id="drawerRecords" class="font-mono text-slate-800">12,500 calls/hr</strong>
+            </div>
+            <div class="flex justify-between text-xs">
+              <span class="text-slate-500">Service SLA:</span>
+              <strong id="drawerTier" class="font-mono text-emerald-600">99.99% Availability</strong>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-100 space-y-2">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400">OpenMetadata Entity Metadata</div>
+            <div class="text-xs text-slate-600 space-y-1">
+              <div><strong>Owner:</strong> <span id="drawerOwner">Contact-Center-Infra-Team</span></div>
+              <div><strong>Tags:</strong> <span id="drawerTags" class="text-indigo-600">Tier-1, RealTimeVoice, PCI-DSS</span></div>
+              <div><strong>Description:</strong> <span id="drawerDesc" class="text-slate-500">Inbound SIP trunk termination, caller ANI/DNIS normalization, and TLS voice stream security.</span></div>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+            <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2">Lineage Connections</div>
+            <div class="text-xs space-y-1.5" id="drawerLineageLinks">
+              <!-- Upstream/Downstream links populated dynamically -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- JAVASCRIPT LOGIC & VISUALIZATION ENGINE -->
+  <script>
+    // =========================================================================
+    // 1. DATA MODEL: 6 CALL CENTER MICRO-APPS (24 NODES, 28 EDGES)
+    // =========================================================================
+    const MICRO_GRAPHS = {
+      "ivr_telephony": {
+        domain: "IVR & Telephony Core",
+        color: "#0284c7", // Sky
+        nodes: [
+          { id: "ivr_sip_ingress", name: "telephony.sip.trunk_ingress", type: "sbc_gateway", service: "AudioCodes / CVP", tier: "Tier-1", calls_hr: "18.5K", latency_ms: 15, x: 90, y: 130, desc: "PSTN SIP trunk gateway, ANI/DNIS extraction, and early media ringback." },
+          { id: "ivr_dtmf_tree", name: "ivr.menu.dtmf_navigation", type: "ivr_tree", service: "Amazon Connect", tier: "Tier-1", calls_hr: "16.2K", latency_ms: 40, x: 230, y: 130, desc: "Account identification, PIN authentication, and DTMF branch traversal." },
+          { id: "ivr_speech_prompt", name: "ivr.tts.dynamic_prompts", type: "tts_engine", service: "Amazon Polly / Nuance", tier: "Tier-2", calls_hr: "14.8K", latency_ms: 65, x: 230, y: 240, desc: "Neural TTS audio generation for dynamic balance & account status prompts." },
+          { id: "ivr_caller_intent", name: "ivr.intent.handoff_payload", type: "event_stream", service: "Kafka Event", tier: "Tier-1", calls_hr: "12.4K", latency_ms: 25, x: 380, y: 130, desc: "Normalized caller session payload dispatched to Bot / Queue router." }
+        ],
+        edges: [
+          { from: "ivr_sip_ingress", to: "ivr_dtmf_tree", type: "SIP_INVITE", latency: 25 },
+          { from: "ivr_dtmf_tree", to: "ivr_speech_prompt", type: "TTS_REQUEST", latency: 25 },
+          { from: "ivr_speech_prompt", to: "ivr_dtmf_tree", type: "RTP_AUDIO", latency: 40 },
+          { from: "ivr_dtmf_tree", to: "ivr_caller_intent", type: "SESSION_HANDOFF", latency: 15 }
+        ]
+      },
+
+      "conversational_ai": {
+        domain: "Conversational AI & Bot",
+        color: "#8b5cf6", // Purple
+        nodes: [
+          { id: "bot_intent_router", name: "bot.nlu.intent_classifier", type: "nlu_engine", service: "AWS Lex / Dialogflow", tier: "Tier-1", calls_hr: "12.4K", latency_ms: 45, x: 500, y: 130, desc: "Intent classification & slot filling on caller utterance." },
+          { id: "bot_rag_kb", name: "vector.rag.knowledge_retrieval", type: "vector_db", service: "Pinecone / Bedrock RAG", tier: "Tier-2", calls_hr: "8.2K", latency_ms: 110, x: 500, y: 250, desc: "Dense semantic search over 2,400 company policy and dispute SOP documents." },
+          { id: "bot_self_service", name: "bot.action.deflection_resolver", type: "api_action", service: "Core Banking REST", tier: "Tier-1", calls_hr: "4.8K", latency_ms: 75, x: 640, y: 250, desc: "Zero-wait automated resolution: card unlocks, payment confirmations." },
+          { id: "bot_escalation_event", name: "bot.handoff.queue_escalation", type: "event_stream", service: "EventBridge", tier: "Tier-1", calls_hr: "7.6K", latency_ms: 30, x: 640, y: 130, desc: "Transfers customer intent context to human queue with zero info loss." }
+        ],
+        edges: [
+          { from: "bot_intent_router", to: "bot_rag_kb", type: "SEMANTIC_QUERY", latency: 65 },
+          { from: "bot_rag_kb", to: "bot_self_service", type: "AUTOMATED_ACTION", latency: 45 },
+          { from: "bot_intent_router", to: "bot_escalation_event", type: "ESCALATION_TRIGGER", latency: 30 }
+        ]
+      },
+
+      "acd_routing": {
+        domain: "ACD & Skills Routing",
+        color: "#f59e0b", // Amber
+        nodes: [
+          { id: "acd_queue_ingress", name: "acd.queue.priority_ingress", type: "acd_engine", service: "Genesys Cloud ACD", tier: "Tier-1", calls_hr: "7.6K", latency_ms: 35, x: 770, y: 130, desc: "Wait-time estimator, SLA tiering, and priority caller queuing." },
+          { id: "acd_skills_matcher", name: "acd.router.skills_matcher", type: "matching_engine", service: "Twilio TaskRouter", tier: "Tier-1", calls_hr: "7.6K", latency_ms: 50, x: 910, y: 130, desc: "Matches caller dialect, product tier, and sentiment to certified agent pool." },
+          { id: "acd_agent_presence", name: "acd.agent.webrtc_presence", type: "state_monitor", service: "Redis Cache", tier: "Tier-1", calls_hr: "140K", latency_ms: 20, x: 770, y: 240, desc: "Sub-second agent status tracker (Available, On-Call, ACW, Break)." },
+          { id: "acd_warm_transfer", name: "telephony.switch.audio_bridge", type: "sip_switch", service: "FreeSWITCH / Asterisk", tier: "Tier-1", calls_hr: "7.6K", latency_ms: 85, x: 1040, y: 130, desc: "SIP re-INVITE audio bridge connecting caller and assigned agent." }
+        ],
+        edges: [
+          { from: "acd_queue_ingress", to: "acd_skills_matcher", type: "SKILL_ALLOCATION", latency: 15 },
+          { from: "acd_agent_presence", to: "acd_skills_matcher", type: "PRESENCE_STATE", latency: 30 },
+          { from: "acd_skills_matcher", to: "acd_warm_transfer", type: "AUDIO_DISPATCH", latency: 35 }
+        ]
+      },
+
+      "agent_crm": {
+        domain: "Agent Desktop & CRM",
+        color: "#10b981", // Emerald
+        nodes: [
+          { id: "crm_screen_pop", name: "crm.cti.screen_pop_event", type: "cti_adapter", service: "Salesforce Service Cloud", tier: "Tier-1", calls_hr: "7.6K", latency_ms: 60, x: 1040, y: 260, desc: "Instant desktop profile popup before first agent greeting word." },
+          { id: "crm_cust_360", name: "snowflake.customer.dim_customer_360", type: "data_warehouse", service: "Snowflake C360", tier: "Tier-1", calls_hr: "9.2K", latency_ms: 95, x: 910, y: 260, desc: "Full customer lifetime value, recent transactions, and past churn flags." },
+          { id: "crm_case_lifecycle", name: "crm.cases.fct_case_lifecycle", type: "crm_record", service: "Salesforce Core", tier: "Tier-1", calls_hr: "7.6K", latency_ms: 40, x: 1040, y: 390, desc: "Omnichannel case history, active ticket statuses, and resolution notes." },
+          { id: "crm_next_best_action", name: "crm.nba.retention_recommender", type: "ml_model", service: "SageMaker Endpoint", tier: "Tier-2", calls_hr: "6.1K", latency_ms: 70, x: 910, y: 390, desc: "Dynamic real-time churn mitigation offer and APR discount calculator." }
+        ],
+        edges: [
+          { from: "crm_cust_360", to: "crm_screen_pop", type: "PROFILE_HYDRATION", latency: 35 },
+          { from: "crm_screen_pop", to: "crm_case_lifecycle", type: "CASE_INIT", latency: 20 },
+          { from: "crm_cust_360", to: "crm_next_best_action", type: "FEATURE_FEED", latency: 25 },
+          { from: "crm_next_best_action", to: "crm_screen_pop", type: "NBA_PROMPT", latency: 15 }
+        ]
+      },
+
+      "speech_assist": {
+        domain: "Real-Time Speech & Assist",
+        color: "#ec4899", // Pink
+        nodes: [
+          { id: "speech_rtp_fork", name: "telephony.rtp.stereo_audio_tap", type: "media_tap", service: "Kamailio / SIPREC", tier: "Tier-1", calls_hr: "7.6K", latency_ms: 12, x: 1180, y: 130, desc: "Zero-loss dual-channel stereo audio tap of caller and agent streams." },
+          { id: "speech_live_asr", name: "speech.asr.streaming_nova2", type: "streaming_asr", service: "Deepgram Nova-2", tier: "Tier-1", calls_hr: "7.6K", latency_ms: 140, x: 1180, y: 260, desc: "Sub-200ms real-time audio transcription with <3.8% Word Error Rate." },
+          { id: "speech_sentiment_monitor", name: "speech.nlp.acoustic_sentiment", type: "nlp_stream", service: "AWS Contact Lens", tier: "Tier-2", calls_hr: "7.6K", latency_ms: 50, x: 1310, y: 130, desc: "Acoustic pitch, volume escalation, and frustration sentiment scoring." },
+          { id: "speech_copilot_assist", name: "genai.copilot.realtime_suggest", type: "llm_agent", service: "Claude 3.5 Sonnet / Groq", tier: "Tier-1", calls_hr: "7.6K", latency_ms: 180, x: 1310, y: 260, desc: "Retrieves exact SOP clause and drafts live response suggestions for agent." }
+        ],
+        edges: [
+          { from: "speech_rtp_fork", to: "speech_live_asr", type: "AUDIO_STREAM", latency: 128 },
+          { from: "speech_rtp_fork", to: "speech_sentiment_monitor", type: "ACOUSTIC_STREAM", latency: 38 },
+          { from: "speech_live_asr", to: "speech_copilot_assist", type: "TRANSCRIPT_CHUNKS", latency: 40 }
+        ]
+      },
+
+      "post_call_qa": {
+        domain: "Post-Call QA & Wrap-up",
+        color: "#06b6d4", // Cyan
+        nodes: [
+          { id: "qa_auto_summary", name: "genai.summary.post_call_brief", type: "llm_pipeline", service: "Qwen / Llama 3.3", tier: "Tier-1", calls_hr: "7.6K", latency_ms: 220, x: 1180, y: 390, desc: "Synthesizes structured 3-bullet call summary & caller intent record." },
+          { id: "qa_disposition_classifier", name: "crm.wrapup.auto_disposition", type: "classifier", service: "Auto-Tagger ML", tier: "Tier-1", calls_hr: "7.6K", latency_ms: 45, x: 1310, y: 390, desc: "Zero-touch wrap-up: assigns root-cause disposition code in CRM." },
+          { id: "qa_pci_redaction", name: "compliance.pci.audio_redactor", type: "guardrail", service: "Verint Compliance", tier: "Tier-1", calls_hr: "7.6K", latency_ms: 90, x: 1180, y: 500, desc: "Permanent muting and masking of credit card numbers, CVVs, and SSNs." },
+          { id: "qa_scorecard_audit", name: "quality.audit.automated_scorecard", type: "qa_engine", service: "NICE CXone QA", tier: "Tier-2", calls_hr: "7.6K", latency_ms: 130, x: 1310, y: 500, desc: "100% automated supervisor compliance audit and politeness rubric." }
+        ],
+        edges: [
+          { from: "qa_auto_summary", to: "qa_disposition_classifier", type: "TAG_CORRELATION", latency: 25 },
+          { from: "qa_auto_summary", to: "qa_pci_redaction", type: "TEXT_REDACT", latency: 30 },
+          { from: "qa_pci_redaction", to: "qa_scorecard_audit", type: "COMPLIANCE_EVAL", latency: 40 }
+        ]
+      }
+    };
+
+    // CROSS-APP SEMANTIC LINEAGE BRIDGES (Fusing Micro-Graphs into Macro-Graph)
+    const CROSS_APP_BRIDGES = [
+      { from: "ivr_caller_intent", to: "bot_intent_router", type: "INTENT_HANDOFF", latency: 20 },
+      { from: "bot_escalation_event", to: "acd_queue_ingress", type: "QUEUE_ESCALATE", latency: 15 },
+      { from: "acd_warm_transfer", to: "crm_screen_pop", type: "RINGING_CTI_TRIGGER", latency: 10 },
+      { from: "acd_warm_transfer", to: "speech_rtp_fork", type: "AUDIO_BRIDGE_TAP", latency: 12 },
+      { from: "speech_copilot_assist", to: "crm_next_best_action", type: "ASSIST_CROSS_FEED", latency: 25 },
+      { from: "speech_live_asr", to: "qa_auto_summary", type: "FINAL_TRANSCRIPT_PAYLOAD", latency: 50 },
+      { from: "qa_disposition_classifier", to: "crm_case_lifecycle", type: "AUTO_CLOSE_TICKET", latency: 15 }
+    ];
+
+    // =========================================================================
+    // 2. CALL CENTER AI & DATA PRODUCTS (GOVERNED OPENMETADATA SPEC)
+    // =========================================================================
+    const CALL_CENTER_PRODUCTS = [
+      {
+        id: "prod_vip_zero_wait",
+        name: "Zero-Wait VIP Escalation Engine",
+        domain: "ACD & Skills Routing",
+        sla_latency: "< 45 ms queue traversal",
+        freshness: "Real-time streaming",
+        tier: "Gold Mission-Critical",
+        roi: "$1.42M annual deflection & churn savings",
+        description: "Bypasses IVR hold tiers for high-LTV customers and immediately spins up warm SIP audio bridges with certified Tier-3 specialists.",
+        upstream_nodes: ["ivr_sip_ingress", "ivr_dtmf_tree", "bot_intent_router", "crm_cust_360", "acd_skills_matcher", "acd_warm_transfer"],
+        shacl_rule: "Caller with LTV > $25,000 must NEVER wait in standard queue > 10 seconds; auto-failover to backup warm pool required.",
+        openmetadata_urn: "urn:om:dataProduct:contactCenter.zero_wait_vip_escalation"
+      },
+      {
+        id: "prod_live_agent_copilot",
+        name: "Real-Time Agent Assist Copilot",
+        domain: "Real-Time Speech & Assist",
+        sla_latency: "< 250 ms suggestion delivery",
+        freshness: "Sub-second live streaming",
+        tier: "Platinum Real-Time",
+        roi: "42 sec AHT reduction ($2.1M wage efficiency)",
+        description: "Transcribes caller utterances in real time, retrieves exact SOP compliance guidelines from RAG vector stores, and drafts instant response suggestions on the agent desktop.",
+        upstream_nodes: ["speech_rtp_fork", "speech_live_asr", "bot_rag_kb", "speech_copilot_assist", "crm_screen_pop"],
+        shacl_rule: "Live ASR confidence must exceed 96.0%; prohibited words must trigger instant supervisor whisper within 300ms.",
+        openmetadata_urn: "urn:om:dataProduct:contactCenter.realtime_agent_assist_copilot"
+      },
+      {
+        id: "prod_auto_qa_wrapup",
+        name: "Autonomous Post-Call QA Sentinel",
+        domain: "Post-Call QA & Wrap-up",
+        sla_latency: "< 3.0 sec post-call finalization",
+        freshness: "100% call coverage",
+        tier: "Gold Regulatory Compliance",
+        roi: "100% audit coverage, $850K compliance avoidance",
+        description: "Eliminates After-Call-Work (ACW) by generating structured 3-bullet call summaries, tagging disposition root-causes in CRM, redacting PCI/PII audio, and scoring 100% of agent calls.",
+        upstream_nodes: ["speech_live_asr", "qa_auto_summary", "qa_disposition_classifier", "qa_pci_redaction", "qa_scorecard_audit", "crm_case_lifecycle"],
+        shacl_rule: "All 16-digit credit card sequences and 9-digit SSNs must be permanently zeroed before archiving into S3 / Snowflake.",
+        openmetadata_urn: "urn:om:dataProduct:contactCenter.autonomous_postcall_qa_sentinel"
+      }
+    ];
+
+    // =========================================================================
+    // 3. APPLICATION STATE
+    // =========================================================================
+    let activeMicroIds = Object.keys(MICRO_GRAPHS);
+    let selectedNodeId = null;
+    let criticalPathActive = false;
+    let activeProductId = "prod_vip_zero_wait";
+    let isOptimized = false;
+
+    // =========================================================================
+    // 4. TAB SWITCHING LOGIC
+    // =========================================================================
+    function switchTab(tabId) {
+      const tabs = ['canvas', 'optimization', 'products', 'spec'];
+      tabs.forEach(t => {
+        const view = document.getElementById('view' + t.charAt(0).toUpperCase() + t.slice(1));
+        const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (view) view.classList.add('hidden');
+        if (btn) {
+          btn.className = "px-3 py-1.5 rounded-lg font-bold text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5";
+        }
+      });
+
+      const activeView = document.getElementById('view' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+      const activeBtn = document.getElementById('tabBtn' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+      if (activeView) activeView.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.className = "px-3 py-1.5 rounded-lg font-bold bg-indigo-50 text-indigo-700 transition flex items-center space-x-1.5";
+      }
+
+      if (tabId === 'canvas') {
+        renderGraphCanvas();
+      } else if (tabId === 'spec') {
+        updateManifestView();
+      } else if (tabId === 'products') {
+        renderProductCards();
+      } else if (tabId === 'optimization') {
+        populateOptimizationViews();
+      }
+    }
+
+    // =========================================================================
+    // 5. GRAPH ENGINE & SVG RENDERING
+    // =========================================================================
+    function getActiveNodesAndEdges() {
+      const nodes = [];
+      const edges = [];
+      const activeSet = new Set(activeMicroIds);
+
+      activeMicroIds.forEach(mId => {
+        const mg = MICRO_GRAPHS[mId];
+        if (!mg) return;
+        mg.nodes.forEach(n => {
+          nodes.push({ ...n, microId: mId, color: mg.color, domain: mg.domain });
+        });
+        mg.edges.forEach(e => {
+          edges.push({ ...e, color: mg.color });
+        });
+      });
+
+      // Add cross-app lineage bridges if both endpoints active
+      const nodeIds = new Set(nodes.map(n => n.id));
+      CROSS_APP_BRIDGES.forEach(br => {
+        if (nodeIds.has(br.from) && nodeIds.has(br.to)) {
+          edges.push({ ...br, color: "#6366f1", isBridge: true });
+        }
+      });
+
+      return { nodes, edges };
+    }
+
+    function renderGraphCanvas() {
+      const { nodes, edges } = getActiveNodesAndEdges();
+      const nodesLayer = document.getElementById('nodesLayer');
+      const edgesLayer = document.getElementById('edgesLayer');
+      const gridLayer = document.getElementById('gridLayer');
+
+      if (!nodesLayer || !edgesLayer) return;
+      nodesLayer.innerHTML = '';
+      edgesLayer.innerHTML = '';
+
+      // Draw Grid
+      if (gridLayer) {
+        let gridHtml = '';
+        for (let x = 0; x < 1600; x += 50) {
+          gridHtml += `<line x1="${x}" y1="0" x2="${x}" y2="800" stroke="#334155" stroke-width="1"/>`;
+        }
+        for (let y = 0; y < 800; y += 50) {
+          gridHtml += `<line x1="0" y1="${y}" x2="1600" y2="${y}" stroke="#334155" stroke-width="1"/>`;
+        }
+        gridLayer.innerHTML = gridHtml;
+      }
+
+      // Map node map for coords
+      const nodeMap = {};
+      nodes.forEach(n => { nodeMap[n.id] = n; });
+
+      // Critical path set
+      const criticalEdgeKeys = new Set([
+        "ivr_sip_ingress->ivr_dtmf_tree",
+        "ivr_dtmf_tree->ivr_caller_intent",
+        "ivr_caller_intent->bot_intent_router",
+        "bot_intent_router->bot_escalation_event",
+        "bot_escalation_event->acd_queue_ingress",
+        "acd_queue_ingress->acd_skills_matcher",
+        "acd_skills_matcher->acd_warm_transfer",
+        "acd_warm_transfer->crm_screen_pop",
+        "acd_warm_transfer->speech_rtp_fork",
+        "speech_rtp_fork->speech_live_asr",
+        "speech_live_asr->speech_copilot_assist",
+        "speech_live_asr->qa_auto_summary",
+        "qa_auto_summary->qa_disposition_classifier",
+        "qa_disposition_classifier->crm_case_lifecycle"
+      ]);
+
+      // Render Edges
+      edges.forEach(e => {
+        const u = nodeMap[e.from];
+        const v = nodeMap[e.to];
+        if (!u || !v) return;
+
+        const isCrit = criticalPathActive && criticalEdgeKeys.has(`${e.from}->${e.to}`);
+        const strokeColor = isCrit ? "#f59e0b" : (e.isBridge ? "#818cf8" : "#475569");
+        const strokeWidth = isCrit ? 3.5 : (e.isBridge ? 2 : 1.5);
+        const marker = isCrit ? "url(#arrowCritical)" : "url(#arrow)";
+        const edgeClass = isCrit ? "critical-edge" : "";
+
+        // Quadratic curve for aesthetic look
+        const dx = v.x - u.x;
+        const dy = v.y - u.y;
+        const cx = (u.x + v.x) / 2;
+        const cy = (u.y + v.y) / 2 + (Math.abs(dx) > 120 ? -20 : 0);
+
+        const pathData = `M ${u.x} ${u.y} Q ${cx} ${cy} ${v.x} ${v.y}`;
+
+        const gEdge = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        gEdge.innerHTML = `
+          <path d="${pathData}" fill="none" stroke="${strokeColor}" stroke-width="${strokeWidth}" class="${edgeClass}" marker-end="${marker}" opacity="${isCrit ? 1 : 0.75}" />
+          <text x="${cx}" y="${cy - 4}" fill="${isCrit ? '#f59e0b' : '#94a3b8'}" font-size="9" font-family="monospace" text-anchor="middle" font-weight="${isCrit ? 'bold' : 'normal'}">${e.latency}ms</text>
+        `;
+        edgesLayer.appendChild(gEdge);
+      });
+
+      // Render Nodes
+      nodes.forEach(n => {
+        const isSelected = (n.id === selectedNodeId);
+        const gNode = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        gNode.setAttribute("class", "graph-node");
+        gNode.setAttribute("onclick", `selectNode('${n.id}')`);
+
+        const badgeFill = n.color;
+        const borderStroke = isSelected ? "#38bdf8" : (criticalPathActive && n.isCritical ? "#f59e0b" : "#334155");
+        const borderWidth = isSelected ? 3 : 1.5;
+
+        gNode.innerHTML = `
+          <circle cx="${n.x}" cy="${n.y}" r="22" fill="#0f172a" stroke="${borderStroke}" stroke-width="${borderWidth}" />
+          <circle cx="${n.x}" cy="${n.y}" r="8" fill="${badgeFill}" />
+          <text x="${n.x}" y="${n.y + 36}" fill="#f8fafc" font-size="10.5" font-weight="bold" font-family="sans-serif" text-anchor="middle">${n.name.split('.').slice(-2).join('.')}</text>
+          <text x="${n.x}" y="${n.y + 48}" fill="#94a3b8" font-size="8.5" font-family="monospace" text-anchor="middle">${n.service} &bull; ${n.latency_ms}ms</text>
+        `;
+        nodesLayer.appendChild(gNode);
+      });
+
+      // Update counters
+      document.getElementById('activeMicroCount').textContent = `${activeMicroIds.length} / 6`;
+      document.getElementById('totalNodeCount').textContent = nodes.length;
+      document.getElementById('totalEdgeCount').textContent = edges.length;
+    }
+
+    // =========================================================================
+    // 6. NODE SELECTION & DRAWER
+    // =========================================================================
+    function selectNode(nodeId) {
+      selectedNodeId = nodeId;
+      renderGraphCanvas();
+
+      let targetNode = null;
+      let targetDomain = null;
+      let targetColor = null;
+
+      for (const mId in MICRO_GRAPHS) {
+        const found = MICRO_GRAPHS[mId].nodes.find(n => n.id === nodeId);
+        if (found) {
+          targetNode = found;
+          targetDomain = MICRO_GRAPHS[mId].domain;
+          targetColor = MICRO_GRAPHS[mId].color;
+          break;
+        }
+      }
+
+      if (!targetNode) return;
+
+      const drawer = document.getElementById('nodeDrawer');
+      document.getElementById('drawerBadge').style.backgroundColor = targetColor;
+      document.getElementById('drawerDomain').textContent = targetDomain;
+      document.getElementById('drawerNodeName').textContent = targetNode.name;
+      document.getElementById('drawerNodeType').textContent = `${targetNode.type} &bull; ${targetNode.service}`;
+      document.getElementById('drawerLatency').textContent = `${targetNode.latency_ms} ms`;
+      document.getElementById('drawerRecords').textContent = `${targetNode.calls_hr}`;
+      document.getElementById('drawerTier').textContent = `${targetNode.tier} SLA Compliant`;
+      document.getElementById('drawerDesc').textContent = targetNode.desc || "Standard contact center micro-service telemetry node.";
+
+      // Upstream and downstream links
+      const linksContainer = document.getElementById('drawerLineageLinks');
+      linksContainer.innerHTML = '';
+
+      const { edges } = getActiveNodesAndEdges();
+      const up = edges.filter(e => e.to === nodeId);
+      const down = edges.filter(e => e.from === nodeId);
+
+      if (up.length > 0) {
+        const divUp = document.createElement('div');
+        divUp.innerHTML = `<span class="text-slate-400 font-bold uppercase text-[10px]">Upstream Inputs:</span> ` + 
+          up.map(e => `<span class="font-mono text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">${e.from} (${e.latency}ms)</span>`).join(' ');
+        linksContainer.appendChild(divUp);
+      }
+      if (down.length > 0) {
+        const divDown = document.createElement('div');
+        divDown.innerHTML = `<span class="text-slate-400 font-bold uppercase text-[10px]">Downstream Consumers:</span> ` + 
+          down.map(e => `<span class="font-mono text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">${e.to} (${e.latency}ms)</span>`).join(' ');
+        linksContainer.appendChild(divDown);
+      }
+
+      drawer.classList.remove('translate-x-full');
+      logEngine(`[NODE] Inspected telemetry for '${targetNode.name}'.`);
+    }
+
+    function closeNodeDrawer() {
+      document.getElementById('nodeDrawer').classList.add('translate-x-full');
+      selectedNodeId = null;
+      renderGraphCanvas();
+    }
+
+    // =========================================================================
+    // 7. MICRO-APP TOGGLES & FILTERS
+    // =========================================================================
+    function handleMicroGraphToggle() {
+      const checks = {
+        'ivr_telephony': document.getElementById('chk_ivr').checked,
+        'conversational_ai': document.getElementById('chk_bot').checked,
+        'acd_routing': document.getElementById('chk_acd').checked,
+        'agent_crm': document.getElementById('chk_crm').checked,
+        'speech_assist': document.getElementById('chk_speech').checked,
+        'post_call_qa': document.getElementById('chk_qa').checked
+      };
+
+      activeMicroIds = Object.keys(checks).filter(k => checks[k]);
+      logEngine(`[FUSION] Re-synthesizing Macro-Graph with ${activeMicroIds.length} active micro-apps.`);
+      renderGraphCanvas();
+    }
+
+    function toggleAllMicroGraphs(state) {
+      ['chk_ivr', 'chk_bot', 'chk_acd', 'chk_crm', 'chk_speech', 'chk_qa'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.checked = state;
+      });
+      handleMicroGraphToggle();
+    }
+
+    function filterDomain(domainKey) {
+      if (domainKey === 'all') {
+        toggleAllMicroGraphs(true);
+      } else {
+        ['chk_ivr', 'chk_bot', 'chk_acd', 'chk_crm', 'chk_speech', 'chk_qa'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.checked = false;
+        });
+        const targetMap = {
+          'ivr_telephony': 'chk_ivr',
+          'conversational_ai': 'chk_bot',
+          'acd_routing': 'chk_acd',
+          'agent_crm': 'chk_crm',
+          'speech_assist': 'chk_speech',
+          'post_call_qa': 'chk_qa'
+        };
+        const activeChk = document.getElementById(targetMap[domainKey]);
+        if (activeChk) activeChk.checked = true;
+        handleMicroGraphToggle();
+      }
+    }
+
+    function toggleCriticalPath() {
+      criticalPathActive = !criticalPathActive;
+      const label = document.getElementById('criticalPathLabel');
+      const btn = document.getElementById('btnToggleCriticalPath');
+      if (criticalPathActive) {
+        label.textContent = "Hide Critical Path";
+        btn.className = "px-3 py-1 bg-amber-500 text-white rounded-lg text-xs font-bold transition flex items-center space-x-1";
+        logEngine("[ANALYTICS] Highlighted Dijkstra Critical Voice Path (310 ms).");
+      } else {
+        label.textContent = "Show Voice Critical Path";
+        btn.className = "px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-lg text-xs font-bold transition flex items-center space-x-1";
+      }
+      renderGraphCanvas();
+    }
+
+    function resetGraphView() {
+      criticalPathActive = false;
+      document.getElementById('criticalPathLabel').textContent = "Show Voice Critical Path";
+      document.getElementById('btnToggleCriticalPath').className = "px-3 py-1 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-lg text-xs font-bold transition flex items-center space-x-1";
+      selectedNodeId = null;
+      closeNodeDrawer();
+      toggleAllMicroGraphs(true);
+      renderGraphCanvas();
+      logEngine("[VIEW] Reset canvas to global macro perspective.");
+    }
+
+    // =========================================================================
+    // 8. CONTACT CENTER NETWORKX OPTIMIZATION
+    // =========================================================================
+    function populateOptimizationViews() {
+      // 1. Critical Path breakdown
+      const critList = document.getElementById('criticalPathList');
+      const pathNodes = [
+        { name: "telephony.sip.trunk_ingress", step: "1. PSTN Ingress", latency: "15ms", note: "AudioCodes SBC termination" },
+        { name: "ivr.menu.dtmf_navigation", step: "2. Account Identification", latency: "40ms", note: "Customer ANI/PIN validation" },
+        { name: "bot.nlu.intent_classifier", step: "3. Intent Recognition", latency: "45ms", note: "Speech-to-Intent categorization" },
+        { name: "acd.queue.priority_ingress", step: "4. Queue Allocation", latency: "35ms", note: "VIP SLA bypass rule active" },
+        { name: "acd.router.skills_matcher", step: "5. Certified Agent Match", latency: "50ms", note: "Language & product skill routing" },
+        { name: "telephony.switch.audio_bridge", step: "6. SIP Audio Bridge", latency: "85ms", note: "WebRTC warm audio connect" },
+        { name: "speech.rtp.stereo_audio_tap", step: "7. Media Stream Fork", latency: "12ms", note: "SIPREC bidirectional audio tap" },
+        { name: "speech.asr.streaming_nova2", step: "8. Live Streaming ASR", latency: "140ms", note: "Sub-200ms Word Error Rate <3.8%" },
+        { name: "genai.copilot.realtime_suggest", step: "9. Live Agent Assist Copilot", latency: "180ms", note: "RAG SOP policy suggestions on screen" },
+        { name: "genai.summary.post_call_brief", step: "10. Autonomous Post-Call Summary", latency: "220ms", note: "Zero-touch wrap-up & auto-disposition" }
+      ];
+
+      critList.innerHTML = pathNodes.map((p, idx) => `
+        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-100 text-xs">
+          <div class="flex items-center space-x-2">
+            <span class="w-5 h-5 rounded-full bg-indigo-100 text-indigo-700 font-bold text-[10px] flex items-center justify-center">${idx + 1}</span>
+            <div>
+              <div class="font-bold text-slate-800">${p.step}</div>
+              <div class="font-mono text-[10px] text-slate-500">${p.name} &bull; ${p.note}</div>
+            </div>
+          </div>
+          <span class="font-mono font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">${p.latency}</span>
+        </div>
+      `).join('');
+
+      // 2. Bottlenecks & SPOF Audit
+      const botList = document.getElementById('bottlenecksList');
+      const bottlenecks = [
+        {
+          name: "acd.queue.priority_ingress",
+          score: "0.412",
+          risk: "High Congestion & Call Abandonment Funnel",
+          fix: "Dynamic queue overflow: auto-trigger WebRTC Voice Callback when queue depth > 4 callers."
+        },
+        {
+          name: "snowflake.customer.dim_customer_360",
+          score: "0.345",
+          risk: "Database Read-Lock Latency",
+          fix: "Deploy Redis ElastiCache read-replica for customer profiles to avoid synchronous SQL queries during call ring."
+        },
+        {
+          name: "telephony.switch.audio_bridge",
+          score: "0.285",
+          risk: "SIP Re-INVITE Gateway SPOF",
+          fix: "Implement Dual Active-Active SBC clustering with automated SIP trunk failover in <50ms."
+        }
+      ];
+
+      botList.innerHTML = bottlenecks.map(b => `
+        <div class="p-3 rounded-xl border border-rose-200 bg-rose-50/30 text-xs space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="font-mono font-bold text-rose-900">${b.name}</span>
+            <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold font-mono text-[10px]">Betweenness: ${b.score}</span>
+          </div>
+          <div class="text-[11px] font-semibold text-rose-700">${b.risk}</div>
+          <p class="text-[11px] text-slate-600"><strong>Mitigation:</strong> ${b.fix}</p>
+        </div>
+      `).join('');
+    }
+
+    function runNetworkOptimization() {
+      const obj = document.getElementById('optObjectiveSelect').value;
+      logEngine(`[NETWORKX] Running optimization pass for objective: '${obj}'...`);
+
+      isOptimized = true;
+      document.getElementById('optCritLatency').textContent = "285 ms";
+      document.getElementById('optCritPct').textContent = "-74.5% end-to-end delay";
+      document.getElementById('hudVoiceLatency').innerHTML = "285 ms <span class='text-[10px] text-emerald-400 font-normal'>(-74.5%)</span>";
+
+      // Show toast
+      logEngine("[SUCCESS] Dijkstra shortest-path pruning applied. Voice latency reduced by 74.5%.");
+      logEngine("[SUCCESS] Betweenness centrality bypass active. Queue abandonment risk mitigated.");
+      alert(`NetworkX Optimization Pass Complete!
+
+• End-to-End Voice & Assist Latency: 1,120ms -> 285ms (-74.5%)
+• FCR Rate: 71.2% -> 90.6% (+19.4%)
+• Queue Abandonment Rate: 8.4% -> 1.1% (-86.9%)
+• Telephony SIP Trunk Egress Savings: 34.8%`);
+    }
+
+    // =========================================================================
+    // 9. CALL CENTER DATA & AI PRODUCTS
+    // =========================================================================
+    function renderProductCards() {
+      const container = document.getElementById('productCardsContainer');
+      container.innerHTML = CALL_CENTER_PRODUCTS.map(p => `
+        <div onclick="selectProduct('${p.id}')" class="border ${p.id === activeProductId ? 'border-emerald-500 ring-2 ring-emerald-500/20 bg-emerald-50/10' : 'border-slate-200 hover:border-slate-300'} bg-white rounded-2xl p-5 cursor-pointer transition shadow-2xs flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 uppercase">${p.domain}</span>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">${p.tier}</span>
+            </div>
+            <h3 class="text-base font-black text-slate-900 mt-1">${p.name}</h3>
+            <p class="text-xs text-slate-500 mt-1.5 leading-relaxed">${p.description}</p>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100 space-y-1 text-xs">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Guaranteed SLA:</span>
+              <span class="font-mono font-bold text-slate-800">${p.sla_latency}</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Target ROI:</span>
+              <span class="font-mono font-bold text-emerald-600">${p.roi}</span>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      renderActiveProductDetail();
+    }
+
+    function selectProduct(pId) {
+      activeProductId = pId;
+      renderProductCards();
+      logEngine(`[PRODUCT] Selected '${pId}' for inspection.`);
+    }
+
+    function renderActiveProductDetail() {
+      const p = CALL_CENTER_PRODUCTS.find(item => item.id === activeProductId);
+      if (!p) return;
+
+      const detailBox = document.getElementById('activeProductDetailBox');
+      detailBox.innerHTML = `
+        <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+          <div>
+            <span class="text-[10px] font-mono text-indigo-600 font-bold uppercase">${p.openmetadata_urn}</span>
+            <h3 class="text-lg font-black text-slate-900 mt-0.5">${p.name}</h3>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="copyProductContract('${p.id}')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition">
+              <i class="fa-solid fa-copy mr-1"></i> Copy Contract
+            </button>
+            <span class="px-2.5 py-1 rounded bg-emerald-100 text-emerald-800 text-xs font-bold">SHACL Verified</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 text-xs">
+          <div class="space-y-3">
+            <div>
+              <span class="text-slate-400 font-bold uppercase text-[10px]">Product Scope &amp; Lineage Feeds:</span>
+              <div class="mt-1 flex flex-wrap gap-1.5">
+                ${p.upstream_nodes.map(n => `<span class="font-mono bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">${n}</span>`).join('')}
+              </div>
+            </div>
+            <div>
+              <span class="text-slate-400 font-bold uppercase text-[10px]">Operational SLA Commitments:</span>
+              <p class="font-bold text-slate-800 mt-0.5">${p.sla_latency} &bull; ${p.freshness} &bull; ${p.tier}</p>
+            </div>
+            <div>
+              <span class="text-slate-400 font-bold uppercase text-[10px]">Enterprise Value &amp; Financial Impact:</span>
+              <p class="font-bold text-emerald-700 mt-0.5">${p.roi}</p>
+            </div>
+          </div>
+
+          <div class="bg-slate-900 rounded-xl p-4 text-slate-200 font-mono text-[11px] overflow-x-auto">
+            <div class="text-[10px] text-amber-400 font-bold uppercase mb-1.5">// SHACL Governance Constraint:</div>
+            <pre class="whitespace-pre-wrap">${p.shacl_rule}</pre>
+          </div>
+        </div>
+      `;
+    }
+
+    function synthesizeActiveProduct() {
+      logEngine(`[SYNTHESIZE] Synthesizing OpenMetadata Data Contracts for all 3 Call Center AI Products...`);
+      alert(`Autonomous Product Synthesis Succeeded!
+
+3 Governed Call Center AI Products compiled into OpenMetadata 1.4+ registry with verified SHACL constraints and automated SLA monitors.`);
+      switchTab('products');
+    }
+
+    function copyProductContract(pId) {
+      const p = CALL_CENTER_PRODUCTS.find(item => item.id === pId);
+      if (!p) return;
+      navigator.clipboard.writeText(JSON.stringify(p, null, 2)).then(() => {
+        alert("Data Contract JSON copied to clipboard!");
+      });
+    }
+
+    // =========================================================================
+    // 10. OPENMETADATA SPEC & MANIFEST
+    // =========================================================================
+    function updateManifestView() {
+      const { nodes, edges } = getActiveNodesAndEdges();
+      const manifest = {
+        openmetadata_standard: "1.4.2",
+        catalog_type: "enterprise_contact_center_macro_graph",
+        environment: "production",
+        generated_at: new Date().toISOString(),
+        domains: ["IVR & Telephony Core", "Conversational AI & Bot", "ACD & Skills Routing", "Agent Desktop & CRM", "Real-Time Speech & Assist", "Post-Call QA & Wrap-up"],
+        metrics: {
+          total_nodes: nodes.length,
+          total_lineage_edges: edges.length,
+          voice_latency_ms: isOptimized ? 285 : 310,
+          aht_reduction_sec: 65,
+          fcr_rate_pct: 90.6
+        },
+        data_products: CALL_CENTER_PRODUCTS,
+        nodes: nodes.map(n => ({
+          id: n.id,
+          fully_qualified_name: `contactCenter.${n.domain.toLowerCase().replace(/[^a-z0-9]/g, '_')}.${n.name}`,
+          service_type: n.service,
+          tier: n.tier,
+          latency_ms: n.latency_ms,
+          calls_per_hour: n.calls_hr
+        })),
+        lineage: edges.map(e => ({
+          from_entity: e.from,
+          to_entity: e.to,
+          edge_type: e.type,
+          latency_weight_ms: e.latency,
+          is_cross_app_bridge: !!e.isBridge
+        }))
+      };
+
+      document.getElementById('specJsonCodeBlock').textContent = JSON.stringify(manifest, null, 2);
+    }
+
+    function copySpecJson() {
+      const text = document.getElementById('specJsonCodeBlock').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert("OpenMetadata Lineage Manifest copied to clipboard!");
+      });
+    }
+
+    function downloadSpecJson() {
+      const text = document.getElementById('specJsonCodeBlock').textContent;
+      const blob = new Blob([text], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "callcenter_openmetadata_lineage_manifest.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // =========================================================================
+    // 11. ENGINE LOGGING HELPER
+    // =========================================================================
+    function logEngine(msg) {
+      const box = document.getElementById('engineLogBox');
+      if (!box) return;
+      const now = new Date().toTimeString().split(' ')[0];
+      const div = document.createElement('div');
+      div.textContent = `[${now}] ${msg}`;
+      box.appendChild(div);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function clearEngineLog() {
+      const box = document.getElementById('engineLogBox');
+      if (box) box.innerHTML = '';
+    }
+
+    // =========================================================================
+    // 12. BOOTSTRAP INITIALIZATION
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      renderGraphCanvas();
+      populateOptimizationViews();
+      renderProductCards();
+      updateManifestView();
+      logEngine("[INIT] CallCenter Macro Graph Studio initialized successfully.");
+    });
+  </script>
+</body>
+</html>
