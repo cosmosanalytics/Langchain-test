@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950">
+<html lang="en" class="h-full bg-slate-50">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pace AI Operations Platform | Insurance Agentic Process Outsourcer with Business Graph</title>
+  <title>Pace &bull; The AI Operations Platform for Insurance</title>
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- FontAwesome 6 -->
@@ -19,18 +19,18 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'monospace']
           },
           colors: {
             pace: {
-              50: '#f0fdf9',
-              100: '#ccfbef',
-              400: '#2dd4bf',
-              500: '#14b8a6',
-              600: '#0d9488',
-              900: '#134e4a',
-              950: '#042f2e'
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              800: '#1e293b',
+              900: '#0f172a',
+              950: '#020617',
+              accent: '#0d9488'
             }
           }
         }
@@ -38,14 +38,11 @@
     };
   </script>
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
-    ::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.8); border-radius: 9999px; }
-    .glow-teal { box-shadow: 0 0 25px -5px rgba(20, 184, 166, 0.35); }
-    .glow-indigo { box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.35); }
-    .glow-amber { box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.35); }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
     
     @keyframes pulse-flow {
       0% { stroke-dashoffset: 40; }
@@ -53,149 +50,156 @@
     }
     .flow-line {
       stroke-dasharray: 6 4;
-      animation: pulse-flow 1.2s linear infinite;
+      animation: pulse-flow 1.4s linear infinite;
     }
     .feedback-loop {
       stroke-dasharray: 5 3;
-      animation: pulse-flow 0.8s linear infinite reverse;
+      animation: pulse-flow 0.9s linear infinite reverse;
     }
   </style>
 </head>
-<body class="h-full bg-slate-950 text-slate-100 flex flex-col antialiased overflow-hidden select-none">
+<body class="h-full bg-[#f8fafc] text-slate-800 flex flex-col antialiased overflow-hidden select-none">
 
   <!-- ================================================================= -->
-  <!-- TOP NAVIGATION & PACE RUNTIME TELEMETRY BAR                       -->
+  <!-- TOP ENTERPRISE NAVIGATION BAR (AUTHENTIC PACE BRANDING)           -->
   <!-- ================================================================= -->
-  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-2 flex flex-wrap items-center justify-between gap-2.5 shrink-0 z-30">
-    <!-- Brand -->
-    <div class="flex items-center space-x-3">
-      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-teal-500 via-emerald-500 to-indigo-600 flex items-center justify-center text-slate-950 font-black text-sm shadow-md">
-        P
-      </div>
-      <div>
-        <div class="flex items-center space-x-2">
-          <span class="text-sm font-black tracking-tight text-white">PACE</span>
-          <span class="px-2 py-0.5 rounded-full bg-teal-500/10 text-teal-400 border border-teal-500/20 text-[10px] font-bold uppercase tracking-wider">AI Operations Platform</span>
-          <span class="px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 text-[10px] font-bold uppercase tracking-wider hidden sm:inline">Tri-Graph Linked</span>
+  <header class="bg-white border-b border-slate-200/90 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0 z-30 shadow-xs">
+    
+    <!-- Left: Brand & Navigation -->
+    <div class="flex items-center space-x-4">
+      <div class="flex items-center space-x-2.5">
+        <!-- Pace Minimalist Geometric Logo -->
+        <div class="w-7 h-7 rounded-lg bg-slate-900 flex items-center justify-center text-white font-black text-sm tracking-tighter shadow-xs">
+          P
+        </div>
+        <div class="flex items-baseline space-x-1.5">
+          <span class="text-base font-extrabold tracking-tight text-slate-900">pace</span>
+          <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Platform</span>
         </div>
       </div>
+
+      <div class="h-4 w-px bg-slate-200 hidden sm:block"></div>
+
+      <!-- Mode Tabs: Operations Cockpit vs Business Graph -->
+      <nav class="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg text-xs font-semibold">
+        <button onclick="setMainView('cockpit')" id="btn-view-cockpit" class="px-3 py-1 rounded-md bg-white text-slate-900 font-bold shadow-xs transition flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-shapes text-slate-700 text-[11px]"></i>
+          <span>Operations Cockpit</span>
+        </button>
+        <button onclick="setMainView('graph')" id="btn-view-graph" class="px-3 py-1 rounded-md text-slate-500 hover:text-slate-900 transition flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-diagram-project text-indigo-600 text-[11px]"></i>
+          <span>Business Graph Engine</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+        </button>
+      </nav>
     </div>
 
     <!-- Center: Workflow Scenarios Switcher -->
-    <div class="flex items-center space-x-1 bg-slate-800/80 border border-slate-700/80 p-1 rounded-xl overflow-x-auto scrollbar-none">
-      <button onclick="selectWorkflow('auto_endorsement')" id="btn-wf-auto_endorsement" class="wf-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-xs transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
-        <i class="fa-solid fa-truck-front text-teal-400"></i>
-        <span>1. Auto Endorsement</span>
+    <div class="flex items-center space-x-1 bg-slate-100/90 border border-slate-200/80 p-0.5 rounded-xl overflow-x-auto scrollbar-none">
+      <button onclick="selectWorkflow('auto_endorsement')" id="btn-wf-auto_endorsement" class="wf-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-xs transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
+        <i class="fa-solid fa-truck-front text-teal-600"></i>
+        <span>Auto Endorsement</span>
       </button>
-      <button onclick="selectWorkflow('property_submission')" id="btn-wf-property_submission" class="wf-btn px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-200 border border-transparent transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
-        <i class="fa-solid fa-building-shield text-indigo-400"></i>
-        <span>2. Property Submission</span>
+      <button onclick="selectWorkflow('property_submission')" id="btn-wf-property_submission" class="wf-btn px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
+        <i class="fa-solid fa-building text-indigo-600"></i>
+        <span>Property SOV</span>
       </button>
-      <button onclick="selectWorkflow('fnol_claims')" id="btn-wf-fnol_claims" class="wf-btn px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-200 border border-transparent transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
-        <i class="fa-solid fa-file-medical text-rose-400"></i>
-        <span>3. Claims / FNOL</span>
+      <button onclick="selectWorkflow('fnol_claims')" id="btn-wf-fnol_claims" class="wf-btn px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
+        <i class="fa-solid fa-notes-medical text-rose-600"></i>
+        <span>Claims / FNOL</span>
       </button>
-      <button onclick="selectWorkflow('renewal_lossrun')" id="btn-wf-renewal_lossrun" class="wf-btn px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-200 border border-transparent transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
-        <i class="fa-solid fa-arrows-spin text-amber-400"></i>
-        <span>4. Renewal &amp; Loss Runs</span>
-      </button>
-    </div>
-
-    <!-- View Modes (Cockpit vs Tri-Graph Architecture vs Split) -->
-    <div class="flex items-center bg-slate-800 border border-slate-700 p-0.5 rounded-xl text-xs font-bold">
-      <button onclick="setMainView('cockpit')" id="btn-view-cockpit" class="px-2.5 py-1 rounded-lg bg-teal-500 text-slate-950 font-extrabold shadow-xs transition flex items-center space-x-1 cursor-pointer">
-        <i class="fa-solid fa-layer-group"></i>
-        <span class="hidden md:inline">Operations</span> Cockpit
-      </button>
-      <button onclick="setMainView('graph')" id="btn-view-graph" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center space-x-1 cursor-pointer">
-        <i class="fa-solid fa-diagram-project text-purple-400"></i>
-        <span>Business Graph (KG&bull;CG&bull;BG)</span>
+      <button onclick="selectWorkflow('renewal_lossrun')" id="btn-wf-renewal_lossrun" class="wf-btn px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
+        <i class="fa-solid fa-arrows-spin text-amber-600"></i>
+        <span>Renewal Audit</span>
       </button>
     </div>
 
     <!-- Right: Runtime & Controls -->
     <div class="flex items-center space-x-2">
       <!-- Engine Selector -->
-      <div class="flex items-center bg-slate-800 border border-slate-700 p-0.5 rounded-xl text-xs font-mono">
-        <select id="select-runtime" onchange="changeRuntime(this.value)" class="bg-transparent text-slate-300 px-2 py-1 focus:outline-none cursor-pointer">
-          <option value="groq" class="bg-slate-900 text-teal-400">⚡ Groq LPU (Llama 3.3 70B)</option>
-          <option value="webllm" class="bg-slate-900 text-indigo-400">🌐 WebLLM (WebGPU Local)</option>
-          <option value="instant" class="bg-slate-900 text-slate-300">🎯 Instant Simulator (0ms)</option>
+      <div class="flex items-center bg-slate-100 border border-slate-200/90 rounded-lg px-1.5 py-0.5 text-xs font-medium">
+        <span class="text-slate-400 mr-1 text-[11px]"><i class="fa-solid fa-microchip"></i></span>
+        <select id="select-runtime" onchange="changeRuntime(this.value)" class="bg-transparent text-slate-700 text-xs font-medium focus:outline-none cursor-pointer">
+          <option value="groq">⚡ Groq LPU (Llama 3.3 70B)</option>
+          <option value="webllm">🌐 WebLLM (WebGPU)</option>
+          <option value="instant">🎯 Instant Simulator (0ms)</option>
         </select>
       </div>
 
       <!-- Config Key Popover Trigger -->
-      <button onclick="toggleKeyModal()" class="p-1 px-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-xs font-bold flex items-center space-x-1 cursor-pointer" title="Configure Groq API Key">
-        <i class="fa-solid fa-key text-teal-400"></i>
-        <span class="hidden lg:inline">Key</span>
+      <button onclick="toggleKeyModal()" class="p-1 px-2.5 rounded-lg bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 text-xs font-semibold flex items-center space-x-1 cursor-pointer shadow-xs" title="Configure Custom API Key">
+        <i class="fa-solid fa-key text-slate-400 text-[10px]"></i>
+        <span class="hidden lg:inline">API Key</span>
       </button>
 
       <!-- Audio Voice Speech Toggle -->
-      <button onclick="toggleVoiceSpeech()" id="btn-voice-toggle" class="p-1 px-2.5 rounded-xl bg-teal-500/10 hover:bg-teal-500/20 text-teal-300 border border-teal-500/30 text-xs font-bold flex items-center space-x-1 cursor-pointer">
-        <i id="voice-icon" class="fa-solid fa-volume-high text-teal-400"></i>
+      <button onclick="toggleVoiceSpeech()" id="btn-voice-toggle" class="p-1 px-2.5 rounded-lg bg-teal-50 hover:bg-teal-100/70 text-teal-800 border border-teal-200 text-xs font-semibold flex items-center space-x-1 cursor-pointer">
+        <i id="voice-icon" class="fa-solid fa-volume-high text-teal-600 text-xs"></i>
         <span id="voice-text" class="hidden sm:inline">Voice: ON</span>
       </button>
     </div>
   </header>
 
   <!-- ================================================================= -->
-  <!-- MAIN CONTAINER: TOGGLES BETWEEN COCKPIT & TRI-GRAPH ARCHITECTURE  -->
+  <!-- MAIN WORKSPACE CONTAINER                                          -->
   <!-- ================================================================= -->
-  <div class="flex-1 min-h-0 flex flex-col p-3 overflow-hidden">
+  <div class="flex-1 min-h-0 flex flex-col p-3 overflow-hidden bg-[#f8fafc]">
     
     <!-- =============================================================== -->
-    <!-- VIEW 1: AGENT OPERATIONS COCKPIT (3 COLUMNS)                    -->
+    <!-- VIEW 1: AGENT OPERATIONS COCKPIT (PACE 3-COLUMN STUDIO)         -->
     <!-- =============================================================== -->
     <div id="view-cockpit-container" class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 overflow-hidden">
       
       <!-- ------------------------------------------------------------- -->
       <!-- COLUMN 1: TEMPO STUDIO (SOP to AOP TRANSLATION) (3.5 cols)    -->
       <!-- ------------------------------------------------------------- -->
-      <section class="lg:col-span-4 bg-slate-900/80 border border-slate-800 rounded-2xl flex flex-col min-h-0 overflow-hidden shadow-lg">
+      <section class="lg:col-span-4 bg-white border border-slate-200 rounded-xl flex flex-col min-h-0 overflow-hidden shadow-xs">
         
-        <!-- Panel Header -->
-        <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
+        <!-- Header -->
+        <div class="px-4 py-2.5 bg-slate-50/70 border-b border-slate-200 flex items-center justify-between shrink-0">
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-teal-400 shadow-sm"></span>
-            <h2 class="text-xs font-extrabold tracking-wider uppercase text-slate-200">Tempo &bull; SOP &rarr; AOP Studio</h2>
+            <div class="w-2 h-2 rounded-full bg-teal-500"></div>
+            <h2 class="text-xs font-bold tracking-tight text-slate-800 uppercase">Tempo &bull; SOP &rarr; AOP Builder</h2>
           </div>
-          <span class="px-2 py-0.5 rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20 font-mono text-[10px]">Knowledge Graph (KG)</span>
+          <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200/80 font-mono text-[10px] font-semibold">
+            Knowledge Graph (KG)
+          </span>
         </div>
 
-        <!-- SOP Sub-tab Switcher: Human SOP vs Agent AOP -->
-        <div class="px-3 py-1.5 bg-slate-950/60 border-b border-slate-800/80 flex items-center justify-between text-xs shrink-0">
-          <div class="flex items-center space-x-1 bg-slate-900 p-0.5 rounded-lg border border-slate-800 text-[11px] font-bold">
-            <button onclick="setTempoView('sop')" id="btn-tempo-sop" class="px-2.5 py-1 rounded-md bg-teal-500 text-slate-950 font-extrabold shadow-xs transition">
-              1. Human SOP Rulebook
+        <!-- Sub-tabs: Document vs Code -->
+        <div class="px-3 py-1.5 bg-white border-b border-slate-100 flex items-center justify-between text-xs shrink-0">
+          <div class="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg text-[11px] font-semibold">
+            <button onclick="setTempoView('sop')" id="btn-tempo-sop" class="px-2.5 py-1 rounded-md bg-white text-slate-900 font-bold shadow-xs transition">
+              1. SOP Rulebook
             </button>
-            <button onclick="setTempoView('aop')" id="btn-tempo-aop" class="px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 transition">
-              2. Compiled AOP Code
+            <button onclick="setTempoView('aop')" id="btn-tempo-aop" class="px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800 transition">
+              2. Compiled AOP
             </button>
           </div>
-          <button onclick="compileAOP()" id="btn-compile-aop" class="px-2 py-1 rounded-lg bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 text-[11px] font-bold flex items-center space-x-1 cursor-pointer">
-            <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <button onclick="compileAOP()" id="btn-compile-aop" class="px-2.5 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-[11px] font-bold flex items-center space-x-1.5 cursor-pointer shadow-xs transition">
+            <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
             <span>Recompile AOP</span>
           </button>
         </div>
 
-        <!-- Content Viewer: SOP text or AOP JSON -->
-        <div class="flex-1 min-h-0 p-3.5 overflow-y-auto font-mono text-xs leading-relaxed" id="tempo-content-viewer">
+        <!-- SOP Document / Code Canvas -->
+        <div class="flex-1 min-h-0 p-3.5 overflow-y-auto font-mono text-xs leading-relaxed bg-[#fcfdfd]" id="tempo-content-viewer">
           <!-- Injected via JavaScript -->
         </div>
 
         <!-- Underwriting Guardrail Metrics -->
-        <div class="p-2.5 bg-slate-950 border-t border-slate-800/80 shrink-0 text-[11px] space-y-1 font-mono">
-          <div class="flex items-center justify-between text-slate-400">
-            <span>Authority Ceiling:</span>
-            <span class="text-teal-400 font-bold" id="sop-stat-ceiling">$250,000 Total Insured Value</span>
+        <div class="p-3 bg-slate-50/90 border-t border-slate-200/80 shrink-0 text-[11px] space-y-1.5 font-mono">
+          <div class="flex items-center justify-between text-slate-600">
+            <span class="font-sans font-medium text-slate-500">Authority Ceiling:</span>
+            <span class="text-slate-900 font-bold" id="sop-stat-ceiling">$250,000 Total Insured Value</span>
           </div>
-          <div class="flex items-center justify-between text-slate-400">
-            <span>HITL Referral Gate:</span>
-            <span class="text-amber-400 font-bold" id="sop-stat-referral">Claims > $50k OR Loss Ratio > 55%</span>
+          <div class="flex items-center justify-between text-slate-600">
+            <span class="font-sans font-medium text-slate-500">Referral Threshold:</span>
+            <span class="text-amber-700 font-bold" id="sop-stat-referral">Claims > $50k OR Loss Ratio > 55%</span>
           </div>
-          <div class="flex items-center justify-between text-slate-400">
-            <span>Target Core Admin:</span>
-            <span class="text-indigo-400 font-bold" id="sop-stat-admin">Guidewire PolicyCenter v10 / Applied Epic</span>
+          <div class="flex items-center justify-between text-slate-600">
+            <span class="font-sans font-medium text-slate-500">Core Administration:</span>
+            <span class="text-indigo-700 font-bold" id="sop-stat-admin">Guidewire PolicyCenter v10 / Applied Epic</span>
           </div>
         </div>
 
@@ -204,121 +208,133 @@
       <!-- ------------------------------------------------------------- -->
       <!-- COLUMN 2: MULTIMODAL SUBAGENTS EXECUTION COCKPIT (4.5 cols)  -->
       <!-- ------------------------------------------------------------- -->
-      <section class="lg:col-span-5 bg-slate-900/80 border border-slate-800 rounded-2xl flex flex-col min-h-0 overflow-hidden shadow-lg">
+      <section class="lg:col-span-5 bg-white border border-slate-200 rounded-xl flex flex-col min-h-0 overflow-hidden shadow-xs">
         
-        <!-- Panel Header -->
-        <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
+        <!-- Header -->
+        <div class="px-4 py-2.5 bg-slate-50/70 border-b border-slate-200 flex items-center justify-between shrink-0">
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-sm"></span>
-            <h2 class="text-xs font-extrabold tracking-wider uppercase text-slate-200">Active Workflow &bull; Execution Cockpit</h2>
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <h2 class="text-xs font-bold tracking-tight text-slate-800 uppercase">Multimodal Agents &bull; Context Graph</h2>
           </div>
           <div class="flex items-center space-x-2">
-            <span id="workflow-status-badge" class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase">
-              ● Executing AOP
+            <span id="workflow-status-badge" class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold uppercase">
+              ● AOP Executing
             </span>
-            <button onclick="triggerWorkflowRun()" id="btn-run-workflow" class="px-2.5 py-1 rounded-lg bg-gradient-to-r from-teal-500 to-indigo-600 hover:from-teal-400 hover:to-indigo-500 text-slate-950 font-black text-[11px] shadow-sm transition flex items-center space-x-1 cursor-pointer">
-              <i class="fa-solid fa-play"></i>
+            <button onclick="triggerWorkflowRun()" id="btn-run-workflow" class="px-3 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] shadow-xs transition flex items-center space-x-1.5 cursor-pointer">
+              <i class="fa-solid fa-play text-[10px]"></i>
               <span>Run AOP</span>
             </button>
           </div>
         </div>
 
-        <!-- Execution Pipeline Visual Nodes -->
-        <div class="px-4 py-2 bg-slate-950/70 border-b border-slate-800 flex items-center justify-between gap-1 overflow-x-auto text-[10px] font-mono shrink-0">
-          <div class="step-node flex items-center space-x-1.5 px-2 py-1 rounded-md bg-teal-500/20 text-teal-300 border border-teal-500/40 shrink-0" id="step-1">
-            <i class="fa-solid fa-file-arrow-up"></i>
-            <span>1. Intake</span>
+        <!-- Pipeline Step Indicator -->
+        <div class="px-4 py-2 bg-slate-50/50 border-b border-slate-200 flex items-center justify-between gap-1 overflow-x-auto text-[10px] font-mono shrink-0">
+          <div class="step-node flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-teal-50 text-teal-800 border border-teal-200 font-bold shrink-0" id="step-1">
+            <i class="fa-solid fa-file-arrow-up text-teal-600"></i>
+            <span>1. Document Intake</span>
           </div>
-          <i class="fa-solid fa-arrow-right text-slate-600 text-[10px] shrink-0"></i>
-          <div class="step-node flex items-center space-x-1.5 px-2 py-1 rounded-md bg-slate-800 text-slate-400 border border-slate-700 shrink-0" id="step-2">
-            <i class="fa-solid fa-microchip"></i>
+          <i class="fa-solid fa-chevron-right text-slate-300 text-[9px] shrink-0"></i>
+          <div class="step-node flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-white text-slate-500 border border-slate-200 shrink-0" id="step-2">
+            <i class="fa-solid fa-filter text-slate-400"></i>
             <span>2. AOP Extraction</span>
           </div>
-          <i class="fa-solid fa-arrow-right text-slate-600 text-[10px] shrink-0"></i>
-          <div class="step-node flex items-center space-x-1.5 px-2 py-1 rounded-md bg-slate-800 text-slate-400 border border-slate-700 shrink-0" id="step-3">
-            <i class="fa-solid fa-scale-balanced"></i>
-            <span>3. Guideline Gate</span>
+          <i class="fa-solid fa-chevron-right text-slate-300 text-[9px] shrink-0"></i>
+          <div class="step-node flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-white text-slate-500 border border-slate-200 shrink-0" id="step-3">
+            <i class="fa-solid fa-scale-balanced text-slate-400"></i>
+            <span>3. Authority Gate</span>
           </div>
-          <i class="fa-solid fa-arrow-right text-slate-600 text-[10px] shrink-0"></i>
-          <div class="step-node flex items-center space-x-1.5 px-2 py-1 rounded-md bg-slate-800 text-slate-400 border border-slate-700 shrink-0" id="step-4">
-            <i class="fa-solid fa-database"></i>
-            <span>4. Core Write</span>
+          <i class="fa-solid fa-chevron-right text-slate-300 text-[9px] shrink-0"></i>
+          <div class="step-node flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-white text-slate-500 border border-slate-200 shrink-0" id="step-4">
+            <i class="fa-solid fa-database text-slate-400"></i>
+            <span>4. Guidewire Push</span>
           </div>
         </div>
 
-        <!-- The 3 Subagents Cockpit Container -->
-        <div class="flex-1 min-h-0 p-3 overflow-y-auto space-y-2.5">
+        <!-- Cockpit Subagents List -->
+        <div class="flex-1 min-h-0 p-3 overflow-y-auto space-y-2.5 bg-slate-50/30">
           
-          <!-- SUBAGENT 1: DOCUMENT AGENT -->
-          <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 shadow-sm">
-            <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-800/80">
+          <!-- SUBAGENT 1: DOCUMENT AGENT (WITH CITATION HIGHLIGHTS) -->
+          <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-xs">
+            <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-100">
               <div class="flex items-center space-x-2">
-                <div class="w-5 h-5 rounded-md bg-teal-500/20 border border-teal-500/40 flex items-center justify-center text-teal-400 text-[10px]">
-                  <i class="fa-solid fa-file-signature"></i>
+                <div class="w-5 h-5 rounded-md bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center text-[10px]">
+                  <i class="fa-solid fa-file-lines"></i>
                 </div>
-                <span class="text-xs font-bold text-white">Document Agent</span>
-                <span class="text-[10px] text-slate-500 font-mono">ACORD &bull; Loss Runs &bull; Telemetry</span>
+                <span class="text-xs font-bold text-slate-900">Document Agent</span>
+                <span class="text-[10px] text-slate-400 font-mono">ACORD &bull; Loss Runs &bull; IoT Telemetry</span>
               </div>
-              <span id="doc-agent-confidence" class="px-1.5 py-0.2 rounded bg-teal-500/10 text-teal-300 text-[10px] font-mono font-bold border border-teal-500/30">
+              <span id="doc-agent-confidence" class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-mono font-bold border border-emerald-200">
                 Confidence: 99.8%
               </span>
             </div>
-            <div class="bg-slate-900/90 rounded-lg p-2 font-mono text-[11px] text-slate-300 leading-relaxed border border-slate-800/70" id="doc-agent-output">
+            <div class="bg-slate-50 rounded-lg p-2.5 font-mono text-[11px] text-slate-700 leading-relaxed border border-slate-200/70" id="doc-agent-output">
               <!-- Extracted parsed entities -->
             </div>
           </div>
 
-          <!-- SUBAGENT 2: VOICE & COMMS AGENT -->
-          <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 shadow-sm">
-            <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-800/80">
+          <!-- SUBAGENT 2: BROKER & POLICYHOLDER COMMS AGENT -->
+          <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-xs">
+            <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-100">
               <div class="flex items-center space-x-2">
-                <div class="w-5 h-5 rounded-md bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400 text-[10px]">
-                  <i class="fa-solid fa-comments"></i>
+                <div class="w-5 h-5 rounded-md bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center justify-center text-[10px]">
+                  <i class="fa-solid fa-comment-dots"></i>
                 </div>
-                <span class="text-xs font-bold text-white">Voice &amp; Comms Agent</span>
-                <span class="text-[10px] text-slate-500 font-mono">Broker Email &bull; Inbound Phone</span>
+                <span class="text-xs font-bold text-slate-900">Voice &amp; Comms Agent</span>
+                <span class="text-[10px] text-slate-400 font-mono">Broker Correspondence &bull; Dispatch</span>
               </div>
-              <button onclick="speakAgentDialogue()" class="text-[10px] font-bold text-indigo-300 hover:text-indigo-200 flex items-center space-x-1 cursor-pointer">
-                <i class="fa-solid fa-volume-high text-indigo-400"></i>
-                <span>Play Audio</span>
+              <button onclick="speakAgentDialogue()" class="text-[11px] font-semibold text-indigo-600 hover:text-indigo-800 flex items-center space-x-1 cursor-pointer">
+                <i class="fa-solid fa-volume-high text-xs"></i>
+                <span>Listen Audio</span>
               </button>
             </div>
-            <div class="bg-slate-900/90 rounded-lg p-2 text-[11px] text-slate-300 leading-relaxed border border-slate-800/70" id="comms-agent-output">
+            <div class="bg-indigo-50/50 rounded-lg p-2.5 text-[11px] text-slate-800 leading-relaxed border border-indigo-100/80" id="comms-agent-output">
               <!-- Natural language message generated -->
             </div>
           </div>
 
-          <!-- SUBAGENT 3: COMPUTER-USE / SYSTEM AGENT -->
-          <div class="bg-slate-950 border border-slate-800 rounded-xl p-2.5 shadow-sm">
-            <div class="flex items-center justify-between mb-1.5 pb-1 border-b border-slate-800/80">
+          <!-- SUBAGENT 3: COMPUTER-USE / SYSTEM AGENT (SIMULATED GUIDEWIRE FRAME) -->
+          <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-xs">
+            <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-slate-100">
               <div class="flex items-center space-x-2">
-                <div class="w-5 h-5 rounded-md bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 text-[10px]">
-                  <i class="fa-solid fa-terminal"></i>
+                <div class="w-5 h-5 rounded-md bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center text-[10px]">
+                  <i class="fa-solid fa-desktop"></i>
                 </div>
-                <span class="text-xs font-bold text-white">Computer-Use / System Agent</span>
-                <span class="text-[10px] text-slate-500 font-mono">Guidewire &bull; Applied Epic</span>
+                <span class="text-xs font-bold text-slate-900">Computer-Use / Core System Agent</span>
               </div>
-              <span class="text-[10px] font-mono text-emerald-400 font-bold flex items-center space-x-1">
+              <span class="text-[10px] font-mono text-emerald-700 font-bold flex items-center space-x-1">
                 <i class="fa-solid fa-circle-check"></i>
-                <span id="system-agent-status">Transaction Committed</span>
+                <span id="system-agent-status">PolicyCenter Synchronized</span>
               </span>
             </div>
-            <div class="bg-slate-900/90 rounded-lg p-2 font-mono text-[10px] text-emerald-300/90 leading-normal border border-slate-800/70 max-h-24 overflow-y-auto" id="system-agent-log">
-              <!-- Terminal action trace -->
+            
+            <!-- Simulated Guidewire PolicyCenter Application Frame -->
+            <div class="border border-slate-300 rounded-lg overflow-hidden text-[10px] font-mono">
+              <div class="bg-slate-200/80 px-2.5 py-1 border-b border-slate-300 flex items-center justify-between text-slate-600">
+                <div class="flex items-center space-x-1.5">
+                  <span class="w-2 h-2 rounded-full bg-rose-400"></span>
+                  <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                  <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                  <span class="font-bold ml-1 text-slate-700">Guidewire PolicyCenter v10.4</span>
+                </div>
+                <span class="text-[9px] text-slate-500">API Session: Active</span>
+              </div>
+              <div class="p-2 bg-slate-900 text-emerald-400 max-h-24 overflow-y-auto leading-normal" id="system-agent-log">
+                <!-- Live actions -->
+              </div>
             </div>
           </div>
 
         </div>
 
-        <!-- Telemetry & Business Graph Shortcut Footer -->
-        <div class="px-4 py-2 bg-slate-950 border-t border-slate-800 text-[11px] font-mono text-slate-400 flex items-center justify-between shrink-0">
+        <!-- Telemetry & Link to Business Graph -->
+        <div class="px-4 py-2 bg-white border-t border-slate-200 text-[11px] font-mono text-slate-600 flex items-center justify-between shrink-0">
           <div class="flex items-center space-x-2">
-            <span>Latency:</span>
-            <span class="text-teal-400 font-bold" id="runtime-latency">340ms (Groq LPU)</span>
+            <span class="text-slate-400">Latency:</span>
+            <span class="text-slate-900 font-bold" id="runtime-latency">340ms (Groq LPU)</span>
           </div>
-          <button onclick="setMainView('graph')" class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30 text-[10px] font-bold flex items-center space-x-1 hover:bg-purple-500/30 transition">
-            <i class="fa-solid fa-diagram-project text-purple-400"></i>
-            <span>View in Business Graph &rarr;</span>
+          <button onclick="setMainView('graph')" class="px-2.5 py-1 rounded-md bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-[11px] font-bold flex items-center space-x-1 transition cursor-pointer">
+            <i class="fa-solid fa-diagram-project text-indigo-600"></i>
+            <span>View Business Graph &rarr;</span>
           </button>
         </div>
 
@@ -327,80 +343,80 @@
       <!-- ------------------------------------------------------------- -->
       <!-- COLUMN 3: HUMAN-IN-THE-LOOP & VERIFICATION CONSOLE (3.0 cols) -->
       <!-- ------------------------------------------------------------- -->
-      <section class="lg:col-span-3 bg-slate-900/80 border border-slate-800 rounded-2xl flex flex-col min-h-0 overflow-hidden shadow-lg">
+      <section class="lg:col-span-3 bg-white border border-slate-200 rounded-xl flex flex-col min-h-0 overflow-hidden shadow-xs">
         
-        <!-- Panel Header -->
-        <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
+        <!-- Header -->
+        <div class="px-4 py-2.5 bg-slate-50/70 border-b border-slate-200 flex items-center justify-between shrink-0">
           <div class="flex items-center space-x-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-indigo-400 shadow-sm"></span>
-            <h2 class="text-xs font-extrabold tracking-wider uppercase text-slate-200">HITL Verification &bull; QA</h2>
+            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+            <h2 class="text-xs font-bold tracking-tight text-slate-800 uppercase">HITL Verification &bull; QA</h2>
           </div>
-          <span class="px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[10px] font-bold">
-            SOC2 Audit Trail
+          <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10px] font-bold">
+            SOC2 Certified
           </span>
         </div>
 
-        <!-- Policy Verification Summary Card -->
-        <div class="p-3 bg-slate-950 border-b border-slate-800 shrink-0 space-y-1.5">
+        <!-- Policy Summary Card -->
+        <div class="p-3 bg-slate-50/60 border-b border-slate-200 shrink-0 space-y-1">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-white" id="hitl-policy-title">Apex Logistics Fleet</span>
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-teal-400 border border-slate-700" id="hitl-policy-num">#CA-889102</span>
+            <span class="text-xs font-bold text-slate-900" id="hitl-policy-title">Apex Logistics Fleet</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-white text-slate-700 border border-slate-200 font-bold" id="hitl-policy-num">#CA-889102</span>
           </div>
-          <p class="text-[11px] text-slate-400 leading-snug" id="hitl-summary-text">
+          <p class="text-[11px] text-slate-600 leading-snug" id="hitl-summary-text">
             Endorsement approved: 2026 Freightliner Cascadia added + Cargo limit raised to $250,000. Underwriting bounds fully verified against AOP Clause 4.2.
           </p>
         </div>
 
         <!-- Audit Checkpoints List -->
         <div class="flex-1 min-h-0 p-3 overflow-y-auto space-y-2 text-xs">
-          <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block mb-1">Underwriter Checkpoints:</span>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1">Underwriter Audit Checkpoints:</span>
           
-          <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 space-y-0.5">
+          <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200/90 space-y-0.5">
             <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-200 text-[11px]">1. VIN &amp; MVR Validation</span>
-              <i class="fa-solid fa-check text-emerald-400 text-xs"></i>
+              <span class="font-bold text-slate-800 text-[11px]">1. VIN &amp; MVR Validation</span>
+              <i class="fa-solid fa-circle-check text-emerald-600 text-xs"></i>
             </div>
-            <p class="text-[10px] text-slate-400 font-mono" id="audit-check-1">MVR Clean • 0 major violations • VIN 1FUJG2DY... verified</p>
+            <p class="text-[10px] text-slate-500 font-mono" id="audit-check-1">MVR Clean • 0 major violations • VIN 1FUJG2DY... verified</p>
           </div>
 
-          <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 space-y-0.5">
+          <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200/90 space-y-0.5">
             <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-200 text-[11px]">2. Rate Calculation</span>
-              <i class="fa-solid fa-check text-emerald-400 text-xs"></i>
+              <span class="font-bold text-slate-800 text-[11px]">2. Rate Calculation</span>
+              <i class="fa-solid fa-circle-check text-emerald-600 text-xs"></i>
             </div>
-            <p class="text-[10px] text-slate-400 font-mono" id="audit-check-2">Prorated Premium: +$1,420.00 • Class Code 7219</p>
+            <p class="text-[10px] text-slate-500 font-mono" id="audit-check-2">Prorated Premium: +$1,420.00 • Class Code 7219</p>
           </div>
 
-          <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 space-y-0.5">
+          <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200/90 space-y-0.5">
             <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-200 text-[11px]">3. Certificate of Insurance</span>
-              <i class="fa-solid fa-check text-emerald-400 text-xs"></i>
+              <span class="font-bold text-slate-800 text-[11px]">3. Certificate of Insurance</span>
+              <i class="fa-solid fa-circle-check text-emerald-600 text-xs"></i>
             </div>
-            <p class="text-[10px] text-slate-400 font-mono" id="audit-check-3">COI generated &amp; digitally signed for ACORD 25</p>
+            <p class="text-[10px] text-slate-500 font-mono" id="audit-check-3">COI generated &amp; digitally signed for ACORD 25</p>
           </div>
 
-          <div class="p-2 rounded-xl bg-slate-950 border border-slate-800 space-y-0.5">
+          <div class="p-2.5 rounded-lg bg-slate-50 border border-slate-200/90 space-y-0.5">
             <div class="flex items-center justify-between">
-              <span class="font-bold text-slate-200 text-[11px]">4. Guidewire Core Push</span>
-              <i class="fa-solid fa-check text-emerald-400 text-xs"></i>
+              <span class="font-bold text-slate-800 text-[11px]">4. Guidewire Core Push</span>
+              <i class="fa-solid fa-circle-check text-emerald-600 text-xs"></i>
             </div>
-            <p class="text-[10px] text-slate-400 font-mono" id="audit-check-4">PolicyCenter Commit: TX-9021481 • Status: Bound</p>
+            <p class="text-[10px] text-slate-500 font-mono" id="audit-check-4">PolicyCenter Commit: TX-9021481 • Status: Bound</p>
           </div>
         </div>
 
         <!-- HITL Action Controls -->
-        <div class="p-3 bg-slate-950 border-t border-slate-800 shrink-0 space-y-2">
+        <div class="p-3 bg-white border-t border-slate-200 shrink-0 space-y-2">
           <div class="grid grid-cols-2 gap-2">
-            <button onclick="approveVerification()" class="px-3 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-black text-xs shadow-sm transition flex items-center justify-center space-x-1.5 cursor-pointer">
-              <i class="fa-solid fa-signature"></i>
+            <button onclick="approveVerification()" class="px-3 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition flex items-center justify-center space-x-1.5 cursor-pointer">
+              <i class="fa-solid fa-check text-[11px]"></i>
               <span>Approve &amp; Sign</span>
             </button>
-            <button onclick="overrideVerification()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs border border-slate-700 transition flex items-center justify-center space-x-1.5 cursor-pointer">
-              <i class="fa-solid fa-pen-ruler"></i>
+            <button onclick="overrideVerification()" class="px-3 py-2 rounded-lg bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs border border-slate-300 transition flex items-center justify-center space-x-1.5 cursor-pointer">
+              <i class="fa-solid fa-pen-ruler text-[11px]"></i>
               <span>Human Edit</span>
             </button>
           </div>
-          <p class="text-[9.5px] text-slate-500 text-center font-mono">
+          <p class="text-[9.5px] text-slate-400 text-center font-mono">
             Immutable audit record logged to Pace Ledger
           </p>
         </div>
@@ -410,34 +426,34 @@
     </div>
 
     <!-- =============================================================== -->
-    <!-- VIEW 2: TRI-GRAPH ARCHITECTURE & BUSINESS GRAPH (KG • CG • BG)  -->
-    <!-- Linked directly to user's structural model with Policy Drift Loop-->
+    <!-- VIEW 2: TRI-GRAPH ARCHITECTURE (KG • CG • BG) ENTERPRISE VIEW   -->
+    <!-- Matching user diagram in crisp Pace enterprise look and feel    -->
     <!-- =============================================================== -->
-    <div id="view-graph-container" class="flex-1 min-h-0 hidden flex-col bg-slate-900/90 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl p-4">
+    <div id="view-graph-container" class="flex-1 min-h-0 hidden flex-col bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs p-4">
       
       <!-- Graph View Navigation Bar -->
-      <div class="flex items-center justify-between pb-3 border-b border-slate-800 shrink-0">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 shrink-0">
         <div class="flex items-center space-x-3">
-          <div class="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 border border-purple-500/30 flex items-center justify-center text-sm">
-            <i class="fa-solid fa-network-wired"></i>
+          <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center justify-center text-sm font-bold">
+            <i class="fa-solid fa-diagram-project"></i>
           </div>
           <div>
-            <h2 class="text-sm font-black text-white flex items-center space-x-2">
-              <span>Tri-Graph Architecture &amp; Business Graph Engine</span>
-              <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase tracking-wider">Active Reconciliation</span>
+            <h2 class="text-sm font-bold text-slate-900 flex items-center space-x-2">
+              <span>Tri-Graph Architecture &bull; Business Graph</span>
+              <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold uppercase tracking-wider">Active Reconciliation</span>
             </h2>
-            <p class="text-xs text-slate-400">Knowledge Graph (What SHOULD happen) vs Context Graph (What ACTUALLY happened) &rarr; Business Graph Insights &amp; Policy Drift Loop</p>
+            <p class="text-xs text-slate-500">Knowledge Graph (What SHOULD happen) vs Context Graph (What ACTUALLY happened) &rarr; Business Graph &amp; Policy Drift Loop</p>
           </div>
         </div>
 
         <div class="flex items-center space-x-2">
           <!-- Button to trigger feedback loop -->
-          <button onclick="applyPolicyDriftToKG()" id="btn-apply-drift" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-400 hover:to-rose-400 text-slate-950 font-black text-xs shadow-md transition flex items-center space-x-1.5 cursor-pointer animate-pulse">
-            <i class="fa-solid fa-arrows-rotate"></i>
+          <button onclick="applyPolicyDriftToKG()" id="btn-apply-drift" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition flex items-center space-x-1.5 cursor-pointer">
+            <i class="fa-solid fa-arrows-rotate text-amber-400"></i>
             <span>Apply Policy Drift to KG (Update SOP)</span>
           </button>
-          <button onclick="setMainView('cockpit')" class="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold border border-slate-700 transition">
-            <i class="fa-solid fa-xmark mr-1"></i> Back to Cockpit
+          <button onclick="setMainView('cockpit')" class="px-3 py-1.5 rounded-lg bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold border border-slate-300 transition">
+            <i class="fa-solid fa-arrow-left mr-1"></i> Back to Cockpit
           </button>
         </div>
       </div>
@@ -448,91 +464,90 @@
         <!-- SVG Connecting Lines Layer -->
         <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 1000 600" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
           <defs>
-            <linearGradient id="kg-to-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#818cf8"/>
-              <stop offset="100%" stop-color="#f97316"/>
+            <linearGradient id="kg-to-bg-light" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#6366f1"/>
+              <stop offset="100%" stop-color="#d97706"/>
             </linearGradient>
-            <linearGradient id="cg-to-bg" x1="100%" y1="0%" x2="0%" y2="100%">
-              <stop offset="0%" stop-color="#34d399"/>
-              <stop offset="100%" stop-color="#f97316"/>
+            <linearGradient id="cg-to-bg-light" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#059669"/>
+              <stop offset="100%" stop-color="#d97706"/>
             </linearGradient>
-            <marker id="arrow-down" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/>
+            <marker id="arrow-down-light" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
             </marker>
-            <marker id="arrow-loop" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b"/>
+            <marker id="arrow-loop-light" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#d97706"/>
             </marker>
           </defs>
 
           <!-- Top-Left (KG) to Center (BG) -->
-          <line x1="280" y1="120" x2="440" y2="240" stroke="url(#kg-to-bg)" stroke-width="2.5" class="flow-line" marker-end="url(#arrow-down)"/>
+          <line x1="280" y1="120" x2="440" y2="240" stroke="url(#kg-to-bg-light)" stroke-width="2.5" class="flow-line" marker-end="url(#arrow-down-light)"/>
           
           <!-- Top-Right (CG) to Center (BG) -->
-          <line x1="720" y1="120" x2="560" y2="240" stroke="url(#cg-to-bg)" stroke-width="2.5" class="flow-line" marker-end="url(#arrow-down)"/>
+          <line x1="720" y1="120" x2="560" y2="240" stroke="url(#cg-to-bg-light)" stroke-width="2.5" class="flow-line" marker-end="url(#arrow-down-light)"/>
 
           <!-- Center (BG) to 4 bottom nodes -->
-          <line x1="420" y1="360" x2="160" y2="470" stroke="#cbd5e1" stroke-width="1.8" class="flow-line" marker-end="url(#arrow-down)"/>
-          <line x1="470" y1="360" x2="380" y2="470" stroke="#cbd5e1" stroke-width="1.8" class="flow-line" marker-end="url(#arrow-down)"/>
-          <line x1="530" y1="360" x2="620" y2="470" stroke="#cbd5e1" stroke-width="1.8" class="flow-line" marker-end="url(#arrow-down)"/>
-          <line x1="580" y1="360" x2="840" y2="470" stroke="#cbd5e1" stroke-width="1.8" class="flow-line" marker-end="url(#arrow-down)"/>
+          <line x1="420" y1="360" x2="160" y2="470" stroke="#94a3b8" stroke-width="1.8" class="flow-line" marker-end="url(#arrow-down-light)"/>
+          <line x1="470" y1="360" x2="380" y2="470" stroke="#94a3b8" stroke-width="1.8" class="flow-line" marker-end="url(#arrow-down-light)"/>
+          <line x1="530" y1="360" x2="620" y2="470" stroke="#94a3b8" stroke-width="1.8" class="flow-line" marker-end="url(#arrow-down-light)"/>
+          <line x1="580" y1="360" x2="840" y2="470" stroke="#94a3b8" stroke-width="1.8" class="flow-line" marker-end="url(#arrow-down-light)"/>
 
           <!-- Policy Drift FEEDBACK LOOP back to Knowledge Graph (KG) -->
-          <!-- Path curved upward along left margin -->
-          <path id="svg-feedback-path" d="M 125 465 C 25 465, 25 110, 125 110" fill="none" stroke="#f59e0b" stroke-width="2.5" class="feedback-loop" marker-end="url(#arrow-loop)"/>
+          <path id="svg-feedback-path" d="M 125 465 C 25 465, 25 110, 125 110" fill="none" stroke="#d97706" stroke-width="2.5" class="feedback-loop" marker-end="url(#arrow-loop-light)"/>
         </svg>
 
         <!-- TOP ROW: KNOWLEDGE GRAPH (KG) & CONTEXT GRAPH (CG) -->
         <div class="relative z-10 grid grid-cols-2 gap-8 px-8 pt-2">
           
           <!-- NODE 1: KNOWLEDGE GRAPH (KG) -->
-          <div id="card-kg" class="bg-indigo-950/70 border-2 border-indigo-500/40 hover:border-indigo-400 rounded-2xl p-4 shadow-xl backdrop-blur-md transition glow-indigo flex flex-col justify-between">
+          <div id="card-kg" class="bg-indigo-50/60 border-2 border-indigo-200 hover:border-indigo-400 rounded-xl p-4 shadow-sm backdrop-blur-md transition flex flex-col justify-between">
             <div>
-              <div class="flex items-center justify-between mb-2 pb-2 border-b border-indigo-800/60">
+              <div class="flex items-center justify-between mb-2 pb-2 border-b border-indigo-200">
                 <div class="flex items-center space-x-2">
-                  <div class="w-7 h-7 rounded-lg bg-indigo-500/30 text-indigo-300 flex items-center justify-center font-bold text-xs">
+                  <div class="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs">
                     <i class="fa-solid fa-book-bookmark"></i>
                   </div>
                   <div>
-                    <h3 class="text-sm font-black text-indigo-200">Knowledge Graph (KG)</h3>
-                    <p class="text-[11px] text-indigo-300 font-medium">What SHOULD happen (SOPs &amp; Rulebooks)</p>
+                    <h3 class="text-sm font-extrabold text-indigo-950">Knowledge Graph (KG)</h3>
+                    <p class="text-[11px] text-indigo-700 font-medium">What SHOULD happen (SOPs &amp; Rulebooks)</p>
                   </div>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 text-[10px] font-mono font-bold border border-indigo-500/30">
+                <span class="px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 text-[10px] font-mono font-bold border border-indigo-200">
                   Target Invariant
                 </span>
               </div>
-              <div class="text-xs font-mono text-slate-300 space-y-1.5" id="graph-kg-content">
+              <div class="text-xs font-mono text-indigo-950 space-y-1.5" id="graph-kg-content">
                 <!-- Injected KG parameters -->
               </div>
             </div>
-            <div class="mt-3 pt-2 border-t border-indigo-900/60 text-[10px] font-mono text-indigo-400 flex items-center justify-between">
+            <div class="mt-3 pt-2 border-t border-indigo-200/80 text-[10px] font-mono text-indigo-700 flex items-center justify-between">
               <span>Source: Tempo Rulebook Compiler</span>
               <span id="kg-version-badge" class="font-bold">SOP Rev 4.2</span>
             </div>
           </div>
 
           <!-- NODE 2: CONTEXT GRAPH (CG) -->
-          <div id="card-cg" class="bg-emerald-950/70 border-2 border-emerald-500/40 hover:border-emerald-400 rounded-2xl p-4 shadow-xl backdrop-blur-md transition glow-teal flex flex-col justify-between">
+          <div id="card-cg" class="bg-emerald-50/60 border-2 border-emerald-200 hover:border-emerald-400 rounded-xl p-4 shadow-sm backdrop-blur-md transition flex flex-col justify-between">
             <div>
-              <div class="flex items-center justify-between mb-2 pb-2 border-b border-emerald-800/60">
+              <div class="flex items-center justify-between mb-2 pb-2 border-b border-emerald-200">
                 <div class="flex items-center space-x-2">
-                  <div class="w-7 h-7 rounded-lg bg-emerald-500/30 text-emerald-300 flex items-center justify-center font-bold text-xs">
+                  <div class="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">
                     <i class="fa-solid fa-headset"></i>
                   </div>
                   <div>
-                    <h3 class="text-sm font-black text-emerald-200">Context Graph (CG)</h3>
-                    <p class="text-[11px] text-emerald-300 font-medium">What ACTUALLY happened (Calls, Submissions &amp; Logs)</p>
+                    <h3 class="text-sm font-extrabold text-emerald-950">Context Graph (CG)</h3>
+                    <p class="text-[11px] text-emerald-700 font-medium">What ACTUALLY happened (Calls, Submissions &amp; Logs)</p>
                   </div>
                 </div>
-                <span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/30">
+                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-mono font-bold border border-emerald-200">
                   Runtime Reality
                 </span>
               </div>
-              <div class="text-xs font-mono text-slate-300 space-y-1.5" id="graph-cg-content">
+              <div class="text-xs font-mono text-emerald-950 space-y-1.5" id="graph-cg-content">
                 <!-- Injected CG parameters -->
               </div>
             </div>
-            <div class="mt-3 pt-2 border-t border-emerald-900/60 text-[10px] font-mono text-emerald-400 flex items-center justify-between">
+            <div class="mt-3 pt-2 border-t border-emerald-200/80 text-[10px] font-mono text-emerald-700 flex items-center justify-between">
               <span>Source: Guidewire / Broker Feed / IoT</span>
               <span class="font-bold">100% Ingested</span>
             </div>
@@ -542,18 +557,18 @@
 
         <!-- MIDDLE ROW: BUSINESS GRAPH (BG) -->
         <div class="relative z-10 flex justify-center py-2">
-          <div id="card-bg" class="max-w-xl w-full bg-orange-950/80 border-2 border-amber-500/60 hover:border-amber-400 rounded-2xl p-4 shadow-2xl backdrop-blur-md glow-amber text-center">
-            <div class="flex items-center justify-center space-x-2 mb-1.5">
-              <div class="w-7 h-7 rounded-lg bg-amber-500/30 text-amber-300 flex items-center justify-center font-bold text-xs">
+          <div id="card-bg" class="max-w-xl w-full bg-amber-50/90 border-2 border-amber-300 hover:border-amber-400 rounded-xl p-4 shadow-md backdrop-blur-md text-center">
+            <div class="flex items-center justify-center space-x-2 mb-1">
+              <div class="w-7 h-7 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-bold text-xs">
                 <i class="fa-solid fa-scale-balanced"></i>
               </div>
-              <h3 class="text-base font-black text-amber-200">Business Graph (BG)</h3>
-              <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-mono font-bold border border-amber-500/40">
-                Live Reconciliation Engine
+              <h3 class="text-base font-extrabold text-amber-950">Business Graph (BG)</h3>
+              <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[10px] font-mono font-bold border border-amber-200">
+                Reconciliation Engine
               </span>
             </div>
-            <p class="text-xs font-semibold text-amber-100 mb-2">Compares SHOULD vs ACTUAL to compute Compliance, Net Value &amp; Drift</p>
-            <div class="bg-slate-950/70 border border-amber-500/30 rounded-xl p-2.5 font-mono text-xs text-slate-200 text-left space-y-1" id="graph-bg-formula">
+            <p class="text-xs font-semibold text-amber-900 mb-2">Compares SHOULD vs ACTUAL to compute Compliance, Net Value &amp; Drift</p>
+            <div class="bg-white/90 border border-amber-200 rounded-lg p-2.5 font-mono text-xs text-slate-800 text-left space-y-1" id="graph-bg-formula">
               <!-- Reconciled Delta & Logic -->
             </div>
           </div>
@@ -563,84 +578,84 @@
         <div class="relative z-10 grid grid-cols-1 md:grid-cols-4 gap-3 px-4 pb-2">
           
           <!-- OUTCOME 1: POLICY DRIFT -->
-          <div class="bg-slate-900/90 border-2 border-amber-500/50 hover:border-amber-400 rounded-xl p-3 shadow-lg flex flex-col justify-between">
+          <div class="bg-white border-2 border-amber-300 hover:border-amber-400 rounded-xl p-3 shadow-xs flex flex-col justify-between">
             <div>
-              <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-800">
-                <span class="text-xs font-black text-amber-300 flex items-center space-x-1.5">
-                  <i class="fa-solid fa-code-compare"></i>
+              <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-100">
+                <span class="text-xs font-bold text-amber-900 flex items-center space-x-1.5">
+                  <i class="fa-solid fa-code-compare text-amber-600"></i>
                   <span>1. Policy drift</span>
                 </span>
-                <span class="px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 text-[9px] font-bold uppercase">Feedback Loop</span>
+                <span class="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[9px] font-bold uppercase">Feedback Loop</span>
               </div>
-              <p class="text-[10.5px] text-amber-100/90 font-medium leading-snug" id="bg-policy-drift-desc">
+              <p class="text-[10.5px] text-slate-700 font-medium leading-snug" id="bg-policy-drift-desc">
                 <!-- Injected via script -->
               </p>
             </div>
-            <div class="mt-2 pt-2 border-t border-slate-800">
-              <button onclick="applyPolicyDriftToKG()" class="w-full py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[10px] font-black transition flex items-center justify-center space-x-1 cursor-pointer">
-                <i class="fa-solid fa-arrow-up"></i>
+            <div class="mt-2 pt-2 border-t border-slate-100">
+              <button onclick="applyPolicyDriftToKG()" class="w-full py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-bold transition flex items-center justify-center space-x-1 cursor-pointer">
+                <i class="fa-solid fa-arrow-up text-amber-600"></i>
                 <span>Updates the KG &rarr;</span>
               </button>
             </div>
           </div>
 
           <!-- OUTCOME 2: COMPLIANCE GAP -->
-          <div class="bg-slate-900/90 border border-emerald-500/40 rounded-xl p-3 shadow-lg flex flex-col justify-between">
+          <div class="bg-white border border-slate-200 hover:border-slate-300 rounded-xl p-3 shadow-xs flex flex-col justify-between">
             <div>
-              <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-800">
-                <span class="text-xs font-black text-emerald-300 flex items-center space-x-1.5">
-                  <i class="fa-solid fa-shield-halved"></i>
+              <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-100">
+                <span class="text-xs font-bold text-slate-900 flex items-center space-x-1.5">
+                  <i class="fa-solid fa-shield-halved text-emerald-600"></i>
                   <span>2. Compliance gap</span>
                 </span>
-                <span class="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-bold uppercase" id="bg-compliance-badge">100% Adherence</span>
+                <span class="px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700 text-[9px] font-bold uppercase border border-emerald-200" id="bg-compliance-badge">100% Adherence</span>
               </div>
-              <p class="text-[10.5px] text-slate-300 leading-snug" id="bg-compliance-gap-desc">
+              <p class="text-[10.5px] text-slate-600 leading-snug" id="bg-compliance-gap-desc">
                 <!-- Injected via script -->
               </p>
             </div>
-            <div class="mt-2 pt-2 border-t border-slate-800 text-[10px] font-mono text-emerald-400 font-bold flex items-center justify-between">
-              <span>Policy followed?</span>
-              <span class="text-emerald-300"><i class="fa-solid fa-circle-check mr-1"></i>VERIFIED</span>
+            <div class="mt-2 pt-2 border-t border-slate-100 text-[10px] font-mono text-slate-700 font-semibold flex items-center justify-between">
+              <span class="text-slate-400">Policy followed?</span>
+              <span class="text-emerald-700 font-bold"><i class="fa-solid fa-circle-check mr-1 text-emerald-600"></i>VERIFIED</span>
             </div>
           </div>
 
           <!-- OUTCOME 3: NET VALUE -->
-          <div class="bg-slate-900/90 border border-teal-500/40 rounded-xl p-3 shadow-lg flex flex-col justify-between">
+          <div class="bg-white border border-slate-200 hover:border-slate-300 rounded-xl p-3 shadow-xs flex flex-col justify-between">
             <div>
-              <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-800">
-                <span class="text-xs font-black text-teal-300 flex items-center space-x-1.5">
-                  <i class="fa-solid fa-sack-dollar"></i>
+              <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-100">
+                <span class="text-xs font-bold text-slate-900 flex items-center space-x-1.5">
+                  <i class="fa-solid fa-sack-dollar text-teal-600"></i>
                   <span>3. Net value</span>
                 </span>
-                <span class="px-1.5 py-0.2 rounded bg-teal-500/20 text-teal-300 text-[9px] font-mono font-bold" id="bg-net-value-metric">+84% ROI</span>
+                <span class="px-1.5 py-0.2 rounded bg-teal-50 text-teal-700 text-[9px] font-mono font-bold border border-teal-200" id="bg-net-value-metric">+84% ROI</span>
               </div>
-              <p class="text-[10.5px] text-slate-300 leading-snug" id="bg-net-value-desc">
+              <p class="text-[10.5px] text-slate-600 leading-snug" id="bg-net-value-desc">
                 <!-- Injected via script -->
               </p>
             </div>
-            <div class="mt-2 pt-2 border-t border-slate-800 text-[10px] font-mono text-teal-400 font-bold flex items-center justify-between">
-              <span>Value vs cost</span>
-              <span class="text-teal-300">Net Surplus</span>
+            <div class="mt-2 pt-2 border-t border-slate-100 text-[10px] font-mono text-slate-700 font-semibold flex items-center justify-between">
+              <span class="text-slate-400">Value vs cost</span>
+              <span class="text-teal-700 font-bold">Net Surplus</span>
             </div>
           </div>
 
           <!-- OUTCOME 4: BOTTLENECKS -->
-          <div class="bg-slate-900/90 border border-rose-500/40 rounded-xl p-3 shadow-lg flex flex-col justify-between">
+          <div class="bg-white border border-slate-200 hover:border-slate-300 rounded-xl p-3 shadow-xs flex flex-col justify-between">
             <div>
-              <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-800">
-                <span class="text-xs font-black text-rose-300 flex items-center space-x-1.5">
-                  <i class="fa-solid fa-stopwatch"></i>
+              <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-slate-100">
+                <span class="text-xs font-bold text-slate-900 flex items-center space-x-1.5">
+                  <i class="fa-solid fa-stopwatch text-rose-600"></i>
                   <span>4. Bottlenecks</span>
                 </span>
-                <span class="px-1.5 py-0.2 rounded bg-rose-500/20 text-rose-300 text-[9px] font-mono font-bold" id="bg-bottleneck-metric">MVR: 5.2s</span>
+                <span class="px-1.5 py-0.2 rounded bg-rose-50 text-rose-700 text-[9px] font-mono font-bold border border-rose-200" id="bg-bottleneck-metric">MVR: 5.2s</span>
               </div>
-              <p class="text-[10.5px] text-slate-300 leading-snug" id="bg-bottleneck-desc">
+              <p class="text-[10.5px] text-slate-600 leading-snug" id="bg-bottleneck-desc">
                 <!-- Injected via script -->
               </p>
             </div>
-            <div class="mt-2 pt-2 border-t border-slate-800 text-[10px] font-mono text-rose-400 font-bold flex items-center justify-between">
-              <span>Where steps stall</span>
-              <span class="text-rose-300">Core API Wait</span>
+            <div class="mt-2 pt-2 border-t border-slate-100 text-[10px] font-mono text-slate-700 font-semibold flex items-center justify-between">
+              <span class="text-slate-400">Where steps stall</span>
+              <span class="text-rose-700 font-bold">API Latency</span>
             </div>
           </div>
 
@@ -655,29 +670,29 @@
   <!-- ================================================================= -->
   <!-- MODAL: GROQ API KEY CONFIGURATION                                -->
   <!-- ================================================================= -->
-  <div id="modal-key-config" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+  <div id="modal-key-config" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 max-w-md w-full shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <div class="flex items-center space-x-2">
-          <div class="w-8 h-8 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center text-sm">
+          <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 border border-teal-200 flex items-center justify-center text-sm">
             <i class="fa-solid fa-key"></i>
           </div>
-          <h3 class="text-sm font-black text-white">Groq Cloud LPU Configuration</h3>
+          <h3 class="text-sm font-bold text-slate-900">Groq Cloud LPU Configuration</h3>
         </div>
-        <button onclick="toggleKeyModal()" class="text-slate-400 hover:text-slate-200">
+        <button onclick="toggleKeyModal()" class="text-slate-400 hover:text-slate-600">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <div class="space-y-2 text-xs text-slate-300">
-        <label class="block font-bold text-slate-200">Custom Groq API Key (Optional):</label>
-        <input type="password" id="input-groq-key" placeholder="gsk_... (Leave blank for pre-provisioned demo key)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl font-mono text-xs text-teal-300 focus:outline-none focus:border-teal-500">
+      <div class="space-y-2 text-xs text-slate-600">
+        <label class="block font-bold text-slate-700">Custom Groq API Key (Optional):</label>
+        <input type="password" id="input-groq-key" placeholder="gsk_... (Leave blank for pre-provisioned demo key)" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg font-mono text-xs text-slate-800 focus:outline-none focus:border-slate-900">
         <p class="text-[11px] text-slate-500">Pace executes on Groq's <strong>llama-3.3-70b-versatile</strong> for sub-second insurance document extraction and Business Graph drift reconciliation.</p>
       </div>
 
-      <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-800">
-        <button onclick="toggleKeyModal()" class="px-4 py-1.5 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-200">Cancel</button>
-        <button onclick="saveGroqKeyModal()" class="px-4 py-1.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-slate-950 font-black text-xs transition">Save &amp; Activate</button>
+      <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100">
+        <button onclick="toggleKeyModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900">Cancel</button>
+        <button onclick="saveGroqKeyModal()" class="px-4 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition">Save &amp; Activate</button>
       </div>
     </div>
   </div>
@@ -780,12 +795,12 @@ cargo liability limits upon broker digital submission.
 }`,
         docExtraction: {
           "transaction": "Add Vehicle & Increase Cargo",
-          "vin": "1FUJG2DY6SL748192",
+          "vin": "1FUJG2DY6SL748192 (Cited p.2, line 4)",
           "vehicle": "2026 Freightliner Cascadia 126",
-          "stated_value": "$165,000.00",
-          "cargo_limit_requested": "$250,000.00 (was $100,000)",
+          "stated_value": "$165,000.00 (Within $250k ceiling)",
+          "cargo_limit": "$250,000.00 (was $100,000)",
           "driver_assigned": "Ronald Hughes (CDL-A: #P882910)",
-          "mvr_status": "VALIDATED_CLEAN"
+          "mvr_status": "VALIDATED_CLEAN (0 pts / 36 mo)"
         },
         commsMessage: `"Hello Sarah (Miller Insurance Brokers), Pace has autonomously processed and bound Endorsement #CA-889102-04 for Apex Logistics Fleet. The 2026 Freightliner Cascadia has been added and Cargo liability increased to $250,000. Prorated premium adjustment of +$1,420.00 has been applied. Your certified ACORD 25 Certificate of Insurance is attached."`,
         systemLog: [
@@ -821,8 +836,8 @@ cargo liability limits upon broker digital submission.
           "• Request: Raise cargo liability limit to $250,000",
           "• Actual Turnaround: 34 seconds end-to-end"
         ],
-        bgFormula: `<strong>Comparison Matrix:</strong> [ACV: $165k < $250k bound] ∧ [MVR: Clean == Clean] ∧ [Cargo: $250k == Allowed Limit]<br><span class="text-emerald-400 font-bold">&rarr; Outcome: FULL UNDERWRITING CONVERGENCE &bull; Net Positive Decision Value</span>`,
-        bgPolicyDrift: "38% of fleet endorsement requests now demand instant cargo COI issuance for freight lane deadlines. Feedback loop updates SOP Clause 2.4 to grant automated instant COI delivery for clean MVR drivers.",
+        bgFormula: `<strong>Comparison Matrix:</strong> [ACV: $165k < $250k bound] ∧ [MVR: Clean == Clean] ∧ [Cargo: $250k == Allowed Limit]<br><span class="text-emerald-700 font-bold">&rarr; Outcome: FULL UNDERWRITING CONVERGENCE &bull; Net Positive Decision Value</span>`,
+        bgPolicyDrift: "38% of fleet endorsement requests demand instant cargo COI issuance for freight lane deadlines. Feedback loop updates SOP Clause 2.4 to grant automated instant COI delivery for clean MVR drivers.",
         bgComplianceGap: "0% Compliance Gap. Underwriting bounds strictly obeyed; VIN validated via NHTSA decoder; rate delta mathematically reconciled.",
         bgNetValue: "Net Economic Value: +$1,420 premium bound in 34s. Saved $185 in manual BPO handling labor; SLA reduced from 48h to 34s.",
         bgBottleneck: "MVR clearing house API took 5.2s (65% of total latency); Guidewire PolicyCenter commit took 8.1s."
@@ -903,11 +918,11 @@ for multi-location commercial warehousing and cold storage facilities.
 }`,
         docExtraction: {
           "submission_type": "New Business Commercial Property",
-          "locations_count": "3 Cold Storage Warehouses (Chicago, Dallas, Atlanta)",
-          "total_insured_value": "$14,200,000.00 TIV",
+          "locations": "3 Warehouses (Chicago, Dallas, Atlanta)",
+          "tiv": "$14,200,000.00 TIV (Under $25M ceiling)",
           "construction": "Modified Fire Resistive (ISO Class 5)",
-          "sprinkler_protection": "100% Wet Pipe ESFR Certified",
-          "fema_flood_zone": "Zone X (Low-to-Moderate, Non-Special Flood Hazard)"
+          "sprinklers": "100% Wet Pipe ESFR Certified",
+          "fema_flood": "Zone X (Low-to-Moderate, Minimal Hazard)"
         },
         commsMessage: `"Attention Underwriting Desk (Pace Specialty Mutual): Submission #CP-440192 for Meridian Cold Storage ($14.2M TIV across 3 locations) has been autonomously cleared, validated against catastrophe hazard maps, and registered in PolicyCenter. All 3 roofs are < 8 years old with 100% ESFR sprinkler protection. Ready for rate binding."`,
         systemLog: [
@@ -942,7 +957,7 @@ for multi-location commercial warehousing and cold storage facilities.
           "• Sprinklers: 100% Wet Pipe ESFR Certified",
           "• Flood Zone: Zone X (0% 100-year flood zone)"
         ],
-        bgFormula: `<strong>Comparison Matrix:</strong> [TIV: $14.2M < $25M limit] ∧ [Flood: Zone X == Approved] ∧ [Sprinklers: ESFR Certified]<br><span class="text-emerald-400 font-bold">&rarr; Outcome: ACCEPTABLE RISK TRIAGE &bull; Class 5 accepted via variance</span>`,
+        bgFormula: `<strong>Comparison Matrix:</strong> [TIV: $14.2M < $25M limit] ∧ [Flood: Zone X == Approved] ∧ [Sprinklers: ESFR Certified]<br><span class="text-emerald-700 font-bold">&rarr; Outcome: ACCEPTABLE RISK TRIAGE &bull; Class 5 accepted via variance</span>`,
         bgPolicyDrift: "ESFR-sprinklered cold storage yields 65% lower loss ratios than standard warehouses. Drift loop expands SOP Clause 2.1 to authorize automated TIV ceilings up to $35M for certified ESFR facilities.",
         bgComplianceGap: "0.2% variance on Class 5 construction, pre-approved under modern cold-storage fire resilience guidelines.",
         bgNetValue: "Net Pipeline Value: $14.2M TIV cleared in 32s. Saved $340 in manual underwriter triage; captured $82k annualized premium pipeline.",
@@ -1025,11 +1040,11 @@ reconciliation, and initial reserve establishment for temperature-controlled fre
 }`,
         docExtraction: {
           "claim_type": "Pharmaceutical Cargo Spoilage",
-          "gross_claimed_loss": "$64,000.00 (Biologics Vaccine Consignment)",
-          "deductible_applicable": "$5,000.00 (Endorsement IM-04)",
-          "net_claim_reserve": "$59,000.00 USD",
-          "telematics_audit": "Logger confirmed Reefer Unit #12 compressor stalled at 04:12 UTC (temp reached +14°C)",
-          "coverage_verified": "Endorsement IM-REFRIGERATION Active"
+          "gross_loss": "$64,000.00 (Biologics Consignment)",
+          "deductible": "$5,000.00 (Endorsement IM-04)",
+          "net_reserve": "$59,000.00 USD (Within $75k threshold)",
+          "telematics": "Sensor confirmed compressor stall (+14.2°C for 194 mins)",
+          "coverage": "Endorsement IM-REFRIGERATION Verified"
         },
         commsMessage: `"Dear Claims Director (Vanguard Logistics), Pace has registered FNOL Claim #CL-44021 under Policy #IM-774910. Telematics log analysis confirms reefer mechanical failure occurred during authorized transit. Initial reserve of $59,000 ($64,000 gross minus $5,000 deductible) has been established in ClaimCenter, and Senior Adjuster Bradley Miller has been assigned for salvage inspection."`,
         systemLog: [
@@ -1064,7 +1079,7 @@ reconciliation, and initial reserve establishment for temperature-controlled fre
           "• Deductible: $5,000 deducted &rarr; $59,000 reserve set",
           "• Processing Time: 30 seconds"
         ],
-        bgFormula: `<strong>Comparison Matrix:</strong> [Endorsement IM: Active] ∧ [Temp > 8°C for 194m > 120m] ∧ [Net Reserve: $59k <= $75k]<br><span class="text-emerald-400 font-bold">&rarr; Outcome: VERIFIED LOSS CAUSE &bull; Instant Claim Registration</span>`,
+        bgFormula: `<strong>Comparison Matrix:</strong> [Endorsement IM: Active] ∧ [Temp > 8°C for 194m > 120m] ∧ [Net Reserve: $59k <= $75k]<br><span class="text-emerald-700 font-bold">&rarr; Outcome: VERIFIED LOSS CAUSE &bull; Instant Claim Registration</span>`,
         bgPolicyDrift: "Cryptographic telematics logs eliminate adjuster ambiguity. Feedback loop updates SOP Clause 2.4 to fast-track settlements <= $65k without physical in-person inspection.",
         bgComplianceGap: "0% Compliance Gap. Claims reserve calculation accurately adhered to policy deductible guidelines.",
         bgNetValue: "Net Cost Avoidance: Saved $8,400 in claim leakage and salvage loss; triage time reduced from 5 business days to 30 seconds.",
@@ -1143,13 +1158,12 @@ loss run evaluation, and autonomous renewal quote issuance.
   ]
 }`,
         docExtraction: {
-          "renewal_term": "2026 - 2027 Commercial General Liability",
-          "5yr_earned_premium": "$184,000.00",
-          "5yr_incurred_losses": "$70,280.00 (3 closed slip-and-fall claims)",
-          "calculated_loss_ratio": "38.2% (Well below 45% threshold)",
-          "open_claims_count": "0 Open Claims",
-          "expiring_annual_premium": "$38,500.00",
-          "renewal_offered_premium": "$40,230.00 (+4.5% trend factor)"
+          "term": "2026 - 2027 General Liability",
+          "5yr_premium": "$184,000.00 Earned",
+          "5yr_losses": "$70,280.00 Incurred (3 closed claims)",
+          "loss_ratio": "38.2% (Favorable, < 45% ceiling)",
+          "open_litigation": "0 Open Lawsuits",
+          "renewal_quote": "$40,230.00 (+4.5% standard trend)"
         },
         commsMessage: `"Dear David (Brokerage Representative), Pace AI Underwriting has audited the 5-year loss runs for Summit Hospitality Group. With a favorable 38.2% historical loss ratio and zero open claims, the account has qualified for pre-approved autonomous renewal under Policy #GL-772910. The renewal quote of $40,230 has been generated in Applied Epic and dispatched for policyholder review."`,
         systemLog: [
@@ -1184,7 +1198,7 @@ loss run evaluation, and autonomous renewal quote issuance.
           "• Lawsuits: 0 Open Claims",
           "• Quote Generated: $40,230 (+4.5% applied)"
         ],
-        bgFormula: `<strong>Comparison Matrix:</strong> [Loss Ratio: 38.2% <= 45.0% ceiling] ∧ [Open Lawsuits: 0 == 0]<br><span class="text-emerald-400 font-bold">&rarr; Outcome: AUTONOMOUS RENEWAL AUTHORIZED &bull; Retention Maximized</span>`,
+        bgFormula: `<strong>Comparison Matrix:</strong> [Loss Ratio: 38.2% <= 45.0% ceiling] ∧ [Open Lawsuits: 0 == 0]<br><span class="text-emerald-700 font-bold">&rarr; Outcome: AUTONOMOUS RENEWAL AUTHORIZED &bull; Retention Maximized</span>`,
         bgPolicyDrift: "Accounts with <40% loss ratio are targeted by digital carrier poachers. Feedback loop updates SOP Clause 2.3 to introduce preferred retention discount (+2.5% vs +4.5%) for 3-year loyal accounts.",
         bgComplianceGap: "0% Compliance Gap. Underwriting guideline strictly enforced; zero human underwriter referral required.",
         bgNetValue: "Net Preserved Premium: $40,230 booked 60 days prior to expiry; 98% retention probability with $260 saved in manual renewal audits.",
@@ -1213,14 +1227,14 @@ loss run evaluation, and autonomous renewal quote issuance.
         cockpitCont.classList.remove('hidden');
         graphCont.classList.add('hidden');
         graphCont.classList.remove('flex');
-        btnCockpit.className = "px-2.5 py-1 rounded-lg bg-teal-500 text-slate-950 font-extrabold shadow-xs transition flex items-center space-x-1 cursor-pointer";
-        btnGraph.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center space-x-1 cursor-pointer";
+        btnCockpit.className = "px-3 py-1 rounded-md bg-white text-slate-900 font-bold shadow-xs transition flex items-center space-x-1.5 cursor-pointer";
+        btnGraph.className = "px-3 py-1 rounded-md text-slate-500 hover:text-slate-900 transition flex items-center space-x-1.5 cursor-pointer";
       } else {
         cockpitCont.classList.add('hidden');
         graphCont.classList.remove('hidden');
         graphCont.classList.add('flex');
-        btnGraph.className = "px-2.5 py-1 rounded-lg bg-purple-500 text-white font-extrabold shadow-xs transition flex items-center space-x-1 cursor-pointer";
-        btnCockpit.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-slate-200 transition flex items-center space-x-1 cursor-pointer";
+        btnGraph.className = "px-3 py-1 rounded-md bg-white text-indigo-900 font-bold shadow-xs transition flex items-center space-x-1.5 cursor-pointer";
+        btnCockpit.className = "px-3 py-1 rounded-md text-slate-500 hover:text-slate-900 transition flex items-center space-x-1.5 cursor-pointer";
       }
     }
 
@@ -1233,9 +1247,9 @@ loss run evaluation, and autonomous renewal quote issuance.
         const btn = document.getElementById(`btn-wf-${k}`);
         if (!btn) return;
         if (k === key) {
-          btn.className = "wf-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-teal-500/20 text-teal-300 border border-teal-500/40 shadow-xs transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer";
+          btn.className = "wf-btn px-2.5 py-1 rounded-lg text-xs font-bold bg-white text-slate-900 shadow-xs transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer";
         } else {
-          btn.className = "wf-btn px-2.5 py-1 rounded-lg text-xs font-bold text-slate-400 hover:text-slate-200 border border-transparent transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer";
+          btn.className = "wf-btn px-2.5 py-1 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer";
         }
       });
 
@@ -1271,7 +1285,7 @@ loss run evaluation, and autonomous renewal quote issuance.
       // Knowledge Graph (KG) Card
       const kgEl = document.getElementById('graph-kg-content');
       if (kgEl) {
-        kgEl.innerHTML = wf.kgDetails.map(d => `<div class="text-indigo-200">${d}</div>`).join('');
+        kgEl.innerHTML = wf.kgDetails.map(d => `<div class="text-indigo-900 font-medium">${d}</div>`).join('');
       }
       const kgVer = document.getElementById('kg-version-badge');
       if (kgVer) {
@@ -1281,7 +1295,7 @@ loss run evaluation, and autonomous renewal quote issuance.
       // Context Graph (CG) Card
       const cgEl = document.getElementById('graph-cg-content');
       if (cgEl) {
-        cgEl.innerHTML = wf.cgDetails.map(d => `<div class="text-emerald-200">${d}</div>`).join('');
+        cgEl.innerHTML = wf.cgDetails.map(d => `<div class="text-emerald-900 font-medium">${d}</div>`).join('');
       }
 
       // Business Graph (BG) Formula
@@ -1304,7 +1318,7 @@ loss run evaluation, and autonomous renewal quote issuance.
       // Visual feedback loop animation effect
       const feedbackPath = document.getElementById('svg-feedback-path');
       if (feedbackPath) {
-        feedbackPath.style.stroke = "#22c55e";
+        feedbackPath.style.stroke = "#16a34a";
         feedbackPath.style.strokeWidth = "4px";
       }
 
@@ -1316,7 +1330,7 @@ loss run evaluation, and autonomous renewal quote issuance.
       // Notify user
       const btn = document.getElementById('btn-apply-drift');
       if (btn) {
-        btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Synthesizing Rule to KG...</span>`;
+        btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-amber-400"></i><span>Synthesizing Rule to KG...</span>`;
       }
 
       setTimeout(() => {
@@ -1327,9 +1341,9 @@ loss run evaluation, and autonomous renewal quote issuance.
         if (btn) {
           btn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i><span>SOP Updated &bull; AOP Recompiled</span>`;
           setTimeout(() => {
-            btn.innerHTML = `<i class="fa-solid fa-arrows-rotate"></i><span>Apply Policy Drift to KG (Update SOP)</span>`;
+            btn.innerHTML = `<i class="fa-solid fa-arrows-rotate text-amber-400"></i><span>Apply Policy Drift to KG (Update SOP)</span>`;
             if (feedbackPath) {
-              feedbackPath.style.stroke = "#f59e0b";
+              feedbackPath.style.stroke = "#d97706";
               feedbackPath.style.strokeWidth = "2.5px";
             }
             if (cardKg) {
@@ -1338,7 +1352,6 @@ loss run evaluation, and autonomous renewal quote issuance.
           }, 2500);
         }
 
-        // Show toast alert
         alert(`✨ Policy Drift successfully reconciled!\n\n1. Feed loop updated Knowledge Graph (KG).\n2. Standard Operating Procedure updated with new clause.\n3. Tempo Studio recompiled Agent Operating Procedure (AOP).\n\nSwitch back to Operations Cockpit to inspect the new SOP!`);
       }, 700);
     }
@@ -1349,11 +1362,11 @@ loss run evaluation, and autonomous renewal quote issuance.
       const btnAop = document.getElementById('btn-tempo-aop');
 
       if (view === 'sop') {
-        btnSop.className = "px-2.5 py-1 rounded-md bg-teal-500 text-slate-950 font-extrabold shadow-xs transition";
-        btnAop.className = "px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 transition";
+        btnSop.className = "px-2.5 py-1 rounded-md bg-white text-slate-900 font-bold shadow-xs transition";
+        btnAop.className = "px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800 transition";
       } else {
-        btnAop.className = "px-2.5 py-1 rounded-md bg-indigo-500 text-white font-extrabold shadow-xs transition";
-        btnSop.className = "px-2.5 py-1 rounded-md text-slate-400 hover:text-slate-200 transition";
+        btnAop.className = "px-2.5 py-1 rounded-md bg-white text-indigo-900 font-bold shadow-xs transition";
+        btnSop.className = "px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-800 transition";
       }
       renderTempoContent();
     }
@@ -1367,21 +1380,21 @@ loss run evaluation, and autonomous renewal quote issuance.
 
       if (tempoView === 'sop') {
         viewer.innerHTML = `
-          <div class="text-[11px] font-bold text-teal-400 pb-2 mb-2 border-b border-slate-800 flex items-center justify-between">
-            <span>HUMAN SOP RULEBOOK &bull; ${wf.name}</span>
-            <span class="text-[9px] ${isDriftActive ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold' : 'bg-slate-800 text-slate-400'} px-2 py-0.5 rounded">
+          <div class="text-[11px] font-bold text-slate-900 pb-2 mb-2 border-b border-slate-200 flex items-center justify-between">
+            <span class="tracking-tight uppercase">SOP RULEBOOK &bull; ${wf.name}</span>
+            <span class="text-[9px] ${isDriftActive ? 'bg-amber-100 text-amber-800 border border-amber-300 font-bold' : 'bg-slate-100 text-slate-600'} px-2 py-0.5 rounded font-mono">
               ${isDriftActive ? '⚡ Policy Drift Active' : 'Natural Language Rules'}
             </span>
           </div>
-          <pre class="whitespace-pre-wrap text-slate-300 leading-relaxed">${activeSopText}</pre>
+          <pre class="whitespace-pre-wrap text-slate-700 leading-relaxed">${activeSopText}</pre>
         `;
       } else {
         viewer.innerHTML = `
-          <div class="text-[11px] font-bold text-indigo-400 pb-2 mb-2 border-b border-slate-800 flex items-center justify-between">
-            <span>COMPILED AGENT OPERATING PROCEDURE (AOP)</span>
-            <span class="text-[9px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded font-mono">v2.4.0 Validated</span>
+          <div class="text-[11px] font-bold text-indigo-900 pb-2 mb-2 border-b border-slate-200 flex items-center justify-between">
+            <span class="tracking-tight uppercase">COMPILED AGENT OPERATING PROCEDURE (AOP)</span>
+            <span class="text-[9px] bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded font-mono font-bold">v2.4.0 Validated</span>
           </div>
-          <pre class="whitespace-pre-wrap text-emerald-400 text-[11px] leading-relaxed">${wf.aopCode}</pre>
+          <pre class="whitespace-pre-wrap text-slate-800 text-[11px] leading-relaxed">${wf.aopCode}</pre>
         `;
       }
     }
@@ -1392,10 +1405,10 @@ loss run evaluation, and autonomous renewal quote issuance.
       const btnRun = document.getElementById('btn-run-workflow');
       if (btnRun) {
         btnRun.disabled = true;
-        btnRun.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Executing...</span>`;
+        btnRun.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-[10px]"></i><span>Executing...</span>`;
       }
       if (statusBadge) {
-        statusBadge.className = "px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[10px] font-bold uppercase animate-pulse";
+        statusBadge.className = "px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-bold uppercase animate-pulse";
         statusBadge.textContent = "● Running AOP Steps";
       }
 
@@ -1403,23 +1416,23 @@ loss run evaluation, and autonomous renewal quote issuance.
       const steps = [1, 2, 3, 4];
       steps.forEach(s => {
         const el = document.getElementById(`step-${s}`);
-        if (el) el.className = "step-node flex items-center space-x-1.5 px-2 py-1 rounded-md bg-slate-800 text-slate-400 border border-slate-700 shrink-0";
+        if (el) el.className = "step-node flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-white text-slate-500 border border-slate-200 shrink-0";
       });
 
       // Animate steps
       for (let i = 1; i <= 4; i++) {
         await new Promise(r => setTimeout(r, 110));
         const el = document.getElementById(`step-${i}`);
-        if (el) el.className = "step-node flex items-center space-x-1.5 px-2 py-1 rounded-md bg-teal-500/20 text-teal-300 border border-teal-500/40 shrink-0";
+        if (el) el.className = "step-node flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-teal-50 text-teal-800 border border-teal-200 font-bold shrink-0";
       }
 
       // Render Subagents Output
       const docBox = document.getElementById('doc-agent-output');
       if (docBox) {
         docBox.innerHTML = Object.entries(wf.docExtraction).map(([k, v]) => `
-          <div class="flex items-start justify-between py-0.5 border-b border-slate-800/40 last:border-0">
-            <span class="text-slate-400 font-bold uppercase text-[9.5px]">${k.replace(/_/g, ' ')}:</span>
-            <span class="text-teal-300 text-right ml-2 font-medium">${v}</span>
+          <div class="flex items-start justify-between py-0.5 border-b border-slate-200/60 last:border-0">
+            <span class="text-slate-500 font-semibold uppercase text-[9.5px]">${k.replace(/_/g, ' ')}:</span>
+            <span class="text-slate-900 text-right ml-2 font-medium">${v}</span>
           </div>
         `).join('');
       }
@@ -1428,8 +1441,8 @@ loss run evaluation, and autonomous renewal quote issuance.
       if (commsBox) {
         commsBox.innerHTML = `
           <div class="flex items-start space-x-2">
-            <div class="w-2 h-2 rounded-full bg-indigo-400 mt-1.5 shrink-0"></div>
-            <p class="text-slate-200 leading-snug">${wf.commsMessage}</p>
+            <div class="w-2 h-2 rounded-full bg-indigo-500 mt-1.5 shrink-0"></div>
+            <p class="text-slate-700 leading-snug">${wf.commsMessage}</p>
           </div>
         `;
       }
@@ -1442,10 +1455,10 @@ loss run evaluation, and autonomous renewal quote issuance.
       // Restore button & status
       if (btnRun) {
         btnRun.disabled = false;
-        btnRun.innerHTML = `<i class="fa-solid fa-play"></i><span>Run AOP</span>`;
+        btnRun.innerHTML = `<i class="fa-solid fa-play text-[10px]"></i><span>Run AOP</span>`;
       }
       if (statusBadge) {
-        statusBadge.className = "px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold uppercase";
+        statusBadge.className = "px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold uppercase";
         statusBadge.textContent = "● Completed";
       }
 
@@ -1458,12 +1471,12 @@ loss run evaluation, and autonomous renewal quote issuance.
     function compileAOP() {
       const btn = document.getElementById('btn-compile-aop');
       if (!btn) return;
-      btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i><span>Compiling...</span>`;
+      btn.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-[10px]"></i><span>Compiling...</span>`;
       setTimeout(() => {
         setTempoView('aop');
-        btn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i><span>Compiled</span>`;
+        btn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-300"></i><span>Compiled</span>`;
         setTimeout(() => {
-          btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i><span>Recompile AOP</span>`;
+          btn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i><span>Recompile AOP</span>`;
         }, 1500);
       }, 400);
     }
@@ -1484,11 +1497,11 @@ loss run evaluation, and autonomous renewal quote issuance.
       const icon = document.getElementById('voice-icon');
       const text = document.getElementById('voice-text');
       if (voiceSpeechEnabled) {
-        icon.className = "fa-solid fa-volume-high text-teal-400";
+        icon.className = "fa-solid fa-volume-high text-teal-600 text-xs";
         if (text) text.textContent = "Voice: ON";
         speakAgentDialogue();
       } else {
-        icon.className = "fa-solid fa-volume-xmark text-slate-500";
+        icon.className = "fa-solid fa-volume-xmark text-slate-400 text-xs";
         if (text) text.textContent = "Voice: OFF";
         if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       }
