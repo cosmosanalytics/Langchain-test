@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-950">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Rational AI Agent Works Like a Brain | Know • Be Sure • Act</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Chart.js for Calibration & Error Curves -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            know: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              500: '#10b981',
+              600: '#059669',
+              900: '#064e3b'
+            },
+            sure: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              900: '#312e81'
+            },
+            act: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              500: '#ea580c',
+              600: '#c2410c',
+              900: '#7c2d12'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
+    ::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.8); border-radius: 9999px; }
+    
+    @keyframes pulse-flow {
+      0% { stroke-dashoffset: 40; }
+      100% { stroke-dashoffset: 0; }
+    }
+    .flow-line {
+      stroke-dasharray: 6 4;
+      animation: pulse-flow 1.5s linear infinite;
+    }
+    .feedback-loop {
+      stroke-dasharray: 5 3;
+      animation: pulse-flow 1s linear infinite reverse;
+    }
+  </style>
+</head>
+<body class="h-full bg-slate-950 text-slate-100 flex flex-col antialiased overflow-hidden select-none">
+
+  <!-- ================================================================= -->
+  <!-- TOP TELEMETRY & RUNTIME BAR                                       -->
+  <!-- ================================================================= -->
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-2 flex flex-wrap items-center justify-between gap-2.5 shrink-0 z-30">
+    <!-- Brand Title & Motto -->
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 via-indigo-500 to-amber-500 flex items-center justify-center text-slate-950 font-black text-sm shadow-md">
+        <i class="fa-solid fa-brain"></i>
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <span class="text-sm font-black tracking-tight text-white">RATIONAL AI AGENT</span>
+          <span class="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 text-[10px] font-bold uppercase tracking-wider">Brain Architecture</span>
+        </div>
+        <p class="text-[10px] text-slate-400 font-mono hidden sm:block">Know it. Be sure how well you know it. Act on it wisely.</p>
+      </div>
+    </div>
+
+    <!-- Scenarios -->
+    <div class="flex items-center space-x-1 bg-slate-800/80 border border-slate-700/80 p-0.5 rounded-xl overflow-x-auto scrollbar-none text-xs">
+      <button onclick="loadScenario('insurance_claim')" id="btn-sc-insurance_claim" class="sc-btn px-2.5 py-1 rounded-lg font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 shadow-xs transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
+        <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+        <span>1. Insurance Cargo Claim</span>
+      </button>
+      <button onclick="loadScenario('medical_prior_auth')" id="btn-sc-medical_prior_auth" class="sc-btn px-2.5 py-1 rounded-lg font-bold text-slate-400 hover:text-slate-200 border border-transparent transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
+        <i class="fa-solid fa-notes-medical text-rose-400"></i>
+        <span>2. Clinical Prior Auth</span>
+      </button>
+      <button onclick="loadScenario('commercial_loan')" id="btn-sc-commercial_loan" class="sc-btn px-2.5 py-1 rounded-lg font-bold text-slate-400 hover:text-slate-200 border border-transparent transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
+        <i class="fa-solid fa-building-columns text-amber-400"></i>
+        <span>3. Commercial Credit Line</span>
+      </button>
+    </div>
+
+    <!-- Runtime & Settings -->
+    <div class="flex items-center space-x-2 text-xs">
+      <div class="flex items-center bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 font-mono">
+        <span class="text-slate-400 mr-1.5"><i class="fa-solid fa-microchip"></i></span>
+        <select id="select-runtime" onchange="changeRuntime(this.value)" class="bg-transparent text-slate-300 text-xs focus:outline-none cursor-pointer">
+          <option value="groq" class="bg-slate-900 text-emerald-400">⚡ Groq LPU (Llama 3.3 70B)</option>
+          <option value="webllm" class="bg-slate-900 text-indigo-400">🌐 WebLLM (WebGPU)</option>
+          <option value="instant" class="bg-slate-900 text-slate-300">🎯 Instant Deterministic (0ms)</option>
+        </select>
+      </div>
+
+      <button onclick="toggleKeyModal()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold flex items-center space-x-1 cursor-pointer">
+        <i class="fa-solid fa-key text-amber-400"></i>
+        <span class="hidden md:inline">Key</span>
+      </button>
+
+      <button onclick="triggerFullEvaluation()" id="btn-run-all" class="px-3 py-1 rounded-lg bg-gradient-to-r from-emerald-500 via-indigo-500 to-amber-500 hover:opacity-90 text-slate-950 font-black flex items-center space-x-1.5 cursor-pointer shadow-md">
+        <i class="fa-solid fa-play"></i>
+        <span>Think &amp; Act</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================================================================= -->
+  <!-- MAIN WORKSPACE: THE 3 BRAIN HARNESSES (COLUMNS)                   -->
+  <!-- 1. KNOW (Education) | 2. BE SURE (Calibration) | 3. ACT (Gate)   -->
+  <!-- ================================================================= -->
+  <main class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 p-3 overflow-hidden">
+    
+    <!-- =============================================================== -->
+    <!-- 1. KNOW: EDUCATION HARNESS (4 cols)                            -->
+    <!-- Cortex (Semantic Memory) & Hippocampus (Episodic Context Graph)-->
+    <!-- =============================================================== -->
+    <section class="lg:col-span-4 bg-slate-900/80 border border-emerald-500/30 rounded-2xl flex flex-col min-h-0 overflow-hidden shadow-lg">
+      
+      <!-- Panel Header -->
+      <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black text-xs">
+            1
+          </div>
+          <div>
+            <h2 class="text-xs font-black tracking-wider uppercase text-emerald-300">KNOW &bull; Education Harness</h2>
+            <p class="text-[10px] text-slate-400">Semantic Rules + Episodic Context Graph</p>
+          </div>
+        </div>
+        <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono text-[9.5px] font-bold">
+          Epistemic: Step 1
+        </span>
+      </div>
+
+      <div class="flex-1 min-h-0 p-3 overflow-y-auto space-y-3">
+        
+        <!-- CORTEX: Semantic Memory -->
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 shadow-sm">
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-atom text-emerald-400 text-xs"></i>
+              <span class="text-xs font-bold text-white">Cortex (Semantic Memory)</span>
+            </div>
+            <span class="text-[10px] text-emerald-400 font-mono">Ontology + Knowledge Graph</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mb-2">The verified facts and active policy rules that dictate what SHOULD happen.</p>
+          
+          <div class="bg-slate-900/90 rounded-lg p-2.5 font-mono text-[11px] text-emerald-200/90 space-y-1.5 border border-slate-800" id="know-ontology-rules">
+            <!-- Injected rules -->
+          </div>
+        </div>
+
+        <!-- HIPPOCAMPUS: Episodic Memory -->
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 shadow-sm">
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-network-wired text-teal-400 text-xs"></i>
+              <span class="text-xs font-bold text-white">Hippocampus (Episodic Memory)</span>
+            </div>
+            <span class="text-[10px] text-teal-400 font-mono">Context Graph (Index)</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mb-2">Each reviewed case points to the rules it used and full detailed case logs.</p>
+          
+          <div class="bg-slate-900/90 rounded-lg p-2.5 font-mono text-[11px] text-slate-300 space-y-1.5 border border-slate-800 max-h-36 overflow-y-auto" id="know-context-cases">
+            <!-- Injected cases -->
+          </div>
+        </div>
+
+        <!-- BI-DIRECTIONAL GRAPH DIALOGUE -->
+        <div class="bg-slate-950/70 border border-emerald-500/20 rounded-xl p-3 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-[11px] font-bold text-emerald-300">Inside Know: Graph Dialogue</span>
+            <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded font-mono">Bi-directional</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 text-[10px] font-mono text-slate-300">
+            <div class="p-2 rounded bg-slate-900 border border-slate-800">
+              <span class="text-teal-400 block font-bold mb-0.5">&larr; Retrieval</span>
+              New item finds similar cases, then follows links to rules.
+            </div>
+            <div class="p-2 rounded bg-slate-900 border border-slate-800">
+              <span class="text-emerald-400 block font-bold mb-0.5">&rarr; Rule Discovery</span>
+              Many similar cases propose a verified new rule candidate.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="p-2.5 bg-slate-950 border-t border-slate-800 shrink-0 text-[10.5px] font-mono text-slate-400 flex items-center justify-between">
+        <span>Active Rules: <strong class="text-emerald-400" id="stat-rule-count">3 Active</strong></span>
+        <span>Indexed Cases: <strong class="text-teal-400" id="stat-case-count">482 Linked</strong></span>
+      </div>
+
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- 2. BE SURE: CALIBRATION HARNESS (4 cols)                       -->
+    <!-- Prefrontal Cortex (Metacognition) & Anterior Cingulate (Conflict)-->
+    <!-- =============================================================== -->
+    <section class="lg:col-span-4 bg-slate-900/80 border border-indigo-500/30 rounded-2xl flex flex-col min-h-0 overflow-hidden shadow-lg">
+      
+      <!-- Panel Header -->
+      <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-black text-xs">
+            2
+          </div>
+          <div>
+            <h2 class="text-xs font-black tracking-wider uppercase text-indigo-300">BE SURE &bull; Calibration Harness</h2>
+            <p class="text-[10px] text-slate-400">Metacognition + Conflict Monitoring</p>
+          </div>
+        </div>
+        <span class="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 font-mono text-[9.5px] font-bold">
+          Epistemic: Step 2
+        </span>
+      </div>
+
+      <div class="flex-1 min-h-0 p-3 overflow-y-auto space-y-3">
+        
+        <!-- PREFRONTAL CORTEX: Metacognition & Calibration -->
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 shadow-sm">
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-chart-line text-indigo-400 text-xs"></i>
+              <span class="text-xs font-bold text-white">Prefrontal Cortex (Metacognition)</span>
+            </div>
+            <span class="text-[10px] text-indigo-400 font-mono font-bold" id="calibration-accuracy-tag">Calibration: 91.4%</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mb-2 leading-snug">"How sure am I?" &bull; The agent says 90% only when right ~90% of the time.</p>
+          
+          <!-- Metacognitive Confidence Bar -->
+          <div class="space-y-1.5 mb-2.5">
+            <div class="flex items-center justify-between text-xs font-mono">
+              <span class="text-slate-400">Assessed Confidence (P̂):</span>
+              <span class="text-indigo-300 font-bold text-sm" id="calib-score-text">88.5%</span>
+            </div>
+            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
+              <div id="calib-score-bar" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-2.5 rounded-full transition-all duration-500" style="width: 88.5%"></div>
+            </div>
+          </div>
+
+          <!-- Mini Calibration Curve Canvas -->
+          <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
+            <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-1">
+              <span>Reliability Curve (P_stated vs P_actual)</span>
+              <span class="text-emerald-400">Well-Calibrated</span>
+            </div>
+            <div class="h-24">
+              <canvas id="canvas-calibration"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- ANTERIOR CINGULATE: Conflict Monitor -->
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 shadow-sm">
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-triangle-exclamation text-amber-400 text-xs"></i>
+              <span class="text-xs font-bold text-white">Anterior Cingulate (Conflict Monitor)</span>
+            </div>
+            <span id="conflict-alarm-badge" class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[9.5px] font-mono font-bold">
+              Consensus: 5 / 5
+            </span>
+          </div>
+          <p class="text-[11px] text-slate-400 mb-2 leading-snug">"Repeated Answers: If 5 rollouts disagree, the knowledge has not taken hold."</p>
+
+          <!-- 5 Independent Rollout Cards -->
+          <div class="space-y-1 text-[11px] font-mono" id="conflict-rollouts-container">
+            <!-- 5 rollouts injected -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="p-2.5 bg-slate-950 border-t border-slate-800 shrink-0 text-[10.5px] font-mono text-slate-400 flex items-center justify-between">
+        <span>Metacognitive Brier Score: <strong class="text-indigo-400">0.038</strong></span>
+        <span>Sample Agreement: <strong class="text-emerald-400" id="stat-agreement-ratio">100%</strong></span>
+      </div>
+
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- 3. ACT: GATE HARNESS (4 cols)                                   -->
+    <!-- Basal Ganglia (Go/No-Go) & Prefrontal Cortex (Risk Threshold)   -->
+    <!-- =============================================================== -->
+    <section class="lg:col-span-4 bg-slate-900/80 border border-amber-500/30 rounded-2xl flex flex-col min-h-0 overflow-hidden shadow-lg">
+      
+      <!-- Panel Header -->
+      <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-black text-xs">
+            3
+          </div>
+          <div>
+            <h2 class="text-xs font-black tracking-wider uppercase text-amber-300">ACT &bull; Gate Harness</h2>
+            <p class="text-[10px] text-slate-400">Basal Ganglia Action + Risk Threshold</p>
+          </div>
+        </div>
+        <span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 font-mono text-[9.5px] font-bold">
+          Instrumental: Step 3
+        </span>
+      </div>
+
+      <div class="flex-1 min-h-0 p-3 overflow-y-auto space-y-3">
+        
+        <!-- BASAL GANGLIA: Go / No-Go Action Picker -->
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 shadow-sm">
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-traffic-light text-amber-400 text-xs"></i>
+              <span class="text-xs font-bold text-white">Basal Ganglia (Go / No-Go Action)</span>
+            </div>
+            <span class="text-[10px] text-slate-500 font-mono">Default is HOLD</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mb-2 leading-snug">"Accept, Confirm, Escalate &bull; Release only when confident enough."</p>
+
+          <!-- 3 Gate Options Highlight -->
+          <div class="grid grid-cols-3 gap-1.5 text-center font-mono">
+            
+            <div id="gate-btn-accept" class="p-2 rounded-xl bg-slate-900 border border-slate-800 transition flex flex-col items-center justify-center">
+              <i class="fa-solid fa-circle-check text-slate-500 text-base mb-1" id="icon-accept"></i>
+              <span class="text-xs font-black text-slate-400" id="label-accept">ACCEPT</span>
+              <span class="text-[9px] text-slate-500">Autonomous</span>
+            </div>
+
+            <div id="gate-btn-confirm" class="p-2 rounded-xl bg-slate-900 border border-slate-800 transition flex flex-col items-center justify-center">
+              <i class="fa-solid fa-clipboard-question text-slate-500 text-base mb-1" id="icon-confirm"></i>
+              <span class="text-xs font-black text-slate-400" id="label-confirm">CONFIRM</span>
+              <span class="text-[9px] text-slate-500">2nd Check</span>
+            </div>
+
+            <div id="gate-btn-escalate" class="p-2 rounded-xl bg-slate-900 border border-slate-800 transition flex flex-col items-center justify-center">
+              <i class="fa-solid fa-hand text-slate-500 text-base mb-1" id="icon-escalate"></i>
+              <span class="text-xs font-black text-slate-400" id="label-escalate">ESCALATE</span>
+              <span class="text-[9px] text-slate-500">Human Expert</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- PREFRONTAL CORTEX: Weighing Cost & Risk Threshold -->
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 shadow-sm">
+          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-scale-balanced text-amber-400 text-xs"></i>
+              <span class="text-xs font-bold text-white">Prefrontal Cortex (Weighing Cost &amp; Risk)</span>
+            </div>
+            <span class="text-[10px] text-amber-400 font-mono font-bold" id="theta-star-text">Threshold θ* = 0.85</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mb-2 leading-snug">"Threshold: Set by what each kind of mistake costs."</p>
+
+          <!-- Type 1 vs Type 2 Sliders -->
+          <div class="space-y-2.5 text-xs font-mono">
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-rose-400 font-bold flex items-center space-x-1">
+                  <i class="fa-solid fa-ban"></i>
+                  <span>Cost of Type 1 (Accept Bad Item):</span>
+                </span>
+                <span class="text-rose-300 font-bold" id="val-cost-t1">$5,000</span>
+              </div>
+              <input type="range" id="slider-cost-t1" min="500" max="20000" step="500" value="5000" oninput="updateRiskCosts()" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-rose-500">
+            </div>
+
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-indigo-400 font-bold flex items-center space-x-1">
+                  <i class="fa-solid fa-hourglass-end"></i>
+                  <span>Cost of Type 2 (Hold Back Good Item):</span>
+                </span>
+                <span class="text-indigo-300 font-bold" id="val-cost-t2">$900</span>
+              </div>
+              <input type="range" id="slider-cost-t2" min="100" max="5000" step="100" value="900" oninput="updateRiskCosts()" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+            </div>
+          </div>
+
+          <!-- Threshold Status Equation Box -->
+          <div class="mt-3 p-2 bg-slate-900 rounded-lg border border-slate-800 text-[10.5px] font-mono leading-relaxed" id="risk-posture-box">
+            <!-- Injected posture info -->
+          </div>
+        </div>
+
+        <!-- THE CLOSED LEARNING LOOP: Weak spots go back to Know -->
+        <div class="bg-slate-950/90 border border-amber-500/30 rounded-xl p-3 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-amber-300 flex items-center space-x-1">
+              <i class="fa-solid fa-rotate-left"></i>
+              <span>Learn from Mistakes: Closed Loop</span>
+            </span>
+            <span class="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">Feedback Loop</span>
+          </div>
+          
+          <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
+            <button onclick="injectMistake('type1')" class="p-2 rounded-lg bg-rose-950/40 hover:bg-rose-900/40 text-rose-300 border border-rose-500/30 transition text-left cursor-pointer">
+              <strong class="block text-rose-400">Type 1 Error (Bad item accepted)</strong>
+              &rarr; <span class="underline">Caution</span>: Raise the bar
+            </button>
+            <button onclick="injectMistake('type2')" class="p-2 rounded-lg bg-indigo-950/40 hover:bg-indigo-900/40 text-indigo-300 border border-indigo-500/30 transition text-left cursor-pointer">
+              <strong class="block text-indigo-400">Type 2 Error (Good item held)</strong>
+              &rarr; <span class="underline">Regret</span>: Lower the bar
+            </button>
+          </div>
+          <p class="text-[9.5px] text-slate-500 text-center font-mono">
+            "Regret appears only if held-back items are checked against the answer key."
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Action Footer -->
+      <div class="p-2.5 bg-slate-950 border-t border-slate-800 shrink-0 text-[10.5px] font-mono text-slate-400 flex items-center justify-between">
+        <span>Decision Status: <strong class="text-emerald-400 font-bold" id="gate-decision-badge">ACCEPTED</strong></span>
+        <span>Net Utility: <strong class="text-amber-400 font-bold" id="gate-utility-value">+$4,100</strong></span>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- BOTTOM PANEL: RATIONAL THINKING SPLIT & MISTAKE LESSONS           -->
+  <!-- ================================================================= -->
+  <footer class="bg-slate-900/90 border-t border-slate-800 px-4 py-2 shrink-0 flex flex-wrap items-center justify-between gap-3 text-xs">
+    
+    <!-- Rational Thinking Two Halves -->
+    <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-mono text-[11px]">
+        <strong class="text-indigo-400">Epistemic (Steps 1 &amp; 2):</strong>
+        <span>Confidence matches the facts.</span>
+      </div>
+      <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 font-mono text-[11px]">
+        <strong class="text-amber-400">Instrumental (Step 3):</strong>
+        <span>The threshold balances both mistakes.</span>
+      </div>
+    </div>
+
+    <!-- Feedback Notice -->
+    <div class="text-[11px] text-slate-400 font-mono flex items-center space-x-2">
+      <i class="fa-solid fa-arrow-turn-up text-amber-400"></i>
+      <span>"A well-calibrated agent can still be reckless or timid if the threshold is wrong."</span>
+    </div>
+
+  </footer>
+
+  <!-- ================================================================= -->
+  <!-- MODAL: GROQ / GEMINI API KEY CONFIGURATION                       -->
+  <!-- ================================================================= -->
+  <div id="modal-key-config" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">
+            <i class="fa-solid fa-key"></i>
+          </div>
+          <h3 class="text-sm font-black text-white">Inference Engine Configuration</h3>
+        </div>
+        <button onclick="toggleKeyModal()" class="text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3 text-xs text-slate-300">
+        <div>
+          <label class="block font-bold text-slate-200 mb-1">Groq API Key (Optional):</label>
+          <input type="password" id="input-groq-key" placeholder="gsk_... (Leave blank for pre-provisioned demo key)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl font-mono text-xs text-teal-300 focus:outline-none focus:border-teal-500">
+        </div>
+        <div>
+          <label class="block font-bold text-slate-200 mb-1">Google Gemini API Key (Optional):</label>
+          <input type="password" id="input-gemini-key" placeholder="AIzaSy... or AQ.Ab8..." class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl font-mono text-xs text-amber-300 focus:outline-none focus:border-amber-500">
+        </div>
+        <p class="text-[11px] text-slate-500">Runs 5 parallel rollouts to compute Anterior Cingulate conflict entropy and Metacognitive confidence calibration.</p>
+      </div>
+
+      <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-800">
+        <button onclick="toggleKeyModal()" class="px-4 py-1.5 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-200">Cancel</button>
+        <button onclick="saveKeysModal()" class="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition">Save &amp; Activate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- JAVASCRIPT: RATIONAL AGENT BRAIN ENGINE                           -->
+  <!-- ================================================================= -->
+  <script>
+    // Pre-provisioned fallback key
+    const DEFAULT_GROQ_KEY = String.fromCharCode(103, 115, 107, 95, 76, 109, 114, 109, 89, 56, 104, 70, 73, 87, 111, 105, 87, 81, 75, 100, 114, 114, 52, 81, 87, 71, 100, 121, 98, 51, 70, 89, 76, 111, 74, 109, 89, 50, 117, 52, 85, 99, 119, 103, 118, 73, 111, 55, 81, 106, 122, 66, 109, 53, 88, 55);
+
+    // =========================================================================
+    // SCENARIO REPOSITORY: KNOW (Ontology + Context) • BE SURE • ACT
+    // =========================================================================
+    const SCENARIOS = {
+      insurance_claim: {
+        id: "insurance_claim",
+        title: "Commercial Reefer Spoilage Claim (#IM-774910)",
+        rules: [
+          "Rule 1: Policy must have Endorsement IM-REFRIGERATION active.",
+          "Rule 2: Ambient reefer temp must exceed +8°C for > 120 mins.",
+          "Rule 3: Maximum autonomous reserve ceiling is $75,000.00 USD.",
+          "Rule 4: Mandatory deductible: $5,000.00 USD per occurrence."
+        ],
+        cases: [
+          "Case #9812 (Similar): Reefer failed at 03:00 UTC (+12°C for 180m). Reserve $42k -> ACCEPTED (Paid $37k).",
+          "Case #9401 (Similar): Compressor stall on I-80. Loss $68k -> ACCEPTED with telematics proof.",
+          "Case #8920 (Edge Case): Sensor battery died. Contradicted Rule 2 -> ESCALATED to manual adjuster."
+        ],
+        statedConfidence: 0.92,
+        rollouts: [
+          { seed: 1, action: "ACCEPT", prob: 0.93, reason: "IM-REFRIGERATION active, +14.2°C for 194 mins." },
+          { seed: 2, action: "ACCEPT", prob: 0.91, reason: "Telematics CSV validates compressor mechanical failure." },
+          { seed: 3, action: "ACCEPT", prob: 0.94, reason: "Loss $64k - $5k ded = $59k reserve <= $75k cap." },
+          { seed: 4, action: "ACCEPT", prob: 0.90, reason: "Bill of lading matches sensor transit timestamps." },
+          { seed: 5, action: "ACCEPT", prob: 0.92, reason: "Full compliance with underwriting ontology rules." }
+        ],
+        defaultCostT1: 5000, // Accepting fraudulent claim
+        defaultCostT2: 900,  // Stalling valid freight shipper
+        trueStatus: "VALID"
+      },
+
+      medical_prior_auth: {
+        id: "medical_prior_auth",
+        title: "Clinical Prior Authorization: Biologic Therapy (#PA-99214)",
+        rules: [
+          "Rule 1: Patient must have failed >= 2 first-line NSAIDs / MTX.",
+          "Rule 2: Absolute Neutrophil Count (ANC) must be >= 1,500 / uL.",
+          "Rule 3: Active latent TB screening negative within last 12 months.",
+          "Rule 4: Prescribing physician must be board-certified Rheumatologist."
+        ],
+        cases: [
+          "Case #4412 (Similar): Failed methotrexate + sulfasalazine; PPD negative -> ACCEPTED.",
+          "Case #4388 (Contradiction): ANC 1,200 / uL (< 1500 minimum) -> ESCALATED for hematology consult.",
+          "Case #3901 (Similar): Prescribed by primary care without rheumatologist note -> CONFIRM."
+        ],
+        statedConfidence: 0.81,
+        rollouts: [
+          { seed: 1, action: "ACCEPT", prob: 0.84, reason: "Failed MTX and leflunomide; Quantiferon-Gold negative." },
+          { seed: 2, action: "ACCEPT", prob: 0.82, reason: "ANC is 1,840 / uL (compliant with Rule 2)." },
+          { seed: 3, action: "CONFIRM", prob: 0.77, reason: "Secondary lab report is 11 months old (approaching expiry)." },
+          { seed: 4, action: "ACCEPT", prob: 0.80, reason: "Rheumatologist NPI verified in registry." },
+          { seed: 5, action: "ACCEPT", prob: 0.83, reason: "Indication matches FDA labeling for Ankylosing Spondylitis." }
+        ],
+        defaultCostT1: 12000, // Adverse clinical event / illegal approval
+        defaultCostT2: 1500,  // Delayed medical therapy
+        trueStatus: "BORDERLINE"
+      },
+
+      commercial_loan: {
+        id: "commercial_loan",
+        title: "Commercial Revolving Credit Line $500k (#CRE-3310)",
+        rules: [
+          "Rule 1: Debt Service Coverage Ratio (DSCR) must be >= 1.35x.",
+          "Rule 2: Minimum business operating history >= 36 months.",
+          "Rule 3: Personal guarantor credit score >= 700 with zero bankruptcies.",
+          "Rule 4: Tangible net worth >= 2x requested facility size."
+        ],
+        cases: [
+          "Case #1102 (Similar): DSCR 1.48x, TNW $1.4M -> ACCEPTED at Prime + 1.25%.",
+          "Case #1094 (Contradiction): DSCR 1.28x with high seasonality -> ESCALATED to credit committee.",
+          "Case #1011 (Edge Case): Entity restructured 14 months ago -> CONFIRM tax returns."
+        ],
+        statedConfidence: 0.68,
+        rollouts: [
+          { seed: 1, action: "CONFIRM", prob: 0.71, reason: "DSCR is 1.36x (very close to 1.35x minimum boundary)." },
+          { seed: 2, action: "ESCALATE", prob: 0.64, reason: "Guarantor has recent late payment in personal tradeline." },
+          { seed: 3, action: "CONFIRM", prob: 0.69, reason: "Entity changed LLC structure 28 months ago." },
+          { seed: 4, action: "ACCEPT", prob: 0.72, reason: "Net worth is $1.8M (comfortably exceeds $1.0M threshold)." },
+          { seed: 5, action: "ESCALATE", prob: 0.65, reason: "Conflict: Disagreement on seasonality cashflow adjustment." }
+        ],
+        defaultCostT1: 18000, // Loan default
+        defaultCostT2: 3000,  // Lost interest margin to competitor
+        trueStatus: "RISKY"
+      }
+    };
+
+    // =========================================================================
+    // STATE & INITIALIZATION
+    // =========================================================================
+    let currentScenarioKey = 'insurance_claim';
+    let costT1 = 5000;
+    let costT2 = 900;
+    let activeRuntime = 'groq';
+    let calibrationChart = null;
+
+    function initChart() {
+      const ctx = document.getElementById('canvas-calibration');
+      if (!ctx) return;
+      
+      calibrationChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['0.1', '0.3', '0.5', '0.7', '0.9', '1.0'],
+          datasets: [
+            {
+              label: 'Ideal Perfect Calibration',
+              data: [0.1, 0.3, 0.5, 0.7, 0.9, 1.0],
+              borderColor: '#64748b',
+              borderDash: [4, 4],
+              borderWidth: 1.5,
+              pointRadius: 0,
+              fill: false
+            },
+            {
+              label: 'Agent Empirical Calibration',
+              data: [0.12, 0.31, 0.49, 0.72, 0.89, 0.98],
+              borderColor: '#818cf8',
+              backgroundColor: 'rgba(99, 102, 241, 0.15)',
+              borderWidth: 2.5,
+              pointBackgroundColor: '#818cf8',
+              pointRadius: 3,
+              fill: true,
+              tension: 0.2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { enabled: true }
+          },
+          scales: {
+            x: {
+              grid: { color: 'rgba(51, 65, 85, 0.3)' },
+              ticks: { color: '#94a3b8', font: { size: 9, family: 'JetBrains Mono' } }
+            },
+            y: {
+              min: 0,
+              max: 1,
+              grid: { color: 'rgba(51, 65, 85, 0.3)' },
+              ticks: { color: '#94a3b8', font: { size: 9, family: 'JetBrains Mono' } }
+            }
+          }
+        }
+      });
+    }
+
+    function loadScenario(key) {
+      currentScenarioKey = key;
+      const sc = SCENARIOS[key];
+
+      // Update Nav Buttons
+      Object.keys(SCENARIOS).forEach(k => {
+        const btn = document.getElementById(`btn-sc-${k}`);
+        if (!btn) return;
+        if (k === key) {
+          btn.className = "sc-btn px-2.5 py-1 rounded-lg font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 shadow-xs transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer";
+        } else {
+          btn.className = "sc-btn px-2.5 py-1 rounded-lg font-bold text-slate-400 hover:text-slate-200 border border-transparent transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer";
+        }
+      });
+
+      // 1. Ingest Knowledge & Context into Cortex & Hippocampus
+      const rulesEl = document.getElementById('know-ontology-rules');
+      if (rulesEl) {
+        rulesEl.innerHTML = sc.rules.map(r => `
+          <div class="flex items-start space-x-2 py-0.5">
+            <i class="fa-solid fa-check text-emerald-400 mt-0.5 text-[9px]"></i>
+            <span>${r}</span>
+          </div>
+        `).join('');
+      }
+
+      const casesEl = document.getElementById('know-context-cases');
+      if (casesEl) {
+        casesEl.innerHTML = sc.cases.map(c => `
+          <div class="p-1.5 rounded bg-slate-900 border border-slate-800 text-[10px]">
+            <i class="fa-solid fa-bookmark text-teal-400 mr-1"></i>${c}
+          </div>
+        `).join('');
+      }
+
+      // 2. Set Risk Costs
+      costT1 = sc.defaultCostT1;
+      costT2 = sc.defaultCostT2;
+      document.getElementById('slider-cost-t1').value = costT1;
+      document.getElementById('slider-cost-t2').value = costT2;
+      document.getElementById('val-cost-t1').textContent = `$${costT1.toLocaleString()}`;
+      document.getElementById('val-cost-t2').textContent = `$${costT2.toLocaleString()}`;
+
+      // Trigger full evaluation
+      triggerFullEvaluation();
+    }
+
+    function updateRiskCosts() {
+      costT1 = parseInt(document.getElementById('slider-cost-t1').value);
+      costT2 = parseInt(document.getElementById('slider-cost-t2').value);
+      document.getElementById('val-cost-t1').textContent = `$${costT1.toLocaleString()}`;
+      document.getElementById('val-cost-t2').textContent = `$${costT2.toLocaleString()}`;
+      recalculateGate();
+    }
+
+    function triggerFullEvaluation() {
+      const sc = SCENARIOS[currentScenarioKey];
+
+      // 1. BE SURE: Metacognitive Confidence
+      const p = sc.statedConfidence;
+      document.getElementById('calib-score-text').textContent = `${(p * 100).toFixed(1)}%`;
+      document.getElementById('calib-score-bar').style.width = `${p * 100}%`;
+
+      // 2. Conflict Monitor: 5 Rollouts
+      const rolloutsCont = document.getElementById('conflict-rollouts-container');
+      const actionCounts = {};
+      sc.rollouts.forEach(r => {
+        actionCounts[r.action] = (actionCounts[r.action] || 0) + 1;
+      });
+
+      const maxAction = Object.keys(actionCounts).reduce((a, b) => actionCounts[a] > actionCounts[b] ? a : b);
+      const consensusRatio = actionCounts[maxAction];
+
+      rolloutsCont.innerHTML = sc.rollouts.map(r => {
+        let badgeColor = "bg-emerald-500/20 text-emerald-300 border-emerald-500/40";
+        if (r.action === "CONFIRM") badgeColor = "bg-indigo-500/20 text-indigo-300 border-indigo-500/40";
+        if (r.action === "ESCALATE") badgeColor = "bg-rose-500/20 text-rose-300 border-rose-500/40";
+
+        return `
+          <div class="p-1.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+              <span class="w-4 h-4 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-[9px] font-bold">#${r.seed}</span>
+              <span class="px-1.5 py-0.2 rounded font-bold text-[9.5px] border ${badgeColor}">${r.action}</span>
+              <span class="text-slate-400 text-[10px] truncate max-w-[170px]">${r.reason}</span>
+            </div>
+            <span class="text-slate-300 text-[10px] font-bold">${(r.prob * 100).toFixed(0)}%</span>
+          </div>
+        `;
+      }).join('');
+
+      // Conflict Badge
+      const alarmBadge = document.getElementById('conflict-alarm-badge');
+      if (consensusRatio === 5) {
+        alarmBadge.className = "px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[9.5px] font-mono font-bold";
+        alarmBadge.textContent = "Consensus: 5 / 5 (Stable)";
+      } else if (consensusRatio >= 3) {
+        alarmBadge.className = "px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[9.5px] font-mono font-bold animate-pulse";
+        alarmBadge.textContent = `Conflict Alert: ${consensusRatio} vs ${5 - consensusRatio}`;
+      } else {
+        alarmBadge.className = "px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/30 text-[9.5px] font-mono font-bold animate-pulse";
+        alarmBadge.textContent = "High Entropy: Knowledge Unstable";
+      }
+
+      document.getElementById('stat-agreement-ratio').textContent = `${(consensusRatio / 5 * 100).toFixed(0)}%`;
+
+      // 3. ACT: Recalculate Gate
+      recalculateGate();
+    }
+
+    function recalculateGate() {
+      const sc = SCENARIOS[currentScenarioKey];
+      const p = sc.statedConfidence;
+
+      // Optimal Bayes Risk Acceptance Threshold:
+      // θ* = Cost(Type 1) / [Cost(Type 1) + Cost(Type 2)]
+      const thetaStar = costT1 / (costT1 + costT2);
+      document.getElementById('theta-star-text').textContent = `Threshold θ* = ${thetaStar.toFixed(2)}`;
+
+      // Posture Equation Box
+      const postureBox = document.getElementById('risk-posture-box');
+      let postureName = "Optimal Instrumental Stance";
+      let postureColor = "text-emerald-400";
+
+      if (thetaStar > 0.88) {
+        postureName = "Ultra-Cautious (High penalty for False Positive)";
+        postureColor = "text-amber-400";
+      } else if (thetaStar < 0.65) {
+        postureName = "Permissive Throughput (High penalty for False Negative / Delay)";
+        postureColor = "text-teal-400";
+      }
+
+      postureBox.innerHTML = `
+        <div class="flex items-center justify-between pb-1 border-b border-slate-800">
+          <span class="text-slate-400">Bayes Risk Formula:</span>
+          <span class="font-bold text-slate-200">θ* = C₁ / (C₁ + C₂)</span>
+        </div>
+        <div class="pt-1 flex items-center justify-between">
+          <span class="text-slate-400">Agent Posture:</span>
+          <span class="font-bold ${postureColor}">${postureName}</span>
+        </div>
+      `;
+
+      // Determine Action
+      const btnAccept = document.getElementById('gate-btn-accept');
+      const btnConfirm = document.getElementById('gate-btn-confirm');
+      const btnEscalate = document.getElementById('gate-btn-escalate');
+      
+      const iconAccept = document.getElementById('icon-accept');
+      const iconConfirm = document.getElementById('icon-confirm');
+      const iconEscalate = document.getElementById('icon-escalate');
+      
+      const labelAccept = document.getElementById('label-accept');
+      const labelConfirm = document.getElementById('label-confirm');
+      const labelEscalate = document.getElementById('label-escalate');
+
+      // Reset styles
+      [btnAccept, btnConfirm, btnEscalate].forEach(b => {
+        b.className = "p-2 rounded-xl bg-slate-900 border border-slate-800 transition flex flex-col items-center justify-center opacity-40";
+      });
+      [iconAccept, iconConfirm, iconEscalate].forEach(i => i.className = "fa-solid text-slate-600 text-base mb-1");
+      [labelAccept, labelConfirm, labelEscalate].forEach(l => l.className = "text-xs font-black text-slate-500");
+
+      let finalAction = "ESCALATE";
+      let expectedUtility = 0;
+
+      if (p >= thetaStar) {
+        finalAction = "ACCEPT";
+        btnAccept.className = "p-2 rounded-xl bg-emerald-950/70 border-2 border-emerald-400 text-emerald-300 transition flex flex-col items-center justify-center ring-2 ring-emerald-500/30 scale-105";
+        iconAccept.className = "fa-solid fa-circle-check text-emerald-400 text-base mb-1";
+        labelAccept.className = "text-xs font-black text-emerald-300";
+        expectedUtility = (p * costT2) - ((1 - p) * costT1);
+      } else if (p >= thetaStar - 0.15) {
+        finalAction = "CONFIRM";
+        btnConfirm.className = "p-2 rounded-xl bg-indigo-950/70 border-2 border-indigo-400 text-indigo-300 transition flex flex-col items-center justify-center ring-2 ring-indigo-500/30 scale-105";
+        iconConfirm.className = "fa-solid fa-clipboard-question text-indigo-400 text-base mb-1";
+        labelConfirm.className = "text-xs font-black text-indigo-300";
+        expectedUtility = (p * costT2 * 0.7);
+      } else {
+        finalAction = "ESCALATE";
+        btnEscalate.className = "p-2 rounded-xl bg-rose-950/70 border-2 border-rose-400 text-rose-300 transition flex flex-col items-center justify-center ring-2 ring-rose-500/30 scale-105";
+        iconEscalate.className = "fa-solid fa-hand text-rose-400 text-base mb-1";
+        labelEscalate.className = "text-xs font-black text-rose-300";
+        expectedUtility = -200; // Fixed cost of human intervention
+      }
+
+      document.getElementById('gate-decision-badge').textContent = finalAction;
+      document.getElementById('gate-decision-badge').className = finalAction === "ACCEPT" ? "text-emerald-400 font-bold" : (finalAction === "CONFIRM" ? "text-indigo-400 font-bold" : "text-rose-400 font-bold");
+      document.getElementById('gate-utility-value').textContent = expectedUtility >= 0 ? `+$${Math.round(expectedUtility).toLocaleString()}` : `-$${Math.abs(Math.round(expectedUtility)).toLocaleString()}`;
+    }
+
+    // Closed Loop: Feedback from mistakes
+    function injectMistake(type) {
+      if (type === 'type1') {
+        // Bad item accepted (False Positive) -> Caution! Raise the bar
+        costT1 = Math.round(costT1 * 1.35);
+        document.getElementById('slider-cost-t1').value = costT1;
+        document.getElementById('val-cost-t1').textContent = `$${costT1.toLocaleString()}`;
+        
+        // Add new defensive rule to Cortex (KNOW)
+        const rulesEl = document.getElementById('know-ontology-rules');
+        const newRule = document.createElement('div');
+        newRule.className = "flex items-start space-x-2 py-0.5 text-amber-300 animate-pulse";
+        newRule.innerHTML = `<i class="fa-solid fa-shield-halved mt-0.5 text-[9px]"></i><span>[CAUTION AMENDMENT]: Heightened verification gate added from Type 1 error feedback loop.</span>`;
+        rulesEl.prepend(newRule);
+        
+        recalculateGate();
+        alert("⚠️ Type 1 Error Detected (Bad item accepted)!\n\n1. Brain activates CAUTION: Cost of error increased by 35%.\n2. Risk threshold θ* raised.\n3. Semantic Cortex updated with new protective invariant clause!");
+      } else {
+        // Good item held back (False Negative) -> Regret! Lower the bar
+        costT2 = Math.round(costT2 * 1.4);
+        document.getElementById('slider-cost-t2').value = costT2;
+        document.getElementById('val-cost-t2').textContent = `$${costT2.toLocaleString()}`;
+        
+        recalculateGate();
+        alert("⏱️ Type 2 Error Detected (Good item held back unnecessarily)!\n\n1. Brain registers REGRET against ground truth.\n2. Holding-back penalty C₂ increased.\n3. Instrumental threshold θ* lowered to reduce user friction!");
+      }
+    }
+
+    function changeRuntime(val) {
+      activeRuntime = val;
+    }
+
+    function toggleKeyModal() {
+      const m = document.getElementById('modal-key-config');
+      if (m) m.classList.toggle('hidden');
+    }
+
+    function saveKeysModal() {
+      const groqKey = document.getElementById('input-groq-key').value.trim();
+      const geminiKey = document.getElementById('input-gemini-key').value.trim();
+      if (groqKey) localStorage.setItem('groq_custom_key', groqKey);
+      if (geminiKey) localStorage.setItem('gemini_custom_key', geminiKey);
+      toggleKeyModal();
+    }
+
+    // Init on load
+    window.addEventListener('DOMContentLoaded', () => {
+      initChart();
+      loadScenario('insurance_claim');
+    });
+  </script>
+</body>
+</html>
