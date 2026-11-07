@@ -96,6 +96,20 @@
         </div>
         <p class="text-xs text-slate-500 font-medium">Know it. Be sure how well you know it. Act on it wisely.</p>
       </div>
+
+      <div class="h-4 w-px bg-slate-200 hidden sm:block ml-2"></div>
+
+      <!-- View Switcher: Cockpit vs Block Diagram -->
+      <nav class="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg text-xs font-semibold">
+        <button onclick="setAgentView('cockpit')" id="btn-view-cockpit" class="px-2.5 py-1 rounded-md bg-white text-slate-900 font-bold shadow-xs transition flex items-center space-x-1 cursor-pointer">
+          <i class="fa-solid fa-brain text-slate-700 text-[11px]"></i>
+          <span>Cockpit</span>
+        </button>
+        <button onclick="setAgentView('diagram')" id="btn-view-diagram" class="px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 transition flex items-center space-x-1 cursor-pointer">
+          <i class="fa-solid fa-diagram-project text-indigo-600 text-[11px]"></i>
+          <span>LLM + 3 Harnesses Diagram</span>
+        </button>
+      </nav>
     </div>
 
     <!-- Scenarios -->
@@ -161,7 +175,7 @@
   <!-- MAIN WORKSPACE: THE 3 BRAIN HARNESSES (COLUMNS)                   -->
   <!-- 1. KNOW (Education) | 2. BE SURE (Calibration) | 3. ACT (Gate)   -->
   <!-- ================================================================= -->
-  <main class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 p-3 overflow-hidden bg-[#f8fafc]">
+  <main id="view-cockpit" class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 p-3 overflow-hidden bg-[#f8fafc]">
     
     <!-- =============================================================== -->
     <!-- 1. KNOW: EDUCATION HARNESS (4 cols)                            -->
@@ -481,6 +495,458 @@
   </main>
 
   <!-- ================================================================= -->
+  <!-- ================================================================= -->
+  <!-- VIEW 2: LLM + 3 HARNESSES SYSTEM ARCHITECTURE BLOCK DIAGRAM       -->
+  <!-- ================================================================= -->
+  <section id="view-diagram" class="flex-1 min-h-0 hidden flex-col p-4 overflow-y-auto bg-white border-t border-slate-200">
+    <div class="max-w-6xl w-full mx-auto space-y-4">
+      
+      <!-- Diagram Header -->
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center justify-center text-sm font-bold">
+            <i class="fa-solid fa-diagram-project"></i>
+          </div>
+          <div>
+            <h2 class="text-sm font-extrabold text-slate-900 flex items-center space-x-2">
+              <span>System Architecture: LLM Core &amp; The 3 Cognitive Harnesses</span>
+              <span class="px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 text-[10px] font-bold uppercase tracking-wider">Formal Block Diagram</span>
+            </h2>
+            <p class="text-xs text-slate-500 font-medium">How the Foundation LLM is grounded by Know, calibrated by Be Sure, and governed by Act.</p>
+          </div>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="setAgentView('cockpit')" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs border border-slate-300 transition cursor-pointer">
+            <i class="fa-solid fa-arrow-left mr-1"></i> Back to Cockpit
+          </button>
+        </div>
+      </div>
+
+      <!-- The Core Block Diagram Architecture Canvas -->
+      <div class="relative bg-[#f8fafc] border-2 border-slate-200 rounded-2xl p-6 shadow-sm overflow-hidden min-h-[720px] flex flex-col space-y-7">
+        
+        <!-- SVG Connections Layer -->
+        <svg class="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 1152 1144" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="know-to-llm-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#059669"/>
+              <stop offset="100%" stop-color="#3b82f6"/>
+            </linearGradient>
+            <linearGradient id="ingress-to-llm-grad" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#64748b"/>
+              <stop offset="100%" stop-color="#3b82f6"/>
+            </linearGradient>
+            <linearGradient id="llm-to-sure-grad" x1="100%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#3b82f6"/>
+              <stop offset="100%" stop-color="#7c3aed"/>
+            </linearGradient>
+            <linearGradient id="llm-to-act-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3b82f6"/>
+              <stop offset="100%" stop-color="#ea580c"/>
+            </linearGradient>
+
+            <marker id="arrow-down-blk" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+            </marker>
+            <marker id="arrow-green-blk" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#059669"/>
+            </marker>
+            <marker id="arrow-orange-blk" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#ea580c"/>
+            </marker>
+          </defs>
+
+          <!-- Flow: Education Harness (Top-Left) -> Foundation LLM (Center) -->
+          <line x1="320" y1="380" x2="430" y2="416" stroke="url(#know-to-llm-grad)" stroke-width="2.5" class="flow-line" marker-end="url(#arrow-down-blk)"/>
+
+          <!-- Flow: Case Ingress (Top-Right) -> Foundation LLM (Center) -->
+          <line x1="830" y1="380" x2="720" y2="416" stroke="url(#ingress-to-llm-grad)" stroke-width="2.5" class="flow-line" marker-end="url(#arrow-down-blk)"/>
+
+          <!-- Flow: Foundation LLM (Center) -> Calibration Harness (Mid-Left) -->
+          <line x1="430" y1="626" x2="330" y2="662" stroke="url(#llm-to-sure-grad)" stroke-width="2.5" class="flow-line" marker-end="url(#arrow-down-blk)"/>
+
+          <!-- Flow: Foundation LLM (Center) -> Gate Harness (Mid-Right) -->
+          <line x1="720" y1="626" x2="820" y2="662" stroke="url(#llm-to-act-grad)" stroke-width="2.5" class="flow-line" marker-end="url(#arrow-down-blk)"/>
+
+          <!-- Flow: Calibration & Gate to 4 bottom outcome cards -->
+          <line x1="220" y1="945" x2="163" y2="970" stroke="#94a3b8" stroke-width="1.8" class="flow-line" marker-end="url(#arrow-down-blk)"/>
+          <line x1="370" y1="945" x2="438" y2="970" stroke="#94a3b8" stroke-width="1.8" class="flow-line" marker-end="url(#arrow-down-blk)"/>
+          <line x1="780" y1="945" x2="713" y2="970" stroke="#94a3b8" stroke-width="1.8" class="flow-line" marker-end="url(#arrow-down-blk)"/>
+          <line x1="930" y1="945" x2="988" y2="970" stroke="#94a3b8" stroke-width="1.8" class="flow-line" marker-end="url(#arrow-down-blk)"/>
+
+          <!-- CLOSED FEEDBACK LOOP: Type 1 Caution & Type 2 Regret back to Education Harness -->
+          <path id="svg-diag-feedback" d="M 26 1040 C -20 1040, -20 216, 26 216" fill="none" stroke="#ea580c" stroke-width="3" stroke-dasharray="6,4" class="feedback-loop" marker-end="url(#arrow-orange-blk)"/>
+        </svg>
+
+        <!-- LEVEL 1: TOP ROW (EDUCATION HARNESS & CASE INGRESS) -->
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- NODE 1: EDUCATION HARNESS (KNOW) -->
+          <div class="bg-know-50/70 border-2 border-know-300 rounded-xl p-4 shadow-xs backdrop-blur-md flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between pb-2 mb-2 border-b border-know-200">
+                <div class="flex items-center space-x-2">
+                  <div class="w-7 h-7 rounded-lg bg-know-700 text-white flex items-center justify-center font-bold text-xs">
+                    1
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-extrabold text-know-950">EDUCATION HARNESS (KNOW)</h3>
+                    <p class="text-[11px] text-know-700 font-medium">Grounded Memory: Semantic Cortex &amp; Episodic Hippocampus</p>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-know-100 text-know-800 text-[10px] font-mono font-bold border border-know-200">
+                  Target Invariant &amp; Memory
+                </span>
+              </div>
+              
+              <div class="space-y-2 text-xs font-mono">
+                <div class="p-2 bg-white rounded-lg border border-know-200 shadow-2xs">
+                  <div class="flex items-center justify-between text-know-900 font-bold mb-1">
+                    <span class="flex items-center space-x-1">
+                      <i class="fa-solid fa-brain text-know-700"></i>
+                      <span>Cortex (Semantic Memory &bull; Invariant Rules)</span>
+                    </span>
+                    <span class="text-[9px] font-sans text-know-600 bg-know-50 px-1.5 py-0.5 rounded border border-know-200">Knowledge Graph</span>
+                  </div>
+                  <div id="diag-cortex-rules" class="text-[11px] text-slate-700 space-y-0.5 pl-2 border-l-2 border-know-300">
+                    <!-- Dynamic rules -->
+                  </div>
+                </div>
+
+                <div class="p-2 bg-white rounded-lg border border-know-200 shadow-2xs">
+                  <div class="flex items-center justify-between text-know-900 font-bold mb-1">
+                    <span class="flex items-center space-x-1">
+                      <i class="fa-solid fa-clock-rotate-left text-know-700"></i>
+                      <span>Hippocampus (Episodic Memory &bull; Precedents)</span>
+                    </span>
+                    <span class="text-[9px] font-sans text-know-600 bg-know-50 px-1.5 py-0.5 rounded border border-know-200">Context Graph</span>
+                  </div>
+                  <div id="diag-hippocampus-cases" class="text-[11px] text-slate-700 space-y-0.5 pl-2 border-l-2 border-know-300">
+                    <!-- Dynamic precedents -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3 pt-2 border-t border-know-200/80 text-[10px] font-mono text-know-800 flex items-center justify-between">
+              <span>Bi-directional Dialogue: Retrieval &amp; Rule Discovery</span>
+              <span class="font-bold">Invariants Verified</span>
+            </div>
+          </div>
+
+          <!-- NODE 2: CASE INGRESS & GROUNDED PROMPT SYNTHESIS -->
+          <div class="bg-white border-2 border-slate-300 rounded-xl p-4 shadow-xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-200">
+                <div class="flex items-center space-x-2">
+                  <div class="w-7 h-7 rounded-lg bg-slate-800 text-white flex items-center justify-center font-bold text-xs">
+                    <i class="fa-solid fa-file-lines"></i>
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-extrabold text-slate-900">Case Ingress &amp; Prompt Grounding</h3>
+                    <p class="text-[11px] text-slate-500 font-medium">Unstructured Claim / Submission / Prior Auth Query</p>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 text-[10px] font-mono font-bold border border-slate-200">
+                  Runtime Reality
+                </span>
+              </div>
+
+              <div class="space-y-2 text-xs font-mono">
+                <div class="p-2.5 bg-slate-50 rounded-lg border border-slate-200 text-slate-800">
+                  <strong class="text-slate-900 block font-bold mb-1 flex items-center justify-between">
+                    <span>Active Case Ingested</span>
+                    <span id="diag-case-tag" class="text-[10px] text-indigo-700 font-normal">Payload Stream</span>
+                  </strong>
+                  <div id="diag-case-text" class="text-[11px] text-slate-700 font-mono bg-white p-2 rounded border border-slate-200 italic">
+                    <!-- Dynamic case text -->
+                  </div>
+                </div>
+
+                <div class="p-2 bg-indigo-50/50 rounded-lg border border-indigo-200 text-[10px] font-mono text-indigo-900">
+                  <div class="font-bold text-indigo-950 flex items-center space-x-1 mb-0.5">
+                    <i class="fa-solid fa-wand-magic-sparkles text-indigo-600"></i>
+                    <span>In-Context Prompt Assembler</span>
+                  </div>
+                  <span>Fuses Semantic Ontology + Episodic Precedents + Case Raw Data into strictly constrained prompt context.</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3 pt-2 border-t border-slate-200 text-[10px] font-mono text-slate-600 flex items-center justify-between">
+              <span>Source: Direct Telemetry / System Ingress</span>
+              <span class="font-bold text-emerald-600">100% Ingested</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- LEVEL 2: CENTER ROW (FOUNDATION LLM REASONING CORE) -->
+        <div class="relative z-10 flex justify-center py-3">
+          <div class="max-w-xl w-full bg-slate-950 border-2 border-slate-800 rounded-2xl p-4 shadow-lg text-white">
+            <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
+              <div class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-400 to-indigo-500 text-slate-950 flex items-center justify-center font-bold text-sm shadow-xs">
+                  <i class="fa-solid fa-microchip"></i>
+                </div>
+                <div>
+                  <h3 class="text-sm font-extrabold text-white uppercase tracking-wide">Foundation LLM Core</h3>
+                  <p class="text-[11px] text-slate-400 font-mono">Groq LPU / Llama 3.3 70B &bull; WebLLM WebGPU</p>
+                </div>
+              </div>
+              <span class="px-2.5 py-0.5 rounded-full bg-slate-800 text-amber-300 text-[10px] font-mono font-bold border border-slate-700">
+                Generative Reasoner
+              </span>
+            </div>
+
+            <div class="bg-slate-900/90 rounded-xl p-2.5 text-xs font-mono text-slate-300 border border-slate-800 space-y-1.5">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="text-slate-400 font-sans">Rollout Generation:</span>
+                <span class="text-emerald-400 font-bold">N = 5 Parallel Candidate Rollouts</span>
+              </div>
+              <div id="diag-llm-status" class="text-[11px] text-slate-300 bg-slate-950/80 p-2 rounded border border-slate-800 font-mono">
+                Sampling rollouts with in-context invariant conditioning &bull; Evaluating chain-of-thought branches
+              </div>
+            </div>
+
+            <div class="mt-2 text-[10px] font-mono text-slate-400 flex items-center justify-between">
+              <span>Token Logprobs &bull; Temperature 0.2 &bull; Deterministic Seeds</span>
+              <span class="text-indigo-400 font-bold">Dispatches to Calibration &amp; Gate</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- LEVEL 3: THIRD ROW (CALIBRATION HARNESS & GATE HARNESS) -->
+        <div class="relative z-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- NODE 3: CALIBRATION HARNESS (BE SURE) -->
+          <div class="bg-sure-50/70 border-2 border-sure-300 rounded-xl p-4 shadow-xs backdrop-blur-md flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between pb-2 mb-2 border-b border-sure-200">
+                <div class="flex items-center space-x-2">
+                  <div class="w-7 h-7 rounded-lg bg-sure-700 text-white flex items-center justify-center font-bold text-xs">
+                    2
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-extrabold text-sure-950">CALIBRATION HARNESS (BE SURE)</h3>
+                    <p class="text-[11px] text-sure-700 font-medium">Metacognition: Prefrontal Cortex &amp; Anterior Cingulate</p>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-sure-100 text-sure-800 text-[10px] font-mono font-bold border border-sure-200">
+                  Epistemic Rationality
+                </span>
+              </div>
+
+              <div class="space-y-2 text-xs font-mono">
+                <div class="p-2 bg-white rounded-lg border border-sure-200 shadow-2xs">
+                  <div class="flex items-center justify-between text-sure-900 font-bold mb-1">
+                    <span class="flex items-center space-x-1">
+                      <i class="fa-solid fa-chart-line text-sure-700"></i>
+                      <span>Prefrontal Cortex (Metacognition)</span>
+                    </span>
+                    <span id="diag-calib-pct" class="text-[10px] text-sure-700 font-bold">P̂ = 92%</span>
+                  </div>
+                  <p class="text-[11px] text-slate-600">
+                    Reliability Mapping: Calibrates stated probability curve against ground truth empirical accuracy.
+                  </p>
+                </div>
+
+                <div class="p-2 bg-white rounded-lg border border-sure-200 shadow-2xs">
+                  <div class="flex items-center justify-between text-sure-900 font-bold mb-1">
+                    <span class="flex items-center space-x-1">
+                      <i class="fa-solid fa-scale-balanced text-sure-700"></i>
+                      <span>Anterior Cingulate (Conflict Monitor)</span>
+                    </span>
+                    <span id="diag-conflict-score" class="text-[10px] text-emerald-700 font-bold">Entropy: 0.12 (High Consensus)</span>
+                  </div>
+                  <p class="text-[11px] text-slate-600">
+                    Measures divergence across 5 rollouts. High entropy triggers automatic caution.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3 pt-2 border-t border-sure-200/80 text-[10px] font-mono text-sure-800 flex items-center justify-between">
+              <span>Goal: Confidence matches the facts</span>
+              <span class="font-bold text-sure-900">Metacognition Active</span>
+            </div>
+          </div>
+
+          <!-- NODE 4: GATE HARNESS (ACT) -->
+          <div class="bg-act-50/70 border-2 border-act-300 rounded-xl p-4 shadow-xs backdrop-blur-md flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between pb-2 mb-2 border-b border-act-200">
+                <div class="flex items-center space-x-2">
+                  <div class="w-7 h-7 rounded-lg bg-act-700 text-white flex items-center justify-center font-bold text-xs">
+                    3
+                  </div>
+                  <div>
+                    <h3 class="text-sm font-extrabold text-act-950">GATE HARNESS (ACT)</h3>
+                    <p class="text-[11px] text-act-700 font-medium">Action Gate: Risk Threshold &amp; Basal Ganglia Dispatch</p>
+                  </div>
+                </div>
+                <span class="px-2 py-0.5 rounded-full bg-act-100 text-act-800 text-[10px] font-mono font-bold border border-act-200">
+                  Instrumental Rationality
+                </span>
+              </div>
+
+              <div class="space-y-2 text-xs font-mono">
+                <div class="p-2 bg-white rounded-lg border border-act-200 shadow-2xs">
+                  <div class="flex items-center justify-between text-act-900 font-bold mb-1">
+                    <span class="flex items-center space-x-1">
+                      <i class="fa-solid fa-sliders text-act-700"></i>
+                      <span>Risk Threshold (PFC Cost Ratio)</span>
+                    </span>
+                    <span id="diag-threshold-val" class="text-[10px] text-act-700 font-bold">θ* = 0.857</span>
+                  </div>
+                  <p class="text-[11px] text-slate-600">
+                    θ* = C_Type1 / (C_Type1 + C_Type2). Balances the asymmetric cost of false positives vs false negatives.
+                  </p>
+                </div>
+
+                <div class="p-2 bg-white rounded-lg border border-act-200 shadow-2xs">
+                  <div class="flex items-center justify-between text-act-900 font-bold mb-1">
+                    <span class="flex items-center space-x-1">
+                      <i class="fa-solid fa-shield-halved text-act-700"></i>
+                      <span>Basal Ganglia Action Selection</span>
+                    </span>
+                    <span id="diag-action-badge" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                      ACCEPT
+                    </span>
+                  </div>
+                  <p class="text-[11px] text-slate-600">
+                    Default is HOLD. Dispatches to ACCEPT only when Calibrated P &ge; θ*, else CONFIRM or ESCALATE.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-3 pt-2 border-t border-act-200/80 text-[10px] font-mono text-act-800 flex items-center justify-between">
+              <span>Goal: Threshold balances both mistakes</span>
+              <span class="font-bold text-act-900">Bayes Optimal Gate</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- LEVEL 4: BOTTOM ROW (4 OUTCOME & CLOSED FEEDBACK NODES) -->
+        <div class="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 pt-4 border-t border-slate-200 mt-2">
+          
+          <!-- OUTCOME 1: TYPE 1 CAUTION LOOP (FEEDBACK) -->
+          <div class="bg-amber-50/70 border-2 border-amber-300 rounded-xl p-3 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1 pb-1 border-b border-amber-200">
+                <span class="text-xs font-black text-amber-900 flex items-center space-x-1">
+                  <i class="fa-solid fa-arrows-rotate text-amber-600 animate-spin"></i>
+                  <span>1. Type 1 Caution</span>
+                </span>
+                <span class="px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 text-[9px] font-mono font-bold">Feedback Loop</span>
+              </div>
+              <p class="text-[10.5px] text-slate-700 leading-tight">
+                <strong>False Positive Guard:</strong> A bad approval raises the threshold θ* and directly amends invariant rules in the Cortex Knowledge Graph.
+              </p>
+            </div>
+            <div class="mt-2 text-[9px] font-mono text-amber-800 font-bold">
+              &uarr; Loops back to Education Harness
+            </div>
+          </div>
+
+          <!-- OUTCOME 2: TYPE 2 REGRET LOOP (FEEDBACK) -->
+          <div class="bg-purple-50/70 border-2 border-purple-300 rounded-xl p-3 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1 pb-1 border-b border-purple-200">
+                <span class="text-xs font-black text-purple-900 flex items-center space-x-1">
+                  <i class="fa-solid fa-arrow-turn-down text-purple-600"></i>
+                  <span>2. Type 2 Regret</span>
+                </span>
+                <span class="px-1.5 py-0.5 rounded bg-purple-100 text-purple-800 text-[9px] font-mono font-bold">Feedback Loop</span>
+              </div>
+              <p class="text-[10.5px] text-slate-700 leading-tight">
+                <strong>False Negative Guard:</strong> A missed good case lowers the threshold θ* and indexes the missing edge case into the Hippocampus Context Graph.
+              </p>
+            </div>
+            <div class="mt-2 text-[9px] font-mono text-purple-800 font-bold">
+              &uarr; Updates Context Graph Precedents
+            </div>
+          </div>
+
+          <!-- OUTCOME 3: EPISTEMIC RATIONALITY -->
+          <div class="bg-blue-50/70 border-2 border-blue-300 rounded-xl p-3 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1 pb-1 border-b border-blue-200">
+                <span class="text-xs font-black text-blue-900 flex items-center space-x-1">
+                  <i class="fa-solid fa-bullseye text-blue-600"></i>
+                  <span>3. Epistemic Validity</span>
+                </span>
+                <span class="px-1.5 py-0.5 rounded bg-blue-100 text-blue-800 text-[9px] font-mono font-bold">Calibrated</span>
+              </div>
+              <p class="text-[10.5px] text-slate-700 leading-tight">
+                <strong>Confidence Matches Facts:</strong> When the model states 90% confidence, it is right 9 out of 10 times. Zero overconfidence hallucinations.
+              </p>
+            </div>
+            <div class="mt-2 text-[9px] font-mono text-blue-800 font-bold">
+              Steps 1 &amp; 2: Grounded Metacognition
+            </div>
+          </div>
+
+          <!-- OUTCOME 4: INSTRUMENTAL GATE EXECUTION -->
+          <div class="bg-emerald-50/70 border-2 border-emerald-300 rounded-xl p-3 shadow-2xs flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between mb-1 pb-1 border-b border-emerald-200">
+                <span class="text-xs font-black text-emerald-900 flex items-center space-x-1">
+                  <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                  <span>4. Instrumental Action</span>
+                </span>
+                <span class="px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[9px] font-mono font-bold">Dispatched</span>
+              </div>
+              <p class="text-[10.5px] text-slate-700 leading-tight">
+                <strong>Cost-Optimal Dispatch:</strong> Balances mistake costs. Autonomous release when P &ge; θ*, or escalates to human specialist when uncertainty is high.
+              </p>
+            </div>
+            <div class="mt-2 text-[9px] font-mono text-emerald-800 font-bold">
+              Step 3: Governed Action Release
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Explanatory Architectural Mapping Table -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs font-sans">
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+          <strong class="text-know-800 font-bold block flex items-center space-x-1.5">
+            <span class="w-4 h-4 rounded-full bg-know-700 text-white text-[10px] flex items-center justify-center">1</span>
+            <span>Education Harness (Grounded Ingestion)</span>
+          </strong>
+          <p class="text-slate-600 text-[11px] leading-relaxed">
+            Instead of sending raw prompts into an unconstrained LLM, the Education Harness constrains the LLM with an active <strong>Semantic Ontology</strong> and retrieves indexed historical precedents from the <strong>Context Graph</strong>.
+          </p>
+        </div>
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+          <strong class="text-sure-800 font-bold block flex items-center space-x-1.5">
+            <span class="w-4 h-4 rounded-full bg-sure-700 text-white text-[10px] flex items-center justify-center">2</span>
+            <span>Calibration Harness (Metacognition)</span>
+          </strong>
+          <p class="text-slate-600 text-[11px] leading-relaxed">
+            The foundation LLM generates multiple candidate rollouts. The Calibration Harness monitors conflict entropy across rollouts and calibrates stated probability so that 90% confidence means ~90% empirical accuracy.
+          </p>
+        </div>
+        <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1">
+          <strong class="text-act-800 font-bold block flex items-center space-x-1.5">
+            <span class="w-4 h-4 rounded-full bg-act-700 text-white text-[10px] flex items-center justify-center">3</span>
+            <span>Gate Harness (Action Dispatch)</span>
+          </strong>
+          <p class="text-slate-600 text-[11px] leading-relaxed">
+            The Gate Harness applies the instrumental risk threshold. Even a perfectly calibrated agent requires a threshold tuned to the cost of mistakes. When mistakes happen, weak spots flow directly back to amend the rules in the Education Harness.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
   <!-- BOTTOM PANEL: RATIONAL THINKING SPLIT & MISTAKE LESSONS           -->
   <!-- ================================================================= -->
   <footer class="bg-white border-t border-slate-200 px-4 py-2 shrink-0 flex flex-wrap items-center justify-between gap-3 text-xs shadow-xs">
@@ -695,6 +1161,84 @@
           }
         }
       });
+    }
+
+    function setAgentView(view) {
+      const cockpitEl = document.getElementById('view-cockpit');
+      const diagramEl = document.getElementById('view-diagram');
+      const btnCockpit = document.getElementById('btn-view-cockpit');
+      const btnDiagram = document.getElementById('btn-view-diagram');
+
+      if (view === 'cockpit') {
+        cockpitEl.classList.remove('hidden');
+        diagramEl.classList.add('hidden');
+        diagramEl.classList.remove('flex');
+        btnCockpit.className = "px-2.5 py-1 rounded-md bg-white text-slate-900 font-bold shadow-xs transition flex items-center space-x-1 cursor-pointer";
+        btnDiagram.className = "px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 transition flex items-center space-x-1 cursor-pointer";
+      } else {
+        cockpitEl.classList.add('hidden');
+        diagramEl.classList.remove('hidden');
+        diagramEl.classList.add('flex');
+        btnDiagram.className = "px-2.5 py-1 rounded-md bg-white text-indigo-900 font-bold shadow-xs transition flex items-center space-x-1 cursor-pointer";
+        btnCockpit.className = "px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 transition flex items-center space-x-1 cursor-pointer";
+        renderDiagramContent();
+      }
+    }
+
+    function renderDiagramContent() {
+      const sc = SCENARIOS[currentScenarioKey];
+      if (!sc) return;
+
+      // 1. Education Harness (Cortex + Hippocampus)
+      const diagCortex = document.getElementById('diag-cortex-rules');
+      if (diagCortex) {
+        diagCortex.innerHTML = sc.rules.slice(0, 3).map(r => `<div class="truncate">&bull; ${r}</div>`).join('');
+      }
+      const diagHippo = document.getElementById('diag-hippocampus-cases');
+      if (diagHippo) {
+        diagHippo.innerHTML = sc.cases.slice(0, 2).map(c => `<div class="truncate">&bull; ${c}</div>`).join('');
+      }
+
+      // 2. Case Ingress
+      const diagCase = document.getElementById('diag-case-text');
+      if (diagCase) {
+        diagCase.textContent = `"${sc.title}"`;
+      }
+
+      // 3. Foundation LLM
+      const diagLlm = document.getElementById('diag-llm-status');
+      if (diagLlm) {
+        diagLlm.textContent = `Grounding: 4 Invariant Rules & Precedents • N=5 rollouts sampled via Groq LPU`;
+      }
+
+      // 4. Calibration Harness
+      const diagCalib = document.getElementById('diag-calib-pct');
+      if (diagCalib) {
+        diagCalib.textContent = `P̂ = ${(sc.statedConfidence * 100).toFixed(0)}%`;
+      }
+
+      // 5. Gate Harness
+      const thetaStar = costT1 / (costT1 + costT2);
+      const diagThresh = document.getElementById('diag-threshold-val');
+      if (diagThresh) {
+        diagThresh.textContent = `θ* = ${thetaStar.toFixed(3)}`;
+      }
+      const diagAction = document.getElementById('diag-action-badge');
+      if (diagAction) {
+        let act = "ACCEPT";
+        let color = "bg-emerald-100 text-emerald-800 border-emerald-300";
+        if (sc.statedConfidence < thetaStar) {
+          if (sc.statedConfidence > 0.65) {
+            act = "CONFIRM";
+            color = "bg-sure-100 text-sure-800 border-sure-300";
+          } else {
+            act = "ESCALATE";
+            color = "bg-rose-100 text-rose-800 border-rose-300";
+          }
+        }
+        diagAction.textContent = act;
+        diagAction.className = `px-2 py-0.5 rounded text-[10px] font-bold border ${color}`;
+      }
     }
 
     function loadScenario(key, shouldAnimate = false) {
@@ -1002,6 +1546,9 @@
       document.getElementById('gate-decision-badge').textContent = finalAction;
       document.getElementById('gate-decision-badge').className = finalAction === "ACCEPT" ? "text-emerald-700 font-bold" : (finalAction === "CONFIRM" ? "text-sure-700 font-bold" : "text-rose-700 font-bold");
       document.getElementById('gate-utility-value').textContent = expectedUtility >= 0 ? `+$${Math.round(expectedUtility).toLocaleString()}` : `-$${Math.abs(Math.round(expectedUtility)).toLocaleString()}`;
+
+      // Update the Block Diagram view
+      renderDiagramContent();
     }
 
     // Closed Loop: Feedback from mistakes
