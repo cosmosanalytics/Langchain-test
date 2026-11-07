@@ -2,22 +2,22 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Synthesizing Pedagogy and Cognitive Architecture for Autonomous AI Reliability</title>
+  <title>Extrinsic Education vs. Intrinsic Rationality in Autonomous AI</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
   <style>
     @page {
       size: A4;
-      margin: 20mm 18mm 20mm 18mm;
+      margin: 14mm 14mm 14mm 14mm;
     }
     body {
-      font-family: 'Crimson Pro', Georgia, serif;
-      font-size: 11pt;
-      line-height: 1.55;
-      color: #1e293b;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 10pt;
+      line-height: 1.5;
+      color: #0f172a;
       background: #ffffff;
     }
     h1, h2, h3, h4, th, .sans-header {
@@ -38,367 +38,476 @@
       width: 100%;
     }
     th, td {
-      padding: 6px 10px;
+      padding: 7px 10px;
       border: 1px solid #cbd5e1;
     }
   </style>
 </head>
-<body class="p-2 max-w-4xl mx-auto">
+<body class="p-1 max-w-4xl mx-auto space-y-5">
 
-  <!-- TITLE BLOCK -->
-  <header class="text-center pb-6 border-b border-slate-300 mb-6">
-    <div class="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-700 text-xs font-semibold uppercase tracking-wider mb-3 sans-header border border-slate-200">
-      Research Monograph &bull; Autonomous Systems Architecture
+  <!-- ================================================================= -->
+  <!-- HERO TITLE & METADATA                                             -->
+  <!-- ================================================================= -->
+  <header class="text-center pb-4 border-b-2 border-slate-900 avoid-break">
+    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900 text-white text-[11px] font-bold uppercase tracking-wider mb-2.5 sans-header">
+      <i class="fa-solid fa-brain text-amber-300"></i>
+      <span>Cognitive Systems Engineering &bull; Monograph</span>
     </div>
-    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight mb-3">
-      Synthesizing Pedagogy and Cognitive Architecture for Autonomous AI Reliability
+    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight leading-tight mb-2">
+      Extrinsic Education vs. Intrinsic Rationality in Autonomous AI
     </h1>
-    <h2 class="text-base sm:text-lg font-medium text-slate-600 italic mb-4">
-      From "Diagnose-Then-Teach" to Closed-Loop Rational Governance
+    <h2 class="text-sm sm:text-base font-semibold text-slate-600 max-w-2xl mx-auto mb-3">
+      Why Frozen Language Models Need Cognitive Architecture: Reconciling "Diagnose-Then-Teach" with Brain-Inspired Governance
     </h2>
 
-    <div class="flex flex-wrap justify-center items-center gap-6 text-xs text-slate-600 sans-header">
-      <div><strong>Zhao Wan</strong><br><span class="text-slate-500">Department of Computer Science</span></div>
-      <div class="h-6 w-px bg-slate-200"></div>
-      <div><strong>Cognitive Systems Engineering Group</strong><br><span class="text-slate-500">Cosmos Analytics AI Laboratory</span></div>
-      <div class="h-6 w-px bg-slate-200"></div>
-      <div><strong>Published:</strong><br><span class="text-slate-500">November 2026</span></div>
+    <div class="flex justify-center items-center gap-6 text-xs text-slate-600 sans-header pt-1">
+      <div><strong>Zhao Wan</strong> &bull; <span class="text-slate-500">Dept. of Computer Science</span></div>
+      <div class="h-4 w-px bg-slate-300"></div>
+      <div><strong>Cosmos Analytics AI Lab</strong> &bull; <span class="text-slate-500">Cognitive Systems Group</span></div>
+      <div class="h-4 w-px bg-slate-300"></div>
+      <div><strong>Date:</strong> <span class="text-slate-700 font-semibold">November 2026</span></div>
     </div>
   </header>
 
-  <!-- ABSTRACT -->
-  <section class="bg-slate-50 border-l-4 border-slate-800 p-4 rounded-r-xl mb-6 avoid-break">
-    <h3 class="text-xs font-black uppercase tracking-wider text-slate-900 mb-1.5 sans-header">Abstract</h3>
-    <p class="text-xs leading-relaxed text-slate-700 text-justify">
-      Deploying frozen Large Language Models (LLMs) in high-stakes autonomous settings exposes two catastrophic failure modes: <strong>domain ignorance</strong> (failing to execute task-specific conventions) and <strong>uncalibrated over-compliance</strong> (blindly prioritizing prompt rules over empirical runtime evidence). Recently, two distinct frameworks have emerged to address these failure modes without costly parameter retraining: (1) the <em>Educational Approach</em> (Wan, 2026), which formalizes in-context prompt engineering as diagnostic test preparation (<em>Diagnose-Then-Teach</em>), and (2) the <em>Cognitive Architecture Approach</em>, which bounds LLMs with a tri-harness biological brain model (<em>KNOW, BE SURE, ACT</em>). In this paper, we demonstrate the deep theoretical equivalence of both paradigms, isolate where the cognitive approach systematically overcomes the structural limitations of the educational model, and synthesize them into a unified production architecture: the <strong>Educated Cognitive Agent (ECA)</strong>. We demonstrate that combining pre-run diagnostic baseline discovery with dynamic dual-graph grounding, multi-rollout conflict monitoring, and loss-weighted Bayes risk gating produces an autonomous agent that is both epistemically sound and instrumentally rational.
-    </p>
-    <div class="mt-2 text-[10px] text-slate-500 sans-header">
-      <strong>Keywords:</strong> AI Reliability, In-Context Learning, Cognitive Architecture, Metacognition, Bounded Headroom, Bayes Risk Gate, Tri-Graph Governance.
+  <!-- ================================================================= -->
+  <!-- CORE INTUITIVE INSIGHT: EXTRINSIC VS INTRINSIC (HERO INFOGRAPHIC) -->
+  <!-- ================================================================= -->
+  <section class="bg-slate-50 border-2 border-slate-300 rounded-2xl p-4 shadow-xs avoid-break">
+    <div class="text-xs font-black uppercase tracking-wider text-slate-900 mb-2 sans-header flex items-center justify-between">
+      <span class="flex items-center space-x-1.5">
+        <i class="fa-solid fa-lightbulb text-amber-500 text-sm"></i>
+        <span>The Core Thesis: You Cannot Prompt an AI into Being Rational</span>
+      </span>
+      <span class="text-[10px] text-slate-500 font-mono font-normal">Education = Content &bull; Rationality = Governance</span>
     </div>
-  </section>
 
-  <!-- SECTION 1: INTRODUCTION -->
-  <section class="space-y-3 mb-6">
-    <h2 class="text-base font-bold text-slate-900 uppercase tracking-wide border-b border-slate-200 pb-1 sans-header">
-      1. Introduction & The Reliability Problem
-    </h2>
-    <p class="text-xs text-justify leading-relaxed">
-      Modern foundation models operate as frozen computational cores during production inference. When tasked with complex, mission-critical operations—such as software bug repair, automated insurance underwriting, or clinical prior authorization—standard models fail in repeatable, brittle ways. Traditional remedies rely on weight fine-tuning or post-training alignment; however, model retraining is computationally prohibitive, induces catastrophic forgetting, and alters general reasoning representations unpredictably.
-    </p>
-    <p class="text-xs text-justify leading-relaxed">
-      Consequently, practitioners rely on in-context instructions (system prompts, rulebooks, SOPs). However, in-context instruction often introduces new vulnerabilities: prompt bloat, attention dilution, cross-rule interference, and pathological overconfidence. To resolve this, two foundational methodologies have recently been established:
-    </p>
-    <ul class="text-xs space-y-1.5 pl-4 list-disc text-slate-800">
-      <li>
-        <strong>The Educational Paradigm (Wan, 2026):</strong> Frames prompt engineering through the lens of pedagogical test preparation. A teacher administers a baseline diagnostic examination to detect what the student model does not know unaided; injects a targeted rulebook covering only the identified knowledge gap; and measures strict pass rates against an independent, hidden exam.
-      </li>
-      <li>
-        <strong>The Cognitive Architecture Paradigm:</strong> Frames prompt engineering through the neurobiology of rational decision-making. The frozen LLM is bounded by three modular harnesses: (1) an <em>Education Harness (KNOW)</em> incorporating semantic memory (Cortex) and episodic memory (Hippocampus); (2) a <em>Calibration Harness (BE SURE)</em> evaluating metacognition and rollout consistency; and (3) an <em>Action Gate Harness (ACT)</em> enforcing Bayes risk thresholds before releasing decisions.
-      </li>
-    </ul>
-    <p class="text-xs text-justify leading-relaxed">
-      This paper bridges these two schools of thought, proving that they are complementary phases of a single, optimal cognitive control system.
-    </p>
-  </section>
-
-  <!-- SECTION 2: COMMONALITIES & PARALLELS -->
-  <section class="space-y-3 mb-6 avoid-break">
-    <h2 class="text-base font-bold text-slate-900 uppercase tracking-wide border-b border-slate-200 pb-1 sans-header">
-      2. Core Similarities: Shared Epistemological Foundations
-    </h2>
-    <p class="text-xs text-justify leading-relaxed">
-      Despite differing nomenclatures (pedagogy vs. neuroscience), both approaches are grounded in four identical empirical principles:
-    </p>
-    
-    <div class="grid grid-cols-2 gap-3 text-xs">
-      <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
-        <strong class="text-slate-900 block font-bold sans-header text-[11px]">2.1. The Principle of Bounded Headroom</strong>
-        <p class="text-[10.5px] text-slate-600 leading-tight">
-          Wan (2026) proved that instruction gains track the knowledge gap and are strictly bounded by headroom: <span class="font-mono text-slate-900 font-semibold">Gain &le; 100 &minus; Baseline</span>. When a model operates at 100% baseline, instruction yields zero gain. In the Cognitive Architecture, the Gate Harness enforces a default state of <strong>HOLD</strong>, suppressing prompt intervention when baseline knowledge is already saturated.
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs mb-3">
+      <!-- EXTRINSIC EDUCATION CARD -->
+      <div class="p-3 bg-emerald-50/80 border-2 border-emerald-300 rounded-xl space-y-1.5">
+        <div class="flex items-center justify-between text-emerald-950 font-bold sans-header pb-1 border-b border-emerald-200">
+          <span class="flex items-center space-x-1.5">
+            <i class="fa-solid fa-book-open text-emerald-700"></i>
+            <span>1. EDUCATION IS EXTRINSIC</span>
+          </span>
+          <span class="px-2 py-0.5 rounded bg-emerald-200/70 text-emerald-900 text-[9px] font-mono">The Curriculum</span>
+        </div>
+        <p class="text-slate-700 text-[11px] leading-relaxed">
+          Education is <strong>what is poured into the model from the outside</strong>: system prompts, rulebooks, handbooks, SOP guidelines, and precedent cases. It is the external knowledge payload.
         </p>
+        <div class="bg-white p-2 rounded-lg border border-emerald-200 font-mono text-[10px] text-emerald-900">
+          <strong>Key Trait:</strong> Passive ingestion. An LLM can memorize all 16 rules in a handbook and still be gullible, reckless, and blind to contradictory local facts.
+        </div>
       </div>
 
-      <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
-        <strong class="text-slate-900 block font-bold sans-header text-[11px]">2.2. Rejection of Context Stuffing</strong>
-        <p class="text-[10.5px] text-slate-600 leading-tight">
-          Wan showed that supplying all 16 handbook rules caused cross-rule leakage and degraded performance below single-rule injection in 4 families. The Cognitive Architecture mirrors this via the <strong>Hippocampus Context Graph</strong>, which is explicitly indexed and <em>"opened only when needed"</em> rather than dumped entirely into context.
+      <!-- INTRINSIC RATIONALITY CARD -->
+      <div class="p-3 bg-indigo-50/80 border-2 border-indigo-300 rounded-xl space-y-1.5">
+        <div class="flex items-center justify-between text-indigo-950 font-bold sans-header pb-1 border-b border-indigo-200">
+          <span class="flex items-center space-x-1.5">
+            <i class="fa-solid fa-scale-balanced text-indigo-700"></i>
+            <span>2. RATIONALITY IS INTRINSIC</span>
+          </span>
+          <span class="px-2 py-0.5 rounded bg-indigo-200/70 text-indigo-900 text-[9px] font-mono">The Governance</span>
+        </div>
+        <p class="text-slate-700 text-[11px] leading-relaxed">
+          Rationality is <strong>how the mind governs itself from the inside</strong>: self-doubt, calibration, measuring rollout conflict, and balancing the asymmetric cost of mistakes before acting.
         </p>
+        <div class="bg-white p-2 rounded-lg border border-indigo-200 font-mono text-[10px] text-indigo-900">
+          <strong>Key Trait:</strong> Active executive control. A rational agent defaults to <strong>HOLD</strong>, verifies whether confidence matches reality, and escalates to humans when uncertain.
+        </div>
       </div>
+    </div>
 
-      <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
-        <strong class="text-slate-900 block font-bold sans-header text-[11px]">2.3. Model Idiosyncrasy (&rho; = 0.46)</strong>
-        <p class="text-[10.5px] text-slate-600 leading-tight">
-          Claude Sonnet and Gemini 2.5 Flash exhibited only moderate correlation (<span class="font-mono">&rho; = 0.46</span>) in their unaided baselines. A rule essential for Gemini was redundant for Claude. The Cognitive Architecture reflects this by maintaining model-specific calibration curves and localized memory graphs.
-        </p>
-      </div>
-
-      <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg space-y-1">
-        <strong class="text-slate-900 block font-bold sans-header text-[11px]">2.4. Objective Hidden Verification</strong>
-        <p class="text-[10.5px] text-slate-600 leading-tight">
-          Neither system trusts self-reported LLM confidence. Wan graded patches via strict hidden regression tests. The Cognitive Architecture releases actions only when calibrated confidence <span class="font-mono font-bold">P̂</span> satisfies the empirical Bayes risk cutoff <span class="font-mono font-bold">&theta;*</span>.
-        </p>
+    <!-- PUNCHLINE CALLOUT -->
+    <div class="p-2.5 bg-amber-50 rounded-xl border border-amber-300 text-xs text-amber-950 flex items-center justify-between">
+      <div class="flex items-center space-x-2">
+        <i class="fa-solid fa-triangle-exclamation text-amber-600 text-base shrink-0"></i>
+        <span><strong>The "Educated Fool" Trap:</strong> An AI crammed with extrinsic rules without intrinsic rationality will blindly obey written text over code reality, hallucinate high confidence, and commit disastrous mistakes.</span>
       </div>
     </div>
   </section>
 
-  <!-- SECTION 3: ADVANCEMENTS OF COGNITIVE OVER EDUCATIONAL -->
-  <section class="space-y-3 mb-6 page-break">
-    <h2 class="text-base font-bold text-slate-900 uppercase tracking-wide border-b border-slate-200 pb-1 sans-header">
-      3. Where the Cognitive Approach Advances Beyond Pure Pedagogy
-    </h2>
-    <p class="text-xs text-justify leading-relaxed">
-      While the Educational Approach formalizes prompt calibration, it remains an <em>offline, static, open-loop</em> methodology. The Cognitive Architecture provides five decisive capabilities required for autonomous production runtimes:
+  <!-- ================================================================= -->
+  <!-- SECTION 1: THE EMPIRICAL EVIDENCE (WAN 2026)                      -->
+  <!-- ================================================================= -->
+  <section class="space-y-2.5 avoid-break">
+    <div class="flex items-center justify-between border-b border-slate-200 pb-1">
+      <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide sans-header">
+        1. The Empirical Evidence: What Happens When Education Lacks Rationality?
+      </h2>
+      <span class="text-xs font-mono text-slate-500 font-medium">Zhao Wan (October 2026)</span>
+    </div>
+
+    <p class="text-xs text-slate-700 leading-relaxed">
+      In a rigorous empirical evaluation of 1,848 code repair attempts on Claude Sonnet and Gemini 2.5 Flash across 14 bug families, Wan (2026) demonstrated both the power and the severe failure modes of purely extrinsic instruction:
     </p>
 
-    <!-- ADVANCEMENT 1 -->
-    <div class="p-3 border border-indigo-200 bg-indigo-50/40 rounded-xl space-y-1">
-      <div class="flex items-center justify-between">
-        <h3 class="text-xs font-bold text-indigo-950 sans-header">3.1. Dynamic Dual-Graph Grounding vs. Static Handbook Injection</h3>
-        <span class="px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 text-[9px] font-mono font-bold">KNOW Harness</span>
+    <!-- 3 EMPIRICAL FINDINGS GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+      <!-- FINDING 1: HEADROOM -->
+      <div class="p-3 bg-white border border-slate-300 rounded-xl shadow-2xs space-y-1">
+        <div class="flex items-center space-x-1.5 text-slate-900 font-bold sans-header text-[11px]">
+          <span class="w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px]">1</span>
+          <span>Gain Tracks Headroom</span>
+        </div>
+        <div class="text-xs font-mono font-bold text-emerald-700">Gain &le; 100 &minus; Baseline</div>
+        <p class="text-[11px] text-slate-600 leading-tight">
+          Where models knew nothing unaided (0% baseline), instruction produced massive gains (+60 to +100 points). But where the model already scored 100%, instruction yielded zero gain.
+        </p>
       </div>
-      <p class="text-xs text-slate-700 leading-relaxed text-justify">
-        In Wan's experiment, the handbook is a static string injected into every prompt. In contrast, the Cognitive Architecture establishes a bi-directional dialogue between the <strong>Semantic Cortex</strong> (invariant domain rules) and the <strong>Episodic Hippocampus</strong> (precedent case index). When an active case arrives, the system retrieves only the specific precedent cluster, traverses the explicit graph links to the relevant invariant rules, and constructs a minimal, targeted prompt. This eliminates the prompt-clutter penalty where placebo text degraded Gemini's pass rate in 8 of 14 families (<span class="font-mono">p &asymp; 0.04</span>).
-      </p>
-    </div>
 
-    <!-- ADVANCEMENT 2 -->
-    <div class="p-3 border border-purple-200 bg-purple-50/40 rounded-xl space-y-1">
-      <div class="flex items-center justify-between">
-        <h3 class="text-xs font-bold text-purple-950 sans-header">3.2. Metacognitive Calibration vs. Pathological Over-Compliance</h3>
-        <span class="px-2 py-0.5 rounded bg-purple-100 text-purple-800 text-[9px] font-mono font-bold">BE SURE Harness</span>
+      <!-- FINDING 2: OVER-COMPLIANCE -->
+      <div class="p-3 bg-rose-50/60 border border-rose-300 rounded-xl shadow-2xs space-y-1">
+        <div class="flex items-center space-x-1.5 text-rose-950 font-bold sans-header text-[11px]">
+          <span class="w-5 h-5 rounded-full bg-rose-700 text-white flex items-center justify-center text-[10px]">2</span>
+          <span>Pathological Over-Compliance</span>
+        </div>
+        <div class="text-xs font-mono font-bold text-rose-700">100% &rarr; 56% (-44 points)</div>
+        <p class="text-[11px] text-slate-600 leading-tight">
+          In <code>service_errors</code>, Claude scored 16/16 unaided, but crashed to 9/16 with its rule. The model blindly obeyed the extrinsic prompt rule over empirical ticket evidence!
+        </p>
       </div>
-      <p class="text-xs text-slate-700 leading-relaxed text-justify">
-        A critical vulnerability identified in Wan's experiment was that a mismatched rule caused Claude’s pass rate on <code>service_errors</code> to crash from 100% unaided down to 56% (a catastrophic loss of 44 points). The model blindly prioritized the injected handbook rule over empirical evidence in the ticket traceback. The Cognitive Architecture neutralizes this via the <strong>Prefrontal Cortex Metacognitive Calibration Map</strong>. By calibrating stated probability against empirical ground truth, the agent evaluates whether the rule's premise holds in the current case context. If rule compliance contradicts verified invariant checks, confidence is heavily discounted, halting autonomous deployment.
-      </p>
-    </div>
 
-    <!-- ADVANCEMENT 3 -->
-    <div class="p-3 border border-amber-200 bg-amber-50/40 rounded-xl space-y-1">
-      <div class="flex items-center justify-between">
-        <h3 class="text-xs font-bold text-amber-950 sans-header">3.3. Multi-Rollout Conflict Monitoring vs. Single-Attempt Sampling</h3>
-        <span class="px-2 py-0.5 rounded bg-amber-100 text-amber-800 text-[9px] font-mono font-bold">Anterior Cingulate</span>
+      <!-- FINDING 3: INTERFERENCE -->
+      <div class="p-3 bg-amber-50/60 border border-amber-300 rounded-xl shadow-2xs space-y-1">
+        <div class="flex items-center space-x-1.5 text-amber-950 font-bold sans-header text-[11px]">
+          <span class="w-5 h-5 rounded-full bg-amber-700 text-white flex items-center justify-center text-[10px]">3</span>
+          <span>Handbook Cross-Interference</span>
+        </div>
+        <div class="text-xs font-mono font-bold text-amber-700">All 16 Rules Broke Code</div>
+        <p class="text-[11px] text-slate-600 leading-tight">
+          Dumping all 16 rules scored worse than 1 rule in 4 families. Rules leaked unneeded error imports, container-immutability leaked into state machines, and placebos cost Gemini points (p &asymp; 0.04).
+        </p>
       </div>
-      <p class="text-xs text-slate-700 leading-relaxed text-justify">
-        Wan observed high variance across task seeds (e.g. <code>permission_prefix</code> task 2020 scored 2/8 with the rule vs. 7/8 unaided). Single-shot LLM inferences are vulnerable to stochastic sampling noise. The Cognitive Architecture incorporates the <strong>Anterior Cingulate Conflict Monitor</strong>, sampling <span class="font-mono font-semibold">N = 5</span> parallel candidate rollouts across diverse random seeds. If the rollout actions diverge, the system flags high entropy: <em>"If five answers disagree, the knowledge has not taken hold."</em>
-      </p>
-    </div>
-
-    <!-- ADVANCEMENT 4 -->
-    <div class="p-3 border border-emerald-200 bg-emerald-50/40 rounded-xl space-y-1">
-      <div class="flex items-center justify-between">
-        <h3 class="text-xs font-bold text-emerald-950 sans-header">3.4. Cost-Weighted Bayes Risk Gating vs. Symmetric Pass/Fail</h3>
-        <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[9px] font-mono font-bold">ACT Harness</span>
-      </div>
-      <p class="text-xs text-slate-700 leading-relaxed text-justify">
-        The educational model treats all errors symmetrically. However, real-world systems face asymmetric loss: accepting a corrupt financial transaction (Type 1 error) is orders of magnitude worse than temporarily withholding a valid one (Type 2 error). The Cognitive Architecture's <strong>Gate Harness</strong> computes the optimal risk cutoff:
-      </p>
-      <div class="p-2 bg-white rounded border border-emerald-200 text-center font-mono text-xs text-emerald-900 my-1">
-        &theta;* = Cost(Type 1) / [ Cost(Type 1) + Cost(Type 2) ]
-      </div>
-      <p class="text-xs text-slate-700 leading-relaxed text-justify">
-        When calibrated confidence <span class="font-mono font-semibold">P̂ &lt; &theta;*</span>, or when encountering unsolvable edge cases (such as Wan's task 2018, which failed 0/8 across all arms), the Basal Ganglia does not emit a broken patch; it enforces <strong>HOLD</strong> and triggers <strong>ESCALATE to human expert</strong>.
-      </p>
-    </div>
-
-    <!-- ADVANCEMENT 5 -->
-    <div class="p-3 border border-rose-200 bg-rose-50/40 rounded-xl space-y-1">
-      <div class="flex items-center justify-between">
-        <h3 class="text-xs font-bold text-rose-950 sans-header">3.5. Real-Time Closed Learning Loop (Caution &amp; Regret)</h3>
-        <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 text-[9px] font-mono font-bold">Feedback Loop</span>
-      </div>
-      <p class="text-xs text-slate-700 leading-relaxed text-justify">
-        While the Educational Approach requires offline human re-authoring of the handbook after failures, the Cognitive Architecture autonomously executes closed-loop learning. A Type 1 production mistake raises the caution bar (elevating <span class="font-mono">&theta;*</span> and injecting an invariant defensive guard into the Cortex), while a Type 2 error generates regret against the ground truth answer key, indexing the missed edge case into the Hippocampus.
-      </p>
     </div>
   </section>
 
-  <!-- SECTION 4: THE COMBINED ARCHITECTURE (ECA) -->
-  <section class="space-y-3 mb-6 avoid-break page-break">
-    <h2 class="text-base font-bold text-slate-900 uppercase tracking-wide border-b border-slate-200 pb-1 sans-header">
-      4. The Combined Framework: The Educated Cognitive Agent (ECA)
-    </h2>
-    <p class="text-xs text-justify leading-relaxed">
-      By integrating the pre-deployment diagnostic rigor of the Educational Approach with the runtime governance of the Cognitive Architecture, we arrive at a unified, production-grade architecture: the <strong>Educated Cognitive Agent (ECA)</strong>.
+  <!-- ================================================================= -->
+  <!-- SECTION 2: THE 3 COGNITIVE HARNESSES (INTRINSIC RATIONALITY)      -->
+  <!-- ================================================================= -->
+  <section class="space-y-3 avoid-break page-break">
+    <div class="flex items-center justify-between border-b border-slate-200 pb-1">
+      <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide sans-header">
+        2. The Intrinsic Solution: The 3 Cognitive Harnesses
+      </h2>
+      <span class="text-xs font-mono text-slate-500 font-medium">Brain-Inspired Governance</span>
+    </div>
+
+    <p class="text-xs text-slate-700 leading-relaxed">
+      To transform an educated model into a truly rational agent, the Cognitive Architecture bounds the frozen foundation LLM inside three autonomous harnesses:
     </p>
 
-    <!-- ARCHITECTURE SVG DIAGRAM -->
-    <div class="p-4 bg-slate-900 rounded-2xl text-white my-3 shadow-md">
-      <div class="text-center font-bold text-xs uppercase tracking-wider text-amber-300 mb-3 sans-header">
-        Educated Cognitive Agent (ECA) System Architecture
+    <!-- THE 3 HARNESSES HORIZONTAL PIPELINE -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+      
+      <!-- HARNESS 1: KNOW -->
+      <div class="p-3.5 bg-emerald-50/70 border-2 border-emerald-300 rounded-2xl space-y-2 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between pb-1.5 border-b border-emerald-200">
+            <span class="text-xs font-extrabold text-emerald-950 flex items-center space-x-1.5 sans-header">
+              <span class="w-5 h-5 rounded-full bg-emerald-700 text-white text-[10px] flex items-center justify-center font-bold">1</span>
+              <span>KNOW IT (Education)</span>
+            </span>
+            <span class="px-1.5 py-0.5 rounded bg-white text-emerald-800 text-[9px] font-mono font-bold border border-emerald-200">Ingestion</span>
+          </div>
+          <div class="space-y-1.5 mt-2 font-mono text-[10.5px]">
+            <div class="p-1.5 bg-white rounded border border-emerald-200">
+              <strong class="text-emerald-900 block font-sans font-bold">Cortex (Semantic Memory)</strong>
+              <span class="text-slate-600 text-[10px]">Ontology + Knowledge Graph (Invariant domain rules &amp; SOPs)</span>
+            </div>
+            <div class="p-1.5 bg-white rounded border border-emerald-200">
+              <strong class="text-emerald-900 block font-sans font-bold">Hippocampus (Episodic Memory)</strong>
+              <span class="text-slate-600 text-[10px]">Context Graph index of past cases; <em>opened only when needed</em></span>
+            </div>
+          </div>
+        </div>
+        <div class="text-[9.5px] font-mono text-emerald-800 pt-1.5 border-t border-emerald-200 font-semibold">
+          Fix: Stops context stuffing by retrieving only matching invariants.
+        </div>
       </div>
-      <svg class="w-full h-auto text-xs font-mono" viewBox="0 0 760 380" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Background boxes -->
-        <rect x="20" y="20" width="220" height="130" rx="10" fill="#1e293b" stroke="#059669" stroke-width="2"/>
-        <text x="35" y="45" fill="#34d399" font-weight="bold" font-size="11">1. DIAGNOSE &amp; GROUND (KNOW)</text>
-        <text x="35" y="70" fill="#94a3b8" font-size="9">&bull; Diagnostic Baseline Audit (Wan 2026)</text>
-        <text x="35" y="90" fill="#94a3b8" font-size="9">&bull; Cortex: Semantic KG (Target Invariants)</text>
-        <text x="35" y="110" fill="#94a3b8" font-size="9">&bull; Hippocampus: Episodic Context Index</text>
-        <text x="35" y="130" fill="#34d399" font-size="8.5">&harr; Headroom-bounded invariant injection</text>
 
-        <rect x="270" y="20" width="220" height="130" rx="10" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
-        <text x="285" y="45" fill="#60a5fa" font-weight="bold" font-size="11">2. FOUNDATION REASONER</text>
-        <text x="285" y="70" fill="#94a3b8" font-size="9">&bull; Frozen LLM Core (Llama 3.3 / Claude)</text>
-        <text x="285" y="90" fill="#94a3b8" font-size="9">&bull; In-Context Constrained Rollouts</text>
-        <text x="285" y="110" fill="#94a3b8" font-size="9">&bull; N=5 Seed-Dispersed Candidate Patches</text>
-        <text x="285" y="130" fill="#60a5fa" font-size="8.5">&bull; Token Logprobs &amp; Chain-of-Thought</text>
+      <!-- HARNESS 2: BE SURE -->
+      <div class="p-3.5 bg-purple-50/70 border-2 border-purple-300 rounded-2xl space-y-2 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between pb-1.5 border-b border-purple-200">
+            <span class="text-xs font-extrabold text-purple-950 flex items-center space-x-1.5 sans-header">
+              <span class="w-5 h-5 rounded-full bg-purple-700 text-white text-[10px] flex items-center justify-center font-bold">2</span>
+              <span>BE SURE (Calibration)</span>
+            </span>
+            <span class="px-1.5 py-0.5 rounded bg-white text-purple-800 text-[9px] font-mono font-bold border border-purple-200">Epistemic</span>
+          </div>
+          <div class="space-y-1.5 mt-2 font-mono text-[10.5px]">
+            <div class="p-1.5 bg-white rounded border border-purple-200">
+              <strong class="text-purple-900 block font-sans font-bold">Prefrontal Metacognition</strong>
+              <span class="text-slate-600 text-[10px]">Reliability curve: says 90% only when right ~90% of the time</span>
+            </div>
+            <div class="p-1.5 bg-white rounded border border-purple-200">
+              <strong class="text-purple-900 block font-sans font-bold">Anterior Cingulate Monitor</strong>
+              <span class="text-slate-600 text-[10px]">Samples N=5 rollouts. If answers disagree, knowledge has not taken hold</span>
+            </div>
+          </div>
+        </div>
+        <div class="text-[9.5px] font-mono text-purple-800 pt-1.5 border-t border-purple-200 font-semibold">
+          Fix: Stops over-compliance by evaluating confidence vs reality.
+        </div>
+      </div>
 
-        <rect x="520" y="20" width="220" height="130" rx="10" fill="#1e293b" stroke="#7c3aed" stroke-width="2"/>
-        <text x="535" y="45" fill="#a78bfa" font-weight="bold" font-size="11">3. CALIBRATION (BE SURE)</text>
-        <text x="535" y="70" fill="#94a3b8" font-size="9">&bull; Prefrontal Metacognition (P̂ vs P_act)</text>
-        <text x="535" y="90" fill="#94a3b8" font-size="9">&bull; Anterior Cingulate Conflict Monitor</text>
-        <text x="535" y="110" fill="#94a3b8" font-size="9">&bull; Consensus Entropy: H(A) across seeds</text>
-        <text x="535" y="130" fill="#a78bfa" font-size="8.5">&bull; Epistemic Rationality: Reality Check</text>
+      <!-- HARNESS 3: ACT -->
+      <div class="p-3.5 bg-amber-50/70 border-2 border-amber-300 rounded-2xl space-y-2 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between pb-1.5 border-b border-amber-200">
+            <span class="text-xs font-extrabold text-amber-950 flex items-center space-x-1.5 sans-header">
+              <span class="w-5 h-5 rounded-full bg-amber-700 text-white text-[10px] flex items-center justify-center font-bold">3</span>
+              <span>ACT (Gate Harness)</span>
+            </span>
+            <span class="px-1.5 py-0.5 rounded bg-white text-amber-800 text-[9px] font-mono font-bold border border-amber-200">Instrumental</span>
+          </div>
+          <div class="space-y-1.5 mt-2 font-mono text-[10.5px]">
+            <div class="p-1.5 bg-white rounded border border-amber-200">
+              <strong class="text-amber-900 block font-sans font-bold">Risk Threshold (&theta;*)</strong>
+              <span class="text-slate-600 text-[10px]">&theta;* = Cost(Type 1) / [ Cost(Type 1) + Cost(Type 2) ]</span>
+            </div>
+            <div class="p-1.5 bg-white rounded border border-amber-200">
+              <strong class="text-amber-900 block font-sans font-bold">Basal Ganglia Dispatch</strong>
+              <span class="text-slate-600 text-[10px]">Default is <strong>HOLD</strong>. Releases to ACCEPT only when P̂ &ge; &theta;*, else ESCALATE</span>
+            </div>
+          </div>
+        </div>
+        <div class="text-[9.5px] font-mono text-amber-800 pt-1.5 border-t border-amber-200 font-semibold">
+          Fix: Stops un-gated action on unsolvable cases (e.g. task 2018).
+        </div>
+      </div>
 
-        <!-- Lower Row: Act Gate & Outcomes -->
-        <rect x="180" y="190" width="400" height="85" rx="10" fill="#1e293b" stroke="#ea580c" stroke-width="2"/>
-        <text x="195" y="215" fill="#fb923c" font-weight="bold" font-size="11">4. INSTRUMENTAL GATE HARNESS (ACT WISELY)</text>
-        <text x="195" y="235" fill="#94a3b8" font-size="9">&bull; Bayes Risk Threshold: &theta;* = Cost(Type 1) / [Cost(Type 1) + Cost(Type 2)]</text>
-        <text x="195" y="255" fill="#94a3b8" font-size="9">&bull; Basal Ganglia Action Dispatch: Default HOLD &rarr; ACCEPT (P̂ &ge; &theta;*) | CONFIRM | ESCALATE</text>
+    </div>
+  </section>
 
-        <!-- Connecting Arrows -->
-        <path d="M 240 85 L 270 85" stroke="#34d399" stroke-width="2"/>
-        <path d="M 490 85 L 520 85" stroke="#60a5fa" stroke-width="2"/>
-        <path d="M 630 150 L 630 230 L 580 230" stroke="#a78bfa" stroke-width="2"/>
+  <!-- ================================================================= -->
+  <!-- SECTION 3: THE UNIFIED SYSTEM ARCHITECTURE (ECA DIAGRAM)          -->
+  <!-- ================================================================= -->
+  <section class="space-y-3 avoid-break">
+    <div class="flex items-center justify-between border-b border-slate-200 pb-1">
+      <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide sans-header">
+        3. The Synthesis: The Educated Cognitive Agent (ECA)
+      </h2>
+      <span class="text-xs font-mono text-slate-500 font-medium">Extrinsic Invariants Governed by Intrinsic Reason</span>
+    </div>
 
-        <!-- Closed Loop -->
-        <path d="M 180 230 C 50 230, 50 170, 110 150" stroke="#f97316" stroke-width="2" stroke-dasharray="4,4" fill="none"/>
-        <text x="75" y="200" fill="#f97316" font-size="9" font-weight="bold">CLOSED FEEDBACK LOOP</text>
-        <text x="75" y="215" fill="#f97316" font-size="8">Caution &amp; Regret Update KG</text>
+    <!-- THE UNIFIED SVG ARCHITECTURE -->
+    <div class="p-4 bg-slate-950 rounded-2xl text-white shadow-md">
+      <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
+        <span class="font-bold text-xs uppercase tracking-wider text-amber-300 sans-header flex items-center space-x-1.5">
+          <i class="fa-solid fa-diagram-project"></i>
+          <span>Educated Cognitive Agent (ECA) Formal Architecture</span>
+        </span>
+        <span class="text-[9.5px] font-mono text-slate-400">Combines Wan (2026) Diagnostic Invariants with 3-Harness Governance</span>
+      </div>
 
-        <!-- Dispatch branches -->
-        <rect x="210" y="310" width="100" height="40" rx="6" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
-        <text x="235" y="334" fill="#ffffff" font-weight="bold" font-size="10">ACCEPT</text>
+      <svg class="w-full h-auto text-xs font-mono" viewBox="0 0 760 350" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- TIER 1: INGESTION -->
+        <rect x="20" y="20" width="220" height="115" rx="10" fill="#1e293b" stroke="#059669" stroke-width="2"/>
+        <text x="35" y="42" fill="#34d399" font-weight="bold" font-size="10.5">1. EDUCATION HARNESS (KNOW)</text>
+        <text x="35" y="65" fill="#94a3b8" font-size="9">&bull; Diagnostic Baseline Audit (Wan 2026)</text>
+        <text x="35" y="83" fill="#94a3b8" font-size="9">&bull; Cortex: Semantic KG (Invariant Rules)</text>
+        <text x="35" y="101" fill="#94a3b8" font-size="9">&bull; Hippocampus: Episodic Context Index</text>
+        <text x="35" y="119" fill="#34d399" font-size="8.5">EXTRINSIC PAYLOAD: Opened only when needed</text>
 
-        <rect x="330" y="310" width="100" height="40" rx="6" fill="#3730a3" stroke="#818cf8" stroke-width="1.5"/>
-        <text x="350" y="334" fill="#ffffff" font-weight="bold" font-size="10">CONFIRM</text>
+        <!-- TIER 2: LLM CORE -->
+        <rect x="270" y="20" width="220" height="115" rx="10" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
+        <text x="285" y="42" fill="#60a5fa" font-weight="bold" font-size="10.5">2. FOUNDATION REASONER</text>
+        <text x="285" y="65" fill="#94a3b8" font-size="9">&bull; Frozen LLM (Llama 3.3 / Claude / Gemini)</text>
+        <text x="285" y="83" fill="#94a3b8" font-size="9">&bull; In-Context Constrained Rollouts</text>
+        <text x="285" y="101" fill="#94a3b8" font-size="9">&bull; N=5 Parallel Candidate Rollouts</text>
+        <text x="285" y="119" fill="#60a5fa" font-size="8.5">Generates candidate actions with logprobs</text>
 
-        <rect x="450" y="310" width="100" height="40" rx="6" fill="#881337" stroke="#f43f5e" stroke-width="1.5"/>
-        <text x="470" y="334" fill="#ffffff" font-weight="bold" font-size="10">ESCALATE</text>
+        <!-- TIER 3: CALIBRATION -->
+        <rect x="520" y="20" width="220" height="115" rx="10" fill="#1e293b" stroke="#7c3aed" stroke-width="2"/>
+        <text x="535" y="42" fill="#a78bfa" font-weight="bold" font-size="10.5">3. CALIBRATION (BE SURE)</text>
+        <text x="535" y="65" fill="#94a3b8" font-size="9">&bull; Prefrontal Metacognition (P̂ vs P_actual)</text>
+        <text x="535" y="83" fill="#94a3b8" font-size="9">&bull; Anterior Cingulate Conflict Monitor</text>
+        <text x="535" y="101" fill="#94a3b8" font-size="9">&bull; Agreement Entropy: H(A) across 5 seeds</text>
+        <text x="535" y="119" fill="#a78bfa" font-size="8.5">INTRINSIC EPISTEMIC: Reality Verification</text>
 
-        <path d="M 260 275 L 260 310" stroke="#94a3b8" stroke-width="1.5"/>
-        <path d="M 380 275 L 380 310" stroke="#94a3b8" stroke-width="1.5"/>
-        <path d="M 500 275 L 500 310" stroke="#94a3b8" stroke-width="1.5"/>
+        <!-- TIER 4: GATE -->
+        <rect x="180" y="170" width="400" height="80" rx="10" fill="#1e293b" stroke="#ea580c" stroke-width="2"/>
+        <text x="195" y="195" fill="#fb923c" font-weight="bold" font-size="10.5">4. GATE HARNESS (ACT WISELY) &bull; INTRINSIC GOVERNANCE</text>
+        <text x="195" y="215" fill="#94a3b8" font-size="9">&bull; Bayes Risk Cutoff: &theta;* = Cost(Type 1) / [ Cost(Type 1) + Cost(Type 2) ]</text>
+        <text x="195" y="235" fill="#94a3b8" font-size="9">&bull; Basal Ganglia Action Dispatch: Default HOLD &rarr; ACCEPT (P̂ &ge; &theta;*) | CONFIRM | ESCALATE</text>
+
+        <!-- Arrows -->
+        <path d="M 240 77 L 270 77" stroke="#34d399" stroke-width="2"/>
+        <path d="M 490 77 L 520 77" stroke="#60a5fa" stroke-width="2"/>
+        <path d="M 630 135 L 630 210 L 580 210" stroke="#a78bfa" stroke-width="2"/>
+
+        <!-- Feedback Loop -->
+        <path d="M 180 210 C 60 210, 60 150, 110 135" stroke="#f97316" stroke-width="2" stroke-dasharray="4,4" fill="none"/>
+        <text x="70" y="175" fill="#f97316" font-size="8.5" font-weight="bold">CLOSED FEEDBACK LOOP</text>
+        <text x="70" y="190" fill="#f97316" font-size="7.5">Type 1 Caution &bull; Type 2 Regret</text>
+
+        <!-- Actions -->
+        <rect x="200" y="280" width="110" height="42" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
+        <text x="232" y="306" fill="#ffffff" font-weight="bold" font-size="11">ACCEPT</text>
+
+        <rect x="330" y="280" width="110" height="42" rx="8" fill="#3730a3" stroke="#818cf8" stroke-width="1.5"/>
+        <text x="355" y="306" fill="#ffffff" font-weight="bold" font-size="11">CONFIRM</text>
+
+        <rect x="460" y="280" width="110" height="42" rx="8" fill="#881337" stroke="#f43f5e" stroke-width="1.5"/>
+        <text x="485" y="306" fill="#ffffff" font-weight="bold" font-size="11">ESCALATE</text>
+
+        <path d="M 255 250 L 255 280" stroke="#94a3b8" stroke-width="1.5"/>
+        <path d="M 385 250 L 385 280" stroke="#94a3b8" stroke-width="1.5"/>
+        <path d="M 515 250 L 515 280" stroke="#94a3b8" stroke-width="1.5"/>
       </svg>
     </div>
-
-    <p class="text-xs text-justify leading-relaxed">
-      Under the ECA framework, the deployment lifecycle proceeds through four synchronized stages:
-    </p>
-    <ol class="text-xs space-y-1.5 pl-4 list-decimal text-slate-800">
-      <li>
-        <strong>Pre-Run Headroom Audit:</strong> Invariant test suites establish the baseline pass rate <span class="font-mono">B</span>. If <span class="font-mono">B &asymp; 100%</span>, prompt injection is completely suppressed to protect the headroom bound. If <span class="font-mono">B &lt;&lt; 100%</span>, the knowledge gap is compiled into a minimal invariant rule.
-      </li>
-      <li>
-        <strong>Dynamic Invariant Assembly:</strong> At runtime, incoming cases dynamically query the Hippocampus Context Graph to retrieve historical precedents, which in turn pull only the relevant Cortex rules into context.
-      </li>
-      <li>
-        <strong>Rollout Calibration Check:</strong> The LLM generates <span class="font-mono font-semibold">N = 5</span> rollouts. The Anterior Cingulate verifies consensus entropy, and the Prefrontal Cortex checks the calibration curve to prevent over-compliance.
-      </li>
-      <li>
-        <strong>Bayes Risk Action Gating:</strong> The Basal Ganglia checks <span class="font-mono font-semibold">P̂ &ge; &theta;*</span>. If the threshold is satisfied, the patch is deployed; if ambiguity remains or the task is unmastered, the action is escalated to a human specialist.
-      </li>
-    </ol>
   </section>
 
-  <!-- SECTION 5: COMPREHENSIVE COMPARISON TABLE -->
-  <section class="space-y-3 mb-6 avoid-break">
-    <h2 class="text-base font-bold text-slate-900 uppercase tracking-wide border-b border-slate-200 pb-1 sans-header">
-      5. Comparative Evaluation Across Architectural Dimensions
-    </h2>
+  <!-- ================================================================= -->
+  <!-- SECTION 4: THE CLOSED LEARNING LOOP (CAUTION VS REGRET)           -->
+  <!-- ================================================================= -->
+  <section class="space-y-2.5 avoid-break">
+    <div class="flex items-center justify-between border-b border-slate-200 pb-1">
+      <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide sans-header">
+        4. Learning from Mistakes: How Weak Spots Go Back to Know
+      </h2>
+      <span class="text-xs font-mono text-slate-500 font-medium">Reconciling "Growing Backward to Grow Forward"</span>
+    </div>
+
+    <p class="text-xs text-slate-700 leading-relaxed">
+      In production, an agent will inevitably make mistakes. The Cognitive Architecture implements a dual dopaminergic feedback loop that mirrors human adult learning:
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+      <!-- TYPE 1 CAUTION -->
+      <div class="p-3 bg-rose-50 border-2 border-rose-300 rounded-xl space-y-1">
+        <div class="flex items-center justify-between text-rose-950 font-bold sans-header">
+          <span class="flex items-center space-x-1.5">
+            <i class="fa-solid fa-shield-halved text-rose-600"></i>
+            <span>Bad Item Accepted (Type 1 Error)</span>
+          </span>
+          <span class="px-2 py-0.5 rounded bg-rose-200 text-rose-900 text-[9px] font-mono font-bold">Caution: Raise the Bar</span>
+        </div>
+        <p class="text-[11px] text-slate-700 leading-tight">
+          When the agent approves a bad patch or fraudulent claim, it activates <strong>Caution</strong>:
+        </p>
+        <ul class="text-[10.5px] space-y-0.5 pl-3 list-disc text-slate-600 font-mono">
+          <li>Cost of Type 1 is increased &rarr; pushes threshold &theta;* higher.</li>
+          <li>A defensive invariant rule is automatically injected into the Cortex KG.</li>
+        </ul>
+      </div>
+
+      <!-- TYPE 2 REGRET -->
+      <div class="p-3 bg-indigo-50 border-2 border-indigo-300 rounded-xl space-y-1">
+        <div class="flex items-center justify-between text-indigo-950 font-bold sans-header">
+          <span class="flex items-center space-x-1.5">
+            <i class="fa-solid fa-arrow-turn-down text-indigo-600"></i>
+            <span>Good Item Held Back (Type 2 Error)</span>
+          </span>
+          <span class="px-2 py-0.5 rounded bg-indigo-200 text-indigo-900 text-[9px] font-mono font-bold">Regret: Lower the Bar</span>
+        </div>
+        <p class="text-[11px] text-slate-700 leading-tight">
+          When held-back items are checked against the ground truth answer key and found valid:
+        </p>
+        <ul class="text-[10.5px] space-y-0.5 pl-3 list-disc text-slate-600 font-mono">
+          <li>Agent experiences <strong>Regret</strong>: lowers &theta;* to prevent future timidness.</li>
+          <li>The missed edge case is indexed directly into the Hippocampus Context Graph.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- SECTION 5: COMPARATIVE SUMMARY TABLE                              -->
+  <!-- ================================================================= -->
+  <section class="space-y-2.5 avoid-break page-break">
+    <div class="flex items-center justify-between border-b border-slate-200 pb-1">
+      <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide sans-header">
+        5. Comparative Evaluation: Extrinsic Education vs. Combined Rationality
+      </h2>
+    </div>
+
     <div class="overflow-x-auto text-[10.5px]">
       <table>
-        <thead class="bg-slate-100 text-slate-800 sans-header text-left">
+        <thead class="bg-slate-100 text-slate-900 sans-header text-left">
           <tr>
-            <th>Dimension</th>
-            <th>Pure Educational Approach (Wan 2026)</th>
-            <th>Pure Cognitive Approach (Tri-Harness)</th>
-            <th>Combined Approach (ECA Framework)</th>
+            <th class="w-1/4">Capability Dimension</th>
+            <th class="w-1/3">Pure Extrinsic Education (Wan 2026)</th>
+            <th class="w-5/12">Combined Architecture (Educated Cognitive Agent)</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-slate-200 text-slate-700">
           <tr>
-            <td class="font-bold">Core Metaphor</td>
-            <td>Classroom Test Prep (Diagnose-Then-Teach)</td>
-            <td>Tri-Harness Biological Brain</td>
-            <td>Educated &amp; Governed Rational Agent</td>
+            <td class="font-bold">Knowledge Delivery</td>
+            <td>Static handbook string injected into prompt</td>
+            <td><strong>Dynamic dual-graph grounding (Cortex rules + Hippocampus precedents)</strong></td>
           </tr>
           <tr>
-            <td class="font-bold">Knowledge Discovery</td>
-            <td>Offline diagnostic test suite across code tasks</td>
-            <td>Continuous Ontology KG &amp; Context Index</td>
-            <td><strong>Diagnostic baseline continuously updates KG rules</strong></td>
+            <td class="font-bold">Interference Defense</td>
+            <td>Vulnerable to full-handbook leakage &amp; placebo clutter</td>
+            <td><strong>Selective precedent indexing opens rules only when needed</strong></td>
           </tr>
           <tr>
-            <td class="font-bold">Prompt Construction</td>
-            <td>Static rulebook or single rule in context</td>
-            <td>Dual-graph retrieval (Cortex + Hippocampus)</td>
-            <td><strong>Headroom-gated targeted invariant injection</strong></td>
+            <td class="font-bold">Over-Compliance Defense</td>
+            <td>None (Claude crashed -44 pts on service_errors)</td>
+            <td><strong>Prefrontal Metacognition discounts rules that contradict local facts</strong></td>
           </tr>
           <tr>
-            <td class="font-bold">Context Interference</td>
-            <td>Vulnerable to handbook &amp; placebo clutter</td>
-            <td>Selective episodic retrieval isolates memory</td>
-            <td><strong>Strict invariant isolation eliminates syntax leakage</strong></td>
+            <td class="font-bold">Sampling Variance</td>
+            <td>Single-shot attempts subject to stochastic noise</td>
+            <td><strong>Anterior Cingulate checks agreement entropy across N=5 rollouts</strong></td>
           </tr>
           <tr>
-            <td class="font-bold">Metacognition</td>
-            <td>None (assumes model executes rules accurately)</td>
-            <td>Live calibration curve ($P_{	ext{stated}} pprox P_{	ext{actual}}$)</td>
-            <td><strong>Empirical Brier score calibration rejects blind obedience</strong></td>
+            <td class="font-bold">Action Selection</td>
+            <td>Un-gated (all generated patches deployed)</td>
+            <td><strong>Bayes risk threshold (&theta;*) with Basal Ganglia default HOLD</strong></td>
           </tr>
           <tr>
-            <td class="font-bold">Variance Defense</td>
-            <td>Post-hoc sample counts ($k/n$)</td>
-            <td>Anterior Cingulate 5-rollout conflict entropy</td>
-            <td><strong>Multi-seed consensus gating suppresses noisy passes</strong></td>
+            <td class="font-bold">Unsolvable Problems</td>
+            <td>Repeated failure (Task 2018 failed 0/8 across all arms)</td>
+            <td><strong>Automatic ESCALATE to human specialists when P̂ &lt; &theta;*</strong></td>
           </tr>
           <tr>
-            <td class="font-bold">Decision Gating</td>
-            <td>Symmetric Pass/Fail (all generated patches committed)</td>
-            <td>Basal Ganglia: Default HOLD; Accept/Confirm/Escalate</td>
-            <td><strong>Cost-weighted Bayes risk thresholding ($	heta^*$)</strong></td>
-          </tr>
-          <tr>
-            <td class="font-bold">Human Integration</td>
-            <td>Benchmark author &amp; handbook author</td>
-            <td>Escalation receiver for low-confidence events</td>
-            <td><strong>Autonomous for $\hat{P} \ge 	heta^*$; human fallback for unmastered</strong></td>
-          </tr>
-          <tr>
-            <td class="font-bold">Learning Loop</td>
-            <td>Offline manual handbook revision</td>
-            <td>Type 1 Caution &amp; Type 2 Regret feedback</td>
-            <td><strong>Dynamic parameter updates + automated exam expansion</strong></td>
+            <td class="font-bold">Mistake Correction</td>
+            <td>Offline manual handbook authoring</td>
+            <td><strong>Real-time Closed Feedback Loop (Caution &amp; Regret parameter tuning)</strong></td>
           </tr>
         </tbody>
       </table>
     </div>
   </section>
 
-  <!-- SECTION 6: CONCLUSION & IMPLICATIONS -->
-  <section class="space-y-3 mb-6 avoid-break">
-    <h2 class="text-base font-bold text-slate-900 uppercase tracking-wide border-b border-slate-200 pb-1 sans-header">
-      6. Conclusion & Implications for AI Engineering
-    </h2>
-    <p class="text-xs text-justify leading-relaxed">
-      The empirical findings of Zhao Wan (2026) provide an indispensable lesson for the field of agentic AI: <strong>written instruction is fundamentally bounded by headroom, and unconstrained handbooks introduce cross-rule interference and pathological over-compliance.</strong> 
-    </p>
-    <p class="text-xs text-justify leading-relaxed">
-      However, education alone cannot guarantee autonomous safety. Without metacognitive self-calibration (<em>BE SURE</em>), an educated model will blindly override ticket evidence; without an instrumental risk gate (<em>ACT</em>), an educated model cannot evaluate when a mistake is too costly to risk autonomous execution.
-    </p>
-    <p class="text-xs text-justify leading-relaxed">
-      By fusing the **diagnostic precision of the Educational Approach** with the **metacognitive calibration, rollout conflict monitoring, and risk-gated execution of the Cognitive Architecture**, engineers can deploy agents that embody the complete classical definition of rationality: <strong>they know the domain rules, they are quantitatively sure how well they know them, and they act only when the expected utility exceeds the cost of failure.</strong>
-    </p>
+  <!-- ================================================================= -->
+  <!-- SECTION 6: PRACTICAL TAKEAWAYS FOR AI BUILDERS                    -->
+  <!-- ================================================================= -->
+  <section class="space-y-2.5 avoid-break">
+    <div class="flex items-center justify-between border-b border-slate-200 pb-1">
+      <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide sans-header">
+        6. Three Practical Golden Rules for AI Engineers
+      </h2>
+    </div>
+
+    <div class="space-y-2 text-xs">
+      <div class="p-2.5 bg-slate-50 border-l-4 border-slate-900 rounded-r-xl flex items-start space-x-2.5">
+        <span class="font-mono font-bold text-slate-900">RULE 1:</span>
+        <span class="text-slate-700"><strong>Do not prompt when headroom is zero.</strong> If a model already scores 95%+ on a task unaided, injecting prompt rules provides zero upside and invites cross-rule regression. Run a diagnostic baseline first.</span>
+      </div>
+
+      <div class="p-2.5 bg-slate-50 border-l-4 border-slate-900 rounded-r-xl flex items-start space-x-2.5">
+        <span class="font-mono font-bold text-slate-900">RULE 2:</span>
+        <span class="text-slate-700"><strong>Never trust self-reported confidence.</strong> Measure multi-rollout consensus entropy (N=5). If rollouts disagree, the knowledge has not taken hold, regardless of how confident the tokens look.</span>
+      </div>
+
+      <div class="p-2.5 bg-slate-50 border-l-4 border-slate-900 rounded-r-xl flex items-start space-x-2.5">
+        <span class="font-mono font-bold text-slate-900">RULE 3:</span>
+        <span class="text-slate-700"><strong>Rationality is architectural, not verbal.</strong> You cannot prompt an agent into being careful by saying "please double check." Risk gating must be enforced by a structural Bayes gate that defaults to HOLD.</span>
+      </div>
+    </div>
   </section>
 
   <!-- REFERENCES -->
-  <footer class="pt-4 border-t border-slate-300 text-[10px] text-slate-500 space-y-1.5 avoid-break">
-    <h3 class="font-bold text-slate-700 uppercase sans-header text-[10px]">References</h3>
+  <footer class="pt-3 border-t border-slate-300 text-[9.5px] text-slate-500 space-y-1 avoid-break">
+    <div class="font-bold text-slate-700 uppercase sans-header text-[9.5px]">References</div>
     <p>1. Wan, Z. (2026). <em>Instruction Gains Track the Knowledge Gap: A Diagnose-Then-Teach Analysis of Frozen Language Models.</em> Research Report, October 2026.</p>
-    <p>2. Cosmos Analytics AI Laboratory. (2026). <em>A Rational AI Agent Works Like a Brain: Cognitive Architecture Whitepaper.</em> Antigravity Engineering Library.</p>
-    <p>3. Brier, G. W. (1950). Verification of forecasts expressed in terms of probability. <em>Monthly Weather Review</em>, 78(1), 1-3.</p>
-    <p>4. Kahneman, D. (2011). <em>Thinking, Fast and Slow.</em> Farrar, Straus and Giroux.</p>
-    <p>5. Friston, K. (2010). The free-energy principle: a unified brain theory?. <em>Nature Reviews Neuroscience</em>, 11(2), 127-138.</p>
+    <p>2. Cosmos Analytics AI Laboratory. (2026). <em>A Rational AI Agent Works Like a Brain: Cognitive Architecture Whitepaper.</em></p>
+    <p>3. Kahneman, D. (2011). <em>Thinking, Fast and Slow.</em> Farrar, Straus and Giroux.</p>
+    <p>4. Brier, G. W. (1950). Verification of forecasts expressed in terms of probability. <em>Monthly Weather Review</em>, 78(1), 1-3.</p>
   </footer>
 
 </body>
