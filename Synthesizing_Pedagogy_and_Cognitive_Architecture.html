@@ -7,16 +7,16 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
   <style>
     @page {
       size: A4;
-      margin: 14mm 14mm 14mm 14mm;
+      margin: 10mm 12mm 10mm 12mm;
     }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 10pt;
-      line-height: 1.5;
+      font-size: 8.5pt;
+      line-height: 1.38;
       color: #0f172a;
       background: #ffffff;
     }
@@ -38,392 +38,368 @@
       width: 100%;
     }
     th, td {
-      padding: 7px 10px;
+      padding: 4.5px 7px;
       border: 1px solid #cbd5e1;
     }
   </style>
 </head>
-<body class="p-1 max-w-4xl mx-auto space-y-5">
+<body class="p-0 max-w-4xl mx-auto space-y-2.5">
 
   <!-- ================================================================= -->
-  <!-- HERO TITLE & METADATA                                             -->
+  <!-- PAGE 1: THE FOUNDATIONAL THESIS & EMPIRICAL EVIDENCE              -->
   <!-- ================================================================= -->
-  <header class="text-center pb-4 border-b-2 border-slate-900 avoid-break">
-    <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-slate-900 text-white text-[11px] font-bold uppercase tracking-wider mb-2.5 sans-header">
-      <i class="fa-solid fa-brain text-amber-300"></i>
-      <span>Cognitive Systems Engineering &bull; Monograph</span>
+
+  <!-- HEADER (MINIMAL, NO ORGANIZATION, CLEAN LIGHT THEME) -->
+  <header class="text-center pb-2 border-b border-slate-200 avoid-break">
+    <div class="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-slate-100 text-slate-800 text-[9px] font-bold uppercase tracking-wider mb-1 sans-header border border-slate-200">
+      <i class="fa-solid fa-brain text-amber-500"></i>
+      <span>Autonomous AI Architecture &bull; Executive Monograph</span>
     </div>
-    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-950 tracking-tight leading-tight mb-2">
+    <h1 class="text-xl sm:text-2xl font-black text-slate-950 tracking-tight leading-tight mb-0.5">
       Extrinsic Education vs. Intrinsic Rationality in Autonomous AI
     </h1>
-    <h2 class="text-sm sm:text-base font-semibold text-slate-600 max-w-2xl mx-auto mb-3">
+    <p class="text-[11px] font-medium text-slate-500 max-w-xl mx-auto mb-1.5">
       Why Frozen Language Models Need Cognitive Architecture: Reconciling "Diagnose-Then-Teach" with Brain-Inspired Governance
-    </h2>
-
-    <div class="flex justify-center items-center gap-6 text-xs text-slate-600 sans-header pt-1">
-      <div><strong>Zhao Wan</strong> &bull; <span class="text-slate-500">Dept. of Computer Science</span></div>
-      <div class="h-4 w-px bg-slate-300"></div>
-      <div><strong>Cosmos Analytics AI Lab</strong> &bull; <span class="text-slate-500">Cognitive Systems Group</span></div>
-      <div class="h-4 w-px bg-slate-300"></div>
-      <div><strong>Date:</strong> <span class="text-slate-700 font-semibold">November 2026</span></div>
+    </p>
+    <div class="flex justify-center items-center gap-3 text-[10px] text-slate-600 sans-header">
+      <div><strong>Author:</strong> Zhao Wan</div>
+      <div class="h-3 w-px bg-slate-300"></div>
+      <div><strong>Date:</strong> November 2026</div>
+      <div class="h-3 w-px bg-slate-300"></div>
+      <div><strong>Core Theme:</strong> Light Mode Cognitive Architecture</div>
     </div>
   </header>
 
-  <!-- ================================================================= -->
-  <!-- CORE INTUITIVE INSIGHT: EXTRINSIC VS INTRINSIC (HERO INFOGRAPHIC) -->
-  <!-- ================================================================= -->
-  <section class="bg-slate-50 border-2 border-slate-300 rounded-2xl p-4 shadow-xs avoid-break">
-    <div class="text-xs font-black uppercase tracking-wider text-slate-900 mb-2 sans-header flex items-center justify-between">
+  <!-- HERO PRINCIPLE: EXTRINSIC VS INTRINSIC -->
+  <section class="bg-[#f8fafc] border border-slate-200 rounded-xl p-2.5 shadow-2xs avoid-break">
+    <div class="text-[10px] font-black uppercase tracking-wider text-slate-900 mb-1.5 sans-header flex items-center justify-between">
       <span class="flex items-center space-x-1.5">
-        <i class="fa-solid fa-lightbulb text-amber-500 text-sm"></i>
-        <span>The Core Thesis: You Cannot Prompt an AI into Being Rational</span>
+        <i class="fa-solid fa-lightbulb text-amber-500"></i>
+        <span>The Core Principle: You Cannot Prompt an AI into Being Rational</span>
       </span>
-      <span class="text-[10px] text-slate-500 font-mono font-normal">Education = Content &bull; Rationality = Governance</span>
+      <span class="text-[9px] text-slate-500 font-mono">Education = Content &bull; Rationality = Governance</span>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs mb-3">
-      <!-- EXTRINSIC EDUCATION CARD -->
-      <div class="p-3 bg-emerald-50/80 border-2 border-emerald-300 rounded-xl space-y-1.5">
-        <div class="flex items-center justify-between text-emerald-950 font-bold sans-header pb-1 border-b border-emerald-200">
-          <span class="flex items-center space-x-1.5">
-            <i class="fa-solid fa-book-open text-emerald-700"></i>
+    <div class="grid grid-cols-2 gap-2 text-xs">
+      <!-- 1. EXTRINSIC EDUCATION -->
+      <div class="p-2 bg-white border border-emerald-300 rounded-lg space-y-1">
+        <div class="flex items-center justify-between text-emerald-950 font-bold sans-header pb-0.5 border-b border-emerald-100 text-[10px]">
+          <span class="flex items-center space-x-1">
+            <i class="fa-solid fa-book-open text-emerald-600 text-[10px]"></i>
             <span>1. EDUCATION IS EXTRINSIC</span>
           </span>
-          <span class="px-2 py-0.5 rounded bg-emerald-200/70 text-emerald-900 text-[9px] font-mono">The Curriculum</span>
+          <span class="px-1 py-0.2 rounded bg-emerald-50 text-emerald-800 text-[8px] font-mono border border-emerald-200">The Curriculum</span>
         </div>
-        <p class="text-slate-700 text-[11px] leading-relaxed">
-          Education is <strong>what is poured into the model from the outside</strong>: system prompts, rulebooks, handbooks, SOP guidelines, and precedent cases. It is the external knowledge payload.
+        <p class="text-slate-600 text-[9.5px] leading-tight">
+          Education is <strong>what is poured in from the outside</strong>: system prompts, rulebooks, handbooks, SOP guidelines, and indexed cases. It is external knowledge payload.
         </p>
-        <div class="bg-white p-2 rounded-lg border border-emerald-200 font-mono text-[10px] text-emerald-900">
-          <strong>Key Trait:</strong> Passive ingestion. An LLM can memorize all 16 rules in a handbook and still be gullible, reckless, and blind to contradictory local facts.
+        <div class="text-[8.5px] text-emerald-900 font-mono bg-emerald-50/60 p-1 rounded border border-emerald-100">
+          <strong>Risk:</strong> Passive ingestion. A model can memorize all 16 rules and still be gullible, reckless, and blind to local facts.
         </div>
       </div>
 
-      <!-- INTRINSIC RATIONALITY CARD -->
-      <div class="p-3 bg-indigo-50/80 border-2 border-indigo-300 rounded-xl space-y-1.5">
-        <div class="flex items-center justify-between text-indigo-950 font-bold sans-header pb-1 border-b border-indigo-200">
-          <span class="flex items-center space-x-1.5">
-            <i class="fa-solid fa-scale-balanced text-indigo-700"></i>
+      <!-- 2. INTRINSIC RATIONALITY -->
+      <div class="p-2 bg-white border border-indigo-300 rounded-lg space-y-1">
+        <div class="flex items-center justify-between text-indigo-950 font-bold sans-header pb-0.5 border-b border-indigo-100 text-[10px]">
+          <span class="flex items-center space-x-1">
+            <i class="fa-solid fa-scale-balanced text-indigo-600 text-[10px]"></i>
             <span>2. RATIONALITY IS INTRINSIC</span>
           </span>
-          <span class="px-2 py-0.5 rounded bg-indigo-200/70 text-indigo-900 text-[9px] font-mono">The Governance</span>
+          <span class="px-1 py-0.2 rounded bg-indigo-50 text-indigo-800 text-[8px] font-mono border border-indigo-200">The Governance</span>
         </div>
-        <p class="text-slate-700 text-[11px] leading-relaxed">
-          Rationality is <strong>how the mind governs itself from the inside</strong>: self-doubt, calibration, measuring rollout conflict, and balancing the asymmetric cost of mistakes before acting.
+        <p class="text-slate-600 text-[9.5px] leading-tight">
+          Rationality is <strong>how the mind governs itself from the inside</strong>: self-doubt, calibration, measuring rollout conflict, and balancing the asymmetric cost of mistakes.
         </p>
-        <div class="bg-white p-2 rounded-lg border border-indigo-200 font-mono text-[10px] text-indigo-900">
-          <strong>Key Trait:</strong> Active executive control. A rational agent defaults to <strong>HOLD</strong>, verifies whether confidence matches reality, and escalates to humans when uncertain.
+        <div class="text-[8.5px] text-indigo-900 font-mono bg-indigo-50/60 p-1 rounded border border-indigo-100">
+          <strong>Control:</strong> Active executive gate. A rational agent defaults to <strong>HOLD</strong> and escalates when confidence is unproven.
         </div>
       </div>
     </div>
 
-    <!-- PUNCHLINE CALLOUT -->
-    <div class="p-2.5 bg-amber-50 rounded-xl border border-amber-300 text-xs text-amber-950 flex items-center justify-between">
-      <div class="flex items-center space-x-2">
-        <i class="fa-solid fa-triangle-exclamation text-amber-600 text-base shrink-0"></i>
-        <span><strong>The "Educated Fool" Trap:</strong> An AI crammed with extrinsic rules without intrinsic rationality will blindly obey written text over code reality, hallucinate high confidence, and commit disastrous mistakes.</span>
-      </div>
+    <!-- CALLOUT -->
+    <div class="mt-1.5 p-1.5 bg-amber-50/90 rounded border border-amber-200 text-[9.5px] text-amber-950 flex items-center space-x-2">
+      <i class="fa-solid fa-triangle-exclamation text-amber-600 text-xs shrink-0"></i>
+      <span><strong>The "Educated Fool" Trap:</strong> An AI crammed with extrinsic rules without intrinsic rationality blindly obeys written text over code reality, hallucinates certainty, and breaks production.</span>
     </div>
   </section>
 
-  <!-- ================================================================= -->
-  <!-- SECTION 1: THE EMPIRICAL EVIDENCE (WAN 2026)                      -->
-  <!-- ================================================================= -->
-  <section class="space-y-2.5 avoid-break">
-    <div class="flex items-center justify-between border-b border-slate-200 pb-1">
-      <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide sans-header">
-        1. The Empirical Evidence: What Happens When Education Lacks Rationality?
+  <!-- 1. EMPIRICAL LESSONS (WAN 2026) -->
+  <section class="space-y-1.5 avoid-break">
+    <div class="flex items-center justify-between border-b border-slate-200 pb-0.5">
+      <h2 class="text-[10.5px] font-black text-slate-900 uppercase tracking-wide sans-header">
+        1. Empirical Proof: What Happens When Education Lacks Rationality?
       </h2>
-      <span class="text-xs font-mono text-slate-500 font-medium">Zhao Wan (October 2026)</span>
+      <span class="text-[9px] font-mono text-slate-500">Wan (2026) &bull; 1,848 Graded Code Tasks</span>
     </div>
 
-    <p class="text-xs text-slate-700 leading-relaxed">
-      In a rigorous empirical evaluation of 1,848 code repair attempts on Claude Sonnet and Gemini 2.5 Flash across 14 bug families, Wan (2026) demonstrated both the power and the severe failure modes of purely extrinsic instruction:
-    </p>
-
-    <!-- 3 EMPIRICAL FINDINGS GRID -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-      <!-- FINDING 1: HEADROOM -->
-      <div class="p-3 bg-white border border-slate-300 rounded-xl shadow-2xs space-y-1">
-        <div class="flex items-center space-x-1.5 text-slate-900 font-bold sans-header text-[11px]">
-          <span class="w-5 h-5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[10px]">1</span>
+    <div class="grid grid-cols-3 gap-2 text-xs">
+      <div class="p-2 bg-white border border-slate-200 rounded-lg space-y-0.5 shadow-2xs">
+        <div class="flex items-center space-x-1 text-slate-900 font-bold sans-header text-[10px]">
+          <span class="w-3.5 h-3.5 rounded-full bg-slate-900 text-white flex items-center justify-center text-[8px]">1</span>
           <span>Gain Tracks Headroom</span>
         </div>
-        <div class="text-xs font-mono font-bold text-emerald-700">Gain &le; 100 &minus; Baseline</div>
-        <p class="text-[11px] text-slate-600 leading-tight">
-          Where models knew nothing unaided (0% baseline), instruction produced massive gains (+60 to +100 points). But where the model already scored 100%, instruction yielded zero gain.
+        <div class="text-[9px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded inline-block">
+          Gain &le; 100 &minus; Baseline
+        </div>
+        <p class="text-[9px] text-slate-600 leading-tight">
+          Where baseline was 0%, instruction jumped +60 to +100 pts. But at 100% baseline, instruction gained zero points.
         </p>
       </div>
 
-      <!-- FINDING 2: OVER-COMPLIANCE -->
-      <div class="p-3 bg-rose-50/60 border border-rose-300 rounded-xl shadow-2xs space-y-1">
-        <div class="flex items-center space-x-1.5 text-rose-950 font-bold sans-header text-[11px]">
-          <span class="w-5 h-5 rounded-full bg-rose-700 text-white flex items-center justify-center text-[10px]">2</span>
-          <span>Pathological Over-Compliance</span>
+      <div class="p-2 bg-rose-50/50 border border-rose-200 rounded-lg space-y-0.5 shadow-2xs">
+        <div class="flex items-center space-x-1 text-rose-950 font-bold sans-header text-[10px]">
+          <span class="w-3.5 h-3.5 rounded-full bg-rose-700 text-white flex items-center justify-center text-[8px]">2</span>
+          <span>Over-Compliance Crash</span>
         </div>
-        <div class="text-xs font-mono font-bold text-rose-700">100% &rarr; 56% (-44 points)</div>
-        <p class="text-[11px] text-slate-600 leading-tight">
-          In <code>service_errors</code>, Claude scored 16/16 unaided, but crashed to 9/16 with its rule. The model blindly obeyed the extrinsic prompt rule over empirical ticket evidence!
+        <div class="text-[9px] font-mono font-bold text-rose-700 bg-rose-100/60 px-1 py-0.2 rounded inline-block">
+          100% &rarr; 56% (-44 pts)
+        </div>
+        <p class="text-[9px] text-slate-600 leading-tight">
+          In <code>service_errors</code>, Claude passed 16/16 unaided, but crashed to 9/16 with its rule—blindly prioritizing prompt text over code!
         </p>
       </div>
 
-      <!-- FINDING 3: INTERFERENCE -->
-      <div class="p-3 bg-amber-50/60 border border-amber-300 rounded-xl shadow-2xs space-y-1">
-        <div class="flex items-center space-x-1.5 text-amber-950 font-bold sans-header text-[11px]">
-          <span class="w-5 h-5 rounded-full bg-amber-700 text-white flex items-center justify-center text-[10px]">3</span>
-          <span>Handbook Cross-Interference</span>
+      <div class="p-2 bg-amber-50/50 border border-amber-200 rounded-lg space-y-0.5 shadow-2xs">
+        <div class="flex items-center space-x-1 text-amber-950 font-bold sans-header text-[10px]">
+          <span class="w-3.5 h-3.5 rounded-full bg-amber-700 text-white flex items-center justify-center text-[8px]">3</span>
+          <span>Handbook Interference</span>
         </div>
-        <div class="text-xs font-mono font-bold text-amber-700">All 16 Rules Broke Code</div>
-        <p class="text-[11px] text-slate-600 leading-tight">
-          Dumping all 16 rules scored worse than 1 rule in 4 families. Rules leaked unneeded error imports, container-immutability leaked into state machines, and placebos cost Gemini points (p &asymp; 0.04).
+        <div class="text-[9px] font-mono font-bold text-amber-700 bg-amber-100/60 px-1 py-0.2 rounded inline-block">
+          All 16 Rules Broke Code
+        </div>
+        <p class="text-[9px] text-slate-600 leading-tight">
+          Dumping all 16 rules scored worse than 1 rule in 4 families. Rules leaked unneeded imports; placebos cost points (p &asymp; 0.04).
         </p>
       </div>
     </div>
   </section>
 
-  <!-- ================================================================= -->
-  <!-- SECTION 2: THE 3 COGNITIVE HARNESSES (INTRINSIC RATIONALITY)      -->
-  <!-- ================================================================= -->
-  <section class="space-y-3 avoid-break page-break">
-    <div class="flex items-center justify-between border-b border-slate-200 pb-1">
-      <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide sans-header">
+  <!-- 2. THE 3 COGNITIVE HARNESSES -->
+  <section class="space-y-1.5 avoid-break">
+    <div class="flex items-center justify-between border-b border-slate-200 pb-0.5">
+      <h2 class="text-[10.5px] font-black text-slate-900 uppercase tracking-wide sans-header">
         2. The Intrinsic Solution: The 3 Cognitive Harnesses
       </h2>
-      <span class="text-xs font-mono text-slate-500 font-medium">Brain-Inspired Governance</span>
+      <span class="text-[9px] font-mono text-slate-500">Brain-Inspired Architecture</span>
     </div>
 
-    <p class="text-xs text-slate-700 leading-relaxed">
-      To transform an educated model into a truly rational agent, the Cognitive Architecture bounds the frozen foundation LLM inside three autonomous harnesses:
-    </p>
-
-    <!-- THE 3 HARNESSES HORIZONTAL PIPELINE -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+    <div class="grid grid-cols-3 gap-2 text-xs">
       
-      <!-- HARNESS 1: KNOW -->
-      <div class="p-3.5 bg-emerald-50/70 border-2 border-emerald-300 rounded-2xl space-y-2 flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between pb-1.5 border-b border-emerald-200">
-            <span class="text-xs font-extrabold text-emerald-950 flex items-center space-x-1.5 sans-header">
-              <span class="w-5 h-5 rounded-full bg-emerald-700 text-white text-[10px] flex items-center justify-center font-bold">1</span>
-              <span>KNOW IT (Education)</span>
-            </span>
-            <span class="px-1.5 py-0.5 rounded bg-white text-emerald-800 text-[9px] font-mono font-bold border border-emerald-200">Ingestion</span>
-          </div>
-          <div class="space-y-1.5 mt-2 font-mono text-[10.5px]">
-            <div class="p-1.5 bg-white rounded border border-emerald-200">
-              <strong class="text-emerald-900 block font-sans font-bold">Cortex (Semantic Memory)</strong>
-              <span class="text-slate-600 text-[10px]">Ontology + Knowledge Graph (Invariant domain rules &amp; SOPs)</span>
-            </div>
-            <div class="p-1.5 bg-white rounded border border-emerald-200">
-              <strong class="text-emerald-900 block font-sans font-bold">Hippocampus (Episodic Memory)</strong>
-              <span class="text-slate-600 text-[10px]">Context Graph index of past cases; <em>opened only when needed</em></span>
-            </div>
-          </div>
+      <!-- 1: KNOW -->
+      <div class="p-2 bg-white border border-emerald-300 rounded-lg space-y-1">
+        <div class="flex items-center justify-between pb-0.5 border-b border-emerald-100">
+          <span class="text-[10px] font-bold text-emerald-950 flex items-center space-x-1 sans-header">
+            <span class="w-3.5 h-3.5 rounded-full bg-emerald-600 text-white text-[8px] flex items-center justify-center">1</span>
+            <span>KNOW IT (Education)</span>
+          </span>
+          <span class="text-[8px] font-mono font-bold text-emerald-700 bg-emerald-50 px-1 py-0.2 rounded">Ingestion</span>
         </div>
-        <div class="text-[9.5px] font-mono text-emerald-800 pt-1.5 border-t border-emerald-200 font-semibold">
-          Fix: Stops context stuffing by retrieving only matching invariants.
+        <div class="space-y-0.5 text-[9px] font-mono">
+          <div><strong class="text-emerald-900 font-sans">Cortex:</strong> Ontology + Knowledge Graph (Invariant domain rules)</div>
+          <div><strong class="text-emerald-900 font-sans">Hippocampus:</strong> Precedent Context Graph (Indexed, opened only when needed)</div>
         </div>
+        <p class="text-[8.5px] text-slate-500 pt-0.5 border-t border-slate-100 italic">
+          Solves context stuffing by retrieving only matching invariants.
+        </p>
       </div>
 
-      <!-- HARNESS 2: BE SURE -->
-      <div class="p-3.5 bg-purple-50/70 border-2 border-purple-300 rounded-2xl space-y-2 flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between pb-1.5 border-b border-purple-200">
-            <span class="text-xs font-extrabold text-purple-950 flex items-center space-x-1.5 sans-header">
-              <span class="w-5 h-5 rounded-full bg-purple-700 text-white text-[10px] flex items-center justify-center font-bold">2</span>
-              <span>BE SURE (Calibration)</span>
-            </span>
-            <span class="px-1.5 py-0.5 rounded bg-white text-purple-800 text-[9px] font-mono font-bold border border-purple-200">Epistemic</span>
-          </div>
-          <div class="space-y-1.5 mt-2 font-mono text-[10.5px]">
-            <div class="p-1.5 bg-white rounded border border-purple-200">
-              <strong class="text-purple-900 block font-sans font-bold">Prefrontal Metacognition</strong>
-              <span class="text-slate-600 text-[10px]">Reliability curve: says 90% only when right ~90% of the time</span>
-            </div>
-            <div class="p-1.5 bg-white rounded border border-purple-200">
-              <strong class="text-purple-900 block font-sans font-bold">Anterior Cingulate Monitor</strong>
-              <span class="text-slate-600 text-[10px]">Samples N=5 rollouts. If answers disagree, knowledge has not taken hold</span>
-            </div>
-          </div>
+      <!-- 2: BE SURE -->
+      <div class="p-2 bg-white border border-purple-300 rounded-lg space-y-1">
+        <div class="flex items-center justify-between pb-0.5 border-b border-purple-100">
+          <span class="text-[10px] font-bold text-purple-950 flex items-center space-x-1 sans-header">
+            <span class="w-3.5 h-3.5 rounded-full bg-purple-600 text-white text-[8px] flex items-center justify-center">2</span>
+            <span>BE SURE (Calibration)</span>
+          </span>
+          <span class="text-[8px] font-mono font-bold text-purple-700 bg-purple-50 px-1 py-0.2 rounded">Epistemic</span>
         </div>
-        <div class="text-[9.5px] font-mono text-purple-800 pt-1.5 border-t border-purple-200 font-semibold">
-          Fix: Stops over-compliance by evaluating confidence vs reality.
+        <div class="space-y-0.5 text-[9px] font-mono">
+          <div><strong class="text-purple-900 font-sans">Prefrontal Metacognition:</strong> Reliability curve (P̂ = P_actual)</div>
+          <div><strong class="text-purple-900 font-sans">Anterior Cingulate:</strong> N=5 Rollout conflict monitor (entropy check)</div>
         </div>
+        <p class="text-[8.5px] text-slate-500 pt-0.5 border-t border-slate-100 italic">
+          Solves over-compliance by evaluating confidence against reality.
+        </p>
       </div>
 
-      <!-- HARNESS 3: ACT -->
-      <div class="p-3.5 bg-amber-50/70 border-2 border-amber-300 rounded-2xl space-y-2 flex flex-col justify-between">
-        <div>
-          <div class="flex items-center justify-between pb-1.5 border-b border-amber-200">
-            <span class="text-xs font-extrabold text-amber-950 flex items-center space-x-1.5 sans-header">
-              <span class="w-5 h-5 rounded-full bg-amber-700 text-white text-[10px] flex items-center justify-center font-bold">3</span>
-              <span>ACT (Gate Harness)</span>
-            </span>
-            <span class="px-1.5 py-0.5 rounded bg-white text-amber-800 text-[9px] font-mono font-bold border border-amber-200">Instrumental</span>
-          </div>
-          <div class="space-y-1.5 mt-2 font-mono text-[10.5px]">
-            <div class="p-1.5 bg-white rounded border border-amber-200">
-              <strong class="text-amber-900 block font-sans font-bold">Risk Threshold (&theta;*)</strong>
-              <span class="text-slate-600 text-[10px]">&theta;* = Cost(Type 1) / [ Cost(Type 1) + Cost(Type 2) ]</span>
-            </div>
-            <div class="p-1.5 bg-white rounded border border-amber-200">
-              <strong class="text-amber-900 block font-sans font-bold">Basal Ganglia Dispatch</strong>
-              <span class="text-slate-600 text-[10px]">Default is <strong>HOLD</strong>. Releases to ACCEPT only when P̂ &ge; &theta;*, else ESCALATE</span>
-            </div>
-          </div>
+      <!-- 3: ACT -->
+      <div class="p-2 bg-white border border-amber-300 rounded-lg space-y-1">
+        <div class="flex items-center justify-between pb-0.5 border-b border-amber-100">
+          <span class="text-[10px] font-bold text-amber-950 flex items-center space-x-1 sans-header">
+            <span class="w-3.5 h-3.5 rounded-full bg-amber-600 text-white text-[8px] flex items-center justify-center">3</span>
+            <span>ACT (Gate Harness)</span>
+          </span>
+          <span class="text-[8px] font-mono font-bold text-amber-700 bg-amber-50 px-1 py-0.2 rounded">Instrumental</span>
         </div>
-        <div class="text-[9.5px] font-mono text-amber-800 pt-1.5 border-t border-amber-200 font-semibold">
-          Fix: Stops un-gated action on unsolvable cases (e.g. task 2018).
+        <div class="space-y-0.5 text-[9px] font-mono">
+          <div><strong class="text-amber-900 font-sans">Risk Threshold:</strong> &theta;* = Cost(Type 1) / [ Cost(1) + Cost(2) ]</div>
+          <div><strong class="text-amber-900 font-sans">Basal Ganglia:</strong> Default HOLD. Releases if P̂ &ge; &theta;*, else ESCALATE</div>
         </div>
+        <p class="text-[8.5px] text-slate-500 pt-0.5 border-t border-slate-100 italic">
+          Solves un-gated action on unsolvable cases (e.g. task 2018).
+        </p>
       </div>
 
     </div>
   </section>
 
   <!-- ================================================================= -->
-  <!-- SECTION 3: THE UNIFIED SYSTEM ARCHITECTURE (ECA DIAGRAM)          -->
+  <!-- PAGE 2: THE COMBINED ARCHITECTURE, FEEDBACK LOOP & RULES          -->
   <!-- ================================================================= -->
-  <section class="space-y-3 avoid-break">
-    <div class="flex items-center justify-between border-b border-slate-200 pb-1">
-      <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide sans-header">
-        3. The Synthesis: The Educated Cognitive Agent (ECA)
+  <div class="page-break"></div>
+
+  <!-- 3. UNIFIED ARCHITECTURE IN LIGHT MODE (CRISP HTML CARDS) -->
+  <section class="space-y-2 avoid-break pt-1">
+    <div class="flex items-center justify-between border-b border-slate-200 pb-0.5">
+      <h2 class="text-[10.5px] font-black text-slate-900 uppercase tracking-wide sans-header">
+        3. The Combined Framework: Educated Cognitive Agent (ECA)
       </h2>
-      <span class="text-xs font-mono text-slate-500 font-medium">Extrinsic Invariants Governed by Intrinsic Reason</span>
+      <span class="text-[9px] font-mono text-slate-500">Light Mode Architecture</span>
     </div>
 
-    <!-- THE UNIFIED SVG ARCHITECTURE -->
-    <div class="p-4 bg-slate-950 rounded-2xl text-white shadow-md">
-      <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800">
-        <span class="font-bold text-xs uppercase tracking-wider text-amber-300 sans-header flex items-center space-x-1.5">
-          <i class="fa-solid fa-diagram-project"></i>
-          <span>Educated Cognitive Agent (ECA) Formal Architecture</span>
-        </span>
-        <span class="text-[9.5px] font-mono text-slate-400">Combines Wan (2026) Diagnostic Invariants with 3-Harness Governance</span>
+    <!-- PURE LIGHT THEME ARCHITECTURE FLOW -->
+    <div class="bg-[#f8fafc] border border-slate-200 rounded-xl p-2.5 space-y-2 shadow-2xs">
+      
+      <!-- LEVEL 1: TOP 3 CARDS -->
+      <div class="grid grid-cols-3 gap-2">
+        
+        <!-- CARD 1: KNOW -->
+        <div class="bg-white border-2 border-emerald-400 rounded-lg p-2 space-y-1 shadow-2xs">
+          <div class="flex items-center justify-between pb-1 border-b border-emerald-100">
+            <span class="font-bold text-[9.5px] text-emerald-950 sans-header flex items-center space-x-1">
+              <i class="fa-solid fa-book text-emerald-600"></i>
+              <span>1. EDUCATION (KNOW)</span>
+            </span>
+            <span class="text-[8px] font-mono text-emerald-800 bg-emerald-50 px-1 py-0.2 rounded border border-emerald-200">Extrinsic</span>
+          </div>
+          <div class="text-[8.5px] text-slate-600 space-y-0.5 font-mono">
+            <div>&bull; Diagnostic Baseline Audit (Wan 2026)</div>
+            <div>&bull; Cortex: Semantic KG (Target Rules)</div>
+            <div>&bull; Hippocampus: Context Precedent Index</div>
+          </div>
+          <div class="text-[8px] font-bold text-emerald-700 pt-0.5 border-t border-emerald-50 font-mono">
+            Opened only when needed &bull; Bounded Headroom
+          </div>
+        </div>
+
+        <!-- CARD 2: REASONER CORE -->
+        <div class="bg-white border-2 border-blue-400 rounded-lg p-2 space-y-1 shadow-2xs">
+          <div class="flex items-center justify-between pb-1 border-b border-blue-100">
+            <span class="font-bold text-[9.5px] text-blue-950 sans-header flex items-center space-x-1">
+              <i class="fa-solid fa-microchip text-blue-600"></i>
+              <span>2. FOUNDATION REASONER</span>
+            </span>
+            <span class="text-[8px] font-mono text-blue-800 bg-blue-50 px-1 py-0.2 rounded border border-blue-200">LLM Core</span>
+          </div>
+          <div class="text-[8.5px] text-slate-600 space-y-0.5 font-mono">
+            <div>&bull; Frozen Core (Llama 3.3 / Claude / Gemini)</div>
+            <div>&bull; Grounded In-Context Prompt Assembly</div>
+            <div>&bull; N=5 Parallel Candidate Rollouts</div>
+          </div>
+          <div class="text-[8px] font-bold text-blue-700 pt-0.5 border-t border-blue-50 font-mono">
+            Generates candidate actions with logprobs
+          </div>
+        </div>
+
+        <!-- CARD 3: BE SURE -->
+        <div class="bg-white border-2 border-purple-400 rounded-lg p-2 space-y-1 shadow-2xs">
+          <div class="flex items-center justify-between pb-1 border-b border-purple-100">
+            <span class="font-bold text-[9.5px] text-purple-950 sans-header flex items-center space-x-1">
+              <i class="fa-solid fa-chart-line text-purple-600"></i>
+              <span>3. CALIBRATION (BE SURE)</span>
+            </span>
+            <span class="text-[8px] font-mono text-purple-800 bg-purple-50 px-1 py-0.2 rounded border border-purple-200">Intrinsic</span>
+          </div>
+          <div class="text-[8.5px] text-slate-600 space-y-0.5 font-mono">
+            <div>&bull; Prefrontal Metacognition (P̂ vs P_actual)</div>
+            <div>&bull; Anterior Cingulate: Conflict Entropy</div>
+            <div>&bull; Consensus: 5/5 Stable vs Divergent Alert</div>
+          </div>
+          <div class="text-[8px] font-bold text-purple-700 pt-0.5 border-t border-purple-50 font-mono">
+            Epistemic validity &bull; Confidence matches facts
+          </div>
+        </div>
+
       </div>
 
-      <svg class="w-full h-auto text-xs font-mono" viewBox="0 0 760 350" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- TIER 1: INGESTION -->
-        <rect x="20" y="20" width="220" height="115" rx="10" fill="#1e293b" stroke="#059669" stroke-width="2"/>
-        <text x="35" y="42" fill="#34d399" font-weight="bold" font-size="10.5">1. EDUCATION HARNESS (KNOW)</text>
-        <text x="35" y="65" fill="#94a3b8" font-size="9">&bull; Diagnostic Baseline Audit (Wan 2026)</text>
-        <text x="35" y="83" fill="#94a3b8" font-size="9">&bull; Cortex: Semantic KG (Invariant Rules)</text>
-        <text x="35" y="101" fill="#94a3b8" font-size="9">&bull; Hippocampus: Episodic Context Index</text>
-        <text x="35" y="119" fill="#34d399" font-size="8.5">EXTRINSIC PAYLOAD: Opened only when needed</text>
+      <!-- LEVEL 2: ACT GATE & DISPATCH -->
+      <div class="bg-white border-2 border-amber-400 rounded-lg p-2 space-y-1 shadow-2xs">
+        <div class="flex items-center justify-between pb-1 border-b border-amber-100">
+          <span class="font-bold text-[9.5px] text-amber-950 sans-header flex items-center space-x-1">
+            <i class="fa-solid fa-sliders text-amber-600"></i>
+            <span>4. GATE HARNESS (ACT WISELY) &bull; Intrinsic Instrumental Governance</span>
+          </span>
+          <span class="text-[8px] font-mono text-amber-800 bg-amber-50 px-1.5 py-0.2 rounded border border-amber-200">Bayes Risk Gate</span>
+        </div>
+        <div class="flex items-center justify-between text-[8.5px] font-mono text-slate-700 pt-0.5">
+          <span><strong>Risk Cutoff:</strong> &theta;* = Cost(Type 1) / [ Cost(Type 1) + Cost(Type 2) ]</span>
+          <span><strong>Basal Ganglia:</strong> Default is <strong>HOLD</strong></span>
+          <span><strong>Dispatch Rule:</strong> Release if P̂ &ge; &theta;*, else CONFIRM / ESCALATE</span>
+        </div>
+      </div>
 
-        <!-- TIER 2: LLM CORE -->
-        <rect x="270" y="20" width="220" height="115" rx="10" fill="#1e293b" stroke="#3b82f6" stroke-width="2"/>
-        <text x="285" y="42" fill="#60a5fa" font-weight="bold" font-size="10.5">2. FOUNDATION REASONER</text>
-        <text x="285" y="65" fill="#94a3b8" font-size="9">&bull; Frozen LLM (Llama 3.3 / Claude / Gemini)</text>
-        <text x="285" y="83" fill="#94a3b8" font-size="9">&bull; In-Context Constrained Rollouts</text>
-        <text x="285" y="101" fill="#94a3b8" font-size="9">&bull; N=5 Parallel Candidate Rollouts</text>
-        <text x="285" y="119" fill="#60a5fa" font-size="8.5">Generates candidate actions with logprobs</text>
+      <!-- LEVEL 3: 3 ACTIONS & CLOSED LOOP -->
+      <div class="flex items-center justify-between pt-0.5 text-[9px] font-mono">
+        <div class="flex items-center space-x-2 text-amber-800 font-bold bg-amber-50 px-2 py-1 rounded border border-amber-200">
+          <i class="fa-solid fa-arrows-rotate text-amber-600 animate-spin text-[8px]"></i>
+          <span>CLOSED LEARNING LOOP: Type 1 Caution &bull; Type 2 Regret loop back to update Knowledge Graph</span>
+        </div>
+        <div class="flex items-center space-x-1.5">
+          <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold">ACCEPT (P̂ &ge; &theta;*)</span>
+          <span class="px-2 py-0.5 rounded bg-indigo-50 text-indigo-800 border border-indigo-300 font-bold">CONFIRM (2nd Check)</span>
+          <span class="px-2 py-0.5 rounded bg-rose-50 text-rose-800 border border-rose-300 font-bold">ESCALATE (Human Expert)</span>
+        </div>
+      </div>
 
-        <!-- TIER 3: CALIBRATION -->
-        <rect x="520" y="20" width="220" height="115" rx="10" fill="#1e293b" stroke="#7c3aed" stroke-width="2"/>
-        <text x="535" y="42" fill="#a78bfa" font-weight="bold" font-size="10.5">3. CALIBRATION (BE SURE)</text>
-        <text x="535" y="65" fill="#94a3b8" font-size="9">&bull; Prefrontal Metacognition (P̂ vs P_actual)</text>
-        <text x="535" y="83" fill="#94a3b8" font-size="9">&bull; Anterior Cingulate Conflict Monitor</text>
-        <text x="535" y="101" fill="#94a3b8" font-size="9">&bull; Agreement Entropy: H(A) across 5 seeds</text>
-        <text x="535" y="119" fill="#a78bfa" font-size="8.5">INTRINSIC EPISTEMIC: Reality Verification</text>
-
-        <!-- TIER 4: GATE -->
-        <rect x="180" y="170" width="400" height="80" rx="10" fill="#1e293b" stroke="#ea580c" stroke-width="2"/>
-        <text x="195" y="195" fill="#fb923c" font-weight="bold" font-size="10.5">4. GATE HARNESS (ACT WISELY) &bull; INTRINSIC GOVERNANCE</text>
-        <text x="195" y="215" fill="#94a3b8" font-size="9">&bull; Bayes Risk Cutoff: &theta;* = Cost(Type 1) / [ Cost(Type 1) + Cost(Type 2) ]</text>
-        <text x="195" y="235" fill="#94a3b8" font-size="9">&bull; Basal Ganglia Action Dispatch: Default HOLD &rarr; ACCEPT (P̂ &ge; &theta;*) | CONFIRM | ESCALATE</text>
-
-        <!-- Arrows -->
-        <path d="M 240 77 L 270 77" stroke="#34d399" stroke-width="2"/>
-        <path d="M 490 77 L 520 77" stroke="#60a5fa" stroke-width="2"/>
-        <path d="M 630 135 L 630 210 L 580 210" stroke="#a78bfa" stroke-width="2"/>
-
-        <!-- Feedback Loop -->
-        <path d="M 180 210 C 60 210, 60 150, 110 135" stroke="#f97316" stroke-width="2" stroke-dasharray="4,4" fill="none"/>
-        <text x="70" y="175" fill="#f97316" font-size="8.5" font-weight="bold">CLOSED FEEDBACK LOOP</text>
-        <text x="70" y="190" fill="#f97316" font-size="7.5">Type 1 Caution &bull; Type 2 Regret</text>
-
-        <!-- Actions -->
-        <rect x="200" y="280" width="110" height="42" rx="8" fill="#065f46" stroke="#34d399" stroke-width="1.5"/>
-        <text x="232" y="306" fill="#ffffff" font-weight="bold" font-size="11">ACCEPT</text>
-
-        <rect x="330" y="280" width="110" height="42" rx="8" fill="#3730a3" stroke="#818cf8" stroke-width="1.5"/>
-        <text x="355" y="306" fill="#ffffff" font-weight="bold" font-size="11">CONFIRM</text>
-
-        <rect x="460" y="280" width="110" height="42" rx="8" fill="#881337" stroke="#f43f5e" stroke-width="1.5"/>
-        <text x="485" y="306" fill="#ffffff" font-weight="bold" font-size="11">ESCALATE</text>
-
-        <path d="M 255 250 L 255 280" stroke="#94a3b8" stroke-width="1.5"/>
-        <path d="M 385 250 L 385 280" stroke="#94a3b8" stroke-width="1.5"/>
-        <path d="M 515 250 L 515 280" stroke="#94a3b8" stroke-width="1.5"/>
-      </svg>
     </div>
   </section>
 
-  <!-- ================================================================= -->
-  <!-- SECTION 4: THE CLOSED LEARNING LOOP (CAUTION VS REGRET)           -->
-  <!-- ================================================================= -->
-  <section class="space-y-2.5 avoid-break">
-    <div class="flex items-center justify-between border-b border-slate-200 pb-1">
-      <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide sans-header">
-        4. Learning from Mistakes: How Weak Spots Go Back to Know
+  <!-- 4. CLOSED LEARNING LOOP (CAUTION VS REGRET) -->
+  <section class="space-y-1.5 avoid-break">
+    <div class="flex items-center justify-between border-b border-slate-200 pb-0.5">
+      <h2 class="text-[10.5px] font-black text-slate-900 uppercase tracking-wide sans-header">
+        4. Closed Learning Feedback Loop (Growing Backward to Grow Forward)
       </h2>
-      <span class="text-xs font-mono text-slate-500 font-medium">Reconciling "Growing Backward to Grow Forward"</span>
+      <span class="text-[9px] font-mono text-slate-500">Autonomous Self-Correction</span>
     </div>
 
-    <p class="text-xs text-slate-700 leading-relaxed">
-      In production, an agent will inevitably make mistakes. The Cognitive Architecture implements a dual dopaminergic feedback loop that mirrors human adult learning:
-    </p>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-      <!-- TYPE 1 CAUTION -->
-      <div class="p-3 bg-rose-50 border-2 border-rose-300 rounded-xl space-y-1">
-        <div class="flex items-center justify-between text-rose-950 font-bold sans-header">
-          <span class="flex items-center space-x-1.5">
+    <div class="grid grid-cols-2 gap-2 text-xs">
+      <div class="p-2 bg-rose-50/70 border border-rose-200 rounded-lg space-y-0.5">
+        <div class="flex items-center justify-between text-rose-950 font-bold sans-header text-[10px]">
+          <span class="flex items-center space-x-1">
             <i class="fa-solid fa-shield-halved text-rose-600"></i>
             <span>Bad Item Accepted (Type 1 Error)</span>
           </span>
-          <span class="px-2 py-0.5 rounded bg-rose-200 text-rose-900 text-[9px] font-mono font-bold">Caution: Raise the Bar</span>
+          <span class="text-[8px] font-mono font-bold text-rose-800 bg-rose-100 px-1 py-0.2 rounded">Caution: Raise the Bar</span>
         </div>
-        <p class="text-[11px] text-slate-700 leading-tight">
-          When the agent approves a bad patch or fraudulent claim, it activates <strong>Caution</strong>:
+        <p class="text-[9px] text-slate-700 leading-tight">
+          Mistake raises cost &rarr; increases threshold &theta;* &bull; Injects a defensive invariant clause into Cortex KG to prevent recurrence.
         </p>
-        <ul class="text-[10.5px] space-y-0.5 pl-3 list-disc text-slate-600 font-mono">
-          <li>Cost of Type 1 is increased &rarr; pushes threshold &theta;* higher.</li>
-          <li>A defensive invariant rule is automatically injected into the Cortex KG.</li>
-        </ul>
       </div>
 
-      <!-- TYPE 2 REGRET -->
-      <div class="p-3 bg-indigo-50 border-2 border-indigo-300 rounded-xl space-y-1">
-        <div class="flex items-center justify-between text-indigo-950 font-bold sans-header">
-          <span class="flex items-center space-x-1.5">
+      <div class="p-2 bg-indigo-50/70 border border-indigo-200 rounded-lg space-y-0.5">
+        <div class="flex items-center justify-between text-indigo-950 font-bold sans-header text-[10px]">
+          <span class="flex items-center space-x-1">
             <i class="fa-solid fa-arrow-turn-down text-indigo-600"></i>
             <span>Good Item Held Back (Type 2 Error)</span>
           </span>
-          <span class="px-2 py-0.5 rounded bg-indigo-200 text-indigo-900 text-[9px] font-mono font-bold">Regret: Lower the Bar</span>
+          <span class="text-[8px] font-mono font-bold text-indigo-800 bg-indigo-100 px-1 py-0.2 rounded">Regret: Lower the Bar</span>
         </div>
-        <p class="text-[11px] text-slate-700 leading-tight">
-          When held-back items are checked against the ground truth answer key and found valid:
+        <p class="text-[9px] text-slate-700 leading-tight">
+          Checking held-back items against answer key reveals missed opportunity &rarr; lowers &theta;* &bull; Indexes edge case into Hippocampus.
         </p>
-        <ul class="text-[10.5px] space-y-0.5 pl-3 list-disc text-slate-600 font-mono">
-          <li>Agent experiences <strong>Regret</strong>: lowers &theta;* to prevent future timidness.</li>
-          <li>The missed edge case is indexed directly into the Hippocampus Context Graph.</li>
-        </ul>
       </div>
     </div>
   </section>
 
-  <!-- ================================================================= -->
-  <!-- SECTION 5: COMPARATIVE SUMMARY TABLE                              -->
-  <!-- ================================================================= -->
-  <section class="space-y-2.5 avoid-break page-break">
-    <div class="flex items-center justify-between border-b border-slate-200 pb-1">
-      <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide sans-header">
+  <!-- 5. COMPARATIVE EVALUATION MATRIX -->
+  <section class="space-y-1 avoid-break">
+    <div class="flex items-center justify-between border-b border-slate-200 pb-0.5">
+      <h2 class="text-[10.5px] font-black text-slate-900 uppercase tracking-wide sans-header">
         5. Comparative Evaluation: Extrinsic Education vs. Combined Rationality
       </h2>
     </div>
 
-    <div class="overflow-x-auto text-[10.5px]">
+    <div class="overflow-x-auto text-[8.5px]">
       <table>
         <thead class="bg-slate-100 text-slate-900 sans-header text-left">
           <tr>
@@ -473,41 +449,36 @@
     </div>
   </section>
 
-  <!-- ================================================================= -->
-  <!-- SECTION 6: PRACTICAL TAKEAWAYS FOR AI BUILDERS                    -->
-  <!-- ================================================================= -->
-  <section class="space-y-2.5 avoid-break">
-    <div class="flex items-center justify-between border-b border-slate-200 pb-1">
-      <h2 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide sans-header">
-        6. Three Practical Golden Rules for AI Engineers
+  <!-- 6. THREE PRACTICAL GOLDEN RULES -->
+  <section class="space-y-1 avoid-break">
+    <div class="flex items-center justify-between border-b border-slate-200 pb-0.5">
+      <h2 class="text-[10.5px] font-black text-slate-900 uppercase tracking-wide sans-header">
+        6. Three Golden Rules for Building Reliable AI
       </h2>
     </div>
 
-    <div class="space-y-2 text-xs">
-      <div class="p-2.5 bg-slate-50 border-l-4 border-slate-900 rounded-r-xl flex items-start space-x-2.5">
-        <span class="font-mono font-bold text-slate-900">RULE 1:</span>
-        <span class="text-slate-700"><strong>Do not prompt when headroom is zero.</strong> If a model already scores 95%+ on a task unaided, injecting prompt rules provides zero upside and invites cross-rule regression. Run a diagnostic baseline first.</span>
+    <div class="space-y-1 text-xs">
+      <div class="p-1.5 bg-slate-50 border-l-3 border-slate-900 rounded-r flex items-start space-x-2">
+        <span class="font-mono font-bold text-slate-900 text-[9px]">RULE 1:</span>
+        <span class="text-slate-700 text-[9px]"><strong>Do not prompt when headroom is zero.</strong> If a model already scores 95%+ unaided, prompt injection offers zero upside and invites cross-rule regression. Run a diagnostic baseline first.</span>
       </div>
 
-      <div class="p-2.5 bg-slate-50 border-l-4 border-slate-900 rounded-r-xl flex items-start space-x-2.5">
-        <span class="font-mono font-bold text-slate-900">RULE 2:</span>
-        <span class="text-slate-700"><strong>Never trust self-reported confidence.</strong> Measure multi-rollout consensus entropy (N=5). If rollouts disagree, the knowledge has not taken hold, regardless of how confident the tokens look.</span>
+      <div class="p-1.5 bg-slate-50 border-l-3 border-slate-900 rounded-r flex items-start space-x-2">
+        <span class="font-mono font-bold text-slate-900 text-[9px]">RULE 2:</span>
+        <span class="text-slate-700 text-[9px]"><strong>Never trust self-reported confidence.</strong> Measure multi-rollout consensus (N=5). If rollouts disagree, knowledge has not taken hold, regardless of token logprobs.</span>
       </div>
 
-      <div class="p-2.5 bg-slate-50 border-l-4 border-slate-900 rounded-r-xl flex items-start space-x-2.5">
-        <span class="font-mono font-bold text-slate-900">RULE 3:</span>
-        <span class="text-slate-700"><strong>Rationality is architectural, not verbal.</strong> You cannot prompt an agent into being careful by saying "please double check." Risk gating must be enforced by a structural Bayes gate that defaults to HOLD.</span>
+      <div class="p-1.5 bg-slate-50 border-l-3 border-slate-900 rounded-r flex items-start space-x-2">
+        <span class="font-mono font-bold text-slate-900 text-[9px]">RULE 3:</span>
+        <span class="text-slate-700 text-[9px]"><strong>Rationality is architectural, not verbal.</strong> You cannot prompt an agent into being careful by saying "please double check." Risk gating must be enforced by a structural Bayes gate that defaults to HOLD.</span>
       </div>
     </div>
   </section>
 
-  <!-- REFERENCES -->
-  <footer class="pt-3 border-t border-slate-300 text-[9.5px] text-slate-500 space-y-1 avoid-break">
-    <div class="font-bold text-slate-700 uppercase sans-header text-[9.5px]">References</div>
-    <p>1. Wan, Z. (2026). <em>Instruction Gains Track the Knowledge Gap: A Diagnose-Then-Teach Analysis of Frozen Language Models.</em> Research Report, October 2026.</p>
-    <p>2. Cosmos Analytics AI Laboratory. (2026). <em>A Rational AI Agent Works Like a Brain: Cognitive Architecture Whitepaper.</em></p>
-    <p>3. Kahneman, D. (2011). <em>Thinking, Fast and Slow.</em> Farrar, Straus and Giroux.</p>
-    <p>4. Brier, G. W. (1950). Verification of forecasts expressed in terms of probability. <em>Monthly Weather Review</em>, 78(1), 1-3.</p>
+  <!-- FOOTER -->
+  <footer class="pt-1.5 border-t border-slate-200 text-[8px] text-slate-400 flex justify-between items-center avoid-break">
+    <span>Autonomous AI Systems Brief &bull; November 2026</span>
+    <span>Reference: Wan, Z. (2026). <em>Instruction Gains Track the Knowledge Gap</em></span>
   </footer>
 
 </body>
