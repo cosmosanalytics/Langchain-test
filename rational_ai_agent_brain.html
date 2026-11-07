@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full bg-slate-950">
+<html lang="en" class="h-full bg-slate-50">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,29 +21,35 @@
       theme: {
         extend: {
           fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
             mono: ['"JetBrains Mono"', 'monospace']
           },
           colors: {
             know: {
               50: '#ecfdf5',
               100: '#d1fae5',
-              500: '#10b981',
+              200: '#a7f3d0',
               600: '#059669',
+              700: '#047857',
+              800: '#065f46',
               900: '#064e3b'
             },
             sure: {
               50: '#eef2ff',
               100: '#e0e7ff',
-              500: '#6366f1',
+              200: '#c7d2fe',
               600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
               900: '#312e81'
             },
             act: {
               50: '#fff7ed',
               100: '#ffedd5',
-              500: '#ea580c',
-              600: '#c2410c',
+              200: '#fed7aa',
+              600: '#ea580c',
+              700: '#c2410c',
+              800: '#9a3412',
               900: '#7c2d12'
             }
           }
@@ -52,11 +58,11 @@
     };
   </script>
   <style>
-    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif; }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.6); }
-    ::-webkit-scrollbar-thumb { background: rgba(51, 65, 85, 0.8); border-radius: 9999px; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
     
     @keyframes pulse-flow {
       0% { stroke-dashoffset: 40; }
@@ -72,61 +78,61 @@
     }
   </style>
 </head>
-<body class="h-full bg-slate-950 text-slate-100 flex flex-col antialiased overflow-hidden select-none">
+<body class="h-full bg-[#f8fafc] text-slate-800 flex flex-col antialiased overflow-hidden select-none">
 
   <!-- ================================================================= -->
-  <!-- TOP TELEMETRY & RUNTIME BAR                                       -->
+  <!-- TOP TELEMETRY & RUNTIME BAR (LIGHT ENTERPRISE THEME)              -->
   <!-- ================================================================= -->
-  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 py-2 flex flex-wrap items-center justify-between gap-2.5 shrink-0 z-30">
-    <!-- Brand Title & Motto -->
+  <header class="bg-white border-b border-slate-200/90 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3 shrink-0 z-30 shadow-xs">
+    <!-- Brand Title & Motto matching the PDF -->
     <div class="flex items-center space-x-3">
-      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-emerald-500 via-indigo-500 to-amber-500 flex items-center justify-center text-slate-950 font-black text-sm shadow-md">
-        <i class="fa-solid fa-brain"></i>
+      <div class="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black text-sm shadow-xs">
+        <i class="fa-solid fa-brain text-amber-300"></i>
       </div>
       <div>
         <div class="flex items-center space-x-2">
-          <span class="text-sm font-black tracking-tight text-white">RATIONAL AI AGENT</span>
-          <span class="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 text-[10px] font-bold uppercase tracking-wider">Brain Architecture</span>
+          <h1 class="text-base font-extrabold tracking-tight text-slate-900">A rational AI agent works like a brain</h1>
+          <span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200 text-[10px] font-bold uppercase tracking-wider">Cognitive Engine</span>
         </div>
-        <p class="text-[10px] text-slate-400 font-mono hidden sm:block">Know it. Be sure how well you know it. Act on it wisely.</p>
+        <p class="text-xs text-slate-500 font-medium">Know it. Be sure how well you know it. Act on it wisely.</p>
       </div>
     </div>
 
     <!-- Scenarios -->
-    <div class="flex items-center space-x-1 bg-slate-800/80 border border-slate-700/80 p-0.5 rounded-xl overflow-x-auto scrollbar-none text-xs">
-      <button onclick="loadScenario('insurance_claim')" id="btn-sc-insurance_claim" class="sc-btn px-2.5 py-1 rounded-lg font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 shadow-xs transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
-        <i class="fa-solid fa-shield-halved text-emerald-400"></i>
-        <span>1. Insurance Cargo Claim</span>
+    <div class="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-xl text-xs font-semibold">
+      <button onclick="loadScenario('insurance_claim')" id="btn-sc-insurance_claim" class="sc-btn px-2.5 py-1 rounded-lg font-bold bg-white text-slate-900 shadow-xs transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
+        <i class="fa-solid fa-truck-front text-know-700"></i>
+        <span>1. Cargo Spoilage Claim</span>
       </button>
-      <button onclick="loadScenario('medical_prior_auth')" id="btn-sc-medical_prior_auth" class="sc-btn px-2.5 py-1 rounded-lg font-bold text-slate-400 hover:text-slate-200 border border-transparent transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
-        <i class="fa-solid fa-notes-medical text-rose-400"></i>
+      <button onclick="loadScenario('medical_prior_auth')" id="btn-sc-medical_prior_auth" class="sc-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
+        <i class="fa-solid fa-notes-medical text-sure-700"></i>
         <span>2. Clinical Prior Auth</span>
       </button>
-      <button onclick="loadScenario('commercial_loan')" id="btn-sc-commercial_loan" class="sc-btn px-2.5 py-1 rounded-lg font-bold text-slate-400 hover:text-slate-200 border border-transparent transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
-        <i class="fa-solid fa-building-columns text-amber-400"></i>
-        <span>3. Commercial Credit Line</span>
+      <button onclick="loadScenario('commercial_loan')" id="btn-sc-commercial_loan" class="sc-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer">
+        <i class="fa-solid fa-building-columns text-act-700"></i>
+        <span>3. Credit Line Clearance</span>
       </button>
     </div>
 
-    <!-- Runtime & Settings -->
+    <!-- Runtime Selector & Actions -->
     <div class="flex items-center space-x-2 text-xs">
-      <div class="flex items-center bg-slate-800 border border-slate-700 rounded-lg px-2 py-1 font-mono">
+      <div class="flex items-center bg-slate-100 border border-slate-200 rounded-lg px-2 py-1 font-mono text-slate-700">
         <span class="text-slate-400 mr-1.5"><i class="fa-solid fa-microchip"></i></span>
-        <select id="select-runtime" onchange="changeRuntime(this.value)" class="bg-transparent text-slate-300 text-xs focus:outline-none cursor-pointer">
-          <option value="groq" class="bg-slate-900 text-emerald-400">⚡ Groq LPU (Llama 3.3 70B)</option>
-          <option value="webllm" class="bg-slate-900 text-indigo-400">🌐 WebLLM (WebGPU)</option>
-          <option value="instant" class="bg-slate-900 text-slate-300">🎯 Instant Deterministic (0ms)</option>
+        <select id="select-runtime" onchange="changeRuntime(this.value)" class="bg-transparent text-slate-800 text-xs focus:outline-none cursor-pointer font-medium">
+          <option value="groq">⚡ Groq LPU (Llama 3.3 70B)</option>
+          <option value="webllm">🌐 WebLLM (WebGPU)</option>
+          <option value="instant">🎯 Instant Simulator (0ms)</option>
         </select>
       </div>
 
-      <button onclick="toggleKeyModal()" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 font-bold flex items-center space-x-1 cursor-pointer">
-        <i class="fa-solid fa-key text-amber-400"></i>
-        <span class="hidden md:inline">Key</span>
+      <button onclick="toggleKeyModal()" class="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold flex items-center space-x-1 cursor-pointer shadow-xs">
+        <i class="fa-solid fa-key text-slate-400 text-xs"></i>
+        <span class="hidden md:inline">API Key</span>
       </button>
 
-      <button onclick="triggerFullEvaluation()" id="btn-run-all" class="px-3 py-1 rounded-lg bg-gradient-to-r from-emerald-500 via-indigo-500 to-amber-500 hover:opacity-90 text-slate-950 font-black flex items-center space-x-1.5 cursor-pointer shadow-md">
-        <i class="fa-solid fa-play"></i>
-        <span>Think &amp; Act</span>
+      <button onclick="triggerFullEvaluation()" id="btn-run-all" class="px-3 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold flex items-center space-x-1.5 cursor-pointer shadow-xs transition">
+        <i class="fa-solid fa-play text-xs text-amber-300"></i>
+        <span>Evaluate Case</span>
       </button>
     </div>
   </header>
@@ -135,78 +141,82 @@
   <!-- MAIN WORKSPACE: THE 3 BRAIN HARNESSES (COLUMNS)                   -->
   <!-- 1. KNOW (Education) | 2. BE SURE (Calibration) | 3. ACT (Gate)   -->
   <!-- ================================================================= -->
-  <main class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 p-3 overflow-hidden">
+  <main class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 p-3 overflow-hidden bg-[#f8fafc]">
     
     <!-- =============================================================== -->
     <!-- 1. KNOW: EDUCATION HARNESS (4 cols)                            -->
     <!-- Cortex (Semantic Memory) & Hippocampus (Episodic Context Graph)-->
     <!-- =============================================================== -->
-    <section class="lg:col-span-4 bg-slate-900/80 border border-emerald-500/30 rounded-2xl flex flex-col min-h-0 overflow-hidden shadow-lg">
+    <section class="lg:col-span-4 bg-white border-2 border-know-200 rounded-xl flex flex-col min-h-0 overflow-hidden shadow-xs">
       
       <!-- Panel Header -->
-      <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
+      <div class="px-4 py-2.5 bg-know-50/80 border-b border-know-200 flex items-center justify-between shrink-0">
         <div class="flex items-center space-x-2.5">
-          <div class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black text-xs">
+          <div class="w-6 h-6 rounded-full bg-know-700 text-white flex items-center justify-center font-black text-xs shadow-xs">
             1
           </div>
           <div>
-            <h2 class="text-xs font-black tracking-wider uppercase text-emerald-300">KNOW &bull; Education Harness</h2>
-            <p class="text-[10px] text-slate-400">Semantic Rules + Episodic Context Graph</p>
+            <h2 class="text-xs font-extrabold tracking-wider uppercase text-know-900">KNOW</h2>
+            <p class="text-[10px] text-know-700 font-semibold">Education harness</p>
           </div>
         </div>
-        <span class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 font-mono text-[9.5px] font-bold">
+        <span class="px-2 py-0.5 rounded-full bg-white text-know-800 border border-know-200 font-mono text-[9.5px] font-bold">
           Epistemic: Step 1
         </span>
       </div>
 
-      <div class="flex-1 min-h-0 p-3 overflow-y-auto space-y-3">
+      <div class="flex-1 min-h-0 p-3 overflow-y-auto space-y-3 bg-white">
         
         <!-- CORTEX: Semantic Memory -->
-        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 shadow-sm">
-          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
-            <div class="flex items-center space-x-2">
-              <i class="fa-solid fa-atom text-emerald-400 text-xs"></i>
-              <span class="text-xs font-bold text-white">Cortex (Semantic Memory)</span>
+        <div class="bg-know-50/40 border border-know-200/90 rounded-xl p-3 shadow-xs">
+          <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-know-200/70">
+            <div>
+              <span class="text-xs font-black text-know-900 block">Cortex</span>
+              <span class="text-[10px] text-know-700 italic">semantic memory: facts and rules</span>
             </div>
-            <span class="text-[10px] text-emerald-400 font-mono">Ontology + Knowledge Graph</span>
+            <span class="text-[10px] font-bold text-know-800 bg-white px-2 py-0.5 rounded border border-know-200 font-mono">
+              Ontology + KG
+            </span>
           </div>
-          <p class="text-[11px] text-slate-400 mb-2">The verified facts and active policy rules that dictate what SHOULD happen.</p>
+          <p class="text-[11px] text-slate-600 mb-2 font-medium">The verified facts and active rules that govern what SHOULD happen.</p>
           
-          <div class="bg-slate-900/90 rounded-lg p-2.5 font-mono text-[11px] text-emerald-200/90 space-y-1.5 border border-slate-800" id="know-ontology-rules">
+          <div class="bg-white rounded-lg p-2.5 font-mono text-[11px] text-slate-800 space-y-1.5 border border-know-200/80" id="know-ontology-rules">
             <!-- Injected rules -->
           </div>
         </div>
 
         <!-- HIPPOCAMPUS: Episodic Memory -->
-        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 shadow-sm">
-          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
-            <div class="flex items-center space-x-2">
-              <i class="fa-solid fa-network-wired text-teal-400 text-xs"></i>
-              <span class="text-xs font-bold text-white">Hippocampus (Episodic Memory)</span>
+        <div class="bg-know-50/40 border border-know-200/90 rounded-xl p-3 shadow-xs">
+          <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-know-200/70">
+            <div>
+              <span class="text-xs font-black text-know-900 block">Hippocampus</span>
+              <span class="text-[10px] text-know-700 italic">episodic memory: index to past events</span>
             </div>
-            <span class="text-[10px] text-teal-400 font-mono">Context Graph (Index)</span>
+            <span class="text-[10px] font-bold text-know-800 bg-white px-2 py-0.5 rounded border border-know-200 font-mono">
+              Context Graph
+            </span>
           </div>
-          <p class="text-[11px] text-slate-400 mb-2">Each reviewed case points to the rules it used and full detailed case logs.</p>
+          <p class="text-[11px] text-slate-600 mb-2 font-medium">Each reviewed case points to the rules it used and full detailed records.</p>
           
-          <div class="bg-slate-900/90 rounded-lg p-2.5 font-mono text-[11px] text-slate-300 space-y-1.5 border border-slate-800 max-h-36 overflow-y-auto" id="know-context-cases">
+          <div class="bg-white rounded-lg p-2.5 font-mono text-[11px] text-slate-700 space-y-1.5 border border-know-200/80 max-h-32 overflow-y-auto" id="know-context-cases">
             <!-- Injected cases -->
           </div>
         </div>
 
         <!-- BI-DIRECTIONAL GRAPH DIALOGUE -->
-        <div class="bg-slate-950/70 border border-emerald-500/20 rounded-xl p-3 space-y-2">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-2.5 space-y-1.5">
           <div class="flex items-center justify-between">
-            <span class="text-[11px] font-bold text-emerald-300">Inside Know: Graph Dialogue</span>
-            <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-1.5 py-0.5 rounded font-mono">Bi-directional</span>
+            <span class="text-[11px] font-bold text-slate-900">Inside Know: Graph Dialogue</span>
+            <span class="text-[9px] bg-white text-slate-600 border border-slate-200 px-1.5 py-0.5 rounded font-mono font-bold">Bi-directional</span>
           </div>
-          <div class="grid grid-cols-2 gap-2 text-[10px] font-mono text-slate-300">
-            <div class="p-2 rounded bg-slate-900 border border-slate-800">
-              <span class="text-teal-400 block font-bold mb-0.5">&larr; Retrieval</span>
+          <div class="grid grid-cols-2 gap-2 text-[10px] font-mono text-slate-600">
+            <div class="p-2 rounded bg-white border border-slate-200">
+              <span class="text-know-700 block font-bold mb-0.5">&larr; Retrieval</span>
               New item finds similar cases, then follows links to rules.
             </div>
-            <div class="p-2 rounded bg-slate-900 border border-slate-800">
-              <span class="text-emerald-400 block font-bold mb-0.5">&rarr; Rule Discovery</span>
-              Many similar cases propose a verified new rule candidate.
+            <div class="p-2 rounded bg-white border border-slate-200">
+              <span class="text-know-800 block font-bold mb-0.5">&rarr; Rule Discovery</span>
+              Many similar cases propose a verified new rule.
             </div>
           </div>
         </div>
@@ -214,9 +224,9 @@
       </div>
 
       <!-- Footer -->
-      <div class="p-2.5 bg-slate-950 border-t border-slate-800 shrink-0 text-[10.5px] font-mono text-slate-400 flex items-center justify-between">
-        <span>Active Rules: <strong class="text-emerald-400" id="stat-rule-count">3 Active</strong></span>
-        <span>Indexed Cases: <strong class="text-teal-400" id="stat-case-count">482 Linked</strong></span>
+      <div class="p-2.5 bg-know-50/50 border-t border-know-200 shrink-0 text-[10.5px] font-mono text-slate-600 flex items-center justify-between">
+        <span>Active Rules: <strong class="text-know-800" id="stat-rule-count">4 Active</strong></span>
+        <span>Linked Cases: <strong class="text-know-800" id="stat-case-count">482 Verified</strong></span>
       </div>
 
     </section>
@@ -225,53 +235,55 @@
     <!-- 2. BE SURE: CALIBRATION HARNESS (4 cols)                       -->
     <!-- Prefrontal Cortex (Metacognition) & Anterior Cingulate (Conflict)-->
     <!-- =============================================================== -->
-    <section class="lg:col-span-4 bg-slate-900/80 border border-indigo-500/30 rounded-2xl flex flex-col min-h-0 overflow-hidden shadow-lg">
+    <section class="lg:col-span-4 bg-white border-2 border-sure-200 rounded-xl flex flex-col min-h-0 overflow-hidden shadow-xs">
       
       <!-- Panel Header -->
-      <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
+      <div class="px-4 py-2.5 bg-sure-50/80 border-b border-sure-200 flex items-center justify-between shrink-0">
         <div class="flex items-center space-x-2.5">
-          <div class="w-6 h-6 rounded-lg bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 flex items-center justify-center font-black text-xs">
+          <div class="w-6 h-6 rounded-full bg-sure-700 text-white flex items-center justify-center font-black text-xs shadow-xs">
             2
           </div>
           <div>
-            <h2 class="text-xs font-black tracking-wider uppercase text-indigo-300">BE SURE &bull; Calibration Harness</h2>
-            <p class="text-[10px] text-slate-400">Metacognition + Conflict Monitoring</p>
+            <h2 class="text-xs font-extrabold tracking-wider uppercase text-sure-900">BE SURE</h2>
+            <p class="text-[10px] text-sure-700 font-semibold">Calibration harness</p>
           </div>
         </div>
-        <span class="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 font-mono text-[9.5px] font-bold">
+        <span class="px-2 py-0.5 rounded-full bg-white text-sure-800 border border-sure-200 font-mono text-[9.5px] font-bold">
           Epistemic: Step 2
         </span>
       </div>
 
-      <div class="flex-1 min-h-0 p-3 overflow-y-auto space-y-3">
+      <div class="flex-1 min-h-0 p-3 overflow-y-auto space-y-3 bg-white">
         
         <!-- PREFRONTAL CORTEX: Metacognition & Calibration -->
-        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 shadow-sm">
-          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
-            <div class="flex items-center space-x-2">
-              <i class="fa-solid fa-chart-line text-indigo-400 text-xs"></i>
-              <span class="text-xs font-bold text-white">Prefrontal Cortex (Metacognition)</span>
+        <div class="bg-sure-50/40 border border-sure-200/90 rounded-xl p-3 shadow-xs">
+          <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-sure-200/70">
+            <div>
+              <span class="text-xs font-black text-sure-900 block">Prefrontal cortex</span>
+              <span class="text-[10px] text-sure-700 italic">metacognition: how sure am I?</span>
             </div>
-            <span class="text-[10px] text-indigo-400 font-mono font-bold" id="calibration-accuracy-tag">Calibration: 91.4%</span>
+            <span class="text-[10px] font-bold text-sure-800 bg-white px-2 py-0.5 rounded border border-sure-200 font-mono" id="calibration-accuracy-tag">
+              Calibration: 91.4%
+            </span>
           </div>
-          <p class="text-[11px] text-slate-400 mb-2 leading-snug">"How sure am I?" &bull; The agent says 90% only when right ~90% of the time.</p>
+          <p class="text-[11px] text-slate-600 mb-2 font-medium">Confidence + calibration map: Says 90 percent only when right ~90% of the time.</p>
           
-          <!-- Metacognitive Confidence Bar -->
-          <div class="space-y-1.5 mb-2.5">
+          <!-- Confidence Bar -->
+          <div class="space-y-1 mb-2.5">
             <div class="flex items-center justify-between text-xs font-mono">
-              <span class="text-slate-400">Assessed Confidence (P̂):</span>
-              <span class="text-indigo-300 font-bold text-sm" id="calib-score-text">88.5%</span>
+              <span class="text-slate-600">Assessed Confidence (P̂):</span>
+              <span class="text-sure-900 font-extrabold text-sm" id="calib-score-text">92.0%</span>
             </div>
-            <div class="w-full bg-slate-800 rounded-full h-2.5 overflow-hidden">
-              <div id="calib-score-bar" class="bg-gradient-to-r from-indigo-500 to-purple-500 h-2.5 rounded-full transition-all duration-500" style="width: 88.5%"></div>
+            <div class="w-full bg-slate-200 rounded-full h-2.5 overflow-hidden">
+              <div id="calib-score-bar" class="bg-sure-600 h-2.5 rounded-full transition-all duration-500" style="width: 92%"></div>
             </div>
           </div>
 
-          <!-- Mini Calibration Curve Canvas -->
-          <div class="bg-slate-900/80 p-2 rounded-lg border border-slate-800">
-            <div class="flex items-center justify-between text-[10px] font-mono text-slate-400 mb-1">
+          <!-- Calibration Curve Canvas -->
+          <div class="bg-white p-2 rounded-lg border border-sure-200">
+            <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1">
               <span>Reliability Curve (P_stated vs P_actual)</span>
-              <span class="text-emerald-400">Well-Calibrated</span>
+              <span class="text-emerald-700 font-bold">Well-Calibrated</span>
             </div>
             <div class="h-24">
               <canvas id="canvas-calibration"></canvas>
@@ -280,17 +292,17 @@
         </div>
 
         <!-- ANTERIOR CINGULATE: Conflict Monitor -->
-        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 shadow-sm">
-          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
-            <div class="flex items-center space-x-2">
-              <i class="fa-solid fa-triangle-exclamation text-amber-400 text-xs"></i>
-              <span class="text-xs font-bold text-white">Anterior Cingulate (Conflict Monitor)</span>
+        <div class="bg-sure-50/40 border border-sure-200/90 rounded-xl p-3 shadow-xs">
+          <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-sure-200/70">
+            <div>
+              <span class="text-xs font-black text-sure-900 block">Anterior cingulate</span>
+              <span class="text-[10px] text-sure-700 italic">conflict monitor</span>
             </div>
-            <span id="conflict-alarm-badge" class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[9.5px] font-mono font-bold">
-              Consensus: 5 / 5
+            <span id="conflict-alarm-badge" class="px-2 py-0.5 rounded-full bg-white text-emerald-700 border border-emerald-300 text-[9.5px] font-mono font-bold">
+              Repeated: 5 / 5
             </span>
           </div>
-          <p class="text-[11px] text-slate-400 mb-2 leading-snug">"Repeated Answers: If 5 rollouts disagree, the knowledge has not taken hold."</p>
+          <p class="text-[11px] text-slate-600 mb-2 font-medium">Repeated answers: If five answers disagree, the knowledge has not taken hold.</p>
 
           <!-- 5 Independent Rollout Cards -->
           <div class="space-y-1 text-[11px] font-mono" id="conflict-rollouts-container">
@@ -301,9 +313,9 @@
       </div>
 
       <!-- Footer -->
-      <div class="p-2.5 bg-slate-950 border-t border-slate-800 shrink-0 text-[10.5px] font-mono text-slate-400 flex items-center justify-between">
-        <span>Metacognitive Brier Score: <strong class="text-indigo-400">0.038</strong></span>
-        <span>Sample Agreement: <strong class="text-emerald-400" id="stat-agreement-ratio">100%</strong></span>
+      <div class="p-2.5 bg-sure-50/50 border-t border-sure-200 shrink-0 text-[10.5px] font-mono text-slate-600 flex items-center justify-between">
+        <span>Brier Score: <strong class="text-sure-800 font-bold">0.038</strong></span>
+        <span>Sample Agreement: <strong class="text-emerald-700 font-bold" id="stat-agreement-ratio">100%</strong></span>
       </div>
 
     </section>
@@ -312,121 +324,123 @@
     <!-- 3. ACT: GATE HARNESS (4 cols)                                   -->
     <!-- Basal Ganglia (Go/No-Go) & Prefrontal Cortex (Risk Threshold)   -->
     <!-- =============================================================== -->
-    <section class="lg:col-span-4 bg-slate-900/80 border border-amber-500/30 rounded-2xl flex flex-col min-h-0 overflow-hidden shadow-lg">
+    <section class="lg:col-span-4 bg-white border-2 border-act-200 rounded-xl flex flex-col min-h-0 overflow-hidden shadow-xs">
       
       <!-- Panel Header -->
-      <div class="px-4 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between shrink-0">
+      <div class="px-4 py-2.5 bg-act-50/80 border-b border-act-200 flex items-center justify-between shrink-0">
         <div class="flex items-center space-x-2.5">
-          <div class="w-6 h-6 rounded-lg bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center font-black text-xs">
+          <div class="w-6 h-6 rounded-full bg-act-700 text-white flex items-center justify-center font-black text-xs shadow-xs">
             3
           </div>
           <div>
-            <h2 class="text-xs font-black tracking-wider uppercase text-amber-300">ACT &bull; Gate Harness</h2>
-            <p class="text-[10px] text-slate-400">Basal Ganglia Action + Risk Threshold</p>
+            <h2 class="text-xs font-extrabold tracking-wider uppercase text-act-900">ACT</h2>
+            <p class="text-[10px] text-act-700 font-semibold">Gate harness</p>
           </div>
         </div>
-        <span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 font-mono text-[9.5px] font-bold">
+        <span class="px-2 py-0.5 rounded-full bg-white text-act-800 border border-act-200 font-mono text-[9.5px] font-bold">
           Instrumental: Step 3
         </span>
       </div>
 
-      <div class="flex-1 min-h-0 p-3 overflow-y-auto space-y-3">
+      <div class="flex-1 min-h-0 p-3 overflow-y-auto space-y-3 bg-white">
         
         <!-- BASAL GANGLIA: Go / No-Go Action Picker -->
-        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 shadow-sm">
-          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
-            <div class="flex items-center space-x-2">
-              <i class="fa-solid fa-traffic-light text-amber-400 text-xs"></i>
-              <span class="text-xs font-bold text-white">Basal Ganglia (Go / No-Go Action)</span>
+        <div class="bg-act-50/40 border border-act-200/90 rounded-xl p-3 shadow-xs">
+          <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-act-200/70">
+            <div>
+              <span class="text-xs font-black text-act-900 block">Basal ganglia</span>
+              <span class="text-[10px] text-act-700 italic">go / no-go: pick one action</span>
             </div>
-            <span class="text-[10px] text-slate-500 font-mono">Default is HOLD</span>
+            <span class="text-[10px] text-slate-500 font-mono font-medium">Default is HOLD</span>
           </div>
-          <p class="text-[11px] text-slate-400 mb-2 leading-snug">"Accept, Confirm, Escalate &bull; Release only when confident enough."</p>
+          <p class="text-[11px] text-slate-600 mb-2 font-medium">Accept, Confirm, Escalate: Default is hold. Release only when confident enough.</p>
 
           <!-- 3 Gate Options Highlight -->
           <div class="grid grid-cols-3 gap-1.5 text-center font-mono">
             
-            <div id="gate-btn-accept" class="p-2 rounded-xl bg-slate-900 border border-slate-800 transition flex flex-col items-center justify-center">
-              <i class="fa-solid fa-circle-check text-slate-500 text-base mb-1" id="icon-accept"></i>
-              <span class="text-xs font-black text-slate-400" id="label-accept">ACCEPT</span>
+            <div id="gate-btn-accept" class="p-2 rounded-xl bg-white border-2 border-emerald-500 transition flex flex-col items-center justify-center shadow-xs">
+              <i class="fa-solid fa-circle-check text-emerald-600 text-base mb-1" id="icon-accept"></i>
+              <span class="text-xs font-black text-emerald-800" id="label-accept">ACCEPT</span>
               <span class="text-[9px] text-slate-500">Autonomous</span>
             </div>
 
-            <div id="gate-btn-confirm" class="p-2 rounded-xl bg-slate-900 border border-slate-800 transition flex flex-col items-center justify-center">
-              <i class="fa-solid fa-clipboard-question text-slate-500 text-base mb-1" id="icon-confirm"></i>
-              <span class="text-xs font-black text-slate-400" id="label-confirm">CONFIRM</span>
-              <span class="text-[9px] text-slate-500">2nd Check</span>
+            <div id="gate-btn-confirm" class="p-2 rounded-xl bg-white border border-slate-200 transition flex flex-col items-center justify-center opacity-40">
+              <i class="fa-solid fa-clipboard-question text-slate-400 text-base mb-1" id="icon-confirm"></i>
+              <span class="text-xs font-black text-slate-600" id="label-confirm">CONFIRM</span>
+              <span class="text-[9px] text-slate-400">2nd Check</span>
             </div>
 
-            <div id="gate-btn-escalate" class="p-2 rounded-xl bg-slate-900 border border-slate-800 transition flex flex-col items-center justify-center">
-              <i class="fa-solid fa-hand text-slate-500 text-base mb-1" id="icon-escalate"></i>
-              <span class="text-xs font-black text-slate-400" id="label-escalate">ESCALATE</span>
-              <span class="text-[9px] text-slate-500">Human Expert</span>
+            <div id="gate-btn-escalate" class="p-2 rounded-xl bg-white border border-slate-200 transition flex flex-col items-center justify-center opacity-40">
+              <i class="fa-solid fa-hand text-slate-400 text-base mb-1" id="icon-escalate"></i>
+              <span class="text-xs font-black text-slate-600" id="label-escalate">ESCALATE</span>
+              <span class="text-[9px] text-slate-400">Human Expert</span>
             </div>
 
           </div>
         </div>
 
         <!-- PREFRONTAL CORTEX: Weighing Cost & Risk Threshold -->
-        <div class="bg-slate-950 border border-slate-800 rounded-xl p-3 shadow-sm">
-          <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-800/80">
-            <div class="flex items-center space-x-2">
-              <i class="fa-solid fa-scale-balanced text-amber-400 text-xs"></i>
-              <span class="text-xs font-bold text-white">Prefrontal Cortex (Weighing Cost &amp; Risk)</span>
+        <div class="bg-act-50/40 border border-act-200/90 rounded-xl p-3 shadow-xs">
+          <div class="flex items-center justify-between pb-1.5 mb-1.5 border-b border-act-200/70">
+            <div>
+              <span class="text-xs font-black text-act-900 block">Prefrontal cortex</span>
+              <span class="text-[10px] text-act-700 italic">weighing cost and risk</span>
             </div>
-            <span class="text-[10px] text-amber-400 font-mono font-bold" id="theta-star-text">Threshold θ* = 0.85</span>
+            <span class="text-[10px] text-act-900 bg-white px-2 py-0.5 rounded border border-act-200 font-mono font-bold" id="theta-star-text">
+              Threshold θ* = 0.85
+            </span>
           </div>
-          <p class="text-[11px] text-slate-400 mb-2 leading-snug">"Threshold: Set by what each kind of mistake costs."</p>
+          <p class="text-[11px] text-slate-600 mb-2 font-medium">Threshold: Set by what each kind of mistake costs.</p>
 
           <!-- Type 1 vs Type 2 Sliders -->
           <div class="space-y-2.5 text-xs font-mono">
             <div>
               <div class="flex items-center justify-between mb-1">
-                <span class="text-rose-400 font-bold flex items-center space-x-1">
-                  <i class="fa-solid fa-ban"></i>
-                  <span>Cost of Type 1 (Accept Bad Item):</span>
+                <span class="text-rose-700 font-bold flex items-center space-x-1">
+                  <i class="fa-solid fa-ban text-[10px]"></i>
+                  <span>Cost of Type 1 (Bad item accepted):</span>
                 </span>
-                <span class="text-rose-300 font-bold" id="val-cost-t1">$5,000</span>
+                <span class="text-rose-800 font-extrabold" id="val-cost-t1">$5,000</span>
               </div>
-              <input type="range" id="slider-cost-t1" min="500" max="20000" step="500" value="5000" oninput="updateRiskCosts()" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-rose-500">
+              <input type="range" id="slider-cost-t1" min="500" max="20000" step="500" value="5000" oninput="updateRiskCosts()" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-rose-600">
             </div>
 
             <div>
               <div class="flex items-center justify-between mb-1">
-                <span class="text-indigo-400 font-bold flex items-center space-x-1">
-                  <i class="fa-solid fa-hourglass-end"></i>
-                  <span>Cost of Type 2 (Hold Back Good Item):</span>
+                <span class="text-sure-700 font-bold flex items-center space-x-1">
+                  <i class="fa-solid fa-hourglass-end text-[10px]"></i>
+                  <span>Cost of Type 2 (Good item held back):</span>
                 </span>
-                <span class="text-indigo-300 font-bold" id="val-cost-t2">$900</span>
+                <span class="text-sure-800 font-extrabold" id="val-cost-t2">$900</span>
               </div>
-              <input type="range" id="slider-cost-t2" min="100" max="5000" step="100" value="900" oninput="updateRiskCosts()" class="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+              <input type="range" id="slider-cost-t2" min="100" max="5000" step="100" value="900" oninput="updateRiskCosts()" class="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sure-600">
             </div>
           </div>
 
           <!-- Threshold Status Equation Box -->
-          <div class="mt-3 p-2 bg-slate-900 rounded-lg border border-slate-800 text-[10.5px] font-mono leading-relaxed" id="risk-posture-box">
+          <div class="mt-2.5 p-2 bg-white rounded-lg border border-act-200 text-[10.5px] font-mono leading-relaxed" id="risk-posture-box">
             <!-- Injected posture info -->
           </div>
         </div>
 
         <!-- THE CLOSED LEARNING LOOP: Weak spots go back to Know -->
-        <div class="bg-slate-950/90 border border-amber-500/30 rounded-xl p-3 space-y-2">
+        <div class="bg-white border-2 border-dashed border-act-300 rounded-xl p-3 space-y-2">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-amber-300 flex items-center space-x-1">
-              <i class="fa-solid fa-rotate-left"></i>
-              <span>Learn from Mistakes: Closed Loop</span>
+            <span class="text-xs font-black text-act-900 flex items-center space-x-1">
+              <i class="fa-solid fa-rotate-left text-act-600"></i>
+              <span>Learn from mistakes: weak spots go back to Know</span>
             </span>
-            <span class="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono font-bold">Feedback Loop</span>
+            <span class="text-[9px] bg-act-100 text-act-800 px-1.5 py-0.5 rounded font-mono font-bold">Feedback Loop</span>
           </div>
           
           <div class="grid grid-cols-2 gap-2 text-[10px] font-mono">
-            <button onclick="injectMistake('type1')" class="p-2 rounded-lg bg-rose-950/40 hover:bg-rose-900/40 text-rose-300 border border-rose-500/30 transition text-left cursor-pointer">
-              <strong class="block text-rose-400">Type 1 Error (Bad item accepted)</strong>
-              &rarr; <span class="underline">Caution</span>: Raise the bar
+            <button onclick="injectMistake('type1')" class="p-2 rounded-lg bg-rose-50 hover:bg-rose-100/70 text-rose-900 border border-rose-200 transition text-left cursor-pointer shadow-xs">
+              <strong class="block text-rose-700 font-black">Bad item accepted</strong>
+              <span class="text-slate-500">Type 1 error</span> &rarr; <span class="font-bold underline text-rose-800">Caution: raise bar</span>
             </button>
-            <button onclick="injectMistake('type2')" class="p-2 rounded-lg bg-indigo-950/40 hover:bg-indigo-900/40 text-indigo-300 border border-indigo-500/30 transition text-left cursor-pointer">
-              <strong class="block text-indigo-400">Type 2 Error (Good item held)</strong>
-              &rarr; <span class="underline">Regret</span>: Lower the bar
+            <button onclick="injectMistake('type2')" class="p-2 rounded-lg bg-indigo-50 hover:bg-indigo-100/70 text-indigo-900 border border-indigo-200 transition text-left cursor-pointer shadow-xs">
+              <strong class="block text-sure-700 font-black">Good item held back</strong>
+              <span class="text-slate-500">Type 2 error</span> &rarr; <span class="font-bold underline text-sure-800">Regret: lower bar</span>
             </button>
           </div>
           <p class="text-[9.5px] text-slate-500 text-center font-mono">
@@ -437,9 +451,9 @@
       </div>
 
       <!-- Action Footer -->
-      <div class="p-2.5 bg-slate-950 border-t border-slate-800 shrink-0 text-[10.5px] font-mono text-slate-400 flex items-center justify-between">
-        <span>Decision Status: <strong class="text-emerald-400 font-bold" id="gate-decision-badge">ACCEPTED</strong></span>
-        <span>Net Utility: <strong class="text-amber-400 font-bold" id="gate-utility-value">+$4,100</strong></span>
+      <div class="p-2.5 bg-act-50/50 border-t border-act-200 shrink-0 text-[10.5px] font-mono text-slate-600 flex items-center justify-between">
+        <span>Decision: <strong class="text-emerald-700 font-bold" id="gate-decision-badge">ACCEPTED</strong></span>
+        <span>Expected Utility: <strong class="text-act-800 font-bold" id="gate-utility-value">+$4,100</strong></span>
       </div>
 
     </section>
@@ -449,23 +463,23 @@
   <!-- ================================================================= -->
   <!-- BOTTOM PANEL: RATIONAL THINKING SPLIT & MISTAKE LESSONS           -->
   <!-- ================================================================= -->
-  <footer class="bg-slate-900/90 border-t border-slate-800 px-4 py-2 shrink-0 flex flex-wrap items-center justify-between gap-3 text-xs">
+  <footer class="bg-white border-t border-slate-200 px-4 py-2 shrink-0 flex flex-wrap items-center justify-between gap-3 text-xs shadow-xs">
     
     <!-- Rational Thinking Two Halves -->
     <div class="flex items-center space-x-3">
-      <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 font-mono text-[11px]">
-        <strong class="text-indigo-400">Epistemic (Steps 1 &amp; 2):</strong>
+      <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-sure-50 border border-sure-200 text-sure-900 font-mono text-[11px]">
+        <strong class="text-sure-700">Epistemic (steps 1 and 2):</strong>
         <span>Confidence matches the facts.</span>
       </div>
-      <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 font-mono text-[11px]">
-        <strong class="text-amber-400">Instrumental (Step 3):</strong>
+      <div class="flex items-center space-x-1.5 px-2.5 py-1 rounded-lg bg-act-50 border border-act-200 text-act-900 font-mono text-[11px]">
+        <strong class="text-act-700">Instrumental (step 3):</strong>
         <span>The threshold balances both mistakes.</span>
       </div>
     </div>
 
-    <!-- Feedback Notice -->
-    <div class="text-[11px] text-slate-400 font-mono flex items-center space-x-2">
-      <i class="fa-solid fa-arrow-turn-up text-amber-400"></i>
+    <!-- Rationality Maxim -->
+    <div class="text-[11px] text-slate-600 font-medium font-sans flex items-center space-x-2">
+      <i class="fa-solid fa-circle-exclamation text-amber-500"></i>
       <span>"A well-calibrated agent can still be reckless or timid if the threshold is wrong."</span>
     </div>
 
@@ -474,35 +488,35 @@
   <!-- ================================================================= -->
   <!-- MODAL: GROQ / GEMINI API KEY CONFIGURATION                       -->
   <!-- ================================================================= -->
-  <div id="modal-key-config" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-    <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+  <div id="modal-key-config" class="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 max-w-md w-full shadow-xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <div class="flex items-center space-x-2">
-          <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">
+          <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-800 flex items-center justify-center text-sm">
             <i class="fa-solid fa-key"></i>
           </div>
-          <h3 class="text-sm font-black text-white">Inference Engine Configuration</h3>
+          <h3 class="text-sm font-bold text-slate-900">Inference Engine Configuration</h3>
         </div>
-        <button onclick="toggleKeyModal()" class="text-slate-400 hover:text-slate-200">
+        <button onclick="toggleKeyModal()" class="text-slate-400 hover:text-slate-600">
           <i class="fa-solid fa-xmark text-lg"></i>
         </button>
       </div>
 
-      <div class="space-y-3 text-xs text-slate-300">
+      <div class="space-y-3 text-xs text-slate-600">
         <div>
-          <label class="block font-bold text-slate-200 mb-1">Groq API Key (Optional):</label>
-          <input type="password" id="input-groq-key" placeholder="gsk_... (Leave blank for pre-provisioned demo key)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl font-mono text-xs text-teal-300 focus:outline-none focus:border-teal-500">
+          <label class="block font-bold text-slate-700 mb-1">Groq API Key (Optional):</label>
+          <input type="password" id="input-groq-key" placeholder="gsk_... (Leave blank for pre-provisioned demo key)" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg font-mono text-xs text-slate-800 focus:outline-none focus:border-slate-900">
         </div>
         <div>
-          <label class="block font-bold text-slate-200 mb-1">Google Gemini API Key (Optional):</label>
-          <input type="password" id="input-gemini-key" placeholder="AIzaSy... or AQ.Ab8..." class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl font-mono text-xs text-amber-300 focus:outline-none focus:border-amber-500">
+          <label class="block font-bold text-slate-700 mb-1">Google Gemini API Key (Optional):</label>
+          <input type="password" id="input-gemini-key" placeholder="AIzaSy... or AQ.Ab8..." class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg font-mono text-xs text-slate-800 focus:outline-none focus:border-slate-900">
         </div>
         <p class="text-[11px] text-slate-500">Runs 5 parallel rollouts to compute Anterior Cingulate conflict entropy and Metacognitive confidence calibration.</p>
       </div>
 
-      <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-800">
-        <button onclick="toggleKeyModal()" class="px-4 py-1.5 rounded-xl text-xs font-bold text-slate-400 hover:text-slate-200">Cancel</button>
-        <button onclick="saveKeysModal()" class="px-4 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition">Save &amp; Activate</button>
+      <div class="flex items-center justify-end space-x-2 pt-2 border-t border-slate-100">
+        <button onclick="toggleKeyModal()" class="px-4 py-1.5 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900">Cancel</button>
+        <button onclick="saveKeysModal()" class="px-4 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition">Save &amp; Activate</button>
       </div>
     </div>
   </div>
@@ -621,7 +635,7 @@
             {
               label: 'Ideal Perfect Calibration',
               data: [0.1, 0.3, 0.5, 0.7, 0.9, 1.0],
-              borderColor: '#64748b',
+              borderColor: '#94a3b8',
               borderDash: [4, 4],
               borderWidth: 1.5,
               pointRadius: 0,
@@ -630,10 +644,10 @@
             {
               label: 'Agent Empirical Calibration',
               data: [0.12, 0.31, 0.49, 0.72, 0.89, 0.98],
-              borderColor: '#818cf8',
-              backgroundColor: 'rgba(99, 102, 241, 0.15)',
+              borderColor: '#4f46e5',
+              backgroundColor: 'rgba(79, 70, 229, 0.08)',
               borderWidth: 2.5,
-              pointBackgroundColor: '#818cf8',
+              pointBackgroundColor: '#4f46e5',
               pointRadius: 3,
               fill: true,
               tension: 0.2
@@ -649,14 +663,14 @@
           },
           scales: {
             x: {
-              grid: { color: 'rgba(51, 65, 85, 0.3)' },
-              ticks: { color: '#94a3b8', font: { size: 9, family: 'JetBrains Mono' } }
+              grid: { color: 'rgba(226, 232, 240, 0.8)' },
+              ticks: { color: '#64748b', font: { size: 9, family: 'JetBrains Mono' } }
             },
             y: {
               min: 0,
               max: 1,
-              grid: { color: 'rgba(51, 65, 85, 0.3)' },
-              ticks: { color: '#94a3b8', font: { size: 9, family: 'JetBrains Mono' } }
+              grid: { color: 'rgba(226, 232, 240, 0.8)' },
+              ticks: { color: '#64748b', font: { size: 9, family: 'JetBrains Mono' } }
             }
           }
         }
@@ -672,9 +686,9 @@
         const btn = document.getElementById(`btn-sc-${k}`);
         if (!btn) return;
         if (k === key) {
-          btn.className = "sc-btn px-2.5 py-1 rounded-lg font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/40 shadow-xs transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer";
+          btn.className = "sc-btn px-2.5 py-1 rounded-lg font-bold bg-white text-slate-900 shadow-xs transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer";
         } else {
-          btn.className = "sc-btn px-2.5 py-1 rounded-lg font-bold text-slate-400 hover:text-slate-200 border border-transparent transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer";
+          btn.className = "sc-btn px-2.5 py-1 rounded-lg font-medium text-slate-600 hover:text-slate-900 transition flex items-center space-x-1.5 whitespace-nowrap cursor-pointer";
         }
       });
 
@@ -683,8 +697,8 @@
       if (rulesEl) {
         rulesEl.innerHTML = sc.rules.map(r => `
           <div class="flex items-start space-x-2 py-0.5">
-            <i class="fa-solid fa-check text-emerald-400 mt-0.5 text-[9px]"></i>
-            <span>${r}</span>
+            <i class="fa-solid fa-check text-know-700 mt-0.5 text-[9px]"></i>
+            <span class="text-slate-800">${r}</span>
           </div>
         `).join('');
       }
@@ -692,8 +706,8 @@
       const casesEl = document.getElementById('know-context-cases');
       if (casesEl) {
         casesEl.innerHTML = sc.cases.map(c => `
-          <div class="p-1.5 rounded bg-slate-900 border border-slate-800 text-[10px]">
-            <i class="fa-solid fa-bookmark text-teal-400 mr-1"></i>${c}
+          <div class="p-1.5 rounded bg-slate-50 border border-slate-200 text-[10px]">
+            <i class="fa-solid fa-bookmark text-know-600 mr-1"></i>${c}
           </div>
         `).join('');
       }
@@ -737,18 +751,18 @@
       const consensusRatio = actionCounts[maxAction];
 
       rolloutsCont.innerHTML = sc.rollouts.map(r => {
-        let badgeColor = "bg-emerald-500/20 text-emerald-300 border-emerald-500/40";
-        if (r.action === "CONFIRM") badgeColor = "bg-indigo-500/20 text-indigo-300 border-indigo-500/40";
-        if (r.action === "ESCALATE") badgeColor = "bg-rose-500/20 text-rose-300 border-rose-500/40";
+        let badgeColor = "bg-emerald-50 text-emerald-800 border-emerald-300";
+        if (r.action === "CONFIRM") badgeColor = "bg-sure-50 text-sure-800 border-sure-300";
+        if (r.action === "ESCALATE") badgeColor = "bg-rose-50 text-rose-800 border-rose-300";
 
         return `
-          <div class="p-1.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between">
+          <div class="p-1.5 rounded-lg bg-white border border-slate-200 flex items-center justify-between shadow-2xs">
             <div class="flex items-center space-x-2">
-              <span class="w-4 h-4 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center text-[9px] font-bold">#${r.seed}</span>
+              <span class="w-4 h-4 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-[9px] font-bold">#${r.seed}</span>
               <span class="px-1.5 py-0.2 rounded font-bold text-[9.5px] border ${badgeColor}">${r.action}</span>
-              <span class="text-slate-400 text-[10px] truncate max-w-[170px]">${r.reason}</span>
+              <span class="text-slate-600 text-[10px] truncate max-w-[170px]">${r.reason}</span>
             </div>
-            <span class="text-slate-300 text-[10px] font-bold">${(r.prob * 100).toFixed(0)}%</span>
+            <span class="text-slate-900 text-[10px] font-bold">${(r.prob * 100).toFixed(0)}%</span>
           </div>
         `;
       }).join('');
@@ -756,13 +770,13 @@
       // Conflict Badge
       const alarmBadge = document.getElementById('conflict-alarm-badge');
       if (consensusRatio === 5) {
-        alarmBadge.className = "px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[9.5px] font-mono font-bold";
-        alarmBadge.textContent = "Consensus: 5 / 5 (Stable)";
+        alarmBadge.className = "px-2 py-0.5 rounded-full bg-white text-emerald-700 border border-emerald-300 text-[9.5px] font-mono font-bold";
+        alarmBadge.textContent = "Repeated: 5 / 5 (Stable)";
       } else if (consensusRatio >= 3) {
-        alarmBadge.className = "px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-[9.5px] font-mono font-bold animate-pulse";
+        alarmBadge.className = "px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-300 text-[9.5px] font-mono font-bold animate-pulse";
         alarmBadge.textContent = `Conflict Alert: ${consensusRatio} vs ${5 - consensusRatio}`;
       } else {
-        alarmBadge.className = "px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/30 text-[9.5px] font-mono font-bold animate-pulse";
+        alarmBadge.className = "px-2 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-300 text-[9.5px] font-mono font-bold animate-pulse";
         alarmBadge.textContent = "High Entropy: Knowledge Unstable";
       }
 
@@ -784,23 +798,23 @@
       // Posture Equation Box
       const postureBox = document.getElementById('risk-posture-box');
       let postureName = "Optimal Instrumental Stance";
-      let postureColor = "text-emerald-400";
+      let postureColor = "text-emerald-700";
 
       if (thetaStar > 0.88) {
         postureName = "Ultra-Cautious (High penalty for False Positive)";
-        postureColor = "text-amber-400";
+        postureColor = "text-act-700";
       } else if (thetaStar < 0.65) {
         postureName = "Permissive Throughput (High penalty for False Negative / Delay)";
-        postureColor = "text-teal-400";
+        postureColor = "text-sure-700";
       }
 
       postureBox.innerHTML = `
-        <div class="flex items-center justify-between pb-1 border-b border-slate-800">
-          <span class="text-slate-400">Bayes Risk Formula:</span>
-          <span class="font-bold text-slate-200">θ* = C₁ / (C₁ + C₂)</span>
+        <div class="flex items-center justify-between pb-1 border-b border-slate-200">
+          <span class="text-slate-500">Bayes Risk Formula:</span>
+          <span class="font-bold text-slate-800">θ* = C₁ / (C₁ + C₂)</span>
         </div>
         <div class="pt-1 flex items-center justify-between">
-          <span class="text-slate-400">Agent Posture:</span>
+          <span class="text-slate-500">Agent Posture:</span>
           <span class="font-bold ${postureColor}">${postureName}</span>
         </div>
       `;
@@ -820,9 +834,9 @@
 
       // Reset styles
       [btnAccept, btnConfirm, btnEscalate].forEach(b => {
-        b.className = "p-2 rounded-xl bg-slate-900 border border-slate-800 transition flex flex-col items-center justify-center opacity-40";
+        b.className = "p-2 rounded-xl bg-white border border-slate-200 transition flex flex-col items-center justify-center opacity-40 shadow-2xs";
       });
-      [iconAccept, iconConfirm, iconEscalate].forEach(i => i.className = "fa-solid text-slate-600 text-base mb-1");
+      [iconAccept, iconConfirm, iconEscalate].forEach(i => i.className = "fa-solid text-slate-400 text-base mb-1");
       [labelAccept, labelConfirm, labelEscalate].forEach(l => l.className = "text-xs font-black text-slate-500");
 
       let finalAction = "ESCALATE";
@@ -830,26 +844,26 @@
 
       if (p >= thetaStar) {
         finalAction = "ACCEPT";
-        btnAccept.className = "p-2 rounded-xl bg-emerald-950/70 border-2 border-emerald-400 text-emerald-300 transition flex flex-col items-center justify-center ring-2 ring-emerald-500/30 scale-105";
-        iconAccept.className = "fa-solid fa-circle-check text-emerald-400 text-base mb-1";
-        labelAccept.className = "text-xs font-black text-emerald-300";
+        btnAccept.className = "p-2 rounded-xl bg-white border-2 border-emerald-500 text-emerald-800 transition flex flex-col items-center justify-center ring-2 ring-emerald-200 shadow-xs scale-105";
+        iconAccept.className = "fa-solid fa-circle-check text-emerald-600 text-base mb-1";
+        labelAccept.className = "text-xs font-black text-emerald-900";
         expectedUtility = (p * costT2) - ((1 - p) * costT1);
       } else if (p >= thetaStar - 0.15) {
         finalAction = "CONFIRM";
-        btnConfirm.className = "p-2 rounded-xl bg-indigo-950/70 border-2 border-indigo-400 text-indigo-300 transition flex flex-col items-center justify-center ring-2 ring-indigo-500/30 scale-105";
-        iconConfirm.className = "fa-solid fa-clipboard-question text-indigo-400 text-base mb-1";
-        labelConfirm.className = "text-xs font-black text-indigo-300";
+        btnConfirm.className = "p-2 rounded-xl bg-white border-2 border-sure-500 text-sure-800 transition flex flex-col items-center justify-center ring-2 ring-sure-200 shadow-xs scale-105";
+        iconConfirm.className = "fa-solid fa-clipboard-question text-sure-600 text-base mb-1";
+        labelConfirm.className = "text-xs font-black text-sure-900";
         expectedUtility = (p * costT2 * 0.7);
       } else {
         finalAction = "ESCALATE";
-        btnEscalate.className = "p-2 rounded-xl bg-rose-950/70 border-2 border-rose-400 text-rose-300 transition flex flex-col items-center justify-center ring-2 ring-rose-500/30 scale-105";
-        iconEscalate.className = "fa-solid fa-hand text-rose-400 text-base mb-1";
-        labelEscalate.className = "text-xs font-black text-rose-300";
+        btnEscalate.className = "p-2 rounded-xl bg-white border-2 border-rose-500 text-rose-800 transition flex flex-col items-center justify-center ring-2 ring-rose-200 shadow-xs scale-105";
+        iconEscalate.className = "fa-solid fa-hand text-rose-600 text-base mb-1";
+        labelEscalate.className = "text-xs font-black text-rose-900";
         expectedUtility = -200; // Fixed cost of human intervention
       }
 
       document.getElementById('gate-decision-badge').textContent = finalAction;
-      document.getElementById('gate-decision-badge').className = finalAction === "ACCEPT" ? "text-emerald-400 font-bold" : (finalAction === "CONFIRM" ? "text-indigo-400 font-bold" : "text-rose-400 font-bold");
+      document.getElementById('gate-decision-badge').className = finalAction === "ACCEPT" ? "text-emerald-700 font-bold" : (finalAction === "CONFIRM" ? "text-sure-700 font-bold" : "text-rose-700 font-bold");
       document.getElementById('gate-utility-value').textContent = expectedUtility >= 0 ? `+$${Math.round(expectedUtility).toLocaleString()}` : `-$${Math.abs(Math.round(expectedUtility)).toLocaleString()}`;
     }
 
@@ -864,8 +878,8 @@
         // Add new defensive rule to Cortex (KNOW)
         const rulesEl = document.getElementById('know-ontology-rules');
         const newRule = document.createElement('div');
-        newRule.className = "flex items-start space-x-2 py-0.5 text-amber-300 animate-pulse";
-        newRule.innerHTML = `<i class="fa-solid fa-shield-halved mt-0.5 text-[9px]"></i><span>[CAUTION AMENDMENT]: Heightened verification gate added from Type 1 error feedback loop.</span>`;
+        newRule.className = "flex items-start space-x-2 py-0.5 text-act-700 font-bold animate-pulse";
+        newRule.innerHTML = `<i class="fa-solid fa-shield-halved mt-0.5 text-[9px] text-act-600"></i><span>[CAUTION AMENDMENT]: Heightened verification gate added from Type 1 error feedback loop.</span>`;
         rulesEl.prepend(newRule);
         
         recalculateGate();
