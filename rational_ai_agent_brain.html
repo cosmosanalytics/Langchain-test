@@ -130,12 +130,32 @@
         <span class="hidden md:inline">API Key</span>
       </button>
 
-      <button onclick="triggerFullEvaluation()" id="btn-run-all" class="px-3 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold flex items-center space-x-1.5 cursor-pointer shadow-xs transition">
+      <button onclick="triggerFullEvaluation()" id="btn-run-all" class="eval-btn px-3 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold flex items-center space-x-1.5 cursor-pointer shadow-xs transition">
         <i class="fa-solid fa-play text-xs text-amber-300"></i>
         <span>Evaluate Case</span>
       </button>
     </div>
   </header>
+
+  <!-- ================================================================= -->
+  <!-- ACTIVE CASE INPUT & EXPERIMENTATION BAR                           -->
+  <!-- ================================================================= -->
+  <div class="px-4 py-1.5 bg-slate-100 border-b border-slate-200/90 flex flex-wrap items-center justify-between gap-2 text-xs shrink-0">
+    <div class="flex items-center space-x-2 flex-1 min-w-[280px]">
+      <span class="text-slate-600 font-bold whitespace-nowrap font-mono text-[11px]"><i class="fa-solid fa-file-invoice text-slate-700 mr-1"></i>Active Case:</span>
+      <input type="text" id="input-case-title" class="flex-1 bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-slate-900 text-xs font-medium focus:outline-none focus:border-slate-800 shadow-2xs" value="Commercial Reefer Spoilage Claim (#IM-774910): +14.2°C for 194 mins, Gross Loss $64k, Deductible $5k">
+    </div>
+    <div class="flex items-center space-x-2 shrink-0">
+      <button onclick="generateRandomEdgeCase()" class="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-semibold flex items-center space-x-1.5 shadow-2xs cursor-pointer">
+        <i class="fa-solid fa-shuffle text-amber-600 text-[11px]"></i>
+        <span>Generate Edge Case</span>
+      </button>
+      <button onclick="triggerFullEvaluation()" id="btn-run-case" class="eval-btn px-3 py-1 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center space-x-1.5 shadow-xs cursor-pointer transition">
+        <i class="fa-solid fa-play text-amber-300 text-[10px]"></i>
+        <span>Evaluate Case</span>
+      </button>
+    </div>
+  </div>
 
   <!-- ================================================================= -->
   <!-- MAIN WORKSPACE: THE 3 BRAIN HARNESSES (COLUMNS)                   -->
@@ -677,9 +697,13 @@
       });
     }
 
-    function loadScenario(key) {
+    function loadScenario(key, shouldAnimate = false) {
       currentScenarioKey = key;
       const sc = SCENARIOS[key];
+
+      // Update Input Case Title
+      const inputEl = document.getElementById('input-case-title');
+      if (inputEl) inputEl.value = sc.title;
 
       // Update Nav Buttons
       Object.keys(SCENARIOS).forEach(k => {
@@ -720,8 +744,67 @@
       document.getElementById('val-cost-t1').textContent = `$${costT1.toLocaleString()}`;
       document.getElementById('val-cost-t2').textContent = `$${costT2.toLocaleString()}`;
 
-      // Trigger full evaluation
-      triggerFullEvaluation();
+      if (shouldAnimate) {
+        triggerFullEvaluation();
+      } else {
+        renderStaticState();
+      }
+    }
+
+    function renderStaticState() {
+      const sc = SCENARIOS[currentScenarioKey];
+      const p = sc.statedConfidence;
+      document.getElementById('calib-score-text').textContent = `${(p * 100).toFixed(1)}%`;
+      document.getElementById('calib-score-bar').style.width = `${p * 100}%`;
+
+      const rolloutsCont = document.getElementById('conflict-rollouts-container');
+      const actionCounts = {};
+      sc.rollouts.forEach(r => {
+        actionCounts[r.action] = (actionCounts[r.action] || 0) + 1;
+      });
+      const maxAction = Object.keys(actionCounts).reduce((a, b) => actionCounts[a] > actionCounts[b] ? a : b);
+      const consensusRatio = actionCounts[maxAction];
+
+      if (rolloutsCont) {
+        rolloutsCont.innerHTML = sc.rollouts.map(r => {
+          let badgeColor = "bg-emerald-50 text-emerald-800 border-emerald-300";
+          if (r.action === "CONFIRM") badgeColor = "bg-sure-50 text-sure-800 border-sure-300";
+          if (r.action === "ESCALATE") badgeColor = "bg-rose-50 text-rose-800 border-rose-300";
+
+          return `
+            <div class="p-1.5 rounded-lg bg-white border border-slate-200 flex items-center justify-between shadow-2xs">
+              <div class="flex items-center space-x-2">
+                <span class="w-4 h-4 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-[9px] font-bold">#${r.seed}</span>
+                <span class="px-1.5 py-0.2 rounded font-bold text-[9.5px] border ${badgeColor}">${r.action}</span>
+                <span class="text-slate-600 text-[10px] truncate max-w-[170px]">${r.reason}</span>
+              </div>
+              <span class="text-slate-900 text-[10px] font-bold">${(r.prob * 100).toFixed(0)}%</span>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const alarmBadge = document.getElementById('conflict-alarm-badge');
+      if (alarmBadge) {
+        if (consensusRatio === 5) {
+          alarmBadge.className = "px-2 py-0.5 rounded-full bg-white text-emerald-700 border border-emerald-300 text-[9.5px] font-mono font-bold";
+          alarmBadge.textContent = "Repeated: 5 / 5 (Stable)";
+        } else if (consensusRatio >= 3) {
+          alarmBadge.className = "px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-300 text-[9.5px] font-mono font-bold animate-pulse";
+          alarmBadge.textContent = `Conflict Alert: ${consensusRatio} vs ${5 - consensusRatio}`;
+        } else {
+          alarmBadge.className = "px-2 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-300 text-[9.5px] font-mono font-bold animate-pulse";
+          alarmBadge.textContent = "High Entropy: Knowledge Unstable";
+        }
+      }
+      document.getElementById('stat-agreement-ratio').textContent = `${(consensusRatio / 5 * 100).toFixed(0)}%`;
+      recalculateGate();
+    }
+
+    function generateRandomEdgeCase() {
+      const keys = Object.keys(SCENARIOS);
+      const nextKey = keys[(keys.indexOf(currentScenarioKey) + 1) % keys.length];
+      loadScenario(nextKey, true);
     }
 
     function updateRiskCosts() {
@@ -732,58 +815,112 @@
       recalculateGate();
     }
 
-    function triggerFullEvaluation() {
+    async function triggerFullEvaluation() {
+      const buttons = document.querySelectorAll('.eval-btn');
       const sc = SCENARIOS[currentScenarioKey];
 
-      // 1. BE SURE: Metacognitive Confidence
-      const p = sc.statedConfidence;
-      document.getElementById('calib-score-text').textContent = `${(p * 100).toFixed(1)}%`;
-      document.getElementById('calib-score-bar').style.width = `${p * 100}%`;
+      // 1. Button Feedback across all evaluation triggers
+      buttons.forEach(b => {
+        b.disabled = true;
+        b.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-xs text-amber-300"></i><span>Reasoning across Brain...</span>`;
+      });
 
-      // 2. Conflict Monitor: 5 Rollouts
+      // Reset gate highlights temporarily to show active re-evaluation
+      const btnAccept = document.getElementById('gate-btn-accept');
+      const btnConfirm = document.getElementById('gate-btn-confirm');
+      const btnEscalate = document.getElementById('gate-btn-escalate');
+      [btnAccept, btnConfirm, btnEscalate].forEach(b => {
+        b.className = "p-2 rounded-xl bg-white border border-slate-200 transition flex flex-col items-center justify-center opacity-30 shadow-2xs";
+      });
+
+      // 2. Stage 1 (KNOW): Pulse Cortex rules
+      const rulesEl = document.getElementById('know-ontology-rules');
+      if (rulesEl) {
+        rulesEl.classList.add('ring-2', 'ring-know-300');
+        setTimeout(() => rulesEl.classList.remove('ring-2', 'ring-know-300'), 400);
+      }
+
+      await new Promise(r => setTimeout(r, 200));
+
+      // 3. Stage 2 (BE SURE): Animate Metacognitive Confidence Bar
+      const p = sc.statedConfidence;
+      const barEl = document.getElementById('calib-score-bar');
+      const textEl = document.getElementById('calib-score-text');
+      if (barEl) barEl.style.width = '0%';
+      if (textEl) textEl.textContent = 'Calculating...';
+
+      await new Promise(r => setTimeout(r, 150));
+      if (barEl) barEl.style.width = `${p * 100}%`;
+      if (textEl) textEl.textContent = `${(p * 100).toFixed(1)}%`;
+
+      // Conflict Monitor: Clear & Stream in 5 Rollouts one by one
       const rolloutsCont = document.getElementById('conflict-rollouts-container');
+      if (rolloutsCont) {
+        rolloutsCont.innerHTML = `<div class="p-2 text-center text-slate-400 text-[10px] animate-pulse">Running 5 parallel rollouts to test consistency...</div>`;
+      }
+
+      await new Promise(r => setTimeout(r, 250));
+      if (rolloutsCont) rolloutsCont.innerHTML = '';
+
       const actionCounts = {};
       sc.rollouts.forEach(r => {
         actionCounts[r.action] = (actionCounts[r.action] || 0) + 1;
       });
-
       const maxAction = Object.keys(actionCounts).reduce((a, b) => actionCounts[a] > actionCounts[b] ? a : b);
       const consensusRatio = actionCounts[maxAction];
 
-      rolloutsCont.innerHTML = sc.rollouts.map(r => {
+      for (let i = 0; i < sc.rollouts.length; i++) {
+        const r = sc.rollouts[i];
         let badgeColor = "bg-emerald-50 text-emerald-800 border-emerald-300";
         if (r.action === "CONFIRM") badgeColor = "bg-sure-50 text-sure-800 border-sure-300";
         if (r.action === "ESCALATE") badgeColor = "bg-rose-50 text-rose-800 border-rose-300";
 
-        return `
-          <div class="p-1.5 rounded-lg bg-white border border-slate-200 flex items-center justify-between shadow-2xs">
-            <div class="flex items-center space-x-2">
-              <span class="w-4 h-4 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-[9px] font-bold">#${r.seed}</span>
-              <span class="px-1.5 py-0.2 rounded font-bold text-[9.5px] border ${badgeColor}">${r.action}</span>
-              <span class="text-slate-600 text-[10px] truncate max-w-[170px]">${r.reason}</span>
-            </div>
-            <span class="text-slate-900 text-[10px] font-bold">${(r.prob * 100).toFixed(0)}%</span>
+        const row = document.createElement('div');
+        row.className = "p-1.5 rounded-lg bg-white border border-slate-200 flex items-center justify-between shadow-2xs transition-all duration-300 transform translate-y-1";
+        row.innerHTML = `
+          <div class="flex items-center space-x-2">
+            <span class="w-4 h-4 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center text-[9px] font-bold">#${r.seed}</span>
+            <span class="px-1.5 py-0.2 rounded font-bold text-[9.5px] border ${badgeColor}">${r.action}</span>
+            <span class="text-slate-600 text-[10px] truncate max-w-[170px]">${r.reason}</span>
           </div>
+          <span class="text-slate-900 text-[10px] font-bold">${(r.prob * 100).toFixed(0)}%</span>
         `;
-      }).join('');
-
-      // Conflict Badge
-      const alarmBadge = document.getElementById('conflict-alarm-badge');
-      if (consensusRatio === 5) {
-        alarmBadge.className = "px-2 py-0.5 rounded-full bg-white text-emerald-700 border border-emerald-300 text-[9.5px] font-mono font-bold";
-        alarmBadge.textContent = "Repeated: 5 / 5 (Stable)";
-      } else if (consensusRatio >= 3) {
-        alarmBadge.className = "px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-300 text-[9.5px] font-mono font-bold animate-pulse";
-        alarmBadge.textContent = `Conflict Alert: ${consensusRatio} vs ${5 - consensusRatio}`;
-      } else {
-        alarmBadge.className = "px-2 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-300 text-[9.5px] font-mono font-bold animate-pulse";
-        alarmBadge.textContent = "High Entropy: Knowledge Unstable";
+        if (rolloutsCont) rolloutsCont.appendChild(row);
+        await new Promise(res => setTimeout(res, 90));
       }
 
+      // Conflict Alarm Badge Update
+      const alarmBadge = document.getElementById('conflict-alarm-badge');
+      if (alarmBadge) {
+        if (consensusRatio === 5) {
+          alarmBadge.className = "px-2 py-0.5 rounded-full bg-white text-emerald-700 border border-emerald-300 text-[9.5px] font-mono font-bold";
+          alarmBadge.textContent = "Repeated: 5 / 5 (Stable)";
+        } else if (consensusRatio >= 3) {
+          alarmBadge.className = "px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 border border-amber-300 text-[9.5px] font-mono font-bold animate-pulse";
+          alarmBadge.textContent = `Conflict Alert: ${consensusRatio} vs ${5 - consensusRatio}`;
+        } else {
+          alarmBadge.className = "px-2 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-300 text-[9.5px] font-mono font-bold animate-pulse";
+          alarmBadge.textContent = "High Entropy: Knowledge Unstable";
+        }
+      }
       document.getElementById('stat-agreement-ratio').textContent = `${(consensusRatio / 5 * 100).toFixed(0)}%`;
 
-      // 3. ACT: Recalculate Gate
+      // 4. Stage 3 (ACT): Recalculate Gate & Highlight Chosen Action
+      await new Promise(r => setTimeout(r, 150));
       recalculateGate();
+
+      // Final Button State
+      const decisionBadge = document.getElementById('gate-decision-badge');
+      const chosenAction = decisionBadge ? decisionBadge.textContent : 'DONE';
+      buttons.forEach(b => {
+        b.innerHTML = `<i class="fa-solid fa-circle-check text-xs text-emerald-400"></i><span>Decision: ${chosenAction} (${consensusRatio}/5)</span>`;
+      });
+      setTimeout(() => {
+        buttons.forEach(b => {
+          b.disabled = false;
+          b.innerHTML = `<i class="fa-solid fa-play text-xs text-amber-300"></i><span>Evaluate Case</span>`;
+        });
+      }, 2200);
     }
 
     function recalculateGate() {
