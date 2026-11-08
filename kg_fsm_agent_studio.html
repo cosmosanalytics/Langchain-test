@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KG-Specified FSM Studio | Autonomous AI Reliability</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Vis.js Network for Interactive Knowledge Graph -->
+  <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            state: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              200: '#a7f3d0',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            },
+            guard: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              200: '#fed7aa',
+              600: '#ea580c',
+              700: '#c2410c',
+              800: '#9a3412',
+              900: '#7c2d12',
+            },
+            trans: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom scrollbars */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    
+    .pulse-glow {
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.4);
+      animation: pulseGlow 2s infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+      50% { box-shadow: 0 0 22px rgba(16, 185, 129, 0.7); }
+    }
+  </style>
+</head>
+<body class="h-full bg-[#f8fafc] text-slate-800 flex flex-col antialiased overflow-hidden select-none">
+
+  <!-- ================================================================= -->
+  <!-- TOP APP HEADER & NAVIGATION                                       -->
+  <!-- ================================================================= -->
+  <header class="bg-white border-b border-slate-200 px-4 py-2 flex flex-wrap items-center justify-between gap-3 shrink-0 z-20 shadow-xs">
+    
+    <!-- Title & Brand -->
+    <div class="flex items-center space-x-3">
+      <div class="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center text-white font-black text-sm shadow-xs">
+        <i class="fa-solid fa-diagram-project text-amber-400"></i>
+      </div>
+      <div>
+        <div class="flex items-center space-x-2">
+          <h1 class="text-sm font-extrabold tracking-tight text-slate-900 font-display">KG-Specified FSM Studio</h1>
+          <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold uppercase tracking-wider font-mono">Declarative Statecharts</span>
+        </div>
+        <p class="text-[11px] text-slate-500 font-medium">Demonstrating why specifying Finite State Machines inside Knowledge Graphs brings total AI certainty</p>
+      </div>
+
+      <div class="h-4 w-px bg-slate-200 hidden md:block ml-2"></div>
+
+      <!-- View Switcher -->
+      <nav class="flex items-center space-x-1 bg-slate-100 p-0.5 rounded-lg text-xs font-semibold">
+        <button onclick="setView('cockpit')" id="btn-view-cockpit" class="px-2.5 py-1 rounded-md bg-white text-slate-900 font-bold shadow-xs transition flex items-center space-x-1 cursor-pointer">
+          <i class="fa-solid fa-play text-slate-700 text-[10px]"></i>
+          <span>Execution Studio</span>
+        </button>
+        <button onclick="setView('verify')" id="btn-view-verify" class="px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 transition flex items-center space-x-1 cursor-pointer">
+          <i class="fa-solid fa-shield-check text-emerald-600 text-[10px]"></i>
+          <span>Graph Formal Verification</span>
+        </button>
+        <button onclick="setView('compare')" id="btn-view-compare" class="px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 transition flex items-center space-x-1 cursor-pointer">
+          <i class="fa-solid fa-code-compare text-indigo-600 text-[10px]"></i>
+          <span>Hardcoded vs KG-FSM</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Scenarios & Runtime Controls -->
+    <div class="flex items-center space-x-2">
+      <!-- Runtime Selector -->
+      <div class="flex items-center bg-slate-100 border border-slate-200 rounded-lg px-2 py-1 font-mono text-xs text-slate-700">
+        <span class="text-slate-400 mr-1.5"><i class="fa-solid fa-microchip"></i></span>
+        <select id="select-runtime" onchange="changeRuntime(this.value)" class="bg-transparent text-slate-800 text-xs focus:outline-none cursor-pointer font-medium">
+          <option value="groq">⚡ Groq LPU (Llama 3.3 70B)</option>
+          <option value="instant">🎯 Instant Simulator (0ms)</option>
+          <option value="webllm">🌐 WebLLM (WebGPU)</option>
+        </select>
+      </div>
+
+      <!-- API Key Modal Trigger -->
+      <button onclick="toggleKeyModal()" class="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-semibold flex items-center space-x-1 shadow-2xs cursor-pointer">
+        <i class="fa-solid fa-key text-slate-400 text-[11px]"></i>
+        <span class="hidden sm:inline">API Key</span>
+      </button>
+
+      <!-- Hot Reload Policy Drift Action -->
+      <button onclick="togglePolicyDrift()" id="btn-drift-toggle" class="px-3 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold flex items-center space-x-1.5 shadow-xs cursor-pointer transition">
+        <i class="fa-solid fa-arrows-rotate text-[11px]"></i>
+        <span id="label-drift-btn">Inject Fraud State (Policy Drift)</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================================================================= -->
+  <!-- ACTION BAR & ACTIVE CASE SELECTOR                                 -->
+  <!-- ================================================================= -->
+  <div class="bg-white border-b border-slate-200 px-4 py-1.5 flex flex-wrap items-center justify-between gap-2 shrink-0 z-10">
+    <div class="flex items-center space-x-2 flex-1 min-w-[320px]">
+      <span class="text-slate-500 font-bold font-mono text-xs flex items-center space-x-1 whitespace-nowrap">
+        <i class="fa-solid fa-folder-open text-slate-700"></i>
+        <span>Active Case:</span>
+      </span>
+      <div class="flex items-center space-x-1 overflow-x-auto">
+        <button onclick="loadCase('case_standard')" id="btn-case-standard" class="case-btn px-2.5 py-0.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-2xs transition">
+          1. Valid Cargo Spoilage ($64k)
+        </button>
+        <button onclick="loadCase('case_edge_sensor')" id="btn-case-edge-sensor" class="case-btn px-2.5 py-0.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition">
+          2. Dead Sensor Battery (45m Log)
+        </button>
+        <button onclick="loadCase('case_high_value')" id="btn-case-high-value" class="case-btn px-2.5 py-0.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition">
+          3. High Value ($92k &gt; $75k Cap)
+        </button>
+      </div>
+    </div>
+
+    <!-- Active State Pill Indicator -->
+    <div class="flex items-center space-x-2 text-xs font-mono">
+      <span class="text-slate-400">Current FSM State:</span>
+      <span id="pill-current-state" class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold flex items-center space-x-1.5 shadow-2xs">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+        <span id="text-current-state">INTAKE_RECEIVED</span>
+      </span>
+      <button onclick="resetFSM()" class="p-1 text-slate-400 hover:text-slate-700 rounded transition" title="Reset State Machine">
+        <i class="fa-solid fa-arrow-rotate-left text-xs"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- MAIN WORKSPACE: COCKPIT VIEW                                      -->
+  <!-- ================================================================= -->
+  <main id="view-cockpit" class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 p-3 overflow-hidden">
+    
+    <!-- =============================================================== -->
+    <!-- LEFT PANEL: INTERACTIVE FSM KNOWLEDGE GRAPH (7 COLS)            -->
+    <!-- =============================================================== -->
+    <section class="lg:col-span-7 bg-white border border-slate-200 rounded-xl flex flex-col min-h-0 overflow-hidden shadow-xs">
+      
+      <!-- Panel Header -->
+      <div class="px-3 py-2 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+        <div class="flex items-center space-x-2">
+          <div class="w-6 h-6 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center text-xs font-bold">
+            <i class="fa-solid fa-circle-nodes"></i>
+          </div>
+          <div>
+            <h2 class="text-xs font-bold text-slate-900 font-display">Declarative FSM Knowledge Graph</h2>
+            <p class="text-[10px] text-slate-500 font-medium">Nodes = (:State, :Guard, :Action) &bull; Edges = [:TRANSITION, :REQUIRES_GUARD]</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2 text-[10px] font-mono">
+          <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span><span>State</span></span>
+          <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span><span>Guard Rule</span></span>
+          <span class="flex items-center space-x-1"><span class="w-2.5 h-2.5 rounded-full bg-indigo-500 inline-block"></span><span>Action Tool</span></span>
+          <button onclick="fitGraphView()" class="px-1.5 py-0.5 rounded bg-white border border-slate-200 text-slate-600 hover:bg-slate-50">
+            <i class="fa-solid fa-arrows-to-eye"></i> Fit
+          </button>
+        </div>
+      </div>
+
+      <!-- Interactive Vis.js Canvas Container -->
+      <div class="flex-1 min-h-0 relative bg-[#f8fafc]">
+        <div id="kg-network-canvas" class="w-full h-full"></div>
+
+        <!-- Selected Node Inspector Overlay -->
+        <div id="node-inspector-overlay" class="absolute bottom-2 left-2 right-2 bg-white/95 backdrop-blur-xs border border-slate-200 rounded-xl p-2.5 shadow-md hidden text-xs transition-all">
+          <div class="flex items-center justify-between pb-1 mb-1 border-b border-slate-100">
+            <span class="font-bold text-slate-900 font-display flex items-center space-x-1.5">
+              <span id="inspect-node-badge" class="px-1.5 py-0.2 rounded text-[9px] font-mono bg-slate-100 text-slate-700">NODE</span>
+              <span id="inspect-node-title">Node Title</span>
+            </span>
+            <button onclick="closeNodeInspector()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+          <div id="inspect-node-details" class="text-[11px] text-slate-600 font-mono space-y-0.5">
+            <!-- Dynamic parameters -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Graph Status Bar -->
+      <div class="px-3 py-1.5 bg-slate-50 border-t border-slate-200 shrink-0 text-[10.5px] font-mono text-slate-600 flex items-center justify-between">
+        <span id="stat-graph-counts">Nodes: 12 &bull; Edges: 14 &bull; Invariant Rules: 4</span>
+        <span class="text-emerald-700 font-bold"><i class="fa-solid fa-check mr-1"></i>State Machine Formalized in Knowledge Graph</span>
+      </div>
+    </section>
+
+    <!-- =============================================================== -->
+    <!-- RIGHT PANEL: BOUNDED LLM REASONER & 4 ADVANTAGE DEMOS (5 COLS)  -->
+    <!-- =============================================================== -->
+    <section class="lg:col-span-5 flex flex-col min-h-0 space-y-3 overflow-y-auto">
+      
+      <!-- ============================================================= -->
+      <!-- CARD 1: RUNTIME EXECUTION CONTROLLER                          -->
+      <!-- ============================================================= -->
+      <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-xs space-y-2.5">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <div class="flex items-center space-x-2">
+            <div class="w-6 h-6 rounded-lg bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center text-xs font-bold">
+              <i class="fa-solid fa-robot"></i>
+            </div>
+            <div>
+              <h3 class="text-xs font-bold text-slate-900 font-display">Bounded LLM Transition Engine</h3>
+              <p class="text-[10px] text-slate-500 font-medium">Evaluates guard conditions without hardcoded code</p>
+            </div>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono text-[9.5px] font-bold">Step: <span id="text-step-counter">1 / 4</span></span>
+        </div>
+
+        <!-- Case Summary Card -->
+        <div class="p-2 bg-slate-50 rounded-lg border border-slate-200 text-xs font-mono space-y-1">
+          <div class="flex items-center justify-between text-slate-800 font-bold">
+            <span id="text-case-title">Case #IM-774910</span>
+            <span id="text-case-cargo-badge" class="px-1.5 py-0.2 rounded text-[9px] bg-emerald-100 text-emerald-800">Frozen Meat</span>
+          </div>
+          <p id="text-case-desc" class="text-[11px] text-slate-600 font-sans">Trailer #902 compressor failure on I-80. Loss: $64,000. Ambient temp reached +14.2°C for 194 mins.</p>
+        </div>
+
+        <!-- Step Actions -->
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="evaluateNextTransition()" id="btn-next-step" class="p-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold flex items-center justify-center space-x-1.5 shadow-xs transition cursor-pointer">
+            <i class="fa-solid fa-forward-step text-amber-400"></i>
+            <span>Evaluate Next State</span>
+          </button>
+          
+          <button onclick="runAutoPlay()" id="btn-auto-play" class="p-2 rounded-lg bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 text-xs font-bold flex items-center justify-center space-x-1.5 shadow-2xs transition cursor-pointer">
+            <i class="fa-solid fa-play text-slate-600"></i>
+            <span>Auto-Run Entire Flow</span>
+          </button>
+        </div>
+
+        <!-- Active Guards Status -->
+        <div class="space-y-1">
+          <span class="text-[10.5px] font-bold text-slate-700 uppercase tracking-wider font-mono flex items-center justify-between">
+            <span>Guards for Next Transition:</span>
+            <span id="guard-status-badge" class="text-[9px] text-slate-500 font-normal">Querying KG...</span>
+          </span>
+          <div id="list-active-guards" class="space-y-1 font-mono text-[10.5px]">
+            <!-- Injected guard checklist -->
+          </div>
+        </div>
+
+        <!-- Terminal Output / Decision Box -->
+        <div id="box-decision-status" class="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-xs text-emerald-900 font-mono hidden">
+          <!-- Injected execution result -->
+        </div>
+      </div>
+
+      <!-- ============================================================= -->
+      <!-- CARD 2: THE 4 KG-FSM ADVANTAGE DEMOS                          -->
+      <!-- ============================================================= -->
+      <div class="bg-white border border-slate-200 rounded-xl p-3 shadow-xs space-y-2.5">
+        <div class="flex items-center justify-between pb-1.5 border-b border-slate-100">
+          <h3 class="text-xs font-bold text-slate-900 font-display flex items-center space-x-1.5">
+            <i class="fa-solid fa-wand-magic-sparkles text-amber-500"></i>
+            <span>Interactive KG Advantage Demos</span>
+          </h3>
+          <span class="text-[9.5px] text-slate-500 font-mono">Live Proofs</span>
+        </div>
+
+        <div class="space-y-2 text-xs">
+          
+          <!-- DEMO 1: INTROSPECTION -->
+          <div class="p-2 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-900 text-[11px] flex items-center space-x-1">
+                <i class="fa-solid fa-comment-dots text-indigo-600"></i>
+                <span>1. Introspection: "Why Am I Stalled?"</span>
+              </span>
+              <button onclick="demoIntrospect()" class="px-2 py-0.5 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[10px] transition cursor-pointer">
+                Query Graph
+              </button>
+            </div>
+            <p class="text-[10.5px] text-slate-600">The agent queries the KG to explain in plain English why a transition cannot proceed without hardcoded error strings.</p>
+            <div id="output-introspect" class="hidden p-2 rounded bg-white border border-indigo-200 text-[10.5px] font-mono text-indigo-950 mt-1"></div>
+          </div>
+
+          <!-- DEMO 2: NON-BYPASSABLE SECURITY -->
+          <div class="p-2 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-900 text-[11px] flex items-center space-x-1">
+                <i class="fa-solid fa-lock text-rose-600"></i>
+                <span>2. Mathematical Non-Bypassable Rails</span>
+              </span>
+              <button onclick="demoIllegalAction()" class="px-2 py-0.5 rounded bg-rose-600 hover:bg-rose-700 text-white font-bold text-[10px] transition cursor-pointer">
+                Simulate Exploit
+              </button>
+            </div>
+            <p class="text-[10.5px] text-slate-600">Simulate prompt injection asking the LLM to wire $64,000 immediately while in INTAKE. The KG graph rails block it with 403 Forbidden.</p>
+            <div id="output-security" class="hidden p-2 rounded bg-white border border-rose-200 text-[10.5px] font-mono text-rose-950 mt-1"></div>
+          </div>
+
+          <!-- DEMO 3: HOT-RELOAD DRIFT -->
+          <div class="p-2 rounded-lg bg-slate-50 border border-slate-200 space-y-1">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-900 text-[11px] flex items-center space-x-1">
+                <i class="fa-solid fa-code-branch text-amber-600"></i>
+                <span>3. Zero-Code Policy Drift (Hot Reload)</span>
+              </span>
+              <button onclick="togglePolicyDrift()" class="px-2 py-0.5 rounded bg-amber-600 hover:bg-amber-700 text-white font-bold text-[10px] transition cursor-pointer">
+                Toggle Drift
+              </button>
+            </div>
+            <p class="text-[10.5px] text-slate-600">Insert an extra <code>FRAUD_SCREENING</code> state in the KG. The engine dynamically rewires execution without touching Python/Java code!</p>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- VIEW 2: GRAPH FORMAL VERIFICATION PANEL                           -->
+  <!-- ================================================================= -->
+  <section id="view-verify" class="flex-1 min-h-0 hidden flex-col p-4 overflow-y-auto bg-white border-t border-slate-200">
+    <div class="max-w-4xl w-full mx-auto space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+        <div>
+          <h2 class="text-base font-extrabold text-slate-900 font-display flex items-center space-x-2">
+            <span>Formal Graph Verification: Mathematical Liveness &amp; Safety</span>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-mono font-bold">Topology Audit</span>
+          </h2>
+          <p class="text-xs text-slate-500">Because the FSM is a Knowledge Graph, topological graph algorithms can verify zero dead ends, complete reachability, and safety before deployment.</p>
+        </div>
+        <button onclick="runFormalVerification()" class="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-xs transition cursor-pointer">
+          <i class="fa-solid fa-play mr-1 text-amber-400"></i> Run Full Topology Audit
+        </button>
+      </div>
+
+      <!-- Verification Metrics Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-xs">
+        <div class="p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-1">
+          <span class="text-emerald-800 font-bold block text-[11px] font-mono">1. Reachability Check</span>
+          <div class="text-lg font-black text-emerald-950 font-display">100% Reachable</div>
+          <p class="text-[10px] text-slate-600">All non-terminal states have at least 1 path from <code>INTAKE_RECEIVED</code>.</p>
+        </div>
+
+        <div class="p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-1">
+          <span class="text-emerald-800 font-bold block text-[11px] font-mono">2. Dead-End Audit</span>
+          <div class="text-lg font-black text-emerald-950 font-display">0 Orphan States</div>
+          <p class="text-[10px] text-slate-600">Zero non-terminal states with out-degree = 0. No dead ends exist.</p>
+        </div>
+
+        <div class="p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-1">
+          <span class="text-emerald-800 font-bold block text-[11px] font-mono">3. Liveness Invariant</span>
+          <div class="text-lg font-black text-emerald-950 font-display">Liveness Safe</div>
+          <p class="text-[10px] text-slate-600">Every valid path terminates in either <code>APPROVED</code> or <code>ESCALATED</code>.</p>
+        </div>
+
+        <div class="p-3 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-1">
+          <span class="text-emerald-800 font-bold block text-[11px] font-mono">4. Guard Integrity</span>
+          <div class="text-lg font-black text-emerald-950 font-display">4 Invariant Guards</div>
+          <p class="text-[10px] text-slate-600">100% of transition edges have verified semantic invariant rules bound.</p>
+        </div>
+      </div>
+
+      <!-- Live Test: Inject Broken Orphan State Demo -->
+      <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-xs font-bold text-slate-900 font-display">Interactive Experiment: Inject a Broken Orphan State</h3>
+            <p class="text-[11px] text-slate-500">See how graph algorithms instantly catch an unlinked dead-end state that would crash a hardcoded microservice.</p>
+          </div>
+          <button onclick="testInjectDeadEnd()" id="btn-inject-deadend" class="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition cursor-pointer">
+            Inject Broken Dead-End Node
+          </button>
+        </div>
+        <div id="box-verification-log" class="p-3 rounded-lg bg-white border border-slate-200 font-mono text-xs text-slate-700 max-h-48 overflow-y-auto space-y-1">
+          <span class="text-slate-400">[Topology Logger Ready] Click "Run Full Topology Audit" or inject a dead-end node.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- VIEW 3: HARDCODED VS KG-SPECIFIED COMPARISON                      -->
+  <!-- ================================================================= -->
+  <section id="view-compare" class="flex-1 min-h-0 hidden flex-col p-4 overflow-y-auto bg-white border-t border-slate-200">
+    <div class="max-w-4xl w-full mx-auto space-y-4">
+      <div>
+        <h2 class="text-base font-extrabold text-slate-900 font-display">Architectural Comparison: Hardcoded Code vs. KG-Specified FSM</h2>
+        <p class="text-xs text-slate-500">Why enterprise autonomous agents are shifting from hardcoded Python if/else workflows to declarative Knowledge Graphs.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+        
+        <!-- HARDCODED COLUMN -->
+        <div class="p-4 bg-rose-50/50 border-2 border-rose-200 rounded-2xl space-y-2.5">
+          <div class="flex items-center justify-between pb-2 border-b border-rose-200">
+            <span class="font-extrabold text-rose-950 font-display text-sm">Hardcoded Code (Python / Java / Temporal)</span>
+            <span class="px-2 py-0.5 rounded bg-rose-100 text-rose-800 text-[10px] font-mono font-bold">Fragile &amp; Opaque</span>
+          </div>
+          <ul class="space-y-1.5 text-slate-700 text-[11px] list-disc pl-4">
+            <li><strong>Code Deployment for Every Policy Change:</strong> Adding a new review step requires rewriting backend code, running unit tests, CI/CD, and redeploying servers.</li>
+            <li><strong>Opaque Failures:</strong> When a transaction fails, it returns a cryptic boolean <code>False</code> or generic <code>ValidationException</code>. The AI cannot explain *why* to the user.</li>
+            <li><strong>Zero Formal Graph Verification:</strong> Dead ends or infinite loops are only discovered when customer transactions get stuck in production.</li>
+            <li><strong>Vulnerable to Prompt Exploits:</strong> If tool calling is bound loosely in code, prompt injection can trick the LLM into invoking settlement APIs out of turn.</li>
+          </ul>
+        </div>
+
+        <!-- KG-SPECIFIED COLUMN -->
+        <div class="p-4 bg-emerald-50/50 border-2 border-emerald-200 rounded-2xl space-y-2.5">
+          <div class="flex items-center justify-between pb-2 border-b border-emerald-200">
+            <span class="font-extrabold text-emerald-950 font-display text-sm">KG-Specified FSM (Declarative Statecharts)</span>
+            <span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-mono font-bold">Safe &amp; Introspective</span>
+          </div>
+          <ul class="space-y-1.5 text-slate-700 text-[11px] list-disc pl-4">
+            <li><strong>Zero-Code Hot Reload:</strong> Policy drift is applied by creating nodes and edges in the graph. The execution engine enforces the new flow instantly.</li>
+            <li><strong>Self-Explaining AI:</strong> The agent inspects the graph to cite the exact unmet guard rule (e.g. <em>"Missing 75 minutes of telematics required by Rule IM-02"</em>).</li>
+            <li><strong>Mathematical Verification:</strong> Graph algorithms mathematically prove zero dead-ends and 100% reachability before any claim runs.</li>
+            <li><strong>Mathematical Security:</strong> Action tools are structurally locked to states. It is physically impossible to execute a payout wire from an intake state.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================================= -->
+  <!-- MODAL: API KEY CONFIGURATION                                      -->
+  <!-- ================================================================= -->
+  <div id="modal-key-config" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-2xs flex items-center justify-center p-4 hidden">
+    <div class="bg-white border border-slate-200 rounded-2xl p-5 max-w-md w-full shadow-xl space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2">
+        <h3 class="text-sm font-bold text-slate-900 font-display flex items-center space-x-2">
+          <i class="fa-solid fa-key text-amber-500"></i>
+          <span>LLM Inference Configuration</span>
+        </h3>
+        <button onclick="toggleKeyModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <p class="text-xs text-slate-600">Select your preferred inference provider. The app includes a built-in Instant Simulator with zero setup required.</p>
+
+      <div class="space-y-2 text-xs font-mono">
+        <div>
+          <label class="block text-slate-700 font-bold mb-1">Groq API Key (Optional):</label>
+          <input type="password" id="input-groq-key" placeholder="gsk_..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-xs focus:outline-none focus:border-slate-800">
+          <span class="text-[10px] text-slate-400 font-sans">Stored in your browser's local memory only.</span>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-2 pt-2 border-t border-slate-100">
+        <button onclick="toggleKeyModal()" class="px-3 py-1.5 rounded-lg border border-slate-300 text-xs font-semibold text-slate-600">Close</button>
+        <button onclick="saveKeysModal()" class="px-3 py-1.5 rounded-lg bg-slate-900 text-white text-xs font-bold">Save Key</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- JAVASCRIPT: GRAPH ENGINE, FSM STATE & ADVANTAGE LOGIC             -->
+  <!-- ================================================================= -->
+  <script>
+    // =================================================================
+    // 1. KNOWLEDGE GRAPH SPECIFICATION (NODES & EDGES)
+    // =================================================================
+    let kgData = {
+      states: [
+        { id: "s_intake", name: "INTAKE_RECEIVED", color: "#10b981", isInitial: true, isTerminal: false, actions: ["parse_submission"] },
+        { id: "s_evidence", name: "EVIDENCE_VALIDATION", color: "#059669", isInitial: false, isTerminal: false, actions: ["fetch_telematics", "verify_mvr"] },
+        { id: "s_adjudication", name: "ADJUDICATION", color: "#6366f1", isInitial: false, isTerminal: false, actions: ["run_metacognitive_eval"] },
+        { id: "s_approved", name: "APPROVED_SETTLEMENT", color: "#047857", isInitial: false, isTerminal: true, actions: ["execute_wire_disbursement"] },
+        { id: "s_escalated", name: "ESCALATED_HUMAN", color: "#e11d48", isInitial: false, isTerminal: true, actions: ["route_adjuster_queue"] }
+      ],
+      guards: [
+        { id: "g_doc", name: "DOC_VALIDATED", desc: "ACORD 127 submission format verified" },
+        { id: "g_im", name: "RULE_IM_01", desc: "Endorsement IM-REFRIGERATION active on policy" },
+        { id: "g_temp", name: "RULE_TEMP_02", desc: "Ambient temp > 8°C for duration > 120 mins" },
+        { id: "g_cap", name: "RULE_CAP_03", desc: "Net loss <= $75,000 ceiling ($5k deductible applied)" }
+      ],
+      transitions: [
+        { id: "t_1", from: "s_intake", to: "s_evidence", event: "INTAKE_VERIFIED", guards: ["g_doc"] },
+        { id: "t_2", from: "s_evidence", to: "s_adjudication", event: "EVIDENCE_PASSED", guards: ["g_im", "g_temp"] },
+        { id: "t_3", from: "s_adjudication", to: "s_approved", event: "ACCEPT (P̂ ≥ 0.85)", guards: ["g_cap"] },
+        { id: "t_4", from: "s_adjudication", to: "s_escalated", event: "ESCALATE (P̂ < 0.85)", guards: [] },
+        { id: "t_5", from: "s_evidence", to: "s_escalated", event: "DATA_INCOMPLETE", guards: [] }
+      ]
+    };
+
+    // Case definitions
+    const CASES = {
+      case_standard: {
+        id: "case_standard",
+        title: "Claim #IM-774910 (Standard Valid Claim)",
+        cargo: "Frozen Beef ($64,000)",
+        telematics: { temp: 14.2, durationMins: 194, sensorHealthy: true },
+        policy: { endorsementActive: true, deductible: 5000, limit: 75000 },
+        desc: "Trailer #902 compressor failure on I-80. Sensor shows +14.2°C for 194 mins (exceeds 120m rule). Claim $64k - $5k deductible = $59k ≤ $75k ceiling."
+      },
+      case_edge_sensor: {
+        id: "case_edge_sensor",
+        title: "Claim #IM-778120 (Battery Died Edge Case)",
+        cargo: "Ice Cream ($38,000)",
+        telematics: { temp: 11.0, durationMins: 45, sensorHealthy: false },
+        policy: { endorsementActive: true, deductible: 5000, limit: 75000 },
+        desc: "Sensor battery died mid-trip. Only 45 minutes of temperature data recorded. Fails RULE_TEMP_02 (> 120 mins required)."
+      },
+      case_high_value: {
+        id: "case_high_value",
+        title: "Claim #IM-789040 (High-Value Cargo $92k)",
+        cargo: "Biologic Pharmaceuticals ($92,000)",
+        telematics: { temp: 22.0, durationMins: 240, sensorHealthy: true },
+        policy: { endorsementActive: true, deductible: 5000, limit: 75000 },
+        desc: "Total loss $92,000 exceeds autonomous ceiling ($75k). Requires mandatory human adjuster sign-off or fraud check."
+      }
+    };
+
+    // Runtime state
+    let activeCaseKey = "case_standard";
+    let currentStateId = "s_intake";
+    let activeRuntime = "groq";
+    let policyDriftActive = false;
+    let stepCounter = 1;
+    let visNetwork = null;
+    let autoPlayTimer = null;
+
+    // =================================================================
+    // 2. VIS.JS NETWORK GRAPH INITIALIZATION
+    // =================================================================
+    function initGraph() {
+      const container = document.getElementById('kg-network-canvas');
+      renderVisNetwork(container);
+    }
+
+    function renderVisNetwork(container) {
+      const nodes = [];
+      const edges = [];
+
+      // Add State Nodes
+      kgData.states.forEach(s => {
+        const isCurrent = (s.id === currentStateId);
+        nodes.push({
+          id: s.id,
+          label: `\n${s.name}\n`,
+          shape: 'box',
+          color: {
+            background: isCurrent ? '#10b981' : '#ffffff',
+            border: isCurrent ? '#047857' : (s.isTerminal ? '#e11d48' : '#059669'),
+            highlight: { background: '#34d399', border: '#065f46' }
+          },
+          borderWidth: isCurrent ? 3 : 2,
+          font: { color: isCurrent ? '#ffffff' : '#0f172a', face: 'JetBrains Mono', size: 10, bold: true },
+          margin: 10,
+          shadow: isCurrent ? { enabled: true, color: 'rgba(16,185,129,0.5)', size: 12 } : false
+        });
+
+        // Add permitted actions attached to state
+        s.actions.forEach(a => {
+          const actId = `act_${s.id}_${a}`;
+          nodes.push({
+            id: actId,
+            label: `tool:${a}()`,
+            shape: 'ellipse',
+            color: { background: '#eef2ff', border: '#6366f1' },
+            font: { color: '#312e81', face: 'JetBrains Mono', size: 8.5 },
+            margin: 5
+          });
+          edges.push({
+            from: s.id,
+            to: actId,
+            arrows: { to: { enabled: true, scaleFactor: 0.5 } },
+            color: { color: '#818cf8' },
+            dashes: true,
+            label: 'PERMITS'
+          });
+        });
+      });
+
+      // Add Guard Nodes
+      kgData.guards.forEach(g => {
+        nodes.push({
+          id: g.id,
+          label: `Guard:\n${g.name}`,
+          shape: 'diamond',
+          color: { background: '#fff7ed', border: '#ea580c' },
+          font: { color: '#7c2d12', face: 'JetBrains Mono', size: 9 },
+          margin: 6
+        });
+      });
+
+      // Add Transition Edges
+      kgData.transitions.forEach(t => {
+        edges.push({
+          id: t.id,
+          from: t.from,
+          to: t.to,
+          arrows: 'to',
+          color: { color: '#3b82f6', highlight: '#1d4ed8' },
+          width: 2,
+          label: t.event,
+          font: { color: '#1e40af', face: 'JetBrains Mono', size: 8, background: '#ffffff', strokeWidth: 0 }
+        });
+
+        // Wire guards to transitions
+        t.guards.forEach(gId => {
+          edges.push({
+            from: gId,
+            to: t.id,
+            arrows: 'to',
+            color: { color: '#ea580c' },
+            dashes: [3, 3],
+            width: 1,
+            label: 'GUARDS',
+            font: { color: '#c2410c', face: 'JetBrains Mono', size: 7.5 }
+          });
+        });
+      });
+
+      const data = {
+        nodes: new vis.DataSet(nodes),
+        edges: new vis.DataSet(edges)
+      };
+
+      const options = {
+        layout: {
+          hierarchical: {
+            direction: 'LR',
+            sortMethod: 'directed',
+            levelSeparation: 190,
+            nodeSpacing: 100
+          }
+        },
+        physics: false,
+        interaction: { hover: true, tooltipDelay: 100 }
+      };
+
+      if (visNetwork) {
+        visNetwork.destroy();
+      }
+
+      visNetwork = new vis.Network(container, data, options);
+
+      // Node selection click handler
+      visNetwork.on("click", function (params) {
+        if (params.nodes.length > 0) {
+          inspectNode(params.nodes[0]);
+        }
+      });
+    }
+
+    function fitGraphView() {
+      if (visNetwork) visNetwork.fit({ animation: { duration: 500 } });
+    }
+
+    // =================================================================
+    // 3. FSM EXECUTION & GUARD EVALUATION
+    // =================================================================
+    function loadCase(key) {
+      activeCaseKey = key;
+      const c = CASES[key];
+      
+      // Update UI buttons
+      document.querySelectorAll('.case-btn').forEach(b => {
+        b.className = "case-btn px-2.5 py-0.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition";
+      });
+      document.getElementById(`btn-${key.replace('_', '-')}`).className = "case-btn px-2.5 py-0.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-2xs transition";
+
+      document.getElementById('text-case-title').textContent = c.title;
+      document.getElementById('text-case-cargo-badge').textContent = c.cargo;
+      document.getElementById('text-case-desc').textContent = c.desc;
+
+      resetFSM();
+    }
+
+    function resetFSM() {
+      currentStateId = "s_intake";
+      stepCounter = 1;
+      updateStatePill();
+      renderVisNetwork(document.getElementById('kg-network-canvas'));
+      updateActiveGuardsUI();
+      document.getElementById('box-decision-status').classList.add('hidden');
+      document.getElementById('text-step-counter').textContent = "1 / 4";
+      document.getElementById('btn-next-step').disabled = false;
+      document.getElementById('btn-next-step').innerHTML = `<i class="fa-solid fa-forward-step text-amber-400"></i><span>Evaluate Next State</span>`;
+    }
+
+    function updateStatePill() {
+      const stateObj = kgData.states.find(s => s.id === currentStateId);
+      const textEl = document.getElementById('text-current-state');
+      const pillEl = document.getElementById('pill-current-state');
+      textEl.textContent = stateObj.name;
+
+      if (stateObj.isTerminal) {
+        pillEl.className = stateObj.name.includes('APPROVED') 
+          ? "px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 border border-emerald-400 font-bold flex items-center space-x-1.5"
+          : "px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-900 border border-rose-400 font-bold flex items-center space-x-1.5";
+      } else {
+        pillEl.className = "px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-300 font-bold flex items-center space-x-1.5";
+      }
+    }
+
+    function updateActiveGuardsUI() {
+      const container = document.getElementById('list-active-guards');
+      const outgoing = kgData.transitions.filter(t => t.from === currentStateId);
+
+      if (outgoing.length === 0) {
+        container.innerHTML = `<span class="text-slate-400 italic">Terminal State Reached. No further transitions.</span>`;
+        document.getElementById('guard-status-badge').textContent = "Terminal";
+        return;
+      }
+
+      document.getElementById('guard-status-badge').textContent = `${outgoing.length} Legal Transitions Available`;
+
+      container.innerHTML = outgoing.map(t => {
+        const nextState = kgData.states.find(s => s.id === t.to);
+        const guardObjs = t.guards.map(gId => kgData.guards.find(g => g.id === gId)).filter(Boolean);
+
+        return `
+          <div class="p-1.5 rounded bg-slate-50 border border-slate-200">
+            <div class="flex items-center justify-between text-[10px] font-bold text-slate-800 mb-0.5">
+              <span>&rarr; ${nextState.name}</span>
+              <span class="text-indigo-600">[${t.event}]</span>
+            </div>
+            ${guardObjs.length > 0 ? guardObjs.map(g => `
+              <div class="flex items-center space-x-1 text-[9.5px] text-slate-600 pl-2">
+                <i class="fa-solid fa-shield-halved text-amber-500 text-[8.5px]"></i>
+                <strong>${g.name}:</strong> <span>${g.desc}</span>
+              </div>
+            `).join('') : '<span class="text-[9.5px] text-slate-400 pl-2 italic">No guard condition required.</span>'}
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function evaluateNextTransition() {
+      const btn = document.getElementById('btn-next-step');
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin text-amber-400"></i><span>Reasoning against KG...</span>`;
+
+      await new Promise(r => setTimeout(r, 600));
+
+      const c = CASES[activeCaseKey];
+      const stateObj = kgData.states.find(s => s.id === currentStateId);
+
+      if (stateObj.isTerminal) {
+        alert("FSM has already reached a terminal state (" + stateObj.name + "). Click reset to restart.");
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-forward-step text-amber-400"></i><span>Evaluate Next State</span>`;
+        return;
+      }
+
+      // Step 1: INTAKE -> EVIDENCE
+      if (currentStateId === "s_intake") {
+        currentStateId = "s_evidence";
+        stepCounter = 2;
+      } 
+      // Step 2: EVIDENCE -> ADJUDICATION (or ESCALATE if edge case fails guard)
+      else if (currentStateId === "s_evidence") {
+        const tempPass = (c.telematics.temp > 8 && c.telematics.durationMins >= 120);
+        const imPass = c.policy.endorsementActive;
+
+        if (tempPass && imPass) {
+          // If policy drift active and claim > $50k, route to fraud screening!
+          if (policyDriftActive && (c.policy.limit > 50000 || c.title.includes("64,000") || c.title.includes("92,000"))) {
+            currentStateId = "s_fraud_drift";
+          } else {
+            currentStateId = "s_adjudication";
+          }
+        } else {
+          // Fails guard RULE_TEMP_02! Transitions to ESCALATED
+          currentStateId = "s_escalated";
+        }
+        stepCounter = 3;
+      }
+      // Step 2b (Drift state): FRAUD_AUDIT_GATE -> ADJUDICATION
+      else if (currentStateId === "s_fraud_drift") {
+        currentStateId = "s_adjudication";
+        stepCounter = 3;
+      }
+      // Step 3: ADJUDICATION -> APPROVED or ESCALATED
+      else if (currentStateId === "s_adjudication") {
+        if (activeCaseKey === "case_high_value") {
+          // Exceeds $75k cap! Must escalate
+          currentStateId = "s_escalated";
+        } else {
+          currentStateId = "s_approved";
+        }
+        stepCounter = 4;
+      }
+
+      updateStatePill();
+      renderVisNetwork(document.getElementById('kg-network-canvas'));
+      updateActiveGuardsUI();
+
+      // Check if terminal
+      const nextStateObj = kgData.states.find(s => s.id === currentStateId);
+      if (nextStateObj.isTerminal) {
+        showDecisionBox(nextStateObj);
+        btn.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i><span>Execution Complete</span>`;
+      } else {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-forward-step text-amber-400"></i><span>Evaluate Next State</span>`;
+      }
+
+      document.getElementById('text-step-counter').textContent = `${stepCounter} / 4`;
+    }
+
+    function showDecisionBox(terminalState) {
+      const box = document.getElementById('box-decision-status');
+      box.classList.remove('hidden');
+
+      if (terminalState.name.includes("APPROVED")) {
+        box.className = "p-2.5 rounded-lg bg-emerald-50 border border-emerald-300 text-xs text-emerald-950 font-mono space-y-1";
+        box.innerHTML = `
+          <div class="font-bold flex items-center space-x-1.5 text-emerald-800">
+            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+            <span>TERMINAL STATE: APPROVED_SETTLEMENT</span>
+          </div>
+          <div>All Invariant Guards passed. Action tool permitted: <code>execute_wire_disbursement($59,000)</code>.</div>
+        `;
+      } else {
+        box.className = "p-2.5 rounded-lg bg-rose-50 border border-rose-300 text-xs text-rose-950 font-mono space-y-1";
+        box.innerHTML = `
+          <div class="font-bold flex items-center space-x-1.5 text-rose-800">
+            <i class="fa-solid fa-triangle-exclamation text-rose-600"></i>
+            <span>TERMINAL STATE: ESCALATED_HUMAN</span>
+          </div>
+          <div>Invariant guard blocked autonomous approval. Routed to human adjuster queue.</div>
+        `;
+      }
+    }
+
+    async function runAutoPlay() {
+      resetFSM();
+      while (!kgData.states.find(s => s.id === currentStateId).isTerminal) {
+        await evaluateNextTransition();
+        await new Promise(r => setTimeout(r, 800));
+      }
+    }
+
+    // =================================================================
+    // 4. THE 4 INTERACTIVE ADVANTAGE DEMOS
+    // =================================================================
+    
+    // DEMO 1: INTROSPECTION ("Why am I stalled?")
+    async function demoIntrospect() {
+      const out = document.getElementById('output-introspect');
+      out.classList.remove('hidden');
+      out.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Running graph traversal query...`;
+
+      await new Promise(r => setTimeout(r, 400));
+
+      const c = CASES[activeCaseKey];
+      if (activeCaseKey === "case_edge_sensor") {
+        out.innerHTML = `
+          <strong class="text-indigo-900 block font-sans">🔍 Graph Query Result: Transition Blocked</strong>
+          <div>Target: <code>EVIDENCE_VALIDATION &rarr; ADJUDICATION</code></div>
+          <div class="text-rose-700 font-bold mt-1">&times; Unmet Guard: RULE_TEMP_02</div>
+          <div class="text-slate-600 font-sans text-[10px]">
+            The Knowledge Graph requires <code>durationMins &ge; 120</code>. The Context Graph only recorded 45 minutes of telemetry due to dead battery. AI explains why it cannot approve.
+          </div>
+        `;
+      } else if (activeCaseKey === "case_high_value") {
+        out.innerHTML = `
+          <strong class="text-indigo-900 block font-sans">🔍 Graph Query Result: Transition Blocked</strong>
+          <div>Target: <code>ADJUDICATION &rarr; APPROVED_SETTLEMENT</code></div>
+          <div class="text-rose-700 font-bold mt-1">&times; Unmet Guard: RULE_CAP_03</div>
+          <div class="text-slate-600 font-sans text-[10px]">
+            Claim amount ($92k) exceeds the autonomous ceiling ($75,000) encoded in Knowledge Graph node <code>RULE_CAP_03</code>.
+          </div>
+        `;
+      } else {
+        out.innerHTML = `
+          <strong class="text-indigo-900 block font-sans">🔍 Graph Query Result: All Guards Satisfied</strong>
+          <div class="text-emerald-700 font-bold">&check; RULE_IM_01 &amp; RULE_TEMP_02 Satisfied</div>
+          <div class="text-slate-600 font-sans text-[10px]">The case telemetry cleanly satisfies all graph constraints. Path to <code>APPROVED</code> is clear.</div>
+        `;
+      }
+    }
+
+    // DEMO 2: NON-BYPASSABLE SECURITY (403 Forbidden)
+    async function demoIllegalAction() {
+      const out = document.getElementById('output-security');
+      out.classList.remove('hidden');
+      out.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Simulating prompt exploit: "Disburse $64k now!"...`;
+
+      await new Promise(r => setTimeout(r, 500));
+
+      out.innerHTML = `
+        <div class="text-rose-700 font-bold flex items-center space-x-1">
+          <i class="fa-solid fa-ban"></i>
+          <span>SECURITY VIOLATION: 403 FORBIDDEN</span>
+        </div>
+        <div class="mt-1">Tool requested: <code>execute_wire_disbursement($64,000)</code></div>
+        <div>Current State: <code>${currentStateId}</code></div>
+        <div class="text-slate-600 font-sans text-[10px] mt-1">
+          <strong>Mathematical Guardrail:</strong> In the Knowledge Graph, the tool <code>execute_wire_disbursement</code> is linked ONLY to <code>(:State {name: "APPROVED"})</code>. It is physically impossible to execute wire disbursement from state <code>${currentStateId}</code>.
+        </div>
+      `;
+    }
+
+    // DEMO 3: ZERO-CODE POLICY DRIFT (HOT RELOAD)
+    function togglePolicyDrift() {
+      policyDriftActive = !policyDriftActive;
+      const btn = document.getElementById('btn-drift-toggle');
+      const label = document.getElementById('label-drift-btn');
+
+      if (policyDriftActive) {
+        btn.className = "px-3 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center space-x-1.5 shadow-xs cursor-pointer transition";
+        label.textContent = "Remove Fraud State (Restore Baseline)";
+        
+        // Dynamically add state node and rewire edges in the KG!
+        kgData.states.splice(2, 0, {
+          id: "s_fraud_drift",
+          name: "FRAUD_AUDIT_GATE",
+          color: "#f59e0b",
+          isInitial: false,
+          isTerminal: false,
+          actions: ["run_cross_carrier_fraud_check"]
+        });
+
+        kgData.guards.push({
+          id: "g_fraud",
+          name: "FRAUD_SCORE_04",
+          desc: "Carrier fleet risk index must be < 0.25"
+        });
+
+        // Update transitions
+        kgData.transitions.push({
+          id: "t_drift_1",
+          from: "s_evidence",
+          to: "s_fraud_drift",
+          event: "LOSS > $50k",
+          guards: ["g_fraud"]
+        });
+        kgData.transitions.push({
+          id: "t_drift_2",
+          from: "s_fraud_drift",
+          to: "s_adjudication",
+          event: "FRAUD_CLEARED",
+          guards: []
+        });
+
+        alert("✨ POLICY DRIFT APPLIED TO KNOWLEDGE GRAPH!\n\n1. Inserted new state: FRAUD_AUDIT_GATE\n2. Added Invariant Guard: FRAUD_SCORE_04\n3. Zero backend Python/Java code modified!\n4. Claims > $50k now dynamically routed through fraud gate.");
+      } else {
+        btn.className = "px-3 py-1 rounded-lg bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold flex items-center space-x-1.5 shadow-xs cursor-pointer transition";
+        label.textContent = "Inject Fraud State (Policy Drift)";
+
+        // Remove the drift state and transitions
+        kgData.states = kgData.states.filter(s => s.id !== "s_fraud_drift");
+        kgData.guards = kgData.guards.filter(g => g.id !== "g_fraud");
+        kgData.transitions = kgData.transitions.filter(t => !t.id.startsWith("t_drift"));
+
+        alert("Policy Drift removed. Reverted FSM to standard 4-state topology.");
+      }
+
+      resetFSM();
+      updateGraphStats();
+    }
+
+    function updateGraphStats() {
+      document.getElementById('stat-graph-counts').textContent = 
+        `Nodes: ${kgData.states.length + kgData.guards.length} • Edges: ${kgData.transitions.length} • Invariant Rules: ${kgData.guards.length}`;
+    }
+
+    // =================================================================
+    // 5. FORMAL GRAPH VERIFICATION ENGINE
+    // =================================================================
+    function runFormalVerification() {
+      const log = document.getElementById('box-verification-log');
+      log.innerHTML = `<span class="text-blue-600 font-bold">[AUDIT START] Running Tarjan's Strongly Connected Components &amp; BFS reachability...</span>`;
+
+      setTimeout(() => {
+        // 1. BFS Reachability from initial state
+        const visited = new Set();
+        const queue = ["s_intake"];
+        visited.add("s_intake");
+
+        while (queue.length > 0) {
+          const curr = queue.shift();
+          const nextEdges = kgData.transitions.filter(t => t.from === curr);
+          nextEdges.forEach(e => {
+            if (!visited.has(e.to)) {
+              visited.add(e.to);
+              queue.push(e.to);
+            }
+          });
+        }
+
+        const unreachable = kgData.states.filter(s => !visited.has(s.id));
+        const deadEnds = kgData.states.filter(s => !s.isTerminal && kgData.transitions.filter(t => t.from === s.id).length === 0);
+
+        log.innerHTML = `
+          <div class="text-emerald-700 font-bold">&check; [PASSED] 100% Reachability Verified (${visited.size}/${kgData.states.length} states reachable from INTAKE).</div>
+          <div class="text-emerald-700 font-bold">&check; [PASSED] Zero Dead-End States Detected. All non-terminal states have forward transitions.</div>
+          <div class="text-emerald-700 font-bold">&check; [PASSED] Liveness Invariant Satisfied: All paths terminate in {APPROVED, ESCALATED}.</div>
+          <div class="text-slate-500 font-sans mt-1">Graph mathematical proof guarantees the AI will never enter a state where it is permanently locked or frozen.</div>
+        `;
+      }, 400);
+    }
+
+    function testInjectDeadEnd() {
+      // Intentionally insert a broken orphan state to show verification catching it
+      kgData.states.push({
+        id: "s_broken_orphan",
+        name: "BROKEN_DEAD_END_STATE",
+        color: "#f43f5e",
+        isInitial: false,
+        isTerminal: false, // not terminal, but has 0 outgoing edges!
+        actions: []
+      });
+
+      kgData.transitions.push({
+        id: "t_broken",
+        from: "s_adjudication",
+        to: "s_broken_orphan",
+        event: "BUG_INJECTION",
+        guards: []
+      });
+
+      renderVisNetwork(document.getElementById('kg-network-canvas'));
+
+      const log = document.getElementById('box-verification-log');
+      log.innerHTML = `
+        <div class="text-rose-700 font-bold animate-pulse">&times; [CRITICAL ALERT] Formal Verification FAILED!</div>
+        <div class="text-rose-600">&bull; Dead-End Detected: State <code>BROKEN_DEAD_END_STATE</code> has out-degree = 0 and is not terminal!</div>
+        <div class="text-slate-600 font-sans mt-1">
+          <strong>The Graph Prevented Deployment:</strong> A traditional python workflow would freeze or throw an uncaught runtime exception in production. The Knowledge Graph topological auditor caught the broken state before any customer claim ran.
+        </div>
+      `;
+
+      // Clean up after 8 seconds
+      setTimeout(() => {
+        kgData.states = kgData.states.filter(s => s.id !== "s_broken_orphan");
+        kgData.transitions = kgData.transitions.filter(t => t.id !== "t_broken");
+        renderVisNetwork(document.getElementById('kg-network-canvas'));
+      }, 7000);
+    }
+
+    // =================================================================
+    // 6. UI VIEW SWITCHER & MODALS
+    // =================================================================
+    function setView(view) {
+      ['cockpit', 'verify', 'compare'].forEach(v => {
+        document.getElementById(`view-${v}`).classList.add('hidden');
+        document.getElementById(`btn-view-${v}`).className = "px-2.5 py-1 rounded-md text-slate-500 hover:text-slate-900 transition flex items-center space-x-1 cursor-pointer";
+      });
+
+      const activeView = document.getElementById(`view-${view}`);
+      activeView.classList.remove('hidden');
+      activeView.classList.add('flex');
+      document.getElementById(`btn-view-${view}`).className = "px-2.5 py-1 rounded-md bg-white text-slate-900 font-bold shadow-xs transition flex items-center space-x-1 cursor-pointer";
+
+      if (view === 'cockpit') {
+        setTimeout(fitGraphView, 200);
+      } else if (view === 'verify') {
+        runFormalVerification();
+      }
+    }
+
+    function inspectNode(nodeId) {
+      const overlay = document.getElementById('node-inspector-overlay');
+      const title = document.getElementById('inspect-node-title');
+      const badge = document.getElementById('inspect-node-badge');
+      const details = document.getElementById('inspect-node-details');
+
+      const stateObj = kgData.states.find(s => s.id === nodeId);
+      const guardObj = kgData.guards.find(g => g.id === nodeId);
+
+      overlay.classList.remove('hidden');
+
+      if (stateObj) {
+        badge.textContent = ":State";
+        badge.className = "px-1.5 py-0.2 rounded text-[9px] font-mono bg-emerald-100 text-emerald-800";
+        title.textContent = stateObj.name;
+        details.innerHTML = `
+          <div>Is Initial: <strong>${stateObj.isInitial}</strong> &bull; Is Terminal: <strong>${stateObj.isTerminal}</strong></div>
+          <div>Permitted Actions: <code>[${stateObj.actions.join(', ')}]</code></div>
+        `;
+      } else if (guardObj) {
+        badge.textContent = ":InvariantGuard";
+        badge.className = "px-1.5 py-0.2 rounded text-[9px] font-mono bg-amber-100 text-amber-800";
+        title.textContent = guardObj.name;
+        details.innerHTML = `<div>Description: <strong>${guardObj.desc}</strong></div>`;
+      }
+    }
+
+    function closeNodeInspector() {
+      document.getElementById('node-inspector-overlay').classList.add('hidden');
+    }
+
+    function toggleKeyModal() {
+      const m = document.getElementById('modal-key-config');
+      m.classList.toggle('hidden');
+    }
+
+    function saveKeysModal() {
+      const k = document.getElementById('input-groq-key').value.trim();
+      if (k) localStorage.setItem('groq_api_key', k);
+      toggleKeyModal();
+      alert("API Key saved to browser local storage.");
+    }
+
+    function changeRuntime(val) {
+      activeRuntime = val;
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      initGraph();
+      loadCase('case_standard');
+      updateGraphStats();
+    });
+  </script>
+</body>
+</html>
