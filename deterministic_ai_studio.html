@@ -69,7 +69,7 @@
             Interactive Science Lab
           </span>
           <span class="bg-slate-100 text-slate-700 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-200">
-            No Analogies • Literal Technical Terms
+            Interactive Visual Sandbox
           </span>
         </div>
         <p class="text-xs text-slate-500 font-medium">
@@ -129,7 +129,7 @@
           <span class="text-slate-300">)</span>
         </div>
         <p class="text-xs text-slate-300 leading-relaxed">
-          <strong>Direct Scientific Definition:</strong> A Large Language Model only calculates word probabilities. It is non-deterministic. To get a deterministic outcome, an action is computed by an operational transition function (<code class="text-amber-300 font-bold">F<sub>Rules</sub></code>), taking the verified current facts (<code class="text-sky-300 font-bold">Live Situation</code>), and verifying them against invariant rules (<code class="text-indigo-300 font-bold">World Model</code>).
+          <strong>How it works:</strong> A Large Language Model only calculates word probabilities. It is non-deterministic. To get a deterministic outcome, an action is computed by an operational transition function (<code class="text-amber-300 font-bold">F<sub>Rules</sub></code>), taking the verified current facts (<code class="text-sky-300 font-bold">Live Situation</code>), and verifying them against invariant rules (<code class="text-indigo-300 font-bold">World Model</code>).
         </p>
       </div>
 
@@ -356,7 +356,7 @@
             </div>
             <div>
               <h3 class="text-xs font-bold text-slate-900">Ask the AI Scientist</h3>
-              <p class="text-[10px] text-slate-500">Direct technical explanations without analogies</p>
+              <p class="text-[10px] text-slate-500">Simple, direct answers about how the system works</p>
             </div>
           </div>
           <span id="label-active-model" class="text-[9px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
@@ -382,7 +382,7 @@
 
         <!-- Response Container -->
         <div id="ai-chat-output" class="flex-1 bg-slate-50 rounded-lg border border-slate-200 p-2.5 text-xs text-slate-700 overflow-y-auto max-h-[140px] leading-relaxed">
-          Welcome! I am your computer science explainer. Pick a question above or type your own question below to see literal technical definitions from the papers.
+          Welcome! I am your computer science explainer. Pick a question above or type your own question below to see how each part works.
         </div>
 
         <!-- Chat Input Bar -->
@@ -722,7 +722,7 @@
     // =================================================================
     // 5. AI SCIENTIST ENGINE (GROQ / WEBGPU / SIMULATOR)
     // =================================================================
-    const SCIENTIFIC_ANSWERS = {
+    const KNOWLEDGE_BASE_ANSWERS = {
       "What is a Finite State Machine?": "A Finite State Machine is an automaton defined by a finite set of states, a set of input symbols, and a deterministic transition function. It can only be in one state at a time. It moves to a new state only when a transition edge exists and its invariant guard equals true.",
       "Why did Wonham invent supervisory control in 1987?": "In 1987, Ramadge and Wonham proved that if an autonomous system is unpredictable, an engineer can place a supervisory Finite State Machine around it. The supervisor observes the current state and disables any action that would lead to an illegal state. This mathematically guarantees that the system cannot violate safety bounds.",
       "What is an Invariant Guard?": "An Invariant Guard is a boolean expression attached to a transition edge. Even if an event occurs, the transition function evaluates the guard. If the guard equals false, the transition is denied and the machine remains in its current state.",
@@ -752,11 +752,11 @@
       if (!q) return;
 
       const output = document.getElementById('ai-chat-output');
-      output.innerHTML = `<div class="font-bold text-slate-900 mb-1">Question: ${q}</div><div id="stream-target" class="text-slate-600 font-medium">Computing scientific response...</div>`;
+      output.innerHTML = `<div class="font-bold text-slate-900 mb-1">Question: ${q}</div><div id="stream-target" class="text-slate-600 font-medium">Finding answer...</div>`;
 
       if (activeEngine === 'sim') {
         setTimeout(() => {
-          const ans = SCIENTIFIC_ANSWERS[q] || "According to the literature review, autonomous systems achieve determinism by enclosing probabilistic language models in the Triad: Knowledge Graph (World Model), Finite State Machine (Operational Rules), and Context Graph (Live Situation). This eliminates hallucinations and prevents illegal tool executions.";
+          const ans = KNOWLEDGE_BASE_ANSWERS[q] || "According to the literature review, autonomous systems achieve determinism by enclosing probabilistic language models in the Triad: Knowledge Graph (World Model), Finite State Machine (Operational Rules), and Context Graph (Live Situation). This eliminates hallucinations and prevents illegal tool executions.";
           document.getElementById('stream-target').textContent = ans;
         }, 150);
         return;
@@ -770,7 +770,7 @@
         }
 
         try {
-          const prompt = `You are explaining the Core Theorem of Deterministic AI Systems clearly and directly. Use direct, simple sentence structures. DO NOT USE ANY ANALOGIES OR METAPHORS. USE LITERAL TECHNICAL TERMS (Finite State Machine, Knowledge Graph, Context Graph, Invariant Guard, Supervisory Control, Provenance). Question: ${q}`;
+          const prompt = `Explain how the system works using simple wording and short, direct sentences. Question: ${q}`;
           const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -779,7 +779,7 @@
             },
             body: JSON.stringify({
               model: "llama-3.3-70b-versatile",
-              messages: [{ role: "system", content: "You explain computer science using clear, direct sentences with zero analogies and precise technical terms." }, { role: "user", content: prompt }],
+              messages: [{ role: "system", content: "You explain computer systems simply and directly using clear wording." }, { role: "user", content: prompt }],
               temperature: 0.1
             })
           });
