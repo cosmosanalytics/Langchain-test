@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Deterministic AI Studio for 4th Graders | The Triad Architecture</title>
+  <title>The Triad AI Studio | Deterministic Autonomous Systems</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -66,7 +66,7 @@
         <div class="flex items-center gap-2">
           <h1 class="text-base font-extrabold text-slate-900 tracking-tight">The Triad AI Engine</h1>
           <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-            Grade 4 Science Lab
+            Interactive Science Lab
           </span>
           <span class="bg-slate-100 text-slate-700 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-200">
             No Analogies • Literal Technical Terms
@@ -129,7 +129,7 @@
           <span class="text-slate-300">)</span>
         </div>
         <p class="text-xs text-slate-300 leading-relaxed">
-          <strong>Literal Definition for 4th Graders:</strong> A Large Language Model only calculates word probabilities. It is non-deterministic. To get a deterministic outcome, an action is computed by an operational transition function (<code class="text-amber-300 font-bold">F<sub>Rules</sub></code>), taking the verified current facts (<code class="text-sky-300 font-bold">Live Situation</code>), and verifying them against invariant rules (<code class="text-indigo-300 font-bold">World Model</code>).
+          <strong>Direct Scientific Definition:</strong> A Large Language Model only calculates word probabilities. It is non-deterministic. To get a deterministic outcome, an action is computed by an operational transition function (<code class="text-amber-300 font-bold">F<sub>Rules</sub></code>), taking the verified current facts (<code class="text-sky-300 font-bold">Live Situation</code>), and verifying them against invariant rules (<code class="text-indigo-300 font-bold">World Model</code>).
         </p>
       </div>
 
@@ -311,7 +311,7 @@
 
     </div>
 
-    <!-- RIGHT COLUMN: VISUAL GRAPH CANVAS & 4TH GRADE AI TUTOR (5 Cols) -->
+    <!-- RIGHT COLUMN: VISUAL GRAPH CANVAS & AI TUTOR (5 Cols) -->
     <div class="col-span-12 lg:col-span-5 flex flex-col gap-4">
       
       <!-- VIS.JS NETWORK CANVAS -->
@@ -347,7 +347,7 @@
         </div>
       </div>
 
-      <!-- 4TH GRADE AI SCIENTIST CHAT / EXPLAINER -->
+      <!-- AI SCIENTIST CHAT / EXPLAINER -->
       <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex flex-col flex-1">
         <div class="flex items-center justify-between mb-2">
           <div class="flex items-center gap-2">
@@ -355,7 +355,7 @@
               <i class="fa-solid fa-graduation-cap"></i>
             </div>
             <div>
-              <h3 class="text-xs font-bold text-slate-900">Ask the 4th-Grade AI Scientist</h3>
+              <h3 class="text-xs font-bold text-slate-900">Ask the AI Scientist</h3>
               <p class="text-[10px] text-slate-500">Direct technical explanations without analogies</p>
             </div>
           </div>
@@ -382,7 +382,7 @@
 
         <!-- Response Container -->
         <div id="ai-chat-output" class="flex-1 bg-slate-50 rounded-lg border border-slate-200 p-2.5 text-xs text-slate-700 overflow-y-auto max-h-[140px] leading-relaxed">
-          Welcome! I am your 4th-grade computer science explainer. Pick a question above or type your own question below to see literal technical definitions from the papers.
+          Welcome! I am your computer science explainer. Pick a question above or type your own question below to see literal technical definitions from the papers.
         </div>
 
         <!-- Chat Input Bar -->
@@ -410,7 +410,7 @@
         </button>
       </div>
       <p class="text-xs text-slate-600 mb-3">
-        Enter your free Groq API key to stream live reasoning with <strong>Llama 3.3 70B Versatile</strong> directly into the 4th-grade explainer.
+        Enter your free Groq API key to stream live reasoning with <strong>Llama 3.3 70B Versatile</strong> directly into the interactive explainer.
       </p>
       <input type="password" id="input-groq-key" placeholder="gsk_..." class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg mb-3 font-mono">
       <div class="flex justify-end gap-2">
@@ -720,7 +720,7 @@
     }
 
     // =================================================================
-    // 5. 4TH GRADE AI SCIENTIST ENGINE (GROQ / WEBGPU / SIMULATOR)
+    // 5. AI SCIENTIST ENGINE (GROQ / WEBGPU / SIMULATOR)
     // =================================================================
     const SCIENTIFIC_ANSWERS = {
       "What is a Finite State Machine?": "A Finite State Machine is an automaton defined by a finite set of states, a set of input symbols, and a deterministic transition function. It can only be in one state at a time. It moves to a new state only when a transition edge exists and its invariant guard equals true.",
@@ -770,7 +770,7 @@
         }
 
         try {
-          const prompt = `You are explaining the Core Theorem of Deterministic AI Systems to a 4th grader. Use direct, simple sentence structures. DO NOT USE ANY ANALOGIES OR METAPHORS. USE LITERAL TECHNICAL TERMS (Finite State Machine, Knowledge Graph, Context Graph, Invariant Guard, Supervisory Control, Provenance). Question: ${q}`;
+          const prompt = `You are explaining the Core Theorem of Deterministic AI Systems clearly and directly. Use direct, simple sentence structures. DO NOT USE ANY ANALOGIES OR METAPHORS. USE LITERAL TECHNICAL TERMS (Finite State Machine, Knowledge Graph, Context Graph, Invariant Guard, Supervisory Control, Provenance). Question: ${q}`;
           const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -779,7 +779,7 @@
             },
             body: JSON.stringify({
               model: "llama-3.3-70b-versatile",
-              messages: [{ role: "system", content: "You explain computer science to 4th graders using simple sentences with zero analogies and precise technical terms." }, { role: "user", content: prompt }],
+              messages: [{ role: "system", content: "You explain computer science using clear, direct sentences with zero analogies and precise technical terms." }, { role: "user", content: prompt }],
               temperature: 0.1
             })
           });
