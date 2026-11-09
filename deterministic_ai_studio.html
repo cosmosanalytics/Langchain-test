@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Triad AI Studio | Deterministic Autonomous Systems</title>
+  <title>The Triad AI Studio | Deterministic Systems for Daily Events</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -31,7 +31,6 @@
     code, .font-mono {
       font-family: 'JetBrains Mono', monospace;
     }
-    /* Pulse glow for active gates */
     .gate-pass {
       background-color: #ecfdf5 !important;
       border-color: #10b981 !important;
@@ -60,76 +59,83 @@
   <header class="bg-white border-b border-slate-200 sticky top-0 z-50 px-4 py-2.5 flex items-center justify-between shadow-2xs">
     <div class="flex items-center gap-3">
       <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-800 text-white flex items-center justify-center font-black text-lg shadow-sm">
-        <i class="fa-solid fa-atom"></i>
+        <i class="fa-solid fa-mug-hot"></i>
       </div>
       <div>
         <div class="flex items-center gap-2">
           <h1 class="text-base font-extrabold text-slate-900 tracking-tight">The Triad AI Engine</h1>
           <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-            Interactive Science Lab
+            Daily Events Studio
           </span>
           <span class="bg-slate-100 text-slate-700 text-[10px] font-mono px-2 py-0.5 rounded border border-slate-200">
-            Interactive Visual Sandbox
+            Everyday Life Scenarios
           </span>
         </div>
         <p class="text-xs text-slate-500 font-medium">
-          Explaining & Demoing Why Knowledge Graphs, Finite State Machines, and Context Graphs Make AI 100% Deterministic
+          How rules, step order, and real proof work together so an AI never makes dangerous mistakes
         </p>
       </div>
     </div>
 
-    <!-- RUNTIME CONTROLS -->
+    <!-- DAILY EVENT SWITCHER & RUNTIME -->
     <div class="flex items-center gap-2">
+      <!-- Event Preset Selector -->
       <div class="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs">
-        <button id="btn-engine-sim" onclick="setEngine('sim')" class="px-2.5 py-1 rounded-md font-bold bg-white text-slate-900 shadow-2xs transition">
-          <i class="fa-solid fa-bolt text-amber-500 mr-1"></i>Simulator (0ms)
+        <button id="btn-theme-cocoa" onclick="switchTheme('cocoa')" class="px-2.5 py-1 rounded-md font-bold bg-white text-slate-900 shadow-2xs transition">
+          ☕ Making Hot Cocoa
         </button>
-        <button id="btn-engine-groq" onclick="setEngine('groq')" class="px-2.5 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900 transition">
-          <i class="fa-solid fa-cloud text-indigo-500 mr-1"></i>Groq LPU (Llama 3.3)
+        <button id="btn-theme-street" onclick="switchTheme('street')" class="px-2.5 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900 transition">
+          🚶 Crossing the Street
         </button>
-        <button id="btn-engine-webllm" onclick="setEngine('webllm')" class="px-2.5 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900 transition">
-          <i class="fa-solid fa-microchip text-teal-600 mr-1"></i>WebGPU (Local)
+        <button id="btn-theme-library" onclick="switchTheme('library')" class="px-2.5 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900 transition">
+          📚 Library Book
         </button>
       </div>
 
-      <button onclick="openKeyModal()" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 transition">
-        <i class="fa-solid fa-key mr-1"></i>API Key
-      </button>
+      <!-- Engine Selector -->
+      <div class="hidden sm:flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200 text-xs">
+        <button id="btn-engine-sim" onclick="setEngine('sim')" class="px-2 py-1 rounded-md font-bold bg-white text-slate-900 shadow-2xs transition">
+          Simulator
+        </button>
+        <button id="btn-engine-groq" onclick="setEngine('groq')" class="px-2 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900 transition">
+          Groq
+        </button>
+      </div>
 
-      <a href="https://raw.githubusercontent.com/cosmosanalytics/uat-copilot-local/main/Deterministic_AI_Core_Theorem.pdf" target="_blank" class="px-2.5 py-1 text-xs font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg border border-indigo-200 transition">
-        <i class="fa-solid fa-file-pdf mr-1"></i>View PDF
-      </a>
+      <button onclick="openKeyModal()" class="px-2 py-1 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg border border-slate-300 transition">
+        <i class="fa-solid fa-key mr-1"></i>Key
+      </button>
     </div>
   </header>
 
   <!-- MAIN APPLICATION LAYOUT -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 grid grid-cols-12 gap-4">
 
-    <!-- LEFT COLUMN: LAB BENCH & EXPLANATIONS (7 Cols) -->
+    <!-- LEFT COLUMN: DAILY EVENT LAB BENCH (7 Cols) -->
     <div class="col-span-12 lg:col-span-7 flex flex-col gap-4">
       
-      <!-- THE CORE THEOREM BANNER -->
+      <!-- THE CORE THEOREM BANNER (EVERYDAY WORDS) -->
       <div class="bg-slate-900 text-white rounded-xl p-4 shadow-sm border border-slate-800">
         <div class="flex items-center justify-between mb-1">
           <span class="text-[10px] font-bold font-mono tracking-wider uppercase text-indigo-400">
-            The Core Mathematical Theorem
+            How The System Works
           </span>
-          <span class="text-[10px] font-mono text-slate-400">
-            Ramadge & Wonham (1987) • Barwise (1983) • Pearl (2009)
+          <span id="label-active-event-name" class="text-[10px] font-mono text-emerald-400 font-bold">
+            Daily Event: Making Hot Cocoa
           </span>
         </div>
-        <div class="text-lg md:text-xl font-mono font-bold tracking-tight text-white mb-1">
-          <span class="text-emerald-400">Deterministic Outcome</span>
+        <div class="text-base md:text-lg font-mono font-bold tracking-tight text-white mb-1">
+          <span class="text-emerald-400">Safe Action</span>
           <span class="text-slate-400">=</span>
-          <span class="text-amber-400">F<sub>Rules</sub></span>
+          <span class="text-amber-400">Allowed Step</span>
           <span class="text-slate-300">(</span>
-          <span class="text-sky-300">Live Situation</span>
-          <span class="text-slate-400">|</span>
-          <span class="text-indigo-300">World Model</span>
+          <span class="text-sky-300">Real Proof</span>
+          <span class="text-slate-400">checked against</span>
+          <span class="text-indigo-300">Rules</span>
           <span class="text-slate-300">)</span>
         </div>
         <p class="text-xs text-slate-300 leading-relaxed">
-          <strong>How it works:</strong> A Large Language Model only calculates word probabilities. It is non-deterministic. To get a deterministic outcome, an action is computed by an operational transition function (<code class="text-amber-300 font-bold">F<sub>Rules</sub></code>), taking the verified current facts (<code class="text-sky-300 font-bold">Live Situation</code>), and verifying them against invariant rules (<code class="text-indigo-300 font-bold">World Model</code>).
+          <strong>In plain words:</strong> An AI cannot guess when to act. It must be on the right step (<code class="text-amber-300 font-bold">Allowed Step</code>), have actual proof from sensors or paper (<code class="text-sky-300 font-bold">Real Proof</code>), and satisfy the safety rules (<code class="text-indigo-300 font-bold">Rules</code>).
         </p>
       </div>
 
@@ -140,17 +146,17 @@
         <button onclick="selectPillar(1)" id="card-pillar-1" class="text-left bg-white p-3 rounded-xl border-2 border-indigo-500 shadow-2xs hover:border-indigo-600 transition flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-1">
-              <span class="text-[10px] font-mono font-bold text-indigo-600 uppercase">Pillar 1</span>
-              <span class="text-[9px] bg-indigo-50 text-indigo-700 px-1.5 py-0.2 rounded font-bold">Ontology</span>
+              <span class="text-[10px] font-mono font-bold text-indigo-600 uppercase">Part 1</span>
+              <span class="text-[9px] bg-indigo-50 text-indigo-700 px-1.5 py-0.2 rounded font-bold">The Rules</span>
             </div>
             <div class="font-bold text-xs text-slate-900 mb-0.5">World Model</div>
             <div class="text-[11px] font-mono text-indigo-700 font-semibold mb-1">Knowledge Graph</div>
-            <p class="text-[11px] text-slate-600 leading-tight">
-              Stores invariant rules and true facts that do not change during an execution.
+            <p id="desc-pillar-1" class="text-[11px] text-slate-600 leading-tight">
+              Rules that never change (e.g. water must be boiling at 100°C before pouring).
             </p>
           </div>
           <div class="mt-2 pt-2 border-t border-slate-100 text-[10px] text-indigo-900 font-semibold">
-            Eliminates: <strong>Policy Drift</strong>
+            Prevents: <strong>Breaking Rules</strong>
           </div>
         </button>
 
@@ -158,17 +164,17 @@
         <button onclick="selectPillar(2)" id="card-pillar-2" class="text-left bg-white p-3 rounded-xl border border-slate-200 shadow-2xs hover:border-amber-500 transition flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-1">
-              <span class="text-[10px] font-mono font-bold text-amber-600 uppercase">Pillar 2</span>
-              <span class="text-[9px] bg-amber-50 text-amber-700 px-1.5 py-0.2 rounded font-bold">Automaton</span>
+              <span class="text-[10px] font-mono font-bold text-amber-600 uppercase">Part 2</span>
+              <span class="text-[9px] bg-amber-50 text-amber-700 px-1.5 py-0.2 rounded font-bold">The Steps</span>
             </div>
             <div class="font-bold text-xs text-slate-900 mb-0.5">Operational Rules</div>
-            <div class="text-[11px] font-mono text-amber-700 font-semibold mb-1">Finite State Machine</div>
-            <p class="text-[11px] text-slate-600 leading-tight">
-              Calculates which state transition is legal and blocks forbidden tools (403).
+            <div class="text-[11px] font-mono text-amber-700 font-semibold mb-1">State Machine</div>
+            <p id="desc-pillar-2" class="text-[11px] text-slate-600 leading-tight">
+              Enforces step-by-step order (e.g. cannot pour before heating is done).
             </p>
           </div>
           <div class="mt-2 pt-2 border-t border-slate-100 text-[10px] text-amber-900 font-semibold">
-            Eliminates: <strong>Rogue Actions</strong>
+            Prevents: <strong>Skipping Steps</strong>
           </div>
         </button>
 
@@ -176,17 +182,17 @@
         <button onclick="selectPillar(3)" id="card-pillar-3" class="text-left bg-white p-3 rounded-xl border border-slate-200 shadow-2xs hover:border-sky-500 transition flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-1">
-              <span class="text-[10px] font-mono font-bold text-sky-600 uppercase">Pillar 3</span>
-              <span class="text-[9px] bg-sky-50 text-sky-700 px-1.5 py-0.2 rounded font-bold">Instance</span>
+              <span class="text-[10px] font-mono font-bold text-sky-600 uppercase">Part 3</span>
+              <span class="text-[9px] bg-sky-50 text-sky-700 px-1.5 py-0.2 rounded font-bold">Real Proof</span>
             </div>
             <div class="font-bold text-xs text-slate-900 mb-0.5">Live Situation</div>
             <div class="text-[11px] font-mono text-sky-700 font-semibold mb-1">Context Graph</div>
-            <p class="text-[11px] text-slate-600 leading-tight">
-              Stores the active state pointer and provenance links to raw evidence documents.
+            <p id="desc-pillar-3" class="text-[11px] text-slate-600 leading-tight">
+              Stores live sensor readings and physical evidence files right now.
             </p>
           </div>
           <div class="mt-2 pt-2 border-t border-slate-100 text-[10px] text-sky-900 font-semibold">
-            Eliminates: <strong>Hallucination</strong>
+            Prevents: <strong>Making Up Numbers</strong>
           </div>
         </button>
 
@@ -197,93 +203,69 @@
         <!-- Injected via JavaScript -->
       </div>
 
-      <!-- INTERACTIVE TEST BENCH: 4 LIVE TEST CASES -->
+      <!-- INTERACTIVE TEST BENCH: 4 LIVE TEST SCENARIOS -->
       <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex flex-col gap-3">
         <div class="flex items-center justify-between">
           <div>
             <h2 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-              <i class="fa-solid fa-flask-vial text-indigo-600"></i>
-              Interactive Test Bench: Try 4 Actions
+              <i class="fa-solid fa-play text-indigo-600"></i>
+              Test Bench: Try 4 Daily Scenarios
             </h2>
             <p class="text-xs text-slate-500">
-              Click a scenario below to watch the 3-Gate Kernel evaluate the action in real time.
+              Click a scenario below to watch how the 3 checks protect you.
             </p>
           </div>
           <span id="badge-kernel-status" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300">
-            Kernel Ready
+            Ready to Test
           </span>
         </div>
 
-        <!-- 4 SCENARIO BUTTONS -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-          
-          <button onclick="runExperiment('valid')" id="btn-exp-valid" class="p-2 rounded-lg text-left border-2 border-slate-900 bg-slate-900 text-white font-medium text-xs transition shadow-2xs">
-            <div class="text-[9px] font-mono text-emerald-300 font-bold uppercase">Case A</div>
-            <div class="font-bold text-xs mt-0.5">Valid Spoilage</div>
-            <div class="text-[10px] text-slate-300 mt-1">142m &gt; 8°C ($64k)</div>
-          </button>
-
-          <button onclick="runExperiment('skip_tool')" id="btn-exp-skip_tool" class="p-2 rounded-lg text-left border border-slate-200 bg-slate-50 hover:bg-slate-100 font-medium text-xs transition text-slate-700">
-            <div class="text-[9px] font-mono text-rose-600 font-bold uppercase">Case B (Security)</div>
-            <div class="font-bold text-xs mt-0.5">Skip to Wire</div>
-            <div class="text-[10px] text-slate-500 mt-1">From Intake State</div>
-          </button>
-
-          <button onclick="runExperiment('hallucinated')" id="btn-exp-hallucinated" class="p-2 rounded-lg text-left border border-slate-200 bg-slate-50 hover:bg-slate-100 font-medium text-xs transition text-slate-700">
-            <div class="text-[9px] font-mono text-amber-600 font-bold uppercase">Case C (Grounding)</div>
-            <div class="font-bold text-xs mt-0.5">Fake Loss Value</div>
-            <div class="text-[10px] text-slate-500 mt-1">No Provenance Link</div>
-          </button>
-
-          <button onclick="runExperiment('guard_failed')" id="btn-exp-guard_failed" class="p-2 rounded-lg text-left border border-slate-200 bg-slate-50 hover:bg-slate-100 font-medium text-xs transition text-slate-700">
-            <div class="text-[9px] font-mono text-indigo-600 font-bold uppercase">Case D (Invariant)</div>
-            <div class="font-bold text-xs mt-0.5">45m Sensor Log</div>
-            <div class="text-[10px] text-slate-500 mt-1">Fails 120m Guard</div>
-          </button>
-
+        <!-- 4 SCENARIO BUTTONS (UPDATED DYNAMICALLY PER THEME) -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2" id="box-scenario-buttons">
+          <!-- Injected via updateScenarioButtons() -->
         </div>
 
-        <!-- THE 3 EXECUTION GATES VISUALIZER -->
+        <!-- THE 3 EXECUTION CHECKS VISUALIZER -->
         <div class="bg-slate-50 border border-slate-200 rounded-lg p-3">
           <div class="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider mb-2">
-            The 3-Gate Mathematical Verification Pipeline
+            The 3 Real-Time Safety Checks
           </div>
           
           <div class="grid grid-cols-3 gap-2">
             
-            <!-- Gate 1: Operational Rail (FSM) -->
+            <!-- Gate 1: Step Order -->
             <div id="gate-1-box" class="bg-white border border-slate-300 rounded-lg p-2.5 transition">
               <div class="flex items-center justify-between mb-1">
-                <span class="text-[9px] font-mono font-bold text-slate-600 uppercase">Gate 1</span>
+                <span class="text-[9px] font-mono font-bold text-slate-600 uppercase">Check 1</span>
                 <span id="gate-1-badge" class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">Pending</span>
               </div>
-              <div class="font-bold text-xs text-slate-900 mb-0.5">FSM Operational Rail</div>
+              <div class="font-bold text-xs text-slate-900 mb-0.5">Are We on Right Step?</div>
               <p id="gate-1-desc" class="text-[10px] text-slate-500 leading-tight">
-                Checks if action is topologically permitted in current state.
+                Checks if action is allowed in this step.
               </p>
             </div>
 
-            <!-- Gate 2: Situation Grounding (Context Graph) -->
+            <!-- Gate 2: Real Proof -->
             <div id="gate-2-box" class="bg-white border border-slate-300 rounded-lg p-2.5 transition">
               <div class="flex items-center justify-between mb-1">
-                <span class="text-[9px] font-mono font-bold text-slate-600 uppercase">Gate 2</span>
+                <span class="text-[9px] font-mono font-bold text-slate-600 uppercase">Check 2</span>
                 <span id="gate-2-badge" class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">Pending</span>
               </div>
-              <div class="font-bold text-xs text-slate-900 mb-0.5">Situation Grounding</div>
+              <div class="font-bold text-xs text-slate-900 mb-0.5">Is Proof Real?</div>
               <p id="gate-2-desc" class="text-[10px] text-slate-500 leading-tight">
-                Checks if values have cryptographic provenance edges.
+                Checks if numbers come from real sensor or paper.
               </p>
             </div>
 
-            <!-- Gate 3: Invariant Guard (Knowledge Graph) -->
+            <!-- Gate 3: Rules Satisfied -->
             <div id="gate-3-box" class="bg-white border border-slate-300 rounded-lg p-2.5 transition">
               <div class="flex items-center justify-between mb-1">
-                <span class="text-[9px] font-mono font-bold text-slate-600 uppercase">Gate 3</span>
+                <span class="text-[9px] font-mono font-bold text-slate-600 uppercase">Check 3</span>
                 <span id="gate-3-badge" class="text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-100 text-slate-600">Pending</span>
               </div>
-              <div class="font-bold text-xs text-slate-900 mb-0.5">World Invariant Guard</div>
+              <div class="font-bold text-xs text-slate-900 mb-0.5">Are Rules Met?</div>
               <p id="gate-3-desc" class="text-[10px] text-slate-500 leading-tight">
-                Checks if numbers satisfy policy bounds (Temp &gt; 8°C, &le; $75k).
+                Checks if condition passes the safety rules.
               </p>
             </div>
 
@@ -296,8 +278,8 @@
                 <i class="fa-solid fa-play"></i>
               </div>
               <div>
-                <span id="result-title" class="font-bold text-slate-900">Select a test case to execute</span>
-                <p id="result-desc" class="text-[11px] text-slate-600">The 3-Gate Kernel will step through the mathematical checks.</p>
+                <span id="result-title" class="font-bold text-slate-900">Select a scenario above to test</span>
+                <p id="result-desc" class="text-[11px] text-slate-600">Watch the 3 checks evaluate each part step-by-step.</p>
               </div>
             </div>
             <div id="result-code" class="font-mono text-xs font-bold px-2 py-1 rounded bg-slate-100 text-slate-600">
@@ -311,7 +293,7 @@
 
     </div>
 
-    <!-- RIGHT COLUMN: VISUAL GRAPH CANVAS & AI TUTOR (5 Cols) -->
+    <!-- RIGHT COLUMN: VISUAL GRAPH CANVAS & SIMPLE Q&A (5 Cols) -->
     <div class="col-span-12 lg:col-span-5 flex flex-col gap-4">
       
       <!-- VIS.JS NETWORK CANVAS -->
@@ -320,9 +302,9 @@
           <div>
             <h3 class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
               <i class="fa-solid fa-diagram-project text-indigo-600"></i>
-              Knowledge Graph & State Machine Canvas
+              Visual Step and Rule Map
             </h3>
-            <span class="text-[10px] text-slate-500 font-mono">Live Visual Graph Schema</span>
+            <span class="text-[10px] text-slate-500 font-mono">Live Step Machine</span>
           </div>
           <button onclick="fitGraph()" class="px-2 py-0.5 text-[10px] font-bold text-slate-600 hover:text-slate-900 bg-slate-100 rounded border border-slate-200">
             <i class="fa-solid fa-expand mr-1"></i>Fit View
@@ -331,10 +313,10 @@
 
         <!-- Legend -->
         <div class="flex flex-wrap items-center gap-2 mb-2 text-[10px] font-medium text-slate-600 bg-slate-50 p-1.5 rounded border border-slate-200">
-          <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-emerald-500 inline-block"></span>State</span>
-          <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-500 inline-block"></span>Guard Rule</span>
-          <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-purple-500 inline-block"></span>Permitted Tool</span>
-          <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-sky-500 inline-block"></span>Context Doc</span>
+          <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-emerald-500 inline-block"></span>Current Step</span>
+          <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-500 inline-block"></span>Rule Guard</span>
+          <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-purple-500 inline-block"></span>Allowed Action</span>
+          <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-sky-500 inline-block"></span>Sensor Proof</span>
         </div>
 
         <!-- Canvas Container -->
@@ -343,20 +325,20 @@
         </div>
 
         <div id="node-inspector" class="mt-2 p-2 bg-slate-50 rounded border border-slate-200 text-[11px] text-slate-700 flex items-center justify-between">
-          <span class="text-slate-500">Click any node on the graph to inspect its mathematical formula.</span>
+          <span class="text-slate-500">Click any step or rule in the map to see how it works.</span>
         </div>
       </div>
 
-      <!-- AI SCIENTIST CHAT / EXPLAINER -->
+      <!-- SIMPLE QUESTIONS & ANSWERS -->
       <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm flex flex-col flex-1">
         <div class="flex items-center justify-between mb-2">
           <div class="flex items-center gap-2">
             <div class="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center text-xs">
-              <i class="fa-solid fa-graduation-cap"></i>
+              <i class="fa-solid fa-circle-question"></i>
             </div>
             <div>
-              <h3 class="text-xs font-bold text-slate-900">Ask the AI Scientist</h3>
-              <p class="text-[10px] text-slate-500">Simple, direct answers about how the system works</p>
+              <h3 class="text-xs font-bold text-slate-900">Ask Questions About Everyday Safety</h3>
+              <p class="text-[10px] text-slate-500">Simple answers about how the three parts work together</p>
             </div>
           </div>
           <span id="label-active-model" class="text-[9px] font-mono text-slate-400 bg-slate-100 px-1.5 py-0.5 rounded">
@@ -365,29 +347,18 @@
         </div>
 
         <!-- Pre-canned Questions -->
-        <div class="flex flex-wrap gap-1.5 mb-2.5">
-          <button onclick="askQuestion('What is a Finite State Machine?')" class="text-[10px] bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 px-2 py-0.5 rounded border border-slate-200 transition">
-            What is an FSM?
-          </button>
-          <button onclick="askQuestion('Why did Wonham invent supervisory control in 1987?')" class="text-[10px] bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 px-2 py-0.5 rounded border border-slate-200 transition">
-            Wonham 1987 Theory
-          </button>
-          <button onclick="askQuestion('What is an Invariant Guard?')" class="text-[10px] bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 px-2 py-0.5 rounded border border-slate-200 transition">
-            Invariant Guards
-          </button>
-          <button onclick="askQuestion('Why is an unconstrained LLM non-deterministic?')" class="text-[10px] bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 px-2 py-0.5 rounded border border-slate-200 transition">
-            Why LLMs Fail
-          </button>
+        <div class="flex flex-wrap gap-1.5 mb-2.5" id="box-pre-questions">
+          <!-- Injected via JavaScript -->
         </div>
 
         <!-- Response Container -->
         <div id="ai-chat-output" class="flex-1 bg-slate-50 rounded-lg border border-slate-200 p-2.5 text-xs text-slate-700 overflow-y-auto max-h-[140px] leading-relaxed">
-          Welcome! I am your computer science explainer. Pick a question above or type your own question below to see how each part works.
+          Click any question above or type your own question below to see how rules and real proof keep everyday actions safe.
         </div>
 
         <!-- Chat Input Bar -->
         <div class="mt-2 flex gap-1.5">
-          <input type="text" id="input-user-question" placeholder="Ask a question about the theorem..." class="flex-1 px-2.5 py-1 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 font-medium">
+          <input type="text" id="input-user-question" placeholder="Ask a question..." class="flex-1 px-2.5 py-1 text-xs border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 font-medium">
           <button onclick="handleUserAsk()" id="btn-submit-ask" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold transition">
             Ask
           </button>
@@ -410,7 +381,7 @@
         </button>
       </div>
       <p class="text-xs text-slate-600 mb-3">
-        Enter your free Groq API key to stream live reasoning with <strong>Llama 3.3 70B Versatile</strong> directly into the interactive explainer.
+        Enter your free Groq API key to stream answers with <strong>Llama 3.3 70B</strong>.
       </p>
       <input type="password" id="input-groq-key" placeholder="gsk_..." class="w-full px-3 py-1.5 text-xs border border-slate-300 rounded-lg mb-3 font-mono">
       <div class="flex justify-end gap-2">
@@ -423,77 +394,312 @@
   <!-- JAVASCRIPT ENGINE -->
   <script>
     // =================================================================
-    // 1. DATA AND LITERATURE STATE
+    // 1. DAILY EVENT THEMES & SCENARIOS
     // =================================================================
+    let currentTheme = 'cocoa';
     let activeEngine = 'sim';
     let groqApiKey = localStorage.getItem('triad_groq_key') || '';
     let network = null;
     let activePillar = 1;
 
-    const PILLAR_INFO = {
-      1: {
-        title: "Pillar 1: World Model (Knowledge Graph)",
-        citation: "Gary Marcus (2020) • Aidan Hogan et al. (2021) • Judea Pearl (2009)",
-        text: "A Knowledge Graph stores invariant rules and true facts that do not change during an execution. It organizes rules into an ontology of nodes and directed edges. An invariant rule is a rule that must never be broken under any condition (for example: Net Loss must be less than or equal to $75,000). The graph engine evaluates queries in polynomial time to verify whether a condition is true or false."
+    const THEMES = {
+      cocoa: {
+        name: "Making Hot Cocoa",
+        icon: "fa-mug-hot",
+        pillar1_desc: "The rule says water must be heated to 100°C, and kettle must have at least 1 cup of water.",
+        pillar2_desc: "You can only pour after heating finishes. You cannot pour while still filling water.",
+        pillar3_desc: "The thermometer sensor reading (100°C) and water level sensor reading (2 cups).",
+        nodes: [
+          { id: 's1', label: ':Step\nFILL_KETTLE', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -160, y: 0 },
+          { id: 's2', label: ':Step\nHEAT_WATER', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
+          { id: 's3', label: ':Step\nPOUR_MUG', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
+          { id: 's4', label: ':Step\nCOCOA_READY', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
+          { id: 'r1', label: ':Rule\nTEMP >= 100°C\n(Boiling)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
+          { id: 'r2', label: ':Rule\nWATER >= 1 Cup\n(Not Empty)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 150, y: -80 },
+          { id: 'act', label: ':Action\npour_into_mug()', shape: 'ellipse', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 270, y: -30 },
+          { id: 'prf', label: ':Sensor\nkettle_sensor\n[100°C, 2 cups]', shape: 'dot', size: 14, color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
+        ],
+        edges: [
+          { from: 's1', to: 's2', label: 'NEXT_STEP', arrows: 'to' },
+          { from: 's2', to: 's3', label: 'NEXT_STEP', arrows: 'to' },
+          { from: 's3', to: 's4', label: 'NEXT_STEP', arrows: 'to' },
+          { from: 's3', to: 'r1', label: 'REQUIRES', arrows: 'to', dashes: true },
+          { from: 's3', to: 'r2', label: 'REQUIRES', arrows: 'to', dashes: true },
+          { from: 's4', to: 'act', label: 'ALLOWS', arrows: 'to' },
+          { from: 's2', to: 'prf', label: 'PROOF', arrows: 'to', dashes: true }
+        ],
+        experiments: {
+          exp_a: {
+            title: "Normal Cocoa",
+            desc: "Water is 100°C (2 cups)",
+            badge: "Normal",
+            action: "pour_into_mug()",
+            gate1: { pass: true, msg: "Step check passed: We are on step POUR_MUG." },
+            gate2: { pass: true, msg: "Proof check passed: Kettle sensor reads 100°C and 2 cups." },
+            gate3: { pass: true, msg: "Rule check passed: 100°C satisfies the boiling rule." },
+            outcome: { code: "READY", color: "emerald", text: "All 3 checks passed! Hot cocoa poured safely into the mug." }
+          },
+          exp_b: {
+            title: "Pour Too Early",
+            desc: "Pouring while filling",
+            badge: "Wrong Step",
+            action: "pour_into_mug()",
+            gate1: { pass: false, msg: "Check 1 Stopped: Cannot pour while still filling the kettle!" },
+            gate2: { pass: null, msg: "Bypassed" },
+            gate3: { pass: null, msg: "Bypassed" },
+            outcome: { code: "STOPPED", color: "rose", text: "The step order stopped you from pouring before water was heated." }
+          },
+          exp_c: {
+            title: "Sensor Broken",
+            desc: "No temperature reading",
+            badge: "No Proof",
+            action: "pour_into_mug()",
+            gate1: { pass: true, msg: "Step check passed: We are on step POUR_MUG." },
+            gate2: { pass: false, msg: "Check 2 Stopped: Sensor is disconnected! No proof of temperature." },
+            gate3: { pass: null, msg: "Bypassed" },
+            outcome: { code: "REJECTED", color: "amber", text: "The system refused to pour because it cannot guess temperature without real sensor proof." }
+          },
+          exp_d: {
+            title: "Water Cold (40°C)",
+            desc: "Lukewarm water",
+            badge: "Rule Failed",
+            action: "pour_into_mug()",
+            gate1: { pass: true, msg: "Step check passed." },
+            gate2: { pass: true, msg: "Sensor proof says 40°C." },
+            gate3: { pass: false, msg: "Check 3 Stopped: Water is only 40°C. Rule says it must reach 100°C!" },
+            outcome: { code: "PAUSED", color: "indigo", text: "The safety rule paused pouring until the water reaches 100°C." }
+          }
+        },
+        questions: [
+          "Why can't I pour water while still filling?",
+          "What happens if the thermometer sensor is disconnected?",
+          "Why does the rule require 100°C for hot cocoa?",
+          "How does having three checks keep me safe?"
+        ],
+        answers: {
+          "Why can't I pour water while still filling?": "The step order (State Machine) keeps you safe. When the system is on step FILL_KETTLE, the pour action is strictly locked. This stops you from pouring cold, unheated water.",
+          "What happens if the thermometer sensor is disconnected?": "The proof check (Context Graph) blocks the action. The system refuses to guess numbers. If there is no real sensor reading showing the temperature, it will not turn on or pour.",
+          "Why does the rule require 100°C for hot cocoa?": "The rule (Knowledge Graph) defines what is safe and correct. Cocoa powder does not dissolve properly in cold water. The rule makes sure the water is boiling before continuing.",
+          "How does having three checks keep me safe?": "Check 1 makes sure you are on the right step. Check 2 makes sure your information is real, not made up. Check 3 makes sure the numbers follow the safety rules. Together, they make sure mistakes never happen."
+        }
       },
-      2: {
-        title: "Pillar 2: Operational Rules (Finite State Machine)",
-        citation: "P. J. Ramadge & W. M. Wonham (1987) • David Harel (1987) • Mohammed Alshiekh et al. (2018)",
-        text: "A Finite State Machine is an automaton defined by a finite set of states and a deterministic transition function. It can only occupy one state at a time. It executes the Supervisory Control Theorem: if an unpredictable agent proposes an action, the supervisor checks whether that action is permitted in the current state. If not permitted, the system blocks the action and outputs an HTTP 403 Forbidden error."
-      },
-      3: {
-        title: "Pillar 3: Live Situation (Context Graph)",
-        citation: "Jon Barwise & John Perry (1983) • Luc Moreau et al. (W3C PROV-DM, 2013)",
-        text: "A Context Graph is an instance graph that records the active session state, verified parameter values, and cryptographic references to source evidence files. Following Situation Semantics, statements are only true or false inside a bounded, concrete situation. Following Data Provenance, any number used by the agent must have a directed edge back to the raw source document."
-      }
-    };
 
-    const EXPERIMENTS = {
-      valid: {
-        name: "Case A: Valid Cargo Spoilage ($64,000)",
-        action: "execute_wire_disbursement($64,000)",
-        state: "ADJUDICATION",
-        gate1: { pass: true, msg: "Action 'execute_wire' is permitted in ADJUDICATION state." },
-        gate2: { pass: true, msg: "Claim amount $64,000 is cryptographically grounded in bill_of_lading.pdf (hash 0x8f3b)." },
-        gate3: { pass: true, msg: "Temperature 14.2°C logged for 142 mins (>120m rule) and $64k <= $75k cap." },
-        outcome: { code: "200 APPROVED", color: "emerald", text: "All 3 gates passed. Deterministic payout executed." }
+      street: {
+        name: "Crossing the Street",
+        icon: "fa-person-walking",
+        pillar1_desc: "The rule says the crosswalk signal must say WALK, and all cars must be stopped.",
+        pillar2_desc: "You can only step into the street when the light check is complete. You cannot run across from the sidewalk curb.",
+        pillar3_desc: "The camera sensor seeing the white walk sign and radar detecting zero moving cars.",
+        nodes: [
+          { id: 's1', label: ':Step\nWAIT_AT_CURB', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -160, y: 0 },
+          { id: 's2', label: ':Step\nCHECK_LIGHT', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
+          { id: 's3', label: ':Step\nSTEP_TO_CROSS', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
+          { id: 's4', label: ':Step\nSAFE_ON_SIDE', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
+          { id: 'r1', label: ':Rule\nLIGHT == WALK\n(White Sign)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
+          { id: 'r2', label: ':Rule\nCARS_STOPPED\n(0 mph)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 150, y: -80 },
+          { id: 'act', label: ':Action\nwalk_across()', shape: 'ellipse', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 270, y: -30 },
+          { id: 'prf', label: ':Sensor\ncrosswalk_cam\n[WALK, 0 cars]', shape: 'dot', size: 14, color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
+        ],
+        edges: [
+          { from: 's1', to: 's2', label: 'NEXT_STEP', arrows: 'to' },
+          { from: 's2', to: 's3', label: 'NEXT_STEP', arrows: 'to' },
+          { from: 's3', to: 's4', label: 'NEXT_STEP', arrows: 'to' },
+          { from: 's3', to: 'r1', label: 'REQUIRES', arrows: 'to', dashes: true },
+          { from: 's3', to: 'r2', label: 'REQUIRES', arrows: 'to', dashes: true },
+          { from: 's4', to: 'act', label: 'ALLOWS', arrows: 'to' },
+          { from: 's2', to: 'prf', label: 'PROOF', arrows: 'to', dashes: true }
+        ],
+        experiments: {
+          exp_a: {
+            title: "Safe to Cross",
+            desc: "Walk sign on, cars stopped",
+            badge: "Safe",
+            action: "walk_across()",
+            gate1: { pass: true, msg: "Step check passed: We are on step STEP_TO_CROSS." },
+            gate2: { pass: true, msg: "Proof check passed: Camera sees white WALK sign; radar reads 0 mph." },
+            gate3: { pass: true, msg: "Rule check passed: Traffic rules satisfied." },
+            outcome: { code: "SAFE TO CROSS", color: "emerald", text: "All 3 checks passed! Crossed the street safely." }
+          },
+          exp_b: {
+            title: "Running Into Road",
+            desc: "Step from curb early",
+            badge: "Wrong Step",
+            action: "walk_across()",
+            gate1: { pass: false, msg: "Check 1 Stopped: Cannot cross while still approaching the curb!" },
+            gate2: { pass: null, msg: "Bypassed" },
+            gate3: { pass: null, msg: "Bypassed" },
+            outcome: { code: "STOPPED", color: "rose", text: "Step order prevented stepping into traffic before checking the light." }
+          },
+          exp_c: {
+            title: "Foggy / Blind Camera",
+            desc: "Camera lens covered",
+            badge: "No Proof",
+            action: "walk_across()",
+            gate1: { pass: true, msg: "Step check passed." },
+            gate2: { pass: false, msg: "Check 2 Stopped: Camera cannot see the light! No proof." },
+            gate3: { pass: null, msg: "Bypassed" },
+            outcome: { code: "REJECTED", color: "amber", text: "The system refused to step into the street without real visual proof." }
+          },
+          exp_d: {
+            title: "Red Hand Sign",
+            desc: "Light says DON'T WALK",
+            badge: "Rule Failed",
+            action: "walk_across()",
+            gate1: { pass: true, msg: "Step check passed." },
+            gate2: { pass: true, msg: "Camera proof reads red DON'T WALK." },
+            gate3: { pass: false, msg: "Check 3 Stopped: Rule requires WALK signal. Red light active!" },
+            outcome: { code: "WAIT", color: "indigo", text: "The safety rule holds you at the curb until the light changes." }
+          }
+        },
+        questions: [
+          "Why can't I cross if the camera is blocked?",
+          "What stops someone from stepping off the curb too early?",
+          "How does the system know cars are stopped?",
+          "What happens if the light turns to a red hand?"
+        ],
+        answers: {
+          "Why can't I cross if the camera is blocked?": "Because Check 2 requires real proof. If the camera lens is blocked, the system does not guess what color the light is. It stays at the curb.",
+          "What stops someone from stepping off the curb too early?": "Check 1 checks the step order. You must complete checking both ways and verifying the light before the walking action is unlocked.",
+          "How does the system know cars are stopped?": "Radar sensors read the speed of nearby cars. If a car is moving, Check 3 fails because the cars-stopped rule is not met.",
+          "What happens if the light turns to a red hand?": "Check 3 immediately fails. The rule says the light must be WALK. The system will not allow crossing on a red signal."
+        }
       },
-      skip_tool: {
-        name: "Case B: Security Exploit (Skip Directly to Wire)",
-        action: "execute_wire_disbursement($64,000)",
-        state: "INTAKE_RECEIVED",
-        gate1: { pass: false, msg: "HTTP 403 Forbidden: State INTAKE_RECEIVED only permits [parse_submission]." },
-        gate2: { pass: null, msg: "Bypassed / Not reached." },
-        gate3: { pass: null, msg: "Bypassed / Not reached." },
-        outcome: { code: "403 FORBIDDEN", color: "rose", text: "Supervisor Automaton intercepted illegal tool jump before execution." }
-      },
-      hallucinated: {
-        name: "Case C: Fake Loss Value (No Provenance)",
-        action: "execute_wire_disbursement($64,000)",
-        state: "ADJUDICATION",
-        gate1: { pass: true, msg: "Action 'execute_wire' permitted in ADJUDICATION state." },
-        gate2: { pass: false, msg: "Provenance Failure: No directed edge linking $64,000 to an authentic invoice document." },
-        gate3: { pass: null, msg: "Bypassed / Not reached." },
-        outcome: { code: "422 UNGROUNDED", color: "amber", text: "Context Graph blocked ungrounded hallucination." }
-      },
-      guard_failed: {
-        name: "Case D: 45m Sensor Log (Fails Invariant Guard)",
-        action: "execute_wire_disbursement($64,000)",
-        state: "ADJUDICATION",
-        gate1: { pass: true, msg: "Action permitted in state." },
-        gate2: { pass: true, msg: "Parameters grounded in telematics_45m.csv." },
-        gate3: { pass: false, msg: "Invariant Breach: RULE_TEMP_02 requires >120 mins above 8°C. Observed duration was only 45 mins." },
-        outcome: { code: "412 PRECONDITION FAILED", color: "indigo", text: "Knowledge Graph guard stalled execution; routed to human adjuster." }
+
+      library: {
+        name: "Library Book Checkout",
+        icon: "fa-book",
+        pillar1_desc: "The rule says your library card must be active and you must have zero overdue books.",
+        pillar2_desc: "You can only leave the library after the checkout scan is complete. You cannot leave straight from the bookshelves.",
+        pillar3_desc: "The barcode scanner verifying the book tag and your library card number in the database.",
+        nodes: [
+          { id: 's1', label: ':Step\nFIND_BOOK', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -160, y: 0 },
+          { id: 's2', label: ':Step\nGO_TO_DESK', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
+          { id: 's3', label: ':Step\nSCAN_CARD', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
+          { id: 's4', label: ':Step\nTAKE_HOME', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
+          { id: 'r1', label: ':Rule\nCARD_ACTIVE\n(Valid)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
+          { id: 'r2', label: ':Rule\nOVERDUE == 0\n(No Fines)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 150, y: -80 },
+          { id: 'act', label: ':Action\nleave_with_book()', shape: 'ellipse', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 270, y: -30 },
+          { id: 'prf', label: ':Scanner\nbarcode_scan\n[Card #492, Book #88]', shape: 'dot', size: 14, color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
+        ],
+        edges: [
+          { from: 's1', to: 's2', label: 'NEXT_STEP', arrows: 'to' },
+          { from: 's2', to: 's3', label: 'NEXT_STEP', arrows: 'to' },
+          { from: 's3', to: 's4', label: 'NEXT_STEP', arrows: 'to' },
+          { from: 's3', to: 'r1', label: 'REQUIRES', arrows: 'to', dashes: true },
+          { from: 's3', to: 'r2', label: 'REQUIRES', arrows: 'to', dashes: true },
+          { from: 's4', to: 'act', label: 'ALLOWS', arrows: 'to' },
+          { from: 's2', to: 'prf', label: 'PROOF', arrows: 'to', dashes: true }
+        ],
+        experiments: {
+          exp_a: {
+            title: "Normal Checkout",
+            desc: "Card valid, 0 overdue",
+            badge: "Approved",
+            action: "leave_with_book()",
+            gate1: { pass: true, msg: "Step check passed: We are on step SCAN_CARD." },
+            gate2: { pass: true, msg: "Proof check passed: Barcode scanner read Card #492 and Book #88." },
+            gate3: { pass: true, msg: "Rule check passed: Card is active with 0 overdue books." },
+            outcome: { code: "CHECKED OUT", color: "emerald", text: "All 3 checks passed! You may take the book home." }
+          },
+          exp_b: {
+            title: "Leave from Shelf",
+            desc: "Skipping checkout desk",
+            badge: "Wrong Step",
+            action: "leave_with_book()",
+            gate1: { pass: false, msg: "Check 1 Stopped: Cannot leave library while still in FIND_BOOK step!" },
+            gate2: { pass: null, msg: "Bypassed" },
+            gate3: { pass: null, msg: "Bypassed" },
+            outcome: { code: "STOPPED", color: "rose", text: "Step order prevented walking out before checking out at the desk." }
+          },
+          exp_c: {
+            title: "Unreadable Card",
+            desc: "Barcode scratched",
+            badge: "No Proof",
+            action: "leave_with_book()",
+            gate1: { pass: true, msg: "Step check passed." },
+            gate2: { pass: false, msg: "Check 2 Stopped: Barcode cannot be read. No proof of card." },
+            gate3: { pass: null, msg: "Bypassed" },
+            outcome: { code: "REJECTED", color: "amber", text: "The system refused to check out because it cannot verify who is borrowing the book." }
+          },
+          exp_d: {
+            title: "Card Expired",
+            desc: "Card expired last month",
+            badge: "Rule Failed",
+            action: "leave_with_book()",
+            gate1: { pass: true, msg: "Step check passed." },
+            gate2: { pass: true, msg: "Barcode scanned successfully." },
+            gate3: { pass: false, msg: "Check 3 Stopped: Card expired! Rule requires active card." },
+            outcome: { code: "RENEW CARD", color: "indigo", text: "The rule requires renewing the library card before borrowing new books." }
+          }
+        },
+        questions: [
+          "Why can't I just take a book off the shelf and leave?",
+          "What happens if the barcode scanner cannot read the tag?",
+          "Why does the rule check for overdue books?",
+          "How does the system verify my card is real?"
+        ],
+        answers: {
+          "Why can't I just take a book off the shelf and leave?": "Check 1 requires following the step order. You must bring the book to the checkout desk and scan it before the door unlocks.",
+          "What happens if the barcode scanner cannot read the tag?": "Check 2 stops the checkout. The system cannot guess book IDs. It needs real proof from the scanner.",
+          "Why does the rule check for overdue books?": "Check 3 checks the library rules. If you have overdue books, the rule asks you to return them before checking out new ones.",
+          "How does the system verify my card is real?": "The card number is looked up in the database. If it matches an active account, Check 3 passes."
+        }
       }
     };
 
     // =================================================================
-    // 2. INITIALIZATION
+    // 2. THEME SWITCHING & INITIALIZATION
     // =================================================================
     window.addEventListener('DOMContentLoaded', () => {
-      selectPillar(1);
-      initVisNetwork();
+      switchTheme('cocoa');
     });
+
+    function switchTheme(themeKey) {
+      currentTheme = themeKey;
+      const t = THEMES[themeKey];
+
+      // Update Top Buttons
+      ['cocoa', 'street', 'library'].forEach(k => {
+        const b = document.getElementById(`btn-theme-${k}`);
+        if (k === themeKey) {
+          b.className = "px-2.5 py-1 rounded-md font-bold bg-white text-slate-900 shadow-2xs transition";
+        } else {
+          b.className = "px-2.5 py-1 rounded-md font-medium text-slate-600 hover:text-slate-900 transition";
+        }
+      });
+
+      // Update Labels
+      document.getElementById('label-active-event-name').textContent = "Daily Event: " + t.name;
+      document.getElementById('desc-pillar-1').textContent = t.pillar1_desc;
+      document.getElementById('desc-pillar-2').textContent = t.pillar2_desc;
+      document.getElementById('desc-pillar-3').textContent = t.pillar3_desc;
+
+      // Update Pillar Details
+      selectPillar(activePillar);
+
+      // Render Graph
+      renderVisNetwork(t);
+
+      // Update Scenario Buttons
+      updateScenarioButtons(t);
+
+      // Update Questions
+      updateQuestionsUI(t);
+
+      // Reset Banner
+      document.getElementById('badge-kernel-status').textContent = "Ready to Test";
+      document.getElementById('badge-kernel-status').className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300";
+      document.getElementById('result-title').textContent = "Select a scenario above to test";
+      document.getElementById('result-desc').textContent = "Watch the 3 checks evaluate each part step-by-step.";
+      document.getElementById('result-code').textContent = "STANDBY";
+      document.getElementById('result-code').className = "font-mono text-xs font-bold px-2 py-1 rounded bg-slate-100 text-slate-600";
+      document.getElementById('result-icon').className = "w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs";
+      document.getElementById('result-icon').innerHTML = `<i class="fa-solid fa-play"></i>`;
+
+      setGateUI(1, 'pending', 'Checks if action is allowed in this step.');
+      setGateUI(2, 'pending', 'Checks if numbers come from real sensor or paper.');
+      setGateUI(3, 'pending', 'Checks if condition passes the safety rules.');
+    }
 
     function selectPillar(num) {
       activePillar = num;
@@ -506,60 +712,82 @@
         }
       });
 
-      const p = PILLAR_INFO[num];
+      const t = THEMES[currentTheme];
+      const titles = [
+        "Part 1: The Rules (Knowledge Graph)",
+        "Part 2: The Steps (State Machine)",
+        "Part 3: Real Proof (Context Graph)"
+      ];
+      const descs = [
+        t.pillar1_desc + " These are the permanent rules. The system checks them before approving any action.",
+        t.pillar2_desc + " This stops things from happening in the wrong order.",
+        t.pillar3_desc + " This prevents guessing or making up numbers by requiring real proof from sensors."
+      ];
+
       document.getElementById('pillar-detail-box').innerHTML = `
         <div class="font-bold text-slate-900 text-xs mb-0.5 flex items-center justify-between">
-          <span>${p.title}</span>
-          <span class="text-[10px] font-mono text-indigo-700 bg-indigo-100 px-1.5 py-0.2 rounded font-semibold">${p.citation}</span>
+          <span>${titles[num - 1]}</span>
+          <span class="text-[10px] font-mono text-indigo-700 bg-indigo-100 px-1.5 py-0.2 rounded font-semibold">${t.name}</span>
         </div>
-        <p class="text-[11px] text-slate-700">${p.text}</p>
+        <p class="text-[11px] text-slate-700">${descs[num - 1]}</p>
       `;
 
-      highlightGraphNodesForPillar(num);
+      highlightGraphNodes(num);
+    }
+
+    function updateScenarioButtons(t) {
+      const container = document.getElementById('box-scenario-buttons');
+      const exps = t.experiments;
+      let html = '';
+
+      const keys = ['exp_a', 'exp_b', 'exp_c', 'exp_d'];
+      const borderColors = ['border-slate-900', 'border-slate-200', 'border-slate-200', 'border-slate-200'];
+      const bgColors = ['bg-slate-900 text-white', 'bg-slate-50 text-slate-700', 'bg-slate-50 text-slate-700', 'bg-slate-50 text-slate-700'];
+      const badgeColors = ['text-emerald-300', 'text-rose-600', 'text-amber-600', 'text-indigo-600'];
+
+      keys.forEach((k, idx) => {
+        const e = exps[k];
+        html += `
+          <button onclick="runExperiment('${k}')" id="btn-exp-${k}" class="p-2 rounded-lg text-left border ${borderColors[idx]} ${bgColors[idx]} font-medium text-xs transition shadow-2xs">
+            <div class="text-[9px] font-mono ${badgeColors[idx]} font-bold uppercase">${e.badge}</div>
+            <div class="font-bold text-xs mt-0.5">${e.title}</div>
+            <div class="text-[10px] opacity-80 mt-1">${e.desc}</div>
+          </button>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function updateQuestionsUI(t) {
+      const box = document.getElementById('box-pre-questions');
+      let html = '';
+      t.questions.forEach(q => {
+        html += `
+          <button onclick="askQuestion('${q.replace(/'/g, "\\'")}')" class="text-[10px] bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 text-slate-700 px-2 py-0.5 rounded border border-slate-200 transition">
+            ${q}
+          </button>
+        `;
+      });
+      box.innerHTML = html;
+      document.getElementById('ai-chat-output').textContent = `Click any question above or type your own question below to see how rules and real proof keep ${t.name.toLowerCase()} safe.`;
     }
 
     // =================================================================
     // 3. GRAPH CANVAS (VIS.JS)
     // =================================================================
-    function initVisNetwork() {
+    function renderVisNetwork(t) {
       const container = document.getElementById('graph-canvas');
-      
-      const nodes = new vis.DataSet([
-        // States (Emerald)
-        { id: 's_intake', label: ':State\nINTAKE', shape: 'box', color: { background: '#10b981', border: '#059669' }, font: { color: '#ffffff', face: 'JetBrains Mono', size: 10, bold: true }, x: -160, y: 0 },
-        { id: 's_evidence', label: ':State\nEVIDENCE', shape: 'box', color: { background: '#10b981', border: '#059669' }, font: { color: '#ffffff', face: 'JetBrains Mono', size: 10, bold: true }, x: -40, y: 0 },
-        { id: 's_adjud', label: ':State\nADJUDICATION', shape: 'box', color: { background: '#10b981', border: '#059669' }, font: { color: '#ffffff', face: 'JetBrains Mono', size: 10, bold: true }, x: 80, y: 0 },
-        { id: 's_settle', label: ':State\nAPPROVED', shape: 'box', color: { background: '#047857', border: '#065f46' }, font: { color: '#ffffff', face: 'JetBrains Mono', size: 10, bold: true }, x: 200, y: -40 },
-        { id: 's_human', label: ':State\nESCALATED', shape: 'box', color: { background: '#e11d48', border: '#be123c' }, font: { color: '#ffffff', face: 'JetBrains Mono', size: 10, bold: true }, x: 200, y: 40 },
+      const nodes = new vis.DataSet(t.nodes.map(n => ({
+        ...n,
+        font: { color: '#ffffff', face: 'JetBrains Mono', size: 9, bold: true }
+      })));
 
-        // Guard Rules (Amber)
-        { id: 'r_temp', label: ':Rule\nTEMP_02\n(>120m)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, font: { color: '#ffffff', face: 'JetBrains Mono', size: 8, bold: true }, x: 80, y: -90 },
-        { id: 'r_cap', label: ':Rule\nCAP_03\n(≤$75k)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, font: { color: '#ffffff', face: 'JetBrains Mono', size: 8, bold: true }, x: 150, y: -90 },
-
-        // Permitted Actions (Purple)
-        { id: 'a_wire', label: ':Action\nexecute_wire()', shape: 'ellipse', color: { background: '#8b5cf6', border: '#7c3aed' }, font: { color: '#ffffff', face: 'JetBrains Mono', size: 8, bold: true }, x: 280, y: -40 },
-        
-        // Context Document (Sky)
-        { id: 'c_bol', label: ':Document\nbol_invoice.pdf\n[0x8f3b]', shape: 'dot', size: 14, color: { background: '#0ea5e9', border: '#0284c7' }, font: { color: '#0f172a', face: 'JetBrains Mono', size: 8 }, x: -40, y: 80 }
-      ]);
-
-      const edges = new vis.DataSet([
-        // Transitions
-        { from: 's_intake', to: 's_evidence', label: 'TRANSITION', arrows: 'to', font: { size: 7, face: 'JetBrains Mono' }, color: { color: '#94a3b8' } },
-        { from: 's_evidence', to: 's_adjud', label: 'TRANSITION', arrows: 'to', font: { size: 7, face: 'JetBrains Mono' }, color: { color: '#94a3b8' } },
-        { from: 's_adjud', to: 's_settle', label: 'TRANSITION', arrows: 'to', font: { size: 7, face: 'JetBrains Mono' }, color: { color: '#10b981' } },
-        { from: 's_adjud', to: 's_human', label: 'TRANSITION', arrows: 'to', font: { size: 7, face: 'JetBrains Mono' }, color: { color: '#e11d48' } },
-
-        // Guard requirements
-        { from: 's_adjud', to: 'r_temp', label: 'REQUIRES', arrows: 'to', dashes: true, font: { size: 7 }, color: { color: '#f59e0b' } },
-        { from: 's_adjud', to: 'r_cap', label: 'REQUIRES', arrows: 'to', dashes: true, font: { size: 7 }, color: { color: '#f59e0b' } },
-
-        // Permitted tool
-        { from: 's_settle', to: 'a_wire', label: 'PERMITS', arrows: 'to', font: { size: 7 }, color: { color: '#8b5cf6' } },
-
-        // Provenance Grounding
-        { from: 's_evidence', to: 'c_bol', label: 'GROUNDED_IN', arrows: 'to', dashes: true, font: { size: 7 }, color: { color: '#0ea5e9' } }
-      ]);
+      const edges = new vis.DataSet(t.edges.map(e => ({
+        ...e,
+        font: { size: 7, face: 'JetBrains Mono' },
+        color: { color: e.color || '#94a3b8' }
+      })));
 
       const data = { nodes: nodes, edges: edges };
       const options = {
@@ -567,40 +795,35 @@
         interaction: { hover: true, zoomView: true, dragView: true }
       };
 
+      if (network) network.destroy();
       network = new vis.Network(container, data, options);
       network.fit();
 
       network.on("click", (params) => {
         if (params.nodes.length > 0) {
-          const nodeId = params.nodes[0];
-          inspectNode(nodeId);
+          inspectNode(params.nodes[0]);
         }
       });
     }
 
     function inspectNode(id) {
-      const descriptions = {
-        's_intake': "<strong>State INTAKE</strong>: The start state $q_0$. Only permits parser tools.",
-        's_evidence': "<strong>State EVIDENCE</strong>: The verification state. Requires document provenance edges.",
-        's_adjud': "<strong>State ADJUDICATION</strong>: The evaluation state. Requires invariant guards to equal true.",
-        's_settle': "<strong>State APPROVED</strong>: An accept state $F$. Permits execute_wire_disbursement().",
-        's_human': "<strong>State ESCALATED</strong>: A sink state for human supervisor review.",
-        'r_temp': "<strong>Rule TEMP_02</strong>: Invariant guard requiring continuous sensor log > 8°C for at least 120 minutes.",
-        'r_cap': "<strong>Rule CAP_03</strong>: Invariant guard requiring net claim payout to be $\\le$ $75,000.",
-        'a_wire': "<strong>Action execute_wire()</strong>: External financial tool. Strictly prohibited from INTAKE state.",
-        'c_bol': "<strong>Document bol_invoice.pdf</strong>: Cryptographic hash source providing ground truth."
-      };
-      document.getElementById('node-inspector').innerHTML = descriptions[id] || "Node selected.";
+      const t = THEMES[currentTheme];
+      const node = t.nodes.find(n => n.id === id);
+      if (node) {
+        document.getElementById('node-inspector').innerHTML = `
+          <strong>Selected:</strong> ${node.label.replace('\n', ' - ')}
+        `;
+      }
     }
 
-    function highlightGraphNodesForPillar(num) {
+    function highlightGraphNodes(num) {
       if (!network) return;
-      if (num === 1) { // World Model / Rules
-        network.selectNodes(['r_temp', 'r_cap']);
-      } else if (num === 2) { // Operational Rules / FSM
-        network.selectNodes(['s_intake', 's_evidence', 's_adjud', 's_settle', 'a_wire']);
-      } else if (num === 3) { // Live Situation / Context
-        network.selectNodes(['c_bol', 's_evidence']);
+      if (num === 1) { // Rules
+        network.selectNodes(['r1', 'r2']);
+      } else if (num === 2) { // Steps
+        network.selectNodes(['s1', 's2', 's3', 's4', 'act']);
+      } else if (num === 3) { // Proof
+        network.selectNodes(['prf', 's2']);
       }
     }
 
@@ -612,9 +835,14 @@
     // 4. THE 3-GATE TEST BENCH EXPERIMENTS
     // =================================================================
     function runExperiment(key) {
-      // Update buttons
-      ['valid', 'skip_tool', 'hallucinated', 'guard_failed'].forEach(k => {
+      const t = THEMES[currentTheme];
+      const exps = t.experiments;
+      const exp = exps[key];
+
+      // Update button styling
+      ['exp_a', 'exp_b', 'exp_c', 'exp_d'].forEach(k => {
         const b = document.getElementById(`btn-exp-${k}`);
+        if (!b) return;
         if (k === key) {
           b.className = "p-2 rounded-lg text-left border-2 border-slate-900 bg-slate-900 text-white font-medium text-xs transition shadow-2xs";
         } else {
@@ -622,14 +850,13 @@
         }
       });
 
-      const exp = EXPERIMENTS[key];
       document.getElementById('badge-kernel-status').textContent = "Evaluating...";
       document.getElementById('badge-kernel-status').className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-300";
 
       // Reset Gates
-      setGateUI(1, 'evaluating', 'Checking FSM State...');
-      setGateUI(2, 'pending', 'Waiting for Gate 1...');
-      setGateUI(3, 'pending', 'Waiting for Gate 2...');
+      setGateUI(1, 'evaluating', 'Checking current step...');
+      setGateUI(2, 'pending', 'Waiting for Check 1...');
+      setGateUI(3, 'pending', 'Waiting for Check 2...');
 
       setTimeout(() => {
         // Evaluate Gate 1
@@ -641,7 +868,7 @@
           return;
         }
         setGateUI(1, 'pass', exp.gate1.msg);
-        setGateUI(2, 'evaluating', 'Checking Provenance Graph...');
+        setGateUI(2, 'evaluating', 'Checking real proof from sensors...');
 
         setTimeout(() => {
           // Evaluate Gate 2
@@ -652,7 +879,7 @@
             return;
           }
           setGateUI(2, 'pass', exp.gate2.msg);
-          setGateUI(3, 'evaluating', 'Evaluating Knowledge Graph Guards...');
+          setGateUI(3, 'evaluating', 'Checking safety rules...');
 
           setTimeout(() => {
             // Evaluate Gate 3
@@ -663,11 +890,11 @@
             }
             setGateUI(3, 'pass', exp.gate3.msg);
             finishExperiment(exp);
-          }, 400);
+          }, 350);
 
-        }, 400);
+        }, 350);
 
-      }, 400);
+      }, 350);
     }
 
     function setGateUI(gateNum, status, msg) {
@@ -684,11 +911,11 @@
       } else if (status === 'fail') {
         box.className = "rounded-lg p-2.5 transition gate-fail border";
         badge.className = "text-[9px] font-bold px-1.5 py-0.2 rounded bg-rose-200 text-rose-900";
-        badge.textContent = "FAIL";
+        badge.textContent = "STOPPED";
       } else if (status === 'evaluating') {
         box.className = "rounded-lg p-2.5 transition gate-evaluating border";
         badge.className = "text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-200 text-amber-900";
-        badge.textContent = "TESTING";
+        badge.textContent = "CHECKING";
       } else if (status === 'bypassed') {
         box.className = "bg-slate-100 border border-slate-200 rounded-lg p-2.5 transition text-slate-400 opacity-60";
         badge.className = "text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-200 text-slate-500";
@@ -714,25 +941,19 @@
         document.getElementById('result-code').className = "font-mono text-xs font-bold px-2 py-1 rounded bg-rose-100 text-rose-800";
       }
 
-      document.getElementById('result-title').textContent = exp.name;
+      document.getElementById('result-title').textContent = exp.title;
       document.getElementById('result-desc').textContent = exp.outcome.text;
       document.getElementById('result-code').textContent = exp.outcome.code;
     }
 
     // =================================================================
-    // 5. AI SCIENTIST ENGINE (GROQ / WEBGPU / SIMULATOR)
+    // 5. SIMPLE QUESTIONS ENGINE (GROQ / SIMULATOR)
     // =================================================================
-    const KNOWLEDGE_BASE_ANSWERS = {
-      "What is a Finite State Machine?": "A Finite State Machine is an automaton defined by a finite set of states, a set of input symbols, and a deterministic transition function. It can only be in one state at a time. It moves to a new state only when a transition edge exists and its invariant guard equals true.",
-      "Why did Wonham invent supervisory control in 1987?": "In 1987, Ramadge and Wonham proved that if an autonomous system is unpredictable, an engineer can place a supervisory Finite State Machine around it. The supervisor observes the current state and disables any action that would lead to an illegal state. This mathematically guarantees that the system cannot violate safety bounds.",
-      "What is an Invariant Guard?": "An Invariant Guard is a boolean expression attached to a transition edge. Even if an event occurs, the transition function evaluates the guard. If the guard equals false, the transition is denied and the machine remains in its current state.",
-      "Why is an unconstrained LLM non-deterministic?": "A Large Language Model calculates numbers between 0 and 1 called probabilities. It chooses which word token has the highest probability of appearing next. Because it selects tokens using probabilities, running the same input twice can produce two different outputs. This causes hallucinations and skipped verification steps."
-    };
-
     function setEngine(type) {
       activeEngine = type;
-      ['sim', 'groq', 'webllm'].forEach(t => {
+      ['sim', 'groq'].forEach(t => {
         const btn = document.getElementById(`btn-engine-${t}`);
+        if (!btn) return;
         if (t === type) {
           btn.className = "px-2.5 py-1 rounded-md font-bold bg-white text-slate-900 shadow-2xs transition";
         } else {
@@ -754,23 +975,25 @@
       const output = document.getElementById('ai-chat-output');
       output.innerHTML = `<div class="font-bold text-slate-900 mb-1">Question: ${q}</div><div id="stream-target" class="text-slate-600 font-medium">Finding answer...</div>`;
 
+      const t = THEMES[currentTheme];
+
       if (activeEngine === 'sim') {
         setTimeout(() => {
-          const ans = KNOWLEDGE_BASE_ANSWERS[q] || "According to the literature review, autonomous systems achieve determinism by enclosing probabilistic language models in the Triad: Knowledge Graph (World Model), Finite State Machine (Operational Rules), and Context Graph (Live Situation). This eliminates hallucinations and prevents illegal tool executions.";
+          const ans = t.answers[q] || `The system keeps ${t.name.toLowerCase()} safe by checking that you are on the right step, verifying real sensor proof, and satisfying the rules before allowing any action.`;
           document.getElementById('stream-target').textContent = ans;
-        }, 150);
+        }, 120);
         return;
       }
 
       if (activeEngine === 'groq') {
         if (!groqApiKey) {
           openKeyModal();
-          document.getElementById('stream-target').textContent = "Please provide your Groq API key in the modal to stream live reasoning.";
+          document.getElementById('stream-target').textContent = "Please provide your Groq API key in the modal to stream live answers.";
           return;
         }
 
         try {
-          const prompt = `Explain how the system works using simple wording and short, direct sentences. Question: ${q}`;
+          const prompt = `Explain how this everyday safety system works using clear, simple wording. Everyday Event: ${t.name}. Question: ${q}`;
           const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
             method: "POST",
             headers: {
@@ -779,7 +1002,10 @@
             },
             body: JSON.stringify({
               model: "llama-3.3-70b-versatile",
-              messages: [{ role: "system", content: "You explain computer systems simply and directly using clear wording." }, { role: "user", content: prompt }],
+              messages: [
+                { role: "system", content: "You explain everyday computer systems simply and directly using clear wording and short sentences." },
+                { role: "user", content: prompt }
+              ],
               temperature: 0.1
             })
           });
