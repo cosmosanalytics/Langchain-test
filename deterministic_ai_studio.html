@@ -350,8 +350,56 @@
           <!-- Vis.js renders here -->
         </div>
 
+
         <div id="node-inspector" class="mt-2 p-2 bg-slate-50 rounded border border-slate-200 text-[11px] text-slate-700 flex items-center justify-between">
           <span class="text-slate-500">Click any step or rule in the map to see how it works.</span>
+        </div>
+
+        <!-- READABLE TEXT CARDS FOR KNOWLEDGE GRAPH, STATE MACHINE & CONTEXT GRAPH -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
+          
+          <!-- Knowledge Graph Text -->
+          <div class="bg-amber-50/80 border border-amber-200 rounded-lg p-2.5 flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] font-mono font-bold text-amber-800 uppercase flex items-center gap-1.5 mb-1">
+                <span class="w-2 h-2 rounded bg-amber-500 inline-block"></span>
+                Knowledge Graph
+              </div>
+              <div class="text-[10px] font-bold text-slate-800 mb-1">The Permanent Rules</div>
+              <div id="text-kg-content" class="text-[10.5px] text-amber-950 space-y-1 leading-snug">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+          </div>
+
+          <!-- State Machine Text -->
+          <div class="bg-emerald-50/80 border border-emerald-200 rounded-lg p-2.5 flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] font-mono font-bold text-emerald-800 uppercase flex items-center gap-1.5 mb-1">
+                <span class="w-2 h-2 rounded bg-emerald-500 inline-block"></span>
+                State Machine
+              </div>
+              <div class="text-[10px] font-bold text-slate-800 mb-1">The Step Order</div>
+              <div id="text-fsm-content" class="text-[10.5px] text-emerald-950 space-y-1 leading-snug">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Context Graph Text -->
+          <div class="bg-sky-50/80 border border-sky-200 rounded-lg p-2.5 flex flex-col justify-between">
+            <div>
+              <div class="text-[10px] font-mono font-bold text-sky-800 uppercase flex items-center gap-1.5 mb-1">
+                <span class="w-2 h-2 rounded bg-sky-500 inline-block"></span>
+                Context Graph
+              </div>
+              <div class="text-[10px] font-bold text-slate-800 mb-1">The Live Proof</div>
+              <div id="text-cg-content" class="text-[10.5px] text-sky-950 space-y-1 leading-snug">
+                <!-- Injected via JavaScript -->
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -436,15 +484,30 @@
         pillar1_desc: "The rule says water must be heated to 100°C, and kettle must have at least 1 cup of water.",
         pillar2_desc: "You can only pour after heating finishes. You cannot pour while still filling water.",
         pillar3_desc: "The thermometer sensor reading (100°C) and water level sensor reading (2 cups).",
+        kg_text: [
+          "• <strong>Rule 1 (Boiling):</strong> Water temperature must reach at least 100°C so cocoa dissolves safely.",
+          "• <strong>Rule 2 (Not Empty):</strong> Kettle must hold at least 1 cup of water so it does not boil dry."
+        ],
+        fsm_text: [
+          "• <strong>Step 1:</strong> FILL_KETTLE (Put cold water into kettle)",
+          "• <strong>Step 2:</strong> HEAT_WATER (Turn on heating element)",
+          "• <strong>Step 3:</strong> POUR_MUG (Check rules & pour into mug)",
+          "• <strong>Step 4:</strong> COCOA_READY (Cocoa ready to drink)"
+        ],
+        cg_text: [
+          "• <strong>Sensor Reading 1:</strong> Thermometer reads <strong>100°C</strong> (Verified).",
+          "• <strong>Sensor Reading 2:</strong> Water gauge reads <strong>2 cups</strong> (Verified).",
+          "• <strong>Evidence Source:</strong> Kettle digital screen."
+        ],
         nodes: [
-          { id: 's1', label: ':Step\nFILL_KETTLE', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -160, y: 0 },
-          { id: 's2', label: ':Step\nHEAT_WATER', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
-          { id: 's3', label: ':Step\nPOUR_MUG', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
-          { id: 's4', label: ':Step\nCOCOA_READY', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
-          { id: 'r1', label: ':Rule\nTEMP >= 100°C\n(Boiling)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
-          { id: 'r2', label: ':Rule\nWATER >= 1 Cup\n(Not Empty)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 150, y: -80 },
-          { id: 'act', label: ':Action\npour_into_mug()', shape: 'ellipse', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 270, y: -30 },
-          { id: 'prf', label: ':Sensor\nkettle_sensor\n[100°C, 2 cups]', shape: 'dot', size: 14, color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
+          { id: 's1', label: 'STATE MACHINE\nStep 1: FILL_KETTLE', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -160, y: 0 },
+          { id: 's2', label: 'STATE MACHINE\nStep 2: HEAT_WATER', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
+          { id: 's3', label: 'STATE MACHINE\nStep 3: POUR_MUG', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
+          { id: 's4', label: 'STATE MACHINE\nStep 4: COCOA_READY', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
+          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule: Temp >= 100°C\n(Water Boiling)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
+          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule: Water >= 1 Cup\n(Cannot Boil Empty)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 170, y: -80 },
+          { id: 'act', label: 'ALLOWED ACTION\npour_into_mug()', shape: 'ellipse', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 280, y: -30 },
+          { id: 'prf', label: 'CONTEXT GRAPH\nSensor: Kettle Screen\n[100°C | 2 cups]', shape: 'box', color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
         ],
         edges: [
           { from: 's1', to: 's2', label: 'NEXT_STEP', arrows: 'to' },
@@ -517,15 +580,30 @@
         pillar1_desc: "The rule says the crosswalk signal must say WALK, and all cars must be stopped.",
         pillar2_desc: "You can only step into the street when the light check is complete. You cannot run across from the sidewalk curb.",
         pillar3_desc: "The camera sensor seeing the white walk sign and radar detecting zero moving cars.",
+        kg_text: [
+          "• <strong>Rule 1 (Walk Sign):</strong> Pedestrian light must show the white WALK signal.",
+          "• <strong>Rule 2 (Cars Stopped):</strong> Nearby vehicular traffic speed must be 0 mph."
+        ],
+        fsm_text: [
+          "• <strong>Step 1:</strong> WAIT_AT_CURB (Stop at sidewalk curb)",
+          "• <strong>Step 2:</strong> CHECK_LIGHT (Look at walk sign and cars)",
+          "• <strong>Step 3:</strong> STEP_TO_CROSS (Step into crosswalk lane)",
+          "• <strong>Step 4:</strong> SAFE_ON_SIDE (Reach opposite sidewalk safely)"
+        ],
+        cg_text: [
+          "• <strong>Camera Reading:</strong> Crosswalk camera detects <strong>WALK</strong> sign.",
+          "• <strong>Radar Reading:</strong> Street radar reads <strong>0 mph</strong> for cars.",
+          "• <strong>Evidence Source:</strong> Crosswalk safety camera."
+        ],
         nodes: [
-          { id: 's1', label: ':Step\nWAIT_AT_CURB', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -160, y: 0 },
-          { id: 's2', label: ':Step\nCHECK_LIGHT', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
-          { id: 's3', label: ':Step\nSTEP_TO_CROSS', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
-          { id: 's4', label: ':Step\nSAFE_ON_SIDE', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
-          { id: 'r1', label: ':Rule\nLIGHT == WALK\n(White Sign)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
-          { id: 'r2', label: ':Rule\nCARS_STOPPED\n(0 mph)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 150, y: -80 },
-          { id: 'act', label: ':Action\nwalk_across()', shape: 'ellipse', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 270, y: -30 },
-          { id: 'prf', label: ':Sensor\ncrosswalk_cam\n[WALK, 0 cars]', shape: 'dot', size: 14, color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
+          { id: 's1', label: 'STATE MACHINE\nStep 1: WAIT_AT_CURB', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -160, y: 0 },
+          { id: 's2', label: 'STATE MACHINE\nStep 2: CHECK_LIGHT', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
+          { id: 's3', label: 'STATE MACHINE\nStep 3: STEP_TO_CROSS', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
+          { id: 's4', label: 'STATE MACHINE\nStep 4: SAFE_ON_SIDE', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
+          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule: Light == WALK\n(White Walk Sign)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
+          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule: Cars Stopped\n(Speed == 0 mph)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 170, y: -80 },
+          { id: 'act', label: 'ALLOWED ACTION\nwalk_across()', shape: 'ellipse', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 280, y: -30 },
+          { id: 'prf', label: 'CONTEXT GRAPH\nSensor: Crosswalk Cam\n[WALK | 0 mph]', shape: 'box', color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
         ],
         edges: [
           { from: 's1', to: 's2', label: 'NEXT_STEP', arrows: 'to' },
@@ -598,15 +676,30 @@
         pillar1_desc: "The rule says your library card must be active and you must have zero overdue books.",
         pillar2_desc: "You can only leave the library after the checkout scan is complete. You cannot leave straight from the bookshelves.",
         pillar3_desc: "The barcode scanner verifying the book tag and your library card number in the database.",
+        kg_text: [
+          "• <strong>Rule 1 (Active Card):</strong> Library card account must have ACTIVE status.",
+          "• <strong>Rule 2 (No Fines):</strong> Account must have 0 overdue books or unpaid fines."
+        ],
+        fsm_text: [
+          "• <strong>Step 1:</strong> FIND_BOOK (Pick book from bookshelf)",
+          "• <strong>Step 2:</strong> GO_TO_DESK (Bring book to checkout counter)",
+          "• <strong>Step 3:</strong> SCAN_CARD (Scan card barcode and book RFID)",
+          "• <strong>Step 4:</strong> TAKE_HOME (Exit through library door)"
+        ],
+        cg_text: [
+          "• <strong>Card Scan:</strong> Library Card <strong>#492</strong> scanned at counter.",
+          "• <strong>Book Tag:</strong> Book RFID Tag <strong>#88</strong> scanned.",
+          "• <strong>Evidence Source:</strong> Library desk barcode reader."
+        ],
         nodes: [
-          { id: 's1', label: ':Step\nFIND_BOOK', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -160, y: 0 },
-          { id: 's2', label: ':Step\nGO_TO_DESK', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
-          { id: 's3', label: ':Step\nSCAN_CARD', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
-          { id: 's4', label: ':Step\nTAKE_HOME', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
-          { id: 'r1', label: ':Rule\nCARD_ACTIVE\n(Valid)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
-          { id: 'r2', label: ':Rule\nOVERDUE == 0\n(No Fines)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 150, y: -80 },
-          { id: 'act', label: ':Action\nleave_with_book()', shape: 'ellipse', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 270, y: -30 },
-          { id: 'prf', label: ':Scanner\nbarcode_scan\n[Card #492, Book #88]', shape: 'dot', size: 14, color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
+          { id: 's1', label: 'STATE MACHINE\nStep 1: FIND_BOOK', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -160, y: 0 },
+          { id: 's2', label: 'STATE MACHINE\nStep 2: GO_TO_DESK', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
+          { id: 's3', label: 'STATE MACHINE\nStep 3: SCAN_CARD', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
+          { id: 's4', label: 'STATE MACHINE\nStep 4: TAKE_HOME', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
+          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule: Card Active\n(Account in Good Standing)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
+          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule: Overdue == 0\n(No Overdue Books)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 170, y: -80 },
+          { id: 'act', label: 'ALLOWED ACTION\nleave_with_book()', shape: 'ellipse', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 280, y: -30 },
+          { id: 'prf', label: 'CONTEXT GRAPH\nScanner: Desk Reader\n[Card #492 | Book #88]', shape: 'box', color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
         ],
         edges: [
           { from: 's1', to: 's2', label: 'NEXT_STEP', arrows: 'to' },
@@ -702,6 +795,11 @@
       document.getElementById('desc-pillar-1').textContent = t.pillar1_desc;
       document.getElementById('desc-pillar-2').textContent = t.pillar2_desc;
       document.getElementById('desc-pillar-3').textContent = t.pillar3_desc;
+
+      // Populate readable text cards for Knowledge Graph, State Machine, and Context Graph
+      document.getElementById('text-kg-content').innerHTML = t.kg_text.join('<br>');
+      document.getElementById('text-fsm-content').innerHTML = t.fsm_text.join('<br>');
+      document.getElementById('text-cg-content').innerHTML = t.cg_text.join('<br>');
 
       // Update Pillar Details
       selectPillar(activePillar);
