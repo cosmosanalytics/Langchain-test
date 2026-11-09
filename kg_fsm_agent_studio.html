@@ -699,7 +699,10 @@
       document.querySelectorAll('.case-btn').forEach(b => {
         b.className = "case-btn px-2.5 py-0.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition";
       });
-      document.getElementById(`btn-${key.replace('_', '-')}`).className = "case-btn px-2.5 py-0.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-2xs transition";
+      const targetBtn = document.getElementById(`btn-${key.replace(/_/g, '-')}`);
+      if (targetBtn) {
+        targetBtn.className = "case-btn px-2.5 py-0.5 rounded-lg text-xs font-bold bg-slate-900 text-white shadow-2xs transition";
+      }
 
       document.getElementById('text-case-title').textContent = c.title;
       document.getElementById('text-case-cargo-badge').textContent = c.cargo;
