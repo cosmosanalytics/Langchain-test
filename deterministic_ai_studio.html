@@ -526,9 +526,9 @@
           { id: 's2', label: 'STATE MACHINE\nStep 2: HEAT_WATER', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
           { id: 's3', label: 'STATE MACHINE\nStep 3: POUR_MUG', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
           { id: 's4', label: 'STATE MACHINE\nStep 4: COCOA_READY', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
-          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule: Temp >= 100°C\n(Water Boiling)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
-          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule: Water >= 1 Cup\n(Cannot Boil Empty)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 170, y: -80 },
-          { id: 'act', label: 'ALLOWED ACTION\npour_into_mug()', shape: 'ellipse', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 280, y: -30 },
+          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule: Temp >= 100°C\n(Water Boiling)', shape: 'box', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
+          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule: Water >= 1 Cup\n(Cannot Boil Empty)', shape: 'box', color: { background: '#f59e0b', border: '#d97706' }, x: 170, y: -80 },
+          { id: 'act', label: 'ALLOWED ACTION\npour_into_mug()', shape: 'box', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 280, y: -30 },
           { id: 'prf', label: 'CONTEXT GRAPH\nSensor: Kettle Screen\n[100°C | 2 cups]', shape: 'box', color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
         ],
         edges: [
@@ -622,9 +622,9 @@
           { id: 's2', label: 'STATE MACHINE\nStep 2: CHECK_LIGHT', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
           { id: 's3', label: 'STATE MACHINE\nStep 3: STEP_TO_CROSS', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
           { id: 's4', label: 'STATE MACHINE\nStep 4: SAFE_ON_SIDE', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
-          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule: Light == WALK\n(White Walk Sign)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
-          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule: Cars Stopped\n(Speed == 0 mph)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 170, y: -80 },
-          { id: 'act', label: 'ALLOWED ACTION\nwalk_across()', shape: 'ellipse', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 280, y: -30 },
+          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule: Light == WALK\n(White Walk Sign)', shape: 'box', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
+          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule: Cars Stopped\n(Speed == 0 mph)', shape: 'box', color: { background: '#f59e0b', border: '#d97706' }, x: 170, y: -80 },
+          { id: 'act', label: 'ALLOWED ACTION\nwalk_across()', shape: 'box', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 280, y: -30 },
           { id: 'prf', label: 'CONTEXT GRAPH\nSensor: Crosswalk Cam\n[WALK | 0 mph]', shape: 'box', color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
         ],
         edges: [
@@ -718,9 +718,9 @@
           { id: 's2', label: 'STATE MACHINE\nStep 2: GO_TO_DESK', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
           { id: 's3', label: 'STATE MACHINE\nStep 3: SCAN_CARD', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
           { id: 's4', label: 'STATE MACHINE\nStep 4: TAKE_HOME', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
-          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule: Card Active\n(Account in Good Standing)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
-          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule: Overdue == 0\n(No Overdue Books)', shape: 'diamond', color: { background: '#f59e0b', border: '#d97706' }, x: 170, y: -80 },
-          { id: 'act', label: 'ALLOWED ACTION\nleave_with_book()', shape: 'ellipse', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 280, y: -30 },
+          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule: Card Active\n(Account in Good Standing)', shape: 'box', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
+          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule: Overdue == 0\n(No Overdue Books)', shape: 'box', color: { background: '#f59e0b', border: '#d97706' }, x: 170, y: -80 },
+          { id: 'act', label: 'ALLOWED ACTION\nleave_with_book()', shape: 'box', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 280, y: -30 },
           { id: 'prf', label: 'CONTEXT GRAPH\nScanner: Desk Reader\n[Card #492 | Book #88]', shape: 'box', color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
         ],
         edges: [
@@ -937,15 +937,35 @@
     // =================================================================
     function renderVisNetwork(t) {
       const container = document.getElementById('graph-canvas');
+      
+      // Ensure all nodes use rounded 'box' so colored background completely encloses all text lines
       const nodes = new vis.DataSet(t.nodes.map(n => ({
         ...n,
-        font: { color: '#ffffff', face: 'JetBrains Mono', size: 10, bold: true },
-        margin: 8
+        shape: 'box',
+        shapeProperties: { borderRadius: 6 },
+        margin: { top: 7, bottom: 7, left: 10, right: 10 },
+        borderWidth: 2,
+        font: { 
+          color: '#ffffff', 
+          face: 'JetBrains Mono', 
+          size: 9.5, 
+          bold: true,
+          strokeWidth: 2,
+          strokeColor: 'rgba(15, 23, 42, 0.45)'
+        }
       })));
 
+      // High-contrast edge labels with white halo stroke
       const edges = new vis.DataSet(t.edges.map(e => ({
         ...e,
-        font: { size: 8, face: 'JetBrains Mono', align: 'horizontal' },
+        font: { 
+          size: 8, 
+          face: 'JetBrains Mono', 
+          color: '#0f172a', 
+          strokeWidth: 3, 
+          strokeColor: '#ffffff', 
+          bold: true 
+        },
         color: { color: e.color || '#94a3b8' },
         width: 1.5
       })));
