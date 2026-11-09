@@ -208,11 +208,11 @@
         <div class="flex items-center justify-between">
           <div>
             <h2 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-              <i class="fa-solid fa-play text-indigo-600"></i>
+              <i class="fa-solid fa-flask text-indigo-600"></i>
               Test Bench: Try 4 Daily Scenarios
             </h2>
             <p class="text-xs text-slate-500">
-              Click a scenario below to watch how the 3 checks protect you.
+              Pick a scenario below, then click the test button to run the 3 safety checks.
             </p>
           </div>
           <span id="badge-kernel-status" class="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300">
@@ -221,8 +221,34 @@
         </div>
 
         <!-- 4 SCENARIO BUTTONS (UPDATED DYNAMICALLY PER THEME) -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2" id="box-scenario-buttons">
-          <!-- Injected via updateScenarioButtons() -->
+        <div>
+          <div class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider mb-1.5">
+            Step 1: Pick a Scenario
+          </div>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2" id="box-scenario-buttons">
+            <!-- Injected via updateScenarioButtons() -->
+          </div>
+        </div>
+
+        <!-- PROMINENT BIG TEST BUTTON (UNMISSABLE) -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-gradient-to-r from-indigo-50 via-sky-50 to-indigo-50 border-2 border-indigo-400/80 rounded-xl p-3 shadow-xs">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white flex items-center justify-center font-bold text-sm shadow-xs">
+              <i class="fa-solid fa-play"></i>
+            </div>
+            <div>
+              <div class="text-xs font-bold text-slate-900">
+                Step 2: Test <span id="label-active-scenario" class="text-indigo-700 font-extrabold">Normal Cocoa</span>
+              </div>
+              <div class="text-[11px] text-slate-600">
+                Click the button on the right to test this scenario.
+              </div>
+            </div>
+          </div>
+          <button id="btn-main-run-test" onclick="runActiveExperiment()" class="px-5 py-2.5 rounded-lg font-extrabold text-xs bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white shadow-md flex items-center justify-center gap-2 transition hover:scale-[1.02] active:scale-95 cursor-pointer">
+            <i class="fa-solid fa-play text-amber-300 text-sm"></i>
+            <span class="tracking-wide">CLICK HERE TO TEST</span>
+          </button>
         </div>
 
         <!-- THE 3 EXECUTION CHECKS VISUALIZER -->
@@ -397,6 +423,7 @@
     // 1. DAILY EVENT THEMES & SCENARIOS
     // =================================================================
     let currentTheme = 'cocoa';
+    let activeExperimentKey = 'exp_a';
     let activeEngine = 'sim';
     let groqApiKey = localStorage.getItem('triad_groq_key') || '';
     let network = null;
@@ -656,6 +683,7 @@
 
     function switchTheme(themeKey) {
       currentTheme = themeKey;
+      activeExperimentKey = 'exp_a';
       const t = THEMES[themeKey];
 
       // Update Top Buttons
@@ -670,6 +698,7 @@
 
       // Update Labels
       document.getElementById('label-active-event-name').textContent = "Daily Event: " + t.name;
+      document.getElementById('label-active-scenario').textContent = t.experiments.exp_a.title;
       document.getElementById('desc-pillar-1').textContent = t.pillar1_desc;
       document.getElementById('desc-pillar-2').textContent = t.pillar2_desc;
       document.getElementById('desc-pillar-3').textContent = t.pillar3_desc;
@@ -680,25 +709,14 @@
       // Render Graph
       renderVisNetwork(t);
 
-      // Update Scenario Buttons
+      // Update Scenario Buttons & Run immediately
       updateScenarioButtons(t);
 
       // Update Questions
       updateQuestionsUI(t);
 
-      // Reset Banner
-      document.getElementById('badge-kernel-status').textContent = "Ready to Test";
-      document.getElementById('badge-kernel-status').className = "text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-300";
-      document.getElementById('result-title').textContent = "Select a scenario above to test";
-      document.getElementById('result-desc').textContent = "Watch the 3 checks evaluate each part step-by-step.";
-      document.getElementById('result-code').textContent = "STANDBY";
-      document.getElementById('result-code').className = "font-mono text-xs font-bold px-2 py-1 rounded bg-slate-100 text-slate-600";
-      document.getElementById('result-icon').className = "w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center font-bold text-xs";
-      document.getElementById('result-icon').innerHTML = `<i class="fa-solid fa-play"></i>`;
-
-      setGateUI(1, 'pending', 'Checks if action is allowed in this step.');
-      setGateUI(2, 'pending', 'Checks if numbers come from real sensor or paper.');
-      setGateUI(3, 'pending', 'Checks if condition passes the safety rules.');
+      // Run initial experiment automatically
+      runExperiment('exp_a');
     }
 
     function selectPillar(num) {
@@ -741,15 +759,21 @@
       let html = '';
 
       const keys = ['exp_a', 'exp_b', 'exp_c', 'exp_d'];
-      const borderColors = ['border-slate-900', 'border-slate-200', 'border-slate-200', 'border-slate-200'];
-      const bgColors = ['bg-slate-900 text-white', 'bg-slate-50 text-slate-700', 'bg-slate-50 text-slate-700', 'bg-slate-50 text-slate-700'];
       const badgeColors = ['text-emerald-300', 'text-rose-600', 'text-amber-600', 'text-indigo-600'];
 
       keys.forEach((k, idx) => {
         const e = exps[k];
+        const isSelected = (k === activeExperimentKey);
+        const cardStyle = isSelected
+          ? "border-2 border-indigo-600 bg-slate-900 text-white shadow-xs ring-2 ring-indigo-400"
+          : "border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700";
+
         html += `
-          <button onclick="runExperiment('${k}')" id="btn-exp-${k}" class="p-2 rounded-lg text-left border ${borderColors[idx]} ${bgColors[idx]} font-medium text-xs transition shadow-2xs">
-            <div class="text-[9px] font-mono ${badgeColors[idx]} font-bold uppercase">${e.badge}</div>
+          <button onclick="selectScenario('${k}')" id="btn-exp-${k}" class="p-2.5 rounded-lg text-left ${cardStyle} font-medium text-xs transition cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="text-[9px] font-mono ${badgeColors[idx]} font-bold uppercase">${e.badge}</span>
+              ${isSelected ? '<span class="text-[9px] text-indigo-300 font-bold"><i class="fa-solid fa-circle-check"></i> Selected</span>' : '<span class="text-[9px] text-slate-400">Click to select</span>'}
+            </div>
             <div class="font-bold text-xs mt-0.5">${e.title}</div>
             <div class="text-[10px] opacity-80 mt-1">${e.desc}</div>
           </button>
@@ -757,6 +781,21 @@
       });
 
       container.innerHTML = html;
+    }
+
+    function selectScenario(key) {
+      activeExperimentKey = key;
+      const t = THEMES[currentTheme];
+      const exp = t.experiments[key];
+      if (exp) {
+        document.getElementById('label-active-scenario').textContent = exp.title;
+      }
+      updateScenarioButtons(t);
+      runExperiment(key);
+    }
+
+    function runActiveExperiment() {
+      runExperiment(activeExperimentKey);
     }
 
     function updateQuestionsUI(t) {
@@ -780,13 +819,15 @@
       const container = document.getElementById('graph-canvas');
       const nodes = new vis.DataSet(t.nodes.map(n => ({
         ...n,
-        font: { color: '#ffffff', face: 'JetBrains Mono', size: 9, bold: true }
+        font: { color: '#ffffff', face: 'JetBrains Mono', size: 10, bold: true },
+        margin: 8
       })));
 
       const edges = new vis.DataSet(t.edges.map(e => ({
         ...e,
-        font: { size: 7, face: 'JetBrains Mono' },
-        color: { color: e.color || '#94a3b8' }
+        font: { size: 8, face: 'JetBrains Mono', align: 'horizontal' },
+        color: { color: e.color || '#94a3b8' },
+        width: 1.5
       })));
 
       const data = { nodes: nodes, edges: edges };
@@ -797,7 +838,14 @@
 
       if (network) network.destroy();
       network = new vis.Network(container, data, options);
-      network.fit();
+      
+      // Delay fit to ensure mobile layout has rendered
+      setTimeout(() => {
+        if (network) network.fit();
+      }, 150);
+      setTimeout(() => {
+        if (network) network.fit();
+      }, 500);
 
       network.on("click", (params) => {
         if (params.nodes.length > 0) {
