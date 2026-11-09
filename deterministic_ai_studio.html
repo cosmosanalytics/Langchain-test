@@ -368,7 +368,7 @@
         </div>
 
         <!-- Canvas Container -->
-        <div id="graph-canvas" class="w-full h-[280px] bg-slate-50 rounded-lg border border-slate-200 relative overflow-hidden">
+        <div id="graph-canvas" class="w-full h-[360px] md:h-[400px] bg-slate-50 rounded-lg border border-slate-200 relative overflow-hidden">
           <!-- Vis.js renders here -->
         </div>
 
@@ -522,14 +522,14 @@
           "• <strong>Evidence Source:</strong> Kettle digital screen."
         ],
         nodes: [
-          { id: 's1', label: 'STATE MACHINE\nStep 1: FILL_KETTLE', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -160, y: 0 },
-          { id: 's2', label: 'STATE MACHINE\nStep 2: HEAT_WATER', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
-          { id: 's3', label: 'STATE MACHINE\nStep 3: POUR_MUG', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
-          { id: 's4', label: 'STATE MACHINE\nStep 4: COCOA_READY', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
-          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule: Temp >= 100°C\n(Water Boiling)', shape: 'box', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
-          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule: Water >= 1 Cup\n(Cannot Boil Empty)', shape: 'box', color: { background: '#f59e0b', border: '#d97706' }, x: 170, y: -80 },
-          { id: 'act', label: 'ALLOWED ACTION\npour_into_mug()', shape: 'box', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 280, y: -30 },
-          { id: 'prf', label: 'CONTEXT GRAPH\nSensor: Kettle Screen\n[100°C | 2 cups]', shape: 'box', color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
+          { id: 's1', label: 'STATE MACHINE\nStep 1: FILL_KETTLE', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -360, y: 0 },
+          { id: 's2', label: 'STATE MACHINE\nStep 2: HEAT_WATER', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -120, y: 0 },
+          { id: 's3', label: 'STATE MACHINE\nStep 3: POUR_MUG', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 120, y: 0 },
+          { id: 's4', label: 'STATE MACHINE\nStep 4: COCOA_READY', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 360, y: 0 },
+          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule 1: Temp >= 100°C\n(Water Boiling)', shape: 'box', color: { background: '#d97706', border: '#b45309' }, x: 10, y: -130 },
+          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule 2: Water >= 1 Cup\n(Cannot Boil Empty)', shape: 'box', color: { background: '#d97706', border: '#b45309' }, x: 230, y: -130 },
+          { id: 'act', label: 'ALLOWED ACTION\npour_into_mug()', shape: 'box', color: { background: '#7c3aed', border: '#6d28d9' }, x: 570, y: 0 },
+          { id: 'prf', label: 'CONTEXT GRAPH\nSensor: Kettle Screen\n[100°C | 2 cups]', shape: 'box', color: { background: '#0284c7', border: '#0369a1' }, x: -120, y: 135 }
         ],
         edges: [
           { from: 's1', to: 's2', label: 'NEXT_STEP', arrows: 'to' },
@@ -618,14 +618,14 @@
           "• <strong>Evidence Source:</strong> Crosswalk safety camera."
         ],
         nodes: [
-          { id: 's1', label: 'STATE MACHINE\nStep 1: WAIT_AT_CURB', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -160, y: 0 },
-          { id: 's2', label: 'STATE MACHINE\nStep 2: CHECK_LIGHT', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
-          { id: 's3', label: 'STATE MACHINE\nStep 3: STEP_TO_CROSS', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
-          { id: 's4', label: 'STATE MACHINE\nStep 4: SAFE_ON_SIDE', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
-          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule: Light == WALK\n(White Walk Sign)', shape: 'box', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
-          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule: Cars Stopped\n(Speed == 0 mph)', shape: 'box', color: { background: '#f59e0b', border: '#d97706' }, x: 170, y: -80 },
-          { id: 'act', label: 'ALLOWED ACTION\nwalk_across()', shape: 'box', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 280, y: -30 },
-          { id: 'prf', label: 'CONTEXT GRAPH\nSensor: Crosswalk Cam\n[WALK | 0 mph]', shape: 'box', color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
+          { id: 's1', label: 'STATE MACHINE\nStep 1: WAIT_AT_CURB', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -360, y: 0 },
+          { id: 's2', label: 'STATE MACHINE\nStep 2: CHECK_LIGHT', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -120, y: 0 },
+          { id: 's3', label: 'STATE MACHINE\nStep 3: STEP_TO_CROSS', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 120, y: 0 },
+          { id: 's4', label: 'STATE MACHINE\nStep 4: SAFE_ON_SIDE', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 360, y: 0 },
+          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule 1: Light == WALK\n(White Walk Sign)', shape: 'box', color: { background: '#d97706', border: '#b45309' }, x: 10, y: -130 },
+          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule 2: Cars Stopped\n(Speed == 0 mph)', shape: 'box', color: { background: '#d97706', border: '#b45309' }, x: 230, y: -130 },
+          { id: 'act', label: 'ALLOWED ACTION\nwalk_across()', shape: 'box', color: { background: '#7c3aed', border: '#6d28d9' }, x: 570, y: 0 },
+          { id: 'prf', label: 'CONTEXT GRAPH\nSensor: Crosswalk Cam\n[WALK | 0 mph]', shape: 'box', color: { background: '#0284c7', border: '#0369a1' }, x: -120, y: 135 }
         ],
         edges: [
           { from: 's1', to: 's2', label: 'NEXT_STEP', arrows: 'to' },
@@ -714,14 +714,14 @@
           "• <strong>Evidence Source:</strong> Library desk barcode reader."
         ],
         nodes: [
-          { id: 's1', label: 'STATE MACHINE\nStep 1: FIND_BOOK', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -160, y: 0 },
-          { id: 's2', label: 'STATE MACHINE\nStep 2: GO_TO_DESK', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -40, y: 0 },
-          { id: 's3', label: 'STATE MACHINE\nStep 3: SCAN_CARD', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 80, y: 0 },
-          { id: 's4', label: 'STATE MACHINE\nStep 4: TAKE_HOME', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 200, y: -30 },
-          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule: Card Active\n(Account in Good Standing)', shape: 'box', color: { background: '#f59e0b', border: '#d97706' }, x: 80, y: -80 },
-          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule: Overdue == 0\n(No Overdue Books)', shape: 'box', color: { background: '#f59e0b', border: '#d97706' }, x: 170, y: -80 },
-          { id: 'act', label: 'ALLOWED ACTION\nleave_with_book()', shape: 'box', color: { background: '#8b5cf6', border: '#7c3aed' }, x: 280, y: -30 },
-          { id: 'prf', label: 'CONTEXT GRAPH\nScanner: Desk Reader\n[Card #492 | Book #88]', shape: 'box', color: { background: '#0ea5e9', border: '#0284c7' }, x: -40, y: 70 }
+          { id: 's1', label: 'STATE MACHINE\nStep 1: FIND_BOOK', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -360, y: 0 },
+          { id: 's2', label: 'STATE MACHINE\nStep 2: GO_TO_DESK', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: -120, y: 0 },
+          { id: 's3', label: 'STATE MACHINE\nStep 3: SCAN_CARD', shape: 'box', color: { background: '#10b981', border: '#059669' }, x: 120, y: 0 },
+          { id: 's4', label: 'STATE MACHINE\nStep 4: TAKE_HOME', shape: 'box', color: { background: '#047857', border: '#065f46' }, x: 360, y: 0 },
+          { id: 'r1', label: 'KNOWLEDGE GRAPH\nRule 1: Card Active\n(Account in Good Standing)', shape: 'box', color: { background: '#d97706', border: '#b45309' }, x: 10, y: -130 },
+          { id: 'r2', label: 'KNOWLEDGE GRAPH\nRule 2: Overdue == 0\n(No Overdue Books)', shape: 'box', color: { background: '#d97706', border: '#b45309' }, x: 230, y: -130 },
+          { id: 'act', label: 'ALLOWED ACTION\nleave_with_book()', shape: 'box', color: { background: '#7c3aed', border: '#6d28d9' }, x: 570, y: 0 },
+          { id: 'prf', label: 'CONTEXT GRAPH\nScanner: Desk Reader\n[Card #492 | Book #88]', shape: 'box', color: { background: '#0284c7', border: '#0369a1' }, x: -120, y: 135 }
         ],
         edges: [
           { from: 's1', to: 's2', label: 'NEXT_STEP', arrows: 'to' },
@@ -981,10 +981,10 @@
       
       // Delay fit to ensure mobile layout has rendered
       setTimeout(() => {
-        if (network) network.fit();
+        if (network) network.fit({ padding: 35 });
       }, 150);
       setTimeout(() => {
-        if (network) network.fit();
+        if (network) network.fit({ padding: 35 });
       }, 500);
 
       network.on("click", (params) => {
@@ -1016,7 +1016,7 @@
     }
 
     function fitGraph() {
-      if (network) network.fit();
+      if (network) network.fit({ padding: 35 });
     }
 
     // =================================================================
