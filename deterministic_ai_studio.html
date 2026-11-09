@@ -337,12 +337,34 @@
           </button>
         </div>
 
-        <!-- Legend -->
-        <div class="flex flex-wrap items-center gap-2 mb-2 text-[10px] font-medium text-slate-600 bg-slate-50 p-1.5 rounded border border-slate-200">
-          <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-emerald-500 inline-block"></span>Current Step</span>
-          <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-500 inline-block"></span>Rule Guard</span>
-          <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-purple-500 inline-block"></span>Allowed Action</span>
-          <span class="inline-flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-sky-500 inline-block"></span>Sensor Proof</span>
+        <!-- Legend with Explicit Graph Annotations -->
+        <div class="flex flex-wrap items-center gap-2 mb-2 text-[10px] font-medium bg-slate-50 p-1.5 rounded-lg border border-slate-200">
+          <!-- State Machine Graph -->
+          <span class="inline-flex items-center gap-1 bg-white px-2 py-0.5 rounded border border-emerald-200 shadow-2xs">
+            <span class="w-2.5 h-2.5 rounded bg-emerald-500 inline-block"></span>
+            <span class="font-bold text-emerald-800">State Machine Graph</span>
+            <span class="text-slate-500">(Steps)</span>
+          </span>
+
+          <!-- Knowledge Graph -->
+          <span class="inline-flex items-center gap-1 bg-white px-2 py-0.5 rounded border border-amber-200 shadow-2xs">
+            <span class="w-2.5 h-2.5 rounded bg-amber-500 inline-block"></span>
+            <span class="font-bold text-amber-800">Knowledge Graph</span>
+            <span class="text-slate-500">(Rules)</span>
+          </span>
+
+          <!-- Context Graph -->
+          <span class="inline-flex items-center gap-1 bg-white px-2 py-0.5 rounded border border-sky-200 shadow-2xs">
+            <span class="w-2.5 h-2.5 rounded bg-sky-500 inline-block"></span>
+            <span class="font-bold text-sky-800">Context Graph</span>
+            <span class="text-slate-500">(Real Proof)</span>
+          </span>
+
+          <!-- Allowed Action -->
+          <span class="inline-flex items-center gap-1 bg-white px-2 py-0.5 rounded border border-purple-200 shadow-2xs">
+            <span class="w-2.5 h-2.5 rounded bg-purple-500 inline-block"></span>
+            <span class="font-bold text-purple-800">Allowed Action</span>
+          </span>
         </div>
 
         <!-- Canvas Container -->
