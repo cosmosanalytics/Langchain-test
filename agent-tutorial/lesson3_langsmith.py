@@ -79,7 +79,8 @@ def _normalize(text: str) -> str:
 def correct_answer(outputs: dict, reference_outputs: dict) -> dict:
     """Pass if any reference keyword appears in the agent's answer."""
     answer = _normalize(outputs["answer"])
-    ok = any(_normalize(k) in answer for k in reference_outputs["answer"])
+    # (?<!\d)/(?!\d) stop "1000" from matching inside "21000".
+    ok = any(re.search(rf"(?<!\d){re.escape(_normalize(k))}(?!\d)", answer) for k in reference_outputs["answer"])
     return {"key": "correct", "score": int(ok)}
 
 
