@@ -57,9 +57,12 @@ def demo_tracing():
 def ensure_dataset(client: Client):
     print("\n=== 2. Dataset ===")
     if client.has_dataset(dataset_name=DATASET):
-        print(f"dataset '{DATASET}' already exists")
-        return
-    ds = client.create_dataset(DATASET, description="Tutor agent: math + glossary questions")
+        ds = client.read_dataset(dataset_name=DATASET)
+        if next(iter(client.list_examples(dataset_id=ds.id, limit=1)), None):
+            print(f"dataset '{DATASET}' already exists")
+            return
+    else:
+        ds = client.create_dataset(DATASET, description="Tutor agent: math + glossary questions")
     client.create_examples(
         dataset_id=ds.id,
         inputs=[i for i, _ in EXAMPLES],
