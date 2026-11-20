@@ -38,8 +38,9 @@ def new_claims_db() -> dict:
 
 
 def _find(db: dict, ref: str) -> dict | None:
-    key = re.sub(r"[^a-z0-9]", "", ref.lower())
-    return db.get(key.upper()) or next((c for c in db.values() if c["customer"].lower() == key), None)
+    norm = lambda t: re.sub(r"[^a-z0-9]", "", t.lower())
+    key = norm(ref)
+    return db.get(key.upper()) or next((c for c in db.values() if norm(c["customer"]) == key), None)
 
 
 def build_tools(db: dict, wm: dict, evaluations: list):
