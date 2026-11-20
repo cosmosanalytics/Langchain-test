@@ -27,7 +27,9 @@ SYSTEM_PROMPT = (
     "(e.g. 'under review'). Always use your tools for facts about claims; never guess. Claim IDs look like N1, "
     "and the user may refer to a claim by the customer's first name. When asked what should happen to a claim, "
     "call recommend_next_state and mention its evaluation score; if the score is below 1, say why. When the user "
-    "describes a new case (a claim situation not in the list), call submit_case with their description and speak "
+    "describes a case in their own words (any claim situation with details such as an amount, documents or the policy, "
+    "even without saying 'new case'), or names a customer who is not in list_claims, call submit_case with their "
+    "description and speak "
     "the result: the decided next state, the score and, if below 1, why. Only call move_claim when the user "
     "explicitly asks you to move or update a claim."
 )
@@ -54,7 +56,7 @@ def build_tools(db: dict, wm: dict, evaluations: list):
         """Get the details and history of one claim, by claim ID (e.g. N3) or customer first name."""
         c = _find(db, claim)
         if not c:
-            return {"error": f"No claim '{claim}'. Known: {', '.join(db)}"}
+            return {"error": f"No claim '{claim}'. Known: {', '.join(db)}. If the user described a case, call submit_case."}
         return {k: c[k] for k in ("id", "customer", "current_state", "text", "history")}
 
     def _decide_and_score(c: dict) -> dict:
@@ -87,7 +89,7 @@ def build_tools(db: dict, wm: dict, evaluations: list):
         against the world model (rules learned from past cases) and the claim's ground truth when it has one."""
         c = _find(db, claim)
         if not c:
-            return {"error": f"No claim '{claim}'. Known: {', '.join(db)}"}
+            return {"error": f"No claim '{claim}'. Known: {', '.join(db)}. If the user described a case, call submit_case."}
         return _decide_and_score(c)
 
     @tool
@@ -103,7 +105,7 @@ def build_tools(db: dict, wm: dict, evaluations: list):
         """Move a claim to a new state. Only transitions that exist in the world model are allowed."""
         c = _find(db, claim)
         if not c:
-            return {"error": f"No claim '{claim}'. Known: {', '.join(db)}"}
+            return {"error": f"No claim '{claim}'. Known: {', '.join(db)}. If the user described a case, call submit_case."}
         new = new_state.strip().lower().replace(" ", "_")
         allowed = [r["to_state"] for r in core.rules_from(wm, c["current_state"])]
         if new not in allowed:
