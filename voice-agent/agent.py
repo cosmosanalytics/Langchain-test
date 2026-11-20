@@ -45,6 +45,20 @@ def _find(db: dict, ref: str) -> dict | None:
     return db.get(key.upper()) or next((c for c in db.values() if norm(c["customer"]) == key), None)
 
 
+def _lookup(db: dict, ref: str) -> tuple[dict | None, dict | None]:
+    """(claim, None) for an ID or a customer with one claim, else (None, error for the agent)."""
+    norm = lambda t: re.sub(r"[^a-z0-9]", "", t.lower())
+    if norm(ref).upper() in db:
+        return db[norm(ref).upper()], None
+    hits = [c for c in db.values() if norm(c["customer"]) == norm(ref)]
+    if len(hits) == 1:
+        return hits[0], None
+    if hits:
+        return None, {"error": f"{hits[0]['customer']} has several claims: {', '.join(c['id'] for c in hits)}. "
+                               "Ask the user which one, or use the claim ID."}
+    return None, {"error": f"No claim '{ref}'. Known: {', '.join(db)}. If the user described a case, call submit_case."}
+
+
 def build_tools(db: dict, wm: dict, evaluations: list):
     @tool
     def list_claims() -> list[dict]:
@@ -54,9 +68,9 @@ def build_tools(db: dict, wm: dict, evaluations: list):
     @tool
     def get_claim(claim: str) -> dict:
         """Get the details and history of one claim, by claim ID (e.g. N3) or customer first name."""
-        c = _find(db, claim)
-        if not c:
-            return {"error": f"No claim '{claim}'. Known: {', '.join(db)}. If the user described a case, call submit_case."}
+        c, err = _lookup(db, claim)
+        if err:
+            return err
         return {k: c[k] for k in ("id", "customer", "current_state", "text", "history")}
 
     def _decide_and_score(c: dict) -> dict:
@@ -94,9 +108,9 @@ def build_tools(db: dict, wm: dict, evaluations: list):
     def recommend_next_state(claim: str) -> dict:
         """Ask the explainable claims agent what the claim's next state should be. The recommendation is scored
         against the world model (rules learned from past cases) and the claim's ground truth when it has one."""
-        c = _find(db, claim)
-        if not c:
-            return {"error": f"No claim '{claim}'. Known: {', '.join(db)}. If the user described a case, call submit_case."}
+        c, err = _lookup(db, claim)
+        if err:
+            return err
         return _decide_and_score(c)
 
     @tool
@@ -110,9 +124,9 @@ def build_tools(db: dict, wm: dict, evaluations: list):
     @tool
     def move_claim(claim: str, new_state: str, reason: str) -> dict:
         """Move a claim to a new state. Only transitions that exist in the world model are allowed."""
-        c = _find(db, claim)
-        if not c:
-            return {"error": f"No claim '{claim}'. Known: {', '.join(db)}. If the user described a case, call submit_case."}
+        c, err = _lookup(db, claim)
+        if err:
+            return err
         new = new_state.strip().lower().replace(" ", "_")
         allowed = [r["to_state"] for r in core.rules_from(wm, c["current_state"])]
         if new not in allowed:
