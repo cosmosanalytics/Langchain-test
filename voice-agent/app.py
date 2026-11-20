@@ -78,8 +78,9 @@ c1, c2 = st.columns([2, 3])
 with c1:
     audio = st.audio_input("Press the mic and speak", key=f"mic{S.mic}")
     if audio is not None:
-        S.mic += 1  # fresh widget next run, so a recording is never submitted twice
+        S.mic += 1  # new widget key, so a recording is never submitted twice
         run_turn(audio=audio.getvalue())
+        st.rerun()  # render the new, empty mic now; the next recording then lands on the current key
 with c2:
     st.write("Or try:")
     cols = st.columns(2)
