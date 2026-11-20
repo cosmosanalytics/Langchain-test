@@ -173,7 +173,7 @@ with tab3:
                  "metadata": {"case_id": c["id"]}} for c in NEW_CASES])
         with st.spinner("Running experiment…"):
             res = evaluate(lambda i: core.run_agent({**i, "sloppy": sloppy_b}), data=EVAL_DATASET,
-                           evaluators=[core.world_model_judge],
+                           evaluators=[core.make_world_model_judge(current_wm())],
                            experiment_prefix="wm-judge-sloppy" if sloppy_b else "wm-judge", max_concurrency=2)
             rows = []
             for r in res:

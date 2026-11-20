@@ -245,10 +245,16 @@ def judge(inputs: dict, outputs: dict, ground_truth: Optional[str], wm: dict) ->
     return results
 
 
-def world_model_judge(inputs: dict, outputs: dict, reference_outputs: Optional[dict] = None) -> dict:
-    """LangSmith evaluator. reference_outputs may be empty: then the world model is the only reference."""
-    gt = (reference_outputs or {}).get("next_state")
-    return {"results": judge(inputs, outputs, gt, load_world_model())}
+def make_world_model_judge(wm: Optional[dict] = None):
+    """LangSmith evaluator scoring against `wm` (default: the local world model). reference_outputs may be empty:
+    then the world model is the only reference."""
+    def world_model_judge(inputs: dict, outputs: dict, reference_outputs: Optional[dict] = None) -> dict:
+        gt = (reference_outputs or {}).get("next_state")
+        return {"results": judge(inputs, outputs, gt, wm or load_world_model())}
+    return world_model_judge
+
+
+world_model_judge = make_world_model_judge()
 
 
 # ---------------- Store the world model in LangSmith (read it back with the MCP server) ----------------
