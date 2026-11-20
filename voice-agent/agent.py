@@ -29,7 +29,7 @@ SYSTEM_PROMPT = (
     "call recommend_next_state and mention its evaluation score; if the score is below 1, say why. When the user "
     "describes a case in their own words (any claim situation with details such as an amount, documents or the policy, "
     "even without saying 'new case'), or names a customer who is not in list_claims, call submit_case with their "
-    "description and speak "
+    "description and the customer's name, and speak "
     "the result: the decided next state, the score and, if below 1, why. Only call move_claim when the user "
     "explicitly asks you to move or update a claim."
 )
@@ -73,6 +73,9 @@ def build_tools(db: dict, wm: dict, evaluations: list):
     def submit_case(description: str, current_state: str = "under_review", customer: str = "") -> dict:
         """Add a NEW case the user describes in their own words, then decide its next state and score that
         decision against the world model (a new case has no ground truth). Use the user's wording as description."""
+        existing = _find(db, customer) if customer else None
+        if existing:
+            return _decide_and_score(existing)
         cur = current_state.strip().lower().replace(" ", "_")
         if cur not in core.STATES:
             cur = "under_review"
