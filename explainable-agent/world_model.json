@@ -1,0 +1,211 @@
+{
+  "entities": [
+    "adjuster",
+    "claim",
+    "customer",
+    "document",
+    "fraud_check",
+    "payment",
+    "policy",
+    "review",
+    "reviewer"
+  ],
+  "states": [
+    "submitted",
+    "under_review",
+    "on_hold",
+    "approved",
+    "denied",
+    "escalated",
+    "fraud_check",
+    "paid"
+  ],
+  "rules": [
+    {
+      "from_state": "submitted",
+      "to_state": "under_review",
+      "conditions": [
+        "All required documents are attached and the claim is filed online",
+        "claim is received and entered into the system for review"
+      ],
+      "source_cases": [
+        "C1",
+        "C3"
+      ],
+      "evidence": [
+        {
+          "case": "C1",
+          "quote": "Ana filed a claim online with all documents attached, so it moved to review."
+        },
+        {
+          "case": "C3",
+          "quote": "Carla's claim was reviewed and denied because the policy had lapsed before the incident date."
+        }
+      ]
+    },
+    {
+      "from_state": "under_review",
+      "to_state": "approved",
+      "conditions": [
+        "The policy is active and the documents are complete, and the adjuster reviews the claim",
+        "the claim satisfies approval criteria after review",
+        "claim meets all underwriting criteria and no issues are found"
+      ],
+      "source_cases": [
+        "C1",
+        "C2",
+        "C6"
+      ],
+      "evidence": [
+        {
+          "case": "C1",
+          "quote": "The adjuster reviewed the claim and approved it because the policy was active and the documents were complete."
+        },
+        {
+          "case": "C2",
+          "quote": "\"approved\""
+        },
+        {
+          "case": "C6",
+          "quote": "claim was approved"
+        }
+      ]
+    },
+    {
+      "from_state": "under_review",
+      "to_state": "denied",
+      "conditions": [
+        "policy is found to have lapsed before the incident date, making the claim ineligible"
+      ],
+      "source_cases": [
+        "C3"
+      ],
+      "evidence": [
+        {
+          "case": "C3",
+          "quote": "Carla's claim was reviewed and denied because the policy had lapsed before the incident date."
+        }
+      ]
+    },
+    {
+      "from_state": "under_review",
+      "to_state": "escalated",
+      "conditions": [
+        "claim amount exceeds $50,000 limit for standard review"
+      ],
+      "source_cases": [
+        "C4"
+      ],
+      "evidence": [
+        {
+          "case": "C4",
+          "quote": "Dev's claim for $80,000 was above the $50,000 limit for standard review, so the adjuster escalated it to a senior reviewer."
+        }
+      ]
+    },
+    {
+      "from_state": "under_review",
+      "to_state": "fraud_check",
+      "conditions": [
+        "invoice dates do not match incident date"
+      ],
+      "source_cases": [
+        "C5"
+      ],
+      "evidence": [
+        {
+          "case": "C5",
+          "quote": "During review of Elena's claim, the invoice dates did not match the incident date, so the claim was sent to fraud check."
+        }
+      ]
+    },
+    {
+      "from_state": "under_review",
+      "to_state": "on_hold",
+      "conditions": [
+        "a required document is missing"
+      ],
+      "source_cases": [
+        "C2"
+      ],
+      "evidence": [
+        {
+          "case": "C2",
+          "quote": "\"medical report was missing\""
+        }
+      ]
+    },
+    {
+      "from_state": "approved",
+      "to_state": "paid",
+      "conditions": [
+        "Payment is issued 3 days after approval",
+        "approved claim is disbursed to the claimant within the service level"
+      ],
+      "source_cases": [
+        "C1",
+        "C6"
+      ],
+      "evidence": [
+        {
+          "case": "C1",
+          "quote": "The approved claim was paid 3 days later."
+        },
+        {
+          "case": "C6",
+          "quote": "payment was sent within 5 days"
+        }
+      ]
+    },
+    {
+      "from_state": "escalated",
+      "to_state": "approved",
+      "conditions": [
+        "senior reviewer approves the escalated claim"
+      ],
+      "source_cases": [
+        "C4"
+      ],
+      "evidence": [
+        {
+          "case": "C4",
+          "quote": "The senior reviewer approved the claim."
+        }
+      ]
+    },
+    {
+      "from_state": "fraud_check",
+      "to_state": "under_review",
+      "conditions": [
+        "fraud check finds claim valid"
+      ],
+      "source_cases": [
+        "C5"
+      ],
+      "evidence": [
+        {
+          "case": "C5",
+          "quote": "The fraud check found the claim was valid and it was sent back to review."
+        }
+      ]
+    }
+  ],
+  "dropped_ungrounded": [
+    {
+      "from_state": "on_hold",
+      "to_state": "under_review",
+      "condition": "the required document is provided",
+      "evidence": "\"uploaded the medical report\" and \"went back to review\"",
+      "case_id": "C2",
+      "grounded": false
+    },
+    {
+      "from_state": "submitted",
+      "to_state": "under_review",
+      "condition": "claim is received and entered into the processing system",
+      "evidence": "",
+      "case_id": "C6",
+      "grounded": false
+    }
+  ]
+}
