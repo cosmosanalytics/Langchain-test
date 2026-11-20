@@ -21,6 +21,12 @@ cp .env.example .env        # add your Groq and LangSmith keys
 streamlit run app.py
 ```
 
+### Share it on Streamlit Community Cloud
+
+share.streamlit.io → Create app → repo `cosmosanalytics/Langchain-test`, main file `explainable-agent/app.py`.
+In Advanced settings → Secrets, paste the `.env.example` keys as TOML (`KEY = "value"`) and set `APP_PASSWORD`
+so only people with the password can run the app on your keys.
+
 ## What's where
 
 | File | What it shows |

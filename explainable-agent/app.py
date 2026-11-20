@@ -1,4 +1,5 @@
 """Streamlit demo: Explainable AI Agent with Model-Based Evaluation.  Run: streamlit run app.py"""
+import hmac
 import os
 import uuid
 
@@ -10,6 +11,17 @@ import core
 from cases import NEW_CASES, PAST_CASES
 
 st.set_page_config(page_title="Explainable AI Agent", layout="wide")
+
+APP_PASSWORD = os.getenv("APP_PASSWORD")
+if APP_PASSWORD and not st.session_state.get("authed"):
+    st.title("Explainable AI Agent with Model-Based Evaluation")
+    pw = st.text_input("Password", type="password")
+    if pw and hmac.compare_digest(pw, APP_PASSWORD):
+        st.session_state["authed"] = True
+        st.rerun()
+    elif pw:
+        st.error("Wrong password")
+    st.stop()
 PROJECT = os.getenv("LANGSMITH_PROJECT", "explainable-agent")
 EVAL_DATASET = os.getenv("EVAL_DATASET", "claims-new-cases")
 TRACING = os.getenv("LANGSMITH_TRACING", "").lower() == "true" and bool(os.getenv("LANGSMITH_API_KEY"))
