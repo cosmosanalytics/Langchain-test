@@ -70,12 +70,16 @@ def build_tools(db: dict, wm: dict, evaluations: list):
                 "evaluation_reasons": [s["comment"] for s in scores if s["score"] != 1]}
 
     @tool
-    def submit_case(description: str, current_state: str = "under_review", customer: str = "") -> dict:
+    def submit_case(description: str, current_state: str = "under_review", customer: str = "",
+                    separate_claim: bool = False) -> dict:
         """Add a NEW case the user describes in their own words, then decide its next state and score that
-        decision against the world model (a new case has no ground truth). Use the user's wording as description."""
+        decision against the world model (a new case has no ground truth). Use the user's wording as description.
+        Set separate_claim=true only when the user says it is another claim for a customer who already has one."""
         existing = _find(db, customer) if customer else None
-        if existing:
-            return _decide_and_score(existing)
+        if existing and not separate_claim:
+            return {"error": f"{existing['customer']} already has claim {existing['id']}. If the user means that "
+                             f"claim, call recommend_next_state('{existing['id']}'); if they clearly mean another "
+                             "claim, call submit_case again with separate_claim=true."}
         cur = current_state.strip().lower().replace(" ", "_")
         if cur not in core.STATES:
             cur = "under_review"
