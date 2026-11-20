@@ -16,7 +16,7 @@ APP_PASSWORD = os.getenv("APP_PASSWORD")
 if APP_PASSWORD and not st.session_state.get("authed"):
     st.title("Explainable AI Agent with Model-Based Evaluation")
     pw = st.text_input("Password", type="password")
-    if pw and hmac.compare_digest(pw, APP_PASSWORD):
+    if pw and hmac.compare_digest(pw.encode(), APP_PASSWORD.encode()):
         st.session_state["authed"] = True
         st.rerun()
     elif pw:
