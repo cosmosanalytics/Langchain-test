@@ -1,5 +1,4 @@
 """Streamlit app: Voice Claims Agent with Model-Based Evaluation.  Run: streamlit run app.py"""
-import hashlib
 import hmac
 import os
 import uuid
@@ -36,7 +35,8 @@ def ls_client():
 
 
 def reset():
-    st.session_state.update(db=va.new_claims_db(), evals=[], chat=[], thread=str(uuid.uuid4()), last_audio=None)
+    st.session_state.update(db=va.new_claims_db(), evals=[], chat=[], thread=str(uuid.uuid4()),
+                            mic=st.session_state.get("mic", 0) + 1)
     st.session_state.agent = va.build_voice_agent(st.session_state.db, core.load_world_model(),
                                                   st.session_state.evals)
 
@@ -69,7 +69,29 @@ def run_turn(audio: bytes | None = None, text: str | None = None):
                    "tools": out["tool_calls"], "evals": new_evals, "trace": url})
 
 
-# ---------------- sidebar ----------------
+# ---------------- main ----------------
+st.title("Voice Claims Agent with Model-Based Evaluation")
+st.caption("Talk to a claims agent. It looks up claims, recommends next steps with a world-model score, "
+           "and moves claims only along world-model transitions. Replies are spoken back.")
+
+c1, c2 = st.columns([2, 3])
+with c1:
+    audio = st.audio_input("Press the mic and speak", key=f"mic{S.mic}")
+    if audio is not None:
+        S.mic += 1  # fresh widget next run, so a recording is never submitted twice
+        run_turn(audio=audio.getvalue())
+with c2:
+    st.write("Or try:")
+    cols = st.columns(2)
+    for i, ex in enumerate(EXAMPLES):
+        if cols[i % 2].button(ex, use_container_width=True):
+            run_turn(text=ex)
+
+typed = st.chat_input("...or type a message")
+if typed:
+    run_turn(text=typed)
+
+# ---------------- sidebar (after the turn, so the claims table is current) ----------------
 with st.sidebar:
     st.subheader("Stack")
     st.markdown(f"- **Speech to text:** Groq `{va.STT_MODEL}`\n- **Agent:** LangChain `create_agent` "
@@ -84,31 +106,6 @@ with st.sidebar:
         reset()
         st.rerun()
     st.caption("[Request changes](https://app.devin.ai/sessions/3c2a71bed27641c98da4db72bae3ab93)")
-
-# ---------------- main ----------------
-st.title("Voice Claims Agent with Model-Based Evaluation")
-st.caption("Talk to a claims agent. It looks up claims, recommends next steps with a world-model score, "
-           "and moves claims only along world-model transitions. Replies are spoken back.")
-
-c1, c2 = st.columns([2, 3])
-with c1:
-    audio = st.audio_input("Press the mic and speak")
-    if audio is not None:
-        data = audio.getvalue()
-        digest = hashlib.sha256(data).hexdigest()
-        if digest != S.last_audio:
-            S.last_audio = digest
-            run_turn(audio=data)
-with c2:
-    st.write("Or try:")
-    cols = st.columns(2)
-    for i, ex in enumerate(EXAMPLES):
-        if cols[i % 2].button(ex, use_container_width=True):
-            run_turn(text=ex)
-
-typed = st.chat_input("...or type a message")
-if typed:
-    run_turn(text=typed)
 
 last = len(S.chat) - 1
 for i, m in enumerate(reversed(S.chat)):
