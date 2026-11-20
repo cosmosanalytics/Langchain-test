@@ -26,8 +26,10 @@ SYSTEM_PROMPT = (
     "three short spoken sentences: no markdown, lists, tables or symbols, and say states in plain words "
     "(e.g. 'under review'). Always use your tools for facts about claims; never guess. Claim IDs look like N1, "
     "and the user may refer to a claim by the customer's first name. When asked what should happen to a claim, "
-    "call recommend_next_state and mention its evaluation score; if the score is below 1, say why. Only call "
-    "move_claim when the user explicitly asks you to move or update a claim."
+    "call recommend_next_state and mention its evaluation score; if the score is below 1, say why. When the user "
+    "describes a new case (a claim situation not in the list), call submit_case with their description and speak "
+    "the result: the decided next state, the score and, if below 1, why. Only call move_claim when the user "
+    "explicitly asks you to move or update a claim."
 )
 
 
@@ -54,6 +56,30 @@ def build_tools(db: dict, wm: dict, evaluations: list):
             return {"error": f"No claim '{claim}'. Known: {', '.join(db)}"}
         return {k: c[k] for k in ("id", "customer", "current_state", "text", "history")}
 
+    def _decide_and_score(c: dict) -> dict:
+        inputs = {"case_text": c["text"], "current_state": c["current_state"]}
+        out = core.run_agent(inputs)
+        scores = core.judge(inputs, out, c["ground_truth"] if not c["history"] else None, wm)
+        evaluations.append({"claim": c["id"], "decision": out, "scores": scores})
+        return {"claim": c["id"], "customer": c["customer"], "current_state": c["current_state"],
+                "recommended": out["next_state"], "rationale": out["rationale"],
+                "evaluation": {s["key"]: s["score"] for s in scores},
+                "evaluation_reasons": [s["comment"] for s in scores if s["score"] != 1]}
+
+    @tool
+    def submit_case(description: str, current_state: str = "under_review", customer: str = "") -> dict:
+        """Add a NEW case the user describes in their own words, then decide its next state and score that
+        decision against the world model (a new case has no ground truth). Use the user's wording as description."""
+        cur = current_state.strip().lower().replace(" ", "_")
+        if cur not in core.STATES:
+            cur = "under_review"
+        cid = f"N{len(db) + 1}"
+        while cid in db:
+            cid = f"N{int(cid[1:]) + 1}"
+        db[cid] = {"id": cid, "customer": customer or "new customer", "current_state": cur,
+                   "ground_truth": None, "text": description, "history": []}
+        return _decide_and_score(db[cid])
+
     @tool
     def recommend_next_state(claim: str) -> dict:
         """Ask the explainable claims agent what the claim's next state should be. The recommendation is scored
@@ -61,13 +87,7 @@ def build_tools(db: dict, wm: dict, evaluations: list):
         c = _find(db, claim)
         if not c:
             return {"error": f"No claim '{claim}'. Known: {', '.join(db)}"}
-        inputs = {"case_text": c["text"], "current_state": c["current_state"]}
-        out = core.run_agent(inputs)
-        scores = core.judge(inputs, out, c["ground_truth"] if not c["history"] else None, wm)
-        evaluations.append({"claim": c["id"], "decision": out, "scores": scores})
-        return {"claim": c["id"], "current_state": c["current_state"], "recommended": out["next_state"],
-                "rationale": out["rationale"], "evaluation": {s["key"]: s["score"] for s in scores},
-                "evaluation_reasons": [s["comment"] for s in scores if s["score"] != 1]}
+        return _decide_and_score(c)
 
     @tool
     def explain_rules(state: str) -> list[dict]:
@@ -91,7 +111,7 @@ def build_tools(db: dict, wm: dict, evaluations: list):
         c["current_state"] = new
         return {"claim": c["id"], "new_state": new}
 
-    return [list_claims, get_claim, recommend_next_state, explain_rules, move_claim]
+    return [list_claims, get_claim, submit_case, recommend_next_state, explain_rules, move_claim]
 
 
 def build_voice_agent(db: dict, wm: dict, evaluations: list):
@@ -104,7 +124,8 @@ def build_voice_agent(db: dict, wm: dict, evaluations: list):
 def transcribe(audio: bytes, filename: str = "speech.wav") -> str:
     r = Groq().audio.transcriptions.create(
         file=(filename, audio), model=STT_MODEL, language="en",
-        prompt="Insurance claims. Claim IDs like N1, N2, N3. Customers: Grace, Hiro, Ivy, Jon, Kim, Leo.")
+        prompt="Insurance claims. Claim IDs like N1, N2, N3. Customers: Grace, Hiro, Ivy, Jon, Kim, Leo. "
+               "Under review, on hold, escalated, fraud check, policy lapsed, $60,000.")
     return r.text.strip()
 
 

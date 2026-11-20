@@ -26,7 +26,9 @@ if APP_PASSWORD and not st.session_state.get("authed"):
 PROJECT = os.getenv("LANGSMITH_PROJECT", "voice-agent")
 TRACING = os.getenv("LANGSMITH_TRACING", "").lower() == "true" and bool(os.getenv("LANGSMITH_API_KEY"))
 EXAMPLES = ["Which claims do I have?", "What should happen with Ivy's claim?",
-            "Why can a claim be escalated?", "Move Grace's claim to approved."]
+            "Why can a claim be escalated?", "Move Grace's claim to approved.",
+            "New case: Maria's claim for $60,000 is under review. All documents are present and the policy is active.",
+            "New case: Omar's claim is under review, but the hospital bill is missing."]
 
 
 @st.cache_resource
@@ -71,8 +73,9 @@ def run_turn(audio: bytes | None = None, text: str | None = None):
 
 # ---------------- main ----------------
 st.title("Voice Claims Agent with Model-Based Evaluation")
-st.caption("Talk to a claims agent. It looks up claims, recommends next steps with a world-model score, "
-           "and moves claims only along world-model transitions. Replies are spoken back.")
+st.caption("Talk to a claims agent: ask about claims, or describe a new case in your own words. It decides the "
+           "next step, scores it against the world model, and speaks the result back. Claims only move along "
+           "world-model transitions.")
 
 c1, c2 = st.columns([2, 3])
 with c1:

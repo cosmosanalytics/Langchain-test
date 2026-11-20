@@ -31,7 +31,7 @@ cp .env.example .env   # add GROQ_API_KEY and LANGSMITH_API_KEY
 streamlit run app.py
 ```
 
-Try saying: "Which claims do I have?", "What should happen with Ivy's claim?", "Move it to escalated."
+Try saying: "Which claims do I have?", "What should happen with Ivy's claim?", "Move it to escalated.", or describe a new case: "Maria's claim for $60,000 is under review and all documents are present." The agent adds it (`submit_case`), decides the next state, scores it against the world model (no ground truth) and speaks the result.
 
 ## Share it on Streamlit Community Cloud
 
